@@ -50,3 +50,15 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# VS stuff
+.vs/
+
+# ignore builds for now
+out/
+
+# also ignore these just so the repository is clean
+Doxyfile
+build_number.cmake
+CMakeLists.txt
+CMakeSettings.json

@@ -1,0 +1,17 @@
+// should ignore comments like this
+
+1
+3.14
+text
+"this is a longer text"
+(1.45 2.99 3.64) stand
+
+{
+    this section should be skipped entirely
+}
+
+/* 
+    here's a multi line comment that should be ignored
+*/
+
+true

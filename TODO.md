@@ -1,0 +1,17 @@
+TODO
+----
+- change `vmptr_t` just to regular `intptr_t`
+- update MAX_QPATH to something modern (like 256)
+- figure out how to parse terrain data
+- general naming conventions for folders and files
+    - remove any prefixes e.g. `common_` or `server_`
+	- just simplify naming so that each file is named what it needs to be
+	- shorter names are preferred
+- game dll
+    - as above, separate into more folders to make it cleaner
+    - scripts
+		- separate into game/script folder
+		- set up `scr_farhook` in game dll
+		- implement shells of gsc functions
+		- module support?
+- implement OOB / networking so server can at least send/receive packets
