@@ -55,7 +55,7 @@ enum item_type {
 };
 
 struct gitem {
-	char *classname;
+	char *class_name;
 	char *pickup_sound;
 	char *world_model[2];
 	char *hud_icon;

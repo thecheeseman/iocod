@@ -60,5 +60,7 @@ out/
 # also ignore these just so the repository is clean
 Doxyfile
 build_number.cmake
+
+# cmake
 CMakeLists.txt
 CMakeSettings.json

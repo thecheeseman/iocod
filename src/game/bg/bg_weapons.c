@@ -660,11 +660,32 @@ void bg_set_ads_trans_times(void)
 	}
 }
 
-int bg_num_ammo_types;
-char *bg_ammo_types[MAX_WEAPONS];
-int bg_ammo_max[MAX_WEAPONS];
+//
+// ammo types
+//
+static int num_ammo_types;
+static char *ammo_types[MAX_WEAPONS];
+static int ammo_max[MAX_WEAPONS];
 
-void bg_setup_ammo_indexes(void)
+int bg_get_num_ammo_types(void)
+{
+	return num_ammo_types;
+}
+
+int bg_get_ammo_type_for_name(const char *name)
+{
+	int i;
+
+	for (i = 0; i < num_ammo_types; i++ ) {
+		if (!q_stricmp(ammo_types[i], name))
+			return i;
+	}
+
+	g_dprintf("Couldn't find ammo type '%s'\n", name);
+	return 0;
+}
+
+static void bg_setup_ammo_indexes(void)
 {
 	int i, j, k;
 	struct weapon *weapon, *weapon2;
@@ -674,15 +695,15 @@ void bg_setup_ammo_indexes(void)
 
 		q_strlwr(weapon->ammo_name);
 
-		for (j = 0; j < bg_num_ammo_types; j++) {
-			if (!q_stricmp(bg_ammo_types[j], weapon->ammo_name)) {
+		for (j = 0; j < num_ammo_types; j++) {
+			if (!q_stricmp(ammo_types[j], weapon->ammo_name)) {
 				weapon->ammo_name_index = j;
 
-				if (j && bg_ammo_max[j] != weapon->max_ammo) {
+				if (j && ammo_max[j] != weapon->max_ammo) {
 					for (k = 1; k < i; k++) {
 						weapon2 = bg_weapons[k];
-						if (!q_stricmp(bg_ammo_types[j], weapon2->ammo_name) &&
-							weapon2->max_ammo == bg_ammo_max[j]) {
+						if (!q_stricmp(ammo_types[j], weapon2->ammo_name) &&
+							weapon2->max_ammo == ammo_max[j]) {
 							g_error("Max ammo mismatch for '%s' ammo: " \
 									"'%s' set to %d, but '%s' already " \
 									"set it to %d",
@@ -695,22 +716,25 @@ void bg_setup_ammo_indexes(void)
 			}
 		}
 
-		if (j == bg_num_ammo_types) {
-			bg_ammo_types[j] = weapon->ammo_name;
-			bg_ammo_max[j] = weapon->max_ammo;
+		if (j == num_ammo_types) {
+			ammo_types[j] = weapon->ammo_name;
+			ammo_max[j] = weapon->max_ammo;
 			weapon->ammo_name_index = j;
-			bg_num_ammo_types++;
+			num_ammo_types++;
 		}
 
 		weapon++;
 	}
 }
 
-int bg_num_shared_ammo_caps;
-char *bg_shared_ammo_cap_names[MAX_WEAPONS];
-int bg_shared_ammo_caps[MAX_WEAPONS];
+//
+// shared ammo
+//
+static int num_shared_ammo_caps;
+static char *shared_ammo_cap_names[MAX_WEAPONS];
+static int shared_ammo_caps[MAX_WEAPONS];
 
-void bg_setup_shared_ammo_indexes(void)
+static void bg_setup_shared_ammo_indexes(void)
 {
 	int i, j, k;
 	struct weapon *weapon, *weapon2;
@@ -726,17 +750,17 @@ void bg_setup_shared_ammo_indexes(void)
 
 		q_strlwr(weapon->shared_ammo_cap_name);
 
-		for (j = 0; j < bg_num_shared_ammo_caps; j++) {
-			if (!q_stricmp(bg_shared_ammo_cap_names[j], 
+		for (j = 0; j < num_shared_ammo_caps; j++) {
+			if (!q_stricmp(shared_ammo_cap_names[j], 
 						   weapon->shared_ammo_cap_name)) {
 				weapon->shared_ammo_cap_index = j;
 
-				if (j && bg_shared_ammo_caps[j] != weapon->shared_ammo_cap) {
+				if (j && shared_ammo_caps[j] != weapon->shared_ammo_cap) {
 					for (k = 1; k < i; k++) {
 						weapon2 = bg_weapons[k];
-						if (!q_stricmp(bg_shared_ammo_cap_names[j], 
+						if (!q_stricmp(shared_ammo_cap_names[j], 
 									   weapon2->shared_ammo_cap_name) &&
-							weapon2->shared_ammo_cap == bg_shared_ammo_caps[j]) {
+							weapon2->shared_ammo_cap == shared_ammo_caps[j]) {
 							g_error("Shared ammo mismatch for '%s' ammo: " \
 									"'%s' set to %d, but '%s' already " \
 									"set it to %d",
@@ -749,21 +773,43 @@ void bg_setup_shared_ammo_indexes(void)
 			}
 		}
 
-		if (j == bg_num_shared_ammo_caps) {
-			bg_shared_ammo_cap_names[j] = weapon->shared_ammo_cap_name;
-			bg_shared_ammo_caps[j] = weapon->shared_ammo_cap;
+		if (j == num_shared_ammo_caps) {
+			shared_ammo_cap_names[j] = weapon->shared_ammo_cap_name;
+			shared_ammo_caps[j] = weapon->shared_ammo_cap;
 			weapon->shared_ammo_cap_index = j;
-			bg_num_shared_ammo_caps++;
+			num_shared_ammo_caps++;
 		}
 
 		weapon++;
 	}
 }
 
-int bg_num_clip_types;
-char *bg_clip_types[MAX_WEAPONS];
-int bg_clip_max[MAX_WEAPONS];
-void bg_setup_clip_indexes(void)
+//
+// clips
+//
+static int num_clip_types;
+static char *clip_types[MAX_WEAPONS];
+static int clip_max[MAX_WEAPONS];
+
+int bg_get_num_ammo_clips(void)
+{
+	return num_clip_types;
+}
+
+int bg_get_ammo_clip_for_name(const char *name)
+{
+	int i;
+
+	for (i = 0; i < num_clip_types; i++) {
+		if (!q_stricmp(clip_types[i], name))
+			return i;
+	}
+
+	g_dprintf("Couldn't find ammo clip '%s'\n", name);
+	return 0;
+}
+
+static void bg_setup_clip_indexes(void)
 {
 	int i, j, k;
 	struct weapon *weapon, *weapon2;
@@ -773,15 +819,15 @@ void bg_setup_clip_indexes(void)
 
 		q_strlwr(weapon->clip_name);
 
-		for (j = 0; j < bg_num_clip_types; j++) {
-			if (!q_stricmp(bg_clip_types[j], weapon->clip_name)) {
+		for (j = 0; j < num_clip_types; j++) {
+			if (!q_stricmp(clip_types[j], weapon->clip_name)) {
 				weapon->clip_name_index = j;
 
-				if (j && bg_clip_max[j] != weapon->clip_size) {
+				if (j && clip_max[j] != weapon->clip_size) {
 					for (k = 1; k < i; k++) {
 						weapon2 = bg_weapons[k];
-						if (!q_stricmp(bg_clip_types[j], weapon2->clip_name) &&
-							weapon2->clip_size == bg_clip_max[j]) {
+						if (!q_stricmp(clip_types[j], weapon2->clip_name) &&
+							weapon2->clip_size == clip_max[j]) {
 							g_error("Clip size mismatch for '%s' ammo: " \
 									"'%s' set to %d, but '%s' already " \
 									"set it to %d",
@@ -794,11 +840,11 @@ void bg_setup_clip_indexes(void)
 			}
 		}
 
-		if (j == bg_num_clip_types) {
-			bg_clip_types[j] = weapon->clip_name;
-			bg_clip_max[j] = weapon->clip_size;
+		if (j == num_clip_types) {
+			clip_types[j] = weapon->clip_name;
+			clip_max[j] = weapon->clip_size;
 			weapon->clip_name_index = j;
-			bg_num_clip_types++;
+			num_clip_types++;
 		}
 
 		weapon++;
@@ -807,17 +853,126 @@ void bg_setup_clip_indexes(void)
 
 void bg_fill_in_weapon_items(void)
 {
+	int i, j;
+	struct gitem *item;
+	struct weapon *weapon;
 
+	// drop weapons into the 64 slots first available
+	for (i = 1; i <= bg_num_weapons; i++) {
+		item = &bg_item_list[i];
+		weapon = bg_weapons[i];
+
+		item->class_name = weapon->radiant_name;
+		item->pickup_sound = weapon->pickup_sound;
+		item->world_model[0] = weapon->world_model;
+		item->world_model[1] = NULL; // not used
+		item->hud_icon = weapon->hud_icon;
+		item->ammo_icon = weapon->ammo_icon;
+		item->display_name = weapon->display_name;
+		item->quantity = weapon->start_ammo;
+		item->type = IT_WEAPON;
+		item->tag = i;
+		item->ammo_name_index = weapon->ammo_name_index;
+		item->clip_name_index = weapon->clip_name_index;
+	}
+
+	// update ammo items
+	for (; i < 69; i++) {
+		item = &bg_item_list[i];
+
+		if (item->type == IT_AMMO) {
+			for (j = 1; j <= bg_num_weapons; j++) {
+				weapon = bg_weapons[j];
+				if (!q_stricmpn(item->display_name, weapon->name,
+								strlen(weapon->name))) {
+					item->tag = j;
+					item->ammo_name_index = weapon->ammo_name_index;
+					item->clip_name_index = weapon->clip_name_index;
+					break;
+				}
+			}
+
+			if (item->tag == -1) {
+				g_printf("WARNING: Could not find weapon for ammo item '%s'\n",
+						 item->display_name);
+
+				weapon = bg_weapons[1];
+				item->tag = 1;
+				item->ammo_name_index = weapon->ammo_name_index;
+				item->clip_name_index = weapon->clip_name_index;
+			}
+		}
+	}
 }
 
 void bg_setup_alt_weapon_indexes(void)
 {
+	int i, j;
+	struct weapon *weapon, *weapon2, *oldweapon;
 
+	// not sure why this is but it is
+	for (i = 1; i < bg_num_weapons; i++)
+		bg_weapons[i]->alt_weapon_index = 0;
+
+	for (i = 1; i < bg_num_weapons; i++) {
+		oldweapon = bg_weapons[i];
+
+		if (!oldweapon->alt_weapon_index && oldweapon->alt_weapon[0] != '\0') {
+			weapon = oldweapon;
+
+			while (weapon->alt_weapon_index == 0) {
+				for (j = 1; j <= bg_num_weapons; j++) {
+					weapon2 = bg_weapons[j];
+
+					if (!q_stricmp(weapon->alt_weapon, weapon2->name)) {
+						weapon->alt_weapon_index = j;
+						if (weapon->weapon_slot != weapon2->weapon_slot) {
+							g_error("Weapon '%s' does not have the same weapon " \
+									"slot setting as its alt weapon '%s'",
+									weapon->name, weapon2->name);
+						}
+
+						if (weapon->slot_stackable != weapon2->slot_stackable) {
+							g_error("Weapon '%s' does not have the same slot " \
+									"stackable setting as its alt weapon '%s'",
+									weapon->name, weapon2->name);
+						}
+
+						break;
+					}
+				}
+
+				if (!weapon->alt_weapon_index) {
+					g_error("Could not find alt weapon '%s' for weapon '%s'",
+							oldweapon->alt_weapon, oldweapon->name);
+				}
+
+				weapon = bg_weapons[j];
+			}
+
+			if (oldweapon != weapon) {
+				g_error("Weapon '%s' has bad alt weapon '%s'", oldweapon->name,
+						oldweapon->alt_weapon);
+			}
+		}
+	}
 }
 
 void bg_setup_weapon_hint_strings(void)
 {
+	struct weapon *weapon;
+	int i;
 
+	for (i = 1; i <= bg_num_weapons; i++) {
+		weapon = bg_weapons[i];
+
+		if (weapon->use_hint_string[0] != '\0' &&
+			!g_get_hint_string_index(&weapon->hint_string_index,
+									 weapon->use_hint_string)) {
+			g_error("Too many different hint string values on weapons. Max " \
+					"allowed is %d different strings", MAX_HINT_STRINGS);
+		}
+	}
 }
 
 static int compare_weapon_file_names(const void *a, const void *b)
@@ -845,10 +1000,17 @@ void bg_set_up_weapon_info(void)
 	if (bg_weapons == NULL)
 		g_error("Could not allocate weapon info array");
 
-	memset(bg_ammo_types, 0, sizeof(bg_ammo_types));
-	memset(bg_ammo_max, 0, sizeof(int));
-	bg_ammo_types[0] = "none";
-	bg_num_ammo_types = 1;
+	// zero ammo types array
+	memset(ammo_types, 0, sizeof(ammo_types));
+	memset(ammo_max, 0, sizeof(int));
+	ammo_types[0] = "none";
+	num_ammo_types = 1;
+
+	// zero clip types array
+	memset(clip_types, 0, sizeof(clip_types));
+	memset(clip_max, 0, sizeof(int));
+	clip_types[0] = "none";
+	num_clip_types = 1;
 		
 	memset(weapons, 0, sizeof(weapons));
 

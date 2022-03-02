@@ -257,7 +257,7 @@ extern vec3_t vec3_origin;
 #define MAX_CONFIG_STRINGS		2048
 
 #define MAX_STATUS_ICONS		8
-#define MAX_HEAD_ICONS			16
+#define MAX_HEAD_ICONS			15
 #define MAX_TAG_CONNECTS		32
 #define MAX_CLIENT_VARS			64
 #define MAX_MODELS				256

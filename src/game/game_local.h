@@ -76,9 +76,9 @@ struct gentity {
 #define CS_SHELLSHOCKS			(CS_FX_ON_TAG + MAX_FX_ON_TAG)
 
 #define CS_MENUS				1180
-#define CS_HINTSTRINGS			(CS_MENUS + MAX_MENUS)
-#define CS_LOCALIZEDSTRINGS		(CS_HINTSTRINGS + MAX_HINT_STRINGS)
-#define CS_SHADERS				(CS_LOCALIZEDSTRINGS + MAX_LOCALIZED_STRINGS)
+#define CS_HINT_STRINGS			(CS_MENUS + MAX_MENUS)
+#define CS_LOCALIZED_STRINGS	(CS_HINT_STRINGS + MAX_HINT_STRINGS)
+#define CS_SHADERS				(CS_LOCALIZED_STRINGS + MAX_LOCALIZED_STRINGS)
 
 //
 // gentity->flags
@@ -436,6 +436,13 @@ void g_log_printf(const char *fmt, ...);
 //
 //
 void g_register_cvars(void);
+
+//
+//
+// game/game_misc.c
+//
+//
+bool g_get_hint_string_index(int *hint, char *string);
 
 //
 //

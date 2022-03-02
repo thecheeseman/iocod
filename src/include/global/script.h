@@ -99,10 +99,19 @@ struct hud_element {
 	int team;                   // 29   116
 	bool archived;				// 30   120
 };
-
 extern struct hud_element g_hud_elements[];
 
-typedef void (*gsc_function_ptr)(int);
+struct hud_field {
+	const char *name;
+	int offset;
+	int type;
+
+	void (*set)(int);
+	void (*get)(int);
+};
+extern struct hud_field hud_fields[];
+
+typedef void (*gsc_function_ptr)(void);
 struct gsc_function {
 	const char *name;
 	gsc_function_ptr ptr;
@@ -114,6 +123,28 @@ struct gsc_method {
 	const char *name;
 	gsc_method_ptr ptr;
 };
+
+//
+// class fields
+//
+struct entity_field {
+	const char *name;
+	int offset;
+	int type;
+
+	void (*set)(int);
+};
+extern struct entity_field entity_fields[];
+
+struct client_field {
+	const char *name;
+	int offset;
+	int type;
+
+	void (*set)(int);
+	void (*get)(int);
+};
+extern struct client_field client_fields[];
 
 //
 // function declarations
