@@ -31,9 +31,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define	CVAR_ARCHIVE		1	// set to cause it to be saved to vars.rc
 // used for system variables, not for player
 // specific configurations
-#define	CVAR_USERINFO		2	// sent to server on connect or change
-#define	CVAR_SERVERINFO		4	// sent in response to front end requests
-#define	CVAR_SYSTEMINFO		8	// these cvars will be duplicated on all clients
+#define	CVAR_USER_INFO		2	// sent to server on connect or change
+#define	CVAR_SERVER_INFO	4	// sent in response to front end requests
+#define	CVAR_SYSTEM_INFO	8	// these cvars will be duplicated on all clients
 #define	CVAR_INIT			16	// don't allow change from console at all,
 								// but can be set from the command line
 #define	CVAR_LATCH			32	// will only change when C code next does
@@ -45,9 +45,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define	CVAR_USER_CREATED	128	// created by a set command
 #define	CVAR_TEMP			256	// can be set even when cheats are disabled, but is not archived
 #define CVAR_CHEAT			512	// can not be changed if cheats are disabled
-#define CVAR_NORESTART		1024	// do not clear when a cvar_restart is issued
+#define CVAR_NO_RESTART		1024	// do not clear when a cvar_restart is issued
 
-#define CVAR_WOLFINFO		2048
+#define CVAR_WOLF_INFO		2048
 
 #define CVAR_8192			8192
 #define CVAR_8193			(CVAR_8192 | CVAR_ARCHIVE)

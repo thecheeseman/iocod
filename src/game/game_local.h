@@ -436,6 +436,7 @@ void g_log_printf(const char *fmt, ...);
 //
 //
 void g_register_cvars(void);
+void g_update_cvars(void);
 
 //
 //

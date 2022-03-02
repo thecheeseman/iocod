@@ -205,6 +205,16 @@ void g_shutdown_game(bool restart)
 	trap_free_weapon_info_memory(0); // not sure what the 0 is for but whatever
 }
 
+void g_run_frame(int time)
+{
+	level.frame_num++;
+	level.previous_time = level.time;
+	level.time = time;
+	level.frame_time = time - level.previous_time;
+
+	g_update_cvars();
+}
+
 extern intptr_t scr_far_hook(intptr_t addr);
 
 int DLLEXPORT vmMain(enum game_exports command, int arg0, int arg1, int arg2,
@@ -235,6 +245,7 @@ int DLLEXPORT vmMain(enum game_exports command, int arg0, int arg1, int arg2,
 		case GAME_GET_FOLLOW_PLAYERSTATE:
 		case GAME_UPDATE_CVARS:
 		case GAME_RUN_FRAME:
+			g_run_frame(arg0);
 			break;
 		case GAME_CONSOLE_COMMAND:
 			return console_command();

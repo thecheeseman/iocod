@@ -1,13 +1,11 @@
 #include "bg_local.h"
 
-#define ARRSIZE(x) sizeof(x) / sizeof(x[0])
-
 const char *weapon_type_str[] = {
 	"bullet",
 	"grenade",
 	"projectile"
 };
-const int weapon_type_size = ARRSIZE(weapon_type_str);
+const int weapon_type_size = ARRAY_SIZE(weapon_type_str);
 
 const char *overlay_reticle_str[] = {
 	"none",
@@ -16,7 +14,7 @@ const char *overlay_reticle_str[] = {
 	"Springfield",
 	"Gewehr43"
 };
-const int overlay_reticle_size = ARRSIZE(overlay_reticle_str);
+const int overlay_reticle_size = ARRAY_SIZE(overlay_reticle_str);
 
 const char *weapon_class_str[] = {
 	"rifle",
@@ -28,7 +26,7 @@ const char *weapon_class_str[] = {
 	"turret",
 	"non-player"
 };
-const int weapon_class_size = ARRSIZE(weapon_class_str);
+const int weapon_class_size = ARRAY_SIZE(weapon_class_str);
 
 const char *weapon_slot_str[] = {
 	"none",
@@ -38,14 +36,14 @@ const char *weapon_slot_str[] = {
 	"grenade",
 	"smokegrenade"
 };
-const int weapon_slot_size = ARRSIZE(weapon_slot_str);
+const int weapon_slot_size = ARRAY_SIZE(weapon_slot_str);
 
 const char *weapon_stance_str[] = {
 	"stand",
 	"duck",
 	"prone"
 };
-const int weapon_stance_size = ARRSIZE(weapon_stance_str);
+const int weapon_stance_size = ARRAY_SIZE(weapon_stance_str);
 
 const char *projectile_type_str[] = {
 	"grenade",
@@ -53,7 +51,7 @@ const char *projectile_type_str[] = {
 	"molotov",
 	"none"
 };
-const int projectile_type_size = ARRSIZE(projectile_type_str);
+const int projectile_type_size = ARRAY_SIZE(projectile_type_str);
 
 //
 struct weapon_config_string {
@@ -374,7 +372,7 @@ struct weapon_config_string config_strings[] = {
 	#undef ENTRY
 	{ NULL }
 };
-int config_strings_size = sizeof(config_strings) / sizeof(config_strings[0]);
+int config_strings_size = ARRAY_SIZE(config_strings);
 //
 
 struct weapon **bg_weapons = NULL;
