@@ -60,7 +60,6 @@ struct weapon_config_string {
 	int type;
 };
 
-
 // because of stylistic reasons, the structure data names have
 // underscores instead of camelCase like the original game
 // the simpler option is just to have the structure match the camelCase
@@ -377,15 +376,15 @@ int config_strings_size = ARRAY_SIZE(config_strings);
 
 struct weapon **bg_weapons = NULL;
 int bg_num_weapons;
-intptr_t *bg_weapon_alloc_ptr;
 
-void bg_allocate_weapon_string(char **loc, char *str)
+static intptr_t *weapon_alloc_ptr;
+static void allocate_weapon_string(char **loc, char *str)
 {
 	int len;
 	char *out;
 
 	if (*str == '\0') {
-		*loc = (char *) bg_weapon_alloc_ptr;
+		*loc = (char *) weapon_alloc_ptr;
 	} else {
 		len = strlen(str);
 
@@ -397,7 +396,7 @@ void bg_allocate_weapon_string(char **loc, char *str)
 
 #define STRP(c, x, s) c((intptr_t) &x->number + s->offset)
 
-struct weapon *bg_allocate_weapon_strings(int num, 
+static struct weapon *allocate_weapon_strings(int num, 
 	struct weapon_config_string *cfg_strings, int count) {
 	struct weapon *weapon;
 	struct weapon_config_string *cfg_str;
@@ -407,17 +406,17 @@ struct weapon *bg_allocate_weapon_strings(int num,
 	bg_weapons[num] = weapon;
 	weapon->number = num;
 
-	bg_allocate_weapon_string(&weapon->name, "");
+	allocate_weapon_string(&weapon->name, "");
 
 	for (i = 0, cfg_str = cfg_strings; i < count; i++, cfg_str++) {
 		if (cfg_str->type == WFT_STRING)
-			bg_allocate_weapon_string(STRP((char **), weapon, cfg_str), "");
+			allocate_weapon_string(STRP((char **), weapon, cfg_str), "");
 	}
 
 	return weapon;
 }
 
-bool parse_weapon_file_struct_data(void *data, char *str, int type)
+static bool parse_struct_data(void *data, char *str, int type)
 {
 	int i;
 	struct weapon *weapon = (struct weapon *) data;
@@ -506,7 +505,7 @@ bool parse_weapon_file_struct_data(void *data, char *str, int type)
 	return true;
 }
 
-bool parse_config_string_to_struct(struct weapon *weapon,
+static bool parse_to_struct(struct weapon *weapon,
 								   struct weapon_config_string *cfg_strings,
 								   int count,
 								   char *data,
@@ -524,8 +523,8 @@ bool parse_config_string_to_struct(struct weapon *weapon,
 
 		switch (cfg_str->type) {
 			case WFT_STRING:
-				bg_allocate_weapon_string(STRP((char **), weapon, cfg_str), 
-										  val);
+				allocate_weapon_string(STRP((char **), weapon, cfg_str), 
+									   val);
 				break;
 
 			// 1-3 aren't used
@@ -574,7 +573,7 @@ bool parse_config_string_to_struct(struct weapon *weapon,
 		return false;
 }
 
-void bg_parse_weapon_files(char **list, int num)
+static void parse_weapon_files(char **list, int num)
 {
 	int header_len, i, file_len;
 	struct weapon *weapon;
@@ -584,19 +583,18 @@ void bg_parse_weapon_files(char **list, int num)
 
 	header_len = strlen(WEAPONFILE_HEADER);
 
-	bg_weapon_alloc_ptr = trap_hunk_alloc_low_align_internal(1, 1);
-	*bg_weapon_alloc_ptr = 0;
+	weapon_alloc_ptr = trap_hunk_alloc_low_align_internal(1, 1);
+	*weapon_alloc_ptr = 0;
 
-	weapon = bg_allocate_weapon_strings(0, config_strings, config_strings_size);
-	bg_allocate_weapon_string(&weapon->name, "none");
+	weapon = allocate_weapon_strings(0, config_strings, config_strings_size);
+	allocate_weapon_string(&weapon->name, "none");
 
 	bg_num_weapons = 0;
-
 	for (i = 0; i < num; i++) {
 		bg_num_weapons++;
 
-		weapon = bg_allocate_weapon_strings(bg_num_weapons, config_strings,
-											config_strings_size);
+		weapon = allocate_weapon_strings(bg_num_weapons, config_strings,
+										 config_strings_size);
 
 		snprintf(filename, sizeof(filename), "%s/", BG_WEAPONS_FOLDER);
 		strcat(filename, list[i]);
@@ -625,20 +623,17 @@ void bg_parse_weapon_files(char **list, int num)
 		if (!info_validate(data))
 			g_error("'%s' is not a valid weapon file", filename);
 
-		bg_allocate_weapon_string(&weapon->name, list[i]);
+		allocate_weapon_string(&weapon->name, list[i]);
 
-		if (!parse_config_string_to_struct(weapon, config_strings,
-										   config_strings_size,
-										   data,
-										   WFT_TYPE_MAX,
-										   parse_weapon_file_struct_data)) {
+		if (!parse_to_struct(weapon, config_strings, config_strings_size,
+							 data, WFT_TYPE_MAX, parse_struct_data)) {
 			bg_weapons[bg_num_weapons] = NULL;
 			bg_num_weapons--;
 		}
 	}
 }
 
-void bg_set_ads_trans_times(void)
+static void setup_ads_trans_times(void)
 {
 	int i;
 	struct weapon *weapon;
@@ -683,7 +678,7 @@ int bg_get_ammo_type_for_name(const char *name)
 	return 0;
 }
 
-static void bg_setup_ammo_indexes(void)
+static void setup_ammo_indexes(void)
 {
 	int i, j, k;
 	struct weapon *weapon, *weapon2;
@@ -732,7 +727,7 @@ static int num_shared_ammo_caps;
 static char *shared_ammo_cap_names[MAX_WEAPONS];
 static int shared_ammo_caps[MAX_WEAPONS];
 
-static void bg_setup_shared_ammo_indexes(void)
+static void setup_shared_ammo_indexes(void)
 {
 	int i, j, k;
 	struct weapon *weapon, *weapon2;
@@ -807,7 +802,7 @@ int bg_get_ammo_clip_for_name(const char *name)
 	return 0;
 }
 
-static void bg_setup_clip_indexes(void)
+static void setup_clip_indexes(void)
 {
 	int i, j, k;
 	struct weapon *weapon, *weapon2;
@@ -849,7 +844,7 @@ static void bg_setup_clip_indexes(void)
 	}
 }
 
-void bg_fill_in_weapon_items(void)
+static void fill_in_weapon_items(void)
 {
 	int i, j;
 	struct gitem *item;
@@ -903,7 +898,7 @@ void bg_fill_in_weapon_items(void)
 	}
 }
 
-void bg_setup_alt_weapon_indexes(void)
+static void setup_alt_weapon_indexes(void)
 {
 	int i, j;
 	struct weapon *weapon, *weapon2, *oldweapon;
@@ -956,7 +951,7 @@ void bg_setup_alt_weapon_indexes(void)
 	}
 }
 
-void bg_setup_weapon_hint_strings(void)
+static void setup_weapon_hint_strings(void)
 {
 	struct weapon *weapon;
 	int i;
@@ -1044,7 +1039,7 @@ void bg_set_up_weapon_info(void)
 		}
 		trap_set_config_string(CS_WEAPONS, config_string);
 
-		bg_parse_weapon_files(weapons, num_weapons);
+		parse_weapon_files(weapons, num_weapons);
 	} else {
 		bg_num_weapons = 0;
 
@@ -1052,13 +1047,13 @@ void bg_set_up_weapon_info(void)
 			bg_num_weapons++;
 	}
 
-	bg_set_ads_trans_times();
-	bg_setup_ammo_indexes();
-	bg_setup_shared_ammo_indexes();
-	bg_setup_clip_indexes();
-	bg_fill_in_weapon_items();
-	bg_setup_alt_weapon_indexes();
-	bg_setup_weapon_hint_strings();
+	setup_ads_trans_times();
+	setup_ammo_indexes();
+	setup_shared_ammo_indexes();
+	setup_clip_indexes();
+	fill_in_weapon_items();
+	setup_alt_weapon_indexes();
+	setup_weapon_hint_strings();
 
 	g_printf("total weapons: %d\n", bg_num_weapons);
 }
