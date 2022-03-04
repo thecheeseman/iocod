@@ -68,6 +68,8 @@ extern void bg_set_up_weapon_info(void);
 
 static void setup_logging(void)
 {
+	char server_info[MAX_STRING_CHARS];
+
 	if (g_log.string[0]) {
 		if (g_log_sync.integer)
 			trap_fs_fopen_file(g_log.string, &level.logfile, FS_APPEND_SYNC);
@@ -97,7 +99,7 @@ static void setup_logging(void)
 */
 void g_init_game(int level_time, int random_seed, int restart, int param4)
 {
-	char info_winner[MAX_STRING_CHARS], server_info[MAX_STRING_CHARS];
+	char info_winner[MAX_STRING_CHARS];
 
 	// swap_init
 	g_printf("gamename: %s\n", BASEGAME);
