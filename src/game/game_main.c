@@ -66,6 +66,28 @@ static void g_set_player_size(void)
 
 extern void bg_set_up_weapon_info(void);
 
+static void setup_logging(void)
+{
+	if (g_log.string[0]) {
+		if (g_log_sync.integer)
+			trap_fs_fopen_file(g_log.string, &level.logfile, FS_APPEND_SYNC);
+		else
+			trap_fs_fopen_file(g_log.string, &level.logfile, FS_APPEND);
+
+		if (!level.logfile) {
+			g_printf("WARNING: couldn't open logfile '%s'\n", g_log.string);
+		} else {
+			trap_get_server_info(server_info, sizeof(server_info));
+
+			g_log_printf("------------------------------------------------------------\n");
+			g_log_printf("init_game: %s\n", server_info);
+		}
+
+	} else {
+		g_printf("not logging to disk\n");
+	}
+}
+
 /**
  * @brief 
  * @param level_time 
@@ -110,24 +132,7 @@ void g_init_game(int level_time, int random_seed, int restart, int param4)
 	// bgs.636628_4 = g_anim_script_sound;
 	#endif
 
-	if (g_log.string[0]) {
-		if (g_log_sync.integer)
-			trap_fs_fopen_file(g_log.string, &level.logfile, FS_APPEND_SYNC);
-		else
-			trap_fs_fopen_file(g_log.string, &level.logfile, FS_APPEND);
-
-		if (!level.logfile) {
-			g_printf("WARNING: couldn't open logfile '%s'\n", g_log.string);
-		} else {
-			trap_get_server_info(server_info, sizeof(server_info));
-
-			g_log_printf("------------------------------------------------------------\n");
-			g_log_printf("init_game: %s\n", server_info);
-		}
-		
-	} else {
-		g_printf("not logging to disk\n");
-	}
+	setup_logging();
 	
 	bg_set_up_weapon_info();
 	/*
