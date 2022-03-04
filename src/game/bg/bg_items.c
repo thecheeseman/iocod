@@ -1,41 +1,41 @@
 #include "bg_local.h"
 
-#define NULL_ITEM() \
-	{ \
-		NULL, \
-		NULL, \
+struct gitem bg_item_list[] = {
+	#define NULL_ITEM() \
 		{ \
 			NULL, \
-			NULL \
-		}, \
-		NULL, \
-		NULL, \
-		NULL, \
-		0, \
-		0, \
-		0, \
-		0, \
-		0 \
-	},
-#define EMPTY_ITEM(n) \
-	{ \
-		"emptyitem_\"" #n "\"", \
-		"", \
+			NULL, \
+			{ \
+				NULL, \
+				NULL \
+			}, \
+			NULL, \
+			NULL, \
+			NULL, \
+			0, \
+			0, \
+			0, \
+			0, \
+			0 \
+		},
+	#define EMPTY_ITEM(n) \
 		{ \
+			"emptyitem_\"" #n "\"", \
 			"", \
-			"" \
-		}, \
-		"", \
-		"", \
-		"", \
-		0, \
-		0, \
-		0, \
-		0, \
-		0 \
-	},
+			{ \
+				"", \
+				"" \
+			}, \
+			"", \
+			"", \
+			"", \
+			0, \
+			0, \
+			0, \
+			0, \
+			0 \
+		},
 
-struct gitem bg_item_list[] = {
 	NULL_ITEM()
 
 	// 64 blank weapons
@@ -188,8 +188,8 @@ struct gitem bg_item_list[] = {
 		0
 	},
 
+	#undef NULL_ITEM
+	#undef EMPTY_ITEM
+
 	{ NULL }
 };
-
-#undef NULL_ITEM
-#undef EMPTY_ITEM
