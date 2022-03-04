@@ -64,8 +64,6 @@ static void g_set_player_size(void)
 	player_maxs[2] = g_bounds_height_standing.value;
 }
 
-extern void bg_set_up_weapon_info(void);
-
 static void setup_logging(void)
 {
 	char server_info[MAX_STRING_CHARS];
@@ -136,7 +134,7 @@ void g_init_game(int level_time, int random_seed, int restart, int param4)
 
 	setup_logging();
 	
-	bg_set_up_weapon_info();
+	set_up_weapon_info();
 	/*
 	gscr_load_scripts();
 	gscr_load_consts();

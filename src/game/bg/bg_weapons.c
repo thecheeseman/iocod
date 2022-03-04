@@ -978,7 +978,7 @@ static int compare_weapon_file_names(const void *a, const void *b)
 	return q_stricmp(aa, bb);
 }
 
-void bg_set_up_weapon_info(void)
+void set_up_weapon_info(void)
 {
 	int num_weapons, i, len;
 	char *weapons[MAX_WEAPONS];
@@ -1054,6 +1054,4 @@ void bg_set_up_weapon_info(void)
 	fill_in_weapon_items();
 	setup_alt_weapon_indexes();
 	setup_weapon_hint_strings();
-
-	g_printf("total weapons: %d\n", bg_num_weapons);
 }

@@ -472,6 +472,4 @@ struct weapon {
 extern struct weapon **bg_weapons;
 extern int bg_num_weapons;
 
-void bg_set_up_weapon_info(void);
-
 #endif // __BG_LOCAL_H__
