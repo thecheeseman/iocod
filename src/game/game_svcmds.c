@@ -1,21 +1,190 @@
 #include "game_local.h"
 
+struct ip_filter {
+	unsigned int mask;
+	unsigned int compare;
+};
+
+#define MAX_IP_FILTERS 1024
+
+static struct ip_filter ip_filters[MAX_IP_FILTERS];
+static int num_ip_filters;
+
+static bool string_to_filter(char *s, struct ip_filter *f) 
+{
+	char num[128];
+	int i, j;
+	byte b[4];
+	byte m[4];
+
+	for (i = 0; i < 4; i++) {
+		b[i] = 0;
+		m[i] = 0;
+	}
+
+	for (i = 0; i < 4; i++) {
+		if (*s < '0' || *s > '9') {
+			if (*s == '*') { // 'match any'
+				// b[i] and m[i] to 0
+				s++;
+				if (!*s)
+					break;
+
+				s++;
+				continue;
+			}
+
+			g_printf("Bad filter address: %s\n", s);
+			return false;
+		}
+
+		j = 0;
+		while (*s >= '0' && *s <= '9')
+			num[j++] = *s++;
+
+		num[j] = 0;
+		b[i] = atoi(num);
+		m[i] = 255;
+
+		if (!*s)
+			break;
+
+		s++;
+	}
+
+	f->mask = *(unsigned int *) m;
+	f->compare = *(unsigned int *) b;
+
+	return true;
+}
+
+static void update_ip_bans(void) 
+{
+	byte b[4];
+	byte m[4];
+	int i, j;
+	char iplist_final[MAX_CVAR_VALUE_STRING];
+	char ip[64];
+
+	*iplist_final = 0;
+	for (i = 0; i < num_ip_filters; i++) {
+		if (ip_filters[i].compare == 0xffffffff)
+			continue;
+
+		*(unsigned int *) b = ip_filters[i].compare;
+		*(unsigned int *) m = ip_filters[i].mask;
+		*ip = 0;
+		for (j = 0; j < 4; j++) {
+			if (m[j] != 255) 
+				q_strcat(ip, sizeof(ip), "*");
+			else
+				q_strcat(ip, sizeof(ip), va("%i", b[j]));
+
+			q_strcat(ip, sizeof(ip), (j < 3) ? "." : " ");
+		}
+
+		if (strlen(iplist_final) + strlen(ip) < MAX_CVAR_VALUE_STRING) {
+			q_strcat(iplist_final, sizeof(iplist_final), ip);
+		} else {
+			g_printf("g_banIPs overflowed at MAX_CVAR_VALUE_STRING\n");
+			break;
+		}
+	}
+
+	trap_cvar_set("g_banIPs", iplist_final);
+}
+
+static void add_ip(char *str)
+{
+	int i;
+
+	for (i = 0; i < num_ip_filters; i++) {
+		if (ip_filters[i].compare == 0xffffffff)
+			break;
+	}
+
+	if (i == num_ip_filters) {
+		if (num_ip_filters == MAX_IP_FILTERS) {
+			g_printf("IP filter list is full\n");
+			return;
+		}
+
+		num_ip_filters++;
+	}
+
+	if (!string_to_filter(str, &ip_filters[i]))
+		ip_filters[i].compare = 0xffffffffu;
+
+	update_ip_bans();
+}
+
+void process_ip_bans(void)
+{
+	char *s, *t;
+	char str[MAX_CVAR_VALUE_STRING];
+
+	q_strncpyz(str, g_ban_ips.string, sizeof(str));
+
+	for (t = s = g_ban_ips.string; *t; /* */) {
+		s = strchr(s, ' ');
+		if (!s)
+			break;
+
+		while (*s == ' ')
+			*s++ = '\0';
+
+		if (*t)
+			add_ip(t);
+
+		t = s;
+	}
+}
+
+static void svcmd_add_ip(void)
+{
+	char str[MAX_TOKEN_CHARS];
+
+	if (trap_argc() < 2) {
+		g_printf("Usage: addip <ip-mask>\n");
+		return;
+	}
+
+	trap_argv(1, str, sizeof(str));
+
+	add_ip(str);
+}
+
+static void svcmd_remove_ip(void)
+{
+	struct ip_filter f;
+	int i;
+	char str[MAX_TOKEN_CHARS];
+
+	if (trap_argc() < 2) {
+		g_printf("Usage: removeip <ip-mask>\n");
+		return;
+	}
+
+	trap_argv(1, str, sizeof(str));
+
+	if (!string_to_filter(str, &f))
+		return;
+
+	for (i = 0; i < num_ip_filters; i++) {
+		if (ip_filters[i].mask == f.mask &&
+			ip_filters[i].compare == f.compare) {
+			ip_filters[i].compare = 0xffffffffu;
+			g_printf("Removed.\n");
+
+			update_ip_bans();
+			return;
+		}
+	}
+
+	g_printf("Didn't find %s.\n", str);
+}
+
 void svcmd_entity_list(void)
-{
-
-}
-
-void svcmd_add_ip(void)
-{
-
-}
-
-void svcmd_remove_ip(void)
-{
-
-}
-
-void svcmd_list_ip(void)
 {
 
 }
@@ -94,7 +263,6 @@ static struct svcmd svcmds[] = {
 	{ "entitylist", svcmd_entity_list },
 	{ "addip", svcmd_add_ip },
 	{ "removeip", svcmd_remove_ip },
-	{ "listip", svcmd_list_ip },
 	{ "say", svcmd_say },
 
 	{ "configstrings", svcmd_configstrings },

@@ -450,6 +450,7 @@ bool g_get_hint_string_index(int *hint, char *string);
 // game/game_svcmds.c
 //
 //
+void process_ip_bans(void);
 bool console_command(void);
 
 //

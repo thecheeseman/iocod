@@ -55,7 +55,7 @@ static inline void rand_init(int seed)
  * @brief 
  * @param  
 */
-static void g_set_player_size(void)
+static void set_player_size(void)
 {
 	player_mins[0] = g_bounds_width.value * -0.5;
 	player_mins[1] = g_bounds_width.value * -0.5;
@@ -88,6 +88,8 @@ static void setup_logging(void)
 	}
 }
 
+extern void set_up_weapon_info(void);
+
 /**
  * @brief 
  * @param level_time 
@@ -112,8 +114,8 @@ void g_init_game(int level_time, int random_seed, int restart, int param4)
 	if (!restart || !param4)
 		g_register_cvars();
 
-	//g_process_ip_bans();
-	g_set_player_size();
+	process_ip_bans();
+	set_player_size();
 
 	// memsets
 	memset(&level, 0, sizeof(level));
