@@ -1029,7 +1029,7 @@ void com_init(char *cmdline)
 	com_developer = cvar_get("developer", "1", CVAR_TEMP);
 	com_developer_script = cvar_get("developer_script", "0", CVAR_TEMP);
 	com_logfile = cvar_get("logfile", "0", 0);
-	com_timescale = cvar_get("timescale", "1", CVAR_CHEAT | CVAR_SYSTEMINFO);
+	com_timescale = cvar_get("timescale", "1", CVAR_CHEAT | CVAR_SYSTEM_INFO);
 	com_fixedtime = cvar_get("fixedtime", "0", CVAR_CHEAT);
 	com_viewlog = cvar_get("viewlog", "0", CVAR_CHEAT);
 	com_speeds = cvar_get("com_speeds", "0", 0);
@@ -1050,7 +1050,7 @@ void com_init(char *cmdline)
 		   BUILDNUMBER, __DATE__);
 	com_version = cvar_get("version", s, CVAR_ROM);
 	com_shortversion = cvar_get("shortversion", "1.1", 
-								CVAR_ROM | CVAR_SERVERINFO);
+								CVAR_ROM | CVAR_SERVER_INFO);
 
 	sys_init();
 	netchan_init(com_milliseconds() & 0xffff);
