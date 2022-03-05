@@ -440,7 +440,12 @@ struct weapon {
 	#endif
 };
 
-extern struct weapon **bg_weapons;
-extern int bg_num_weapons;
+//
+//
+// bg_weapons.c
+//
+//
+int get_num_weapons(void);
+struct weapon *get_info_for_weapon(int id);
 
 #endif // __BG_LOCAL_H__

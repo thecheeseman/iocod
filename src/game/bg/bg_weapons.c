@@ -374,8 +374,19 @@ struct weapon_config_string config_strings[] = {
 int config_strings_size = ARRAY_SIZE(config_strings);
 //
 
-struct weapon **bg_weapons = NULL;
-int bg_num_weapons;
+static struct weapon **bg_weapons = NULL;
+static int bg_num_weapons;
+
+// utilities
+int get_num_weapons(void)
+{
+	return bg_num_weapons;
+}
+
+struct weapon *get_info_for_weapon(int id)
+{
+	return bg_weapons[id];
+}
 
 static intptr_t *weapon_alloc_ptr;
 static void allocate_weapon_string(char **loc, char *str)
