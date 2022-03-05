@@ -1,6 +1,6 @@
 #include "game_local.h"
 
-bool g_get_hint_string_index(int *hint, char *string)
+bool get_hint_string_index(int *hint, char *string)
 {
 	int i;
 	char s[MAX_STRING_CHARS];
