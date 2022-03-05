@@ -161,10 +161,12 @@ void g_init_game(int level_time, int random_seed, int restart, int param4)
 						  sizeof(level.clients[0]));
 
 	g_parse_hitloc_damage_table();
+	*/
 
 	if (!restart)
 		clear_registered_items();
 
+	/*
 	g_init_turrets();
 	g_spawn_entities_from_string();
 	g_find_teams();

@@ -183,6 +183,37 @@ struct level {
 extern struct level level;
 
 //
+//
+//
+enum item_type {
+	IT_BAD,
+	IT_WEAPON,
+	IT_AMMO,
+	IT_HEALTH
+};
+
+struct gitem {
+	char *class_name;
+	char *pickup_sound;
+	char *world_model[2];
+	char *hud_icon;
+	char *ammo_icon;
+	char *display_name;
+
+	int quantity;
+
+	int type;
+	int tag;
+
+	int ammo_name_index;
+	int clip_name_index;
+};
+
+extern struct gitem bg_item_list[];
+extern int bg_num_items;
+
+
+//
 // hudelems
 //
 struct hudelem {

@@ -972,7 +972,7 @@ static void setup_weapon_hint_strings(void)
 
 		if (weapon->use_hint_string[0] != '\0' &&
 			!get_hint_string_index(&weapon->hint_string_index,
-									 weapon->use_hint_string)) {
+								   weapon->use_hint_string)) {
 			g_error("Too many different hint string values on weapons. Max " \
 					"allowed is %d different strings", MAX_HINT_STRINGS);
 		}
