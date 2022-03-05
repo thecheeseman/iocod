@@ -25,3 +25,32 @@ bool get_hint_string_index(int *hint, char *string)
 	*hint = i;
 	return true;
 }
+
+int model_index(const char *model)
+{
+	int i;
+	const char *str;
+
+	if (!model || !model[0])
+		return 0;
+
+	for (i = 1; i < MAX_MODELS; i++) {
+		str = trap_get_config_string_const(CS_MODELS + i);
+		if (!str || !str[0])
+			break;
+
+		if (!strcasecmp(model, str))
+			return i;
+	}
+
+	if (!level.initializing)
+		scr_error(va("model '%s' not precached", model));
+
+	if (i == MAX_MODELS)
+		g_error("model_index: overflow");
+
+	// xmodel = trap_xmodel_get(model);
+	// xmodels[i] = xmodel;
+	trap_set_config_string(CS_MODELS + i, model);
+	return i;
+}

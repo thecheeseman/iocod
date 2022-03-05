@@ -461,7 +461,7 @@ static int cvar_table_size = ARRAY_SIZE(cvar_table);
 /**
  * @brief Register cvars with the server code
 */
-void g_register_cvars(void)
+void register_cvars(void)
 {
 	int i;
 	struct cvar_table *cv;
@@ -487,7 +487,7 @@ void g_register_cvars(void)
 /**
  * @brief Update any local copies of cvars with the server versions
 */
-void g_update_cvars(void)
+void update_cvars(void)
 {
 	int i;
 	struct cvar_table *cv;

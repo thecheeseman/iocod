@@ -413,14 +413,14 @@ extern struct vmcvar ui_timeout_recovery;
 
 //
 //
-// game/game_cmds.c
+// game_cmds.c
 //
 //
 char *concat_args(int start);
 
 //
 //
-// game/game_common.c
+// game_common.c
 //
 //
 void g_printf(const char *fmt, ...);
@@ -433,22 +433,22 @@ void g_log_printf(const char *fmt, ...);
 
 //
 //
-// game/game_cvars.c
+// game_cvars.c
 //
 //
-void g_register_cvars(void);
-void g_update_cvars(void);
+void register_cvars(void);
+void update_cvars(void);
 
 //
 //
-// game/game_misc.c
+// game_misc.c
 //
 //
-bool g_get_hint_string_index(int *hint, char *string);
+bool get_hint_string_index(int *hint, char *string);
 
 //
 //
-// game/game_svcmds.c
+// game_svcmds.c
 //
 //
 void process_ip_bans(void);
@@ -456,7 +456,7 @@ bool console_command(void);
 
 //
 //
-// game/game_syscalls.c
+// game_syscalls.c
 //
 //
 void trap_printf(const char *fmt);

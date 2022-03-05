@@ -112,7 +112,7 @@ void g_init_game(int level_time, int random_seed, int restart, int param4)
 
 	// 1.1 only checks param4, 1.5 checks both
 	if (!restart || !param4)
-		g_register_cvars();
+		register_cvars();
 
 	process_ip_bans();
 	set_player_size();
@@ -219,7 +219,7 @@ void g_run_frame(int time)
 	level.time = time;
 	level.frame_time = time - level.previous_time;
 
-	g_update_cvars();
+	update_cvars();
 }
 
 extern intptr_t scr_far_hook(intptr_t addr);
