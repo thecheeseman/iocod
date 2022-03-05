@@ -472,10 +472,19 @@ void update_cvars(void);
 
 //
 //
+// game_items.c
+//
+//
+void clear_registered_items(void);
+void register_item(int num, int other);
+
+//
+//
 // game_misc.c
 //
 //
 bool get_hint_string_index(int *hint, char *string);
+int model_index(const char *model);
 
 //
 //

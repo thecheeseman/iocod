@@ -186,6 +186,8 @@ void g_init_game(int level_time, int random_seed, int restart, int param4)
 	scr_startup_gametype();
 	*/
 
+	model_index("xmodel/weapon_mg42");
+
 	level.initializing = false;
 }
 
