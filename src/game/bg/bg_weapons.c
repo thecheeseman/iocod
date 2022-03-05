@@ -1,4 +1,4 @@
-#include "bg_local.h"
+#include "../game_local.h"
 
 const char *weapon_type_str[] = {
 	"bullet",

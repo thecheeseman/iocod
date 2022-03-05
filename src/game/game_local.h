@@ -32,6 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "game.h"
 #include "global/cvar.h"
 #include "script/script_local.h"
+#include "bg/bg_local.h"
 
 extern vec3_t player_mins, player_maxs;
 extern int randomseed;

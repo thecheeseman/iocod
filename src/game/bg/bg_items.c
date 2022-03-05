@@ -1,4 +1,4 @@
-#include "bg_local.h"
+#include "../game_local.h"
 
 struct gitem bg_item_list[] = {
 	#define NULL_ITEM() \

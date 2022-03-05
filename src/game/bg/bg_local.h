@@ -1,8 +1,6 @@
 #ifndef __BG_LOCAL_H__
 #define __BG_LOCAL_H__
 
-#include "../game_local.h"
-
 #define BG_WEAPONS_FOLDER "weapons/mp"
 
 enum team {
