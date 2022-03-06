@@ -40,7 +40,7 @@ bool fs_sv_file_exists(const char *file)
 	fs_build_ospath(fs_homepath->string, file, "", testpath);
 
 	f = fopen(testpath, "rb");
-	if (f) {
+	if (f != NULL) {
 		fclose(f);
 		return true;
 	}
@@ -58,7 +58,7 @@ filehandle fs_sv_fopen_file_write(const char *filename)
 	char ospath[MAX_OSPATH];
 	filehandle f;
 
-	if (!fs_searchpaths)
+	if (fs_searchpaths == NULL)
 		com_error(ERR_FATAL, "Filesystem call made without initialization");
 
 	fs_build_ospath(fs_homepath->string, filename, "", ospath);
@@ -76,7 +76,7 @@ filehandle fs_sv_fopen_file_write(const char *filename)
 	q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
 	fsh[f].handlesync = false;
 
-	if (!fsh[f].handlefiles.file.o)
+	if (fsh[f].handlefiles.file.o == NULL)
 		f = 0;
 
 	return f;
@@ -93,7 +93,7 @@ int fs_sv_fopen_file_read(const char *filename, filehandle *fp)
 	char ospath[MAX_OSPATH];
 	filehandle f = 0;
 
-	if (!fs_searchpaths)
+	if (fs_searchpaths == NULL)
 		com_error(ERR_FATAL, "Filesystem call made without initialization");
 
 	f = fs_handle_for_file();
@@ -111,21 +111,21 @@ int fs_sv_fopen_file_read(const char *filename, filehandle *fp)
 	fsh[f].handlefiles.file.o = fopen(ospath, "rb");
 	fsh[f].handlesync = false;
 
-	if (!fsh[f].handlefiles.file.o) {
+	if (fsh[f].handlefiles.file.o == NULL) {
 		// search basepath
-		if (q_stricmp(fs_homepath->string, fs_basepath->string)) {
+		if (q_stricmp(fs_homepath->string, fs_basepath->string) != 0) {
 			fs_build_ospath(fs_basepath->string, filename, "", ospath);
 			FS_DEBUG_PRINT("%s\n", ospath);
 
 			fsh[f].handlefiles.file.o = fopen(ospath, "rb");
 			fsh[f].handlesync = false;
 
-			if (!fsh[f].handlefiles.file.o)
+			if (fsh[f].handlefiles.file.o == NULL)
 				f = 0;
 		}
 	}
 
-	if (!fsh[f].handlefiles.file.o) {
+	if (fsh[f].handlefiles.file.o == NULL) {
 		// search cdpath
 		fs_build_ospath(fs_cdpath->string, filename, "", ospath);
 		FS_DEBUG_PRINT("%s\n", ospath);
@@ -133,12 +133,12 @@ int fs_sv_fopen_file_read(const char *filename, filehandle *fp)
 		fsh[f].handlefiles.file.o = fopen(ospath, "rb");
 		fsh[f].handlesync = false;
 
-		if (!fsh[f].handlefiles.file.o)
+		if (fsh[f].handlefiles.file.o == NULL)
 			f = 0;
 	}
 
 	*fp = f;
-	if (f)
+	if (f != 0)
 		return fs_file_length(f);
 
 	return 0;
@@ -153,7 +153,7 @@ void fs_sv_rename(const char *from, const char *to)
 {
 	char from_ospath[MAX_OSPATH], to_ospath[MAX_OSPATH];
 
-	if (!fs_searchpaths)
+	if (fs_searchpaths == NULL)
 		com_error(ERR_FATAL, "Filesystem call made without initialization");
 
 	// don't let sound stutter -- useless on server?

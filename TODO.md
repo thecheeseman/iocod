@@ -1,6 +1,5 @@
 TODO
 ----
-- change `vmptr_t` just to regular `intptr_t`
 - update MAX_QPATH to something modern (like 256)
 - figure out how to parse terrain data
 - general naming conventions for folders and files
@@ -15,3 +14,4 @@ TODO
 		- implement shells of gsc functions
 		- module support?
 - implement OOB / networking so server can at least send/receive packets
+- files_io:372 // TODO: whatever this is // fun_080612a2(*file);

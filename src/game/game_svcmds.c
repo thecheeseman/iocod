@@ -27,7 +27,8 @@ static bool string_to_filter(char *s, struct ip_filter *f)
 			if (*s == '*') { // 'match any'
 				// b[i] and m[i] to 0
 				s++;
-				if (!*s)
+
+				if (*s == '\0')
 					break;
 
 				s++;
@@ -46,7 +47,7 @@ static bool string_to_filter(char *s, struct ip_filter *f)
 		b[i] = atoi(num);
 		m[i] = 255;
 
-		if (!*s)
+		if (*s == '\0')
 			break;
 
 		s++;
@@ -127,7 +128,7 @@ void process_ip_bans(void)
 
 	for (t = s = g_ban_ips.string; *t; /* */) {
 		s = strchr(s, ' ');
-		if (!s)
+		if (s == NULL || *s == '\0')
 			break;
 
 		while (*s == ' ')

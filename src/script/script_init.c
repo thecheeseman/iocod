@@ -41,12 +41,7 @@ bool scr_error_entered;
 
 int scr_stack_params;
 uint16_t *scr_stack_pointer;
-
-int scr_set_loading(bool value)
-{
-
-}
-
+#if 0
 void scr_init(int developer, int developer_script)
 {
 	scr_developer = developer;
@@ -98,3 +93,4 @@ void scr_shutdown(void)
 	if (scr_initialized)
 		scr_initialized = false;
 }
+#endif

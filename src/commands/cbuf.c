@@ -79,7 +79,7 @@ void cbuf_insert_text(const char *text)
 {
 	int i, len = strlen(text) + 1;
 
-	if (len + cmd_text.cursize > cmd_text.maxsize) {
+	if ((len + cmd_text.cursize) > cmd_text.maxsize) {
 		com_printf("cbuf_insert_text: overflow\n");
 		return;
 	}
@@ -102,7 +102,7 @@ void cbuf_execute_text(enum cbuf_exec_type type, const char *text)
 {
 	switch (type) {
 		case EXEC_NOW:
-			if (text && strlen(text) > 0)
+			if (text != NULL && strlen(text) > 0)
 				cmd_execute_string(text);
 			else
 				cbuf_execute();

@@ -60,7 +60,7 @@ struct vm *vm_create(const char *module, int (*system_calls)(intptr_t *))
 	struct vm *vm;
 	int i;
 
-	if (!module || !module[0] || !system_calls)
+	if (module == NULL || *module == '\0' || system_calls == NULL)
 		com_error(ERR_FATAL, "VM_Create: bad parms");
 
 	// this call is in the actual code but it does nothing
@@ -76,7 +76,7 @@ struct vm *vm_create(const char *module, int (*system_calls)(intptr_t *))
 
 	// find a free vm
 	for (i = 0; i < MAX_VM; i++) {
-		if (!vmtable[i].name[0])
+		if (*vmtable[i].name == '\0')
 			break;
 	}
 
@@ -90,7 +90,7 @@ struct vm *vm_create(const char *module, int (*system_calls)(intptr_t *))
 	vm->dll_handle = sys_load_dll(module, vm->full_qpath, &vm->entry_point, 
 								  vm_dll_syscall);
 
-	if (!vm->dll_handle)
+	if (vm->dll_handle == NULL)
 		com_error(ERR_FATAL, "Failed to load shared library");
 
 	return vm;

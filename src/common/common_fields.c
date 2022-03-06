@@ -44,7 +44,7 @@ static void find_matches(const char *s)
 {
 	int i;
 
-	if (q_stricmpn(s, completionstring, strlen(completionstring)))
+	if (q_stricmpn(s, completionstring, strlen(completionstring)) != 0)
 		return;
 
 	matchcount++;
@@ -62,7 +62,7 @@ static void find_matches(const char *s)
 
 static void print_matches(const char *s)
 {
-	if (!q_stricmpn(s, shortestmatch, strlen(shortestmatch)))
+	if (q_stricmpn(s, shortestmatch, strlen(shortestmatch)) == 0)
 		com_printf("    %s\n", s);
 }
 
@@ -75,7 +75,7 @@ static void key_concat_args(void)
 		q_strcat(completionfield->buffer, sizeof(completionfield->buffer), " ");
 		arg = cmd_argv(i);
 
-		while (*arg) {
+		while (*arg != '\0') {
 			if (*arg == ' ') {
 				q_strcat(completionfield->buffer, 
 						 sizeof(completionfield->buffer), "\"");
@@ -99,7 +99,7 @@ static void concat_remaining(const char *src, const char *start)
 {
 	char *str = strstr(src, start);
 
-	if (!str) {
+	if (str != NULL) {
 		key_concat_args();
 		return;
 	}

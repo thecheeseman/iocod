@@ -175,7 +175,7 @@ void com_init_hunk_memory(void)
 	int min;
 	char *msg = NULL;
 
-	if (s_hunkdata) {
+	if (s_hunkdata != NULL) {
 		com_printf("Hunk memory already initialized, not reallocating\n");
 		return;
 	}
@@ -185,7 +185,7 @@ void com_init_hunk_memory(void)
 
 	cv = cvar_get("com_hunkmegs", "128", CVAR_LATCH | CVAR_ARCHIVE);
 
-	if (com_dedicated && com_dedicated->integer) {
+	if (com_dedicated != NULL && com_dedicated->integer > 0) {
 		min = MIN_DEDICATED_COM_HUNKMEGS;
 		msg = "Minimum com_hunkmegs for a dedicated server is %i, allocating %i.\n";
 	} else {
@@ -204,7 +204,7 @@ void com_init_hunk_memory(void)
 	// cod1/q3 use malloc(s_hunktotal + 31);
 	// probably safer to just use calloc?
 	s_hunkdata = z_malloc(s_hunktotal);
-	if (!s_hunkdata) {
+	if (s_hunkdata == NULL) {
 		com_error(ERR_FATAL, "Hunk data failed to allocate %.4f MB",
 				  BYTESTOMB(s_hunktotal));
 	}
@@ -245,9 +245,9 @@ void *hunk_allocate_temp_memory(int size)
 
 	low = hunk_low.temp;
 
-	if (!s_hunkdata) {
+	if (s_hunkdata == NULL) {
 		buf = z_malloc(size);
-		if (!buf)
+		if (buf == NULL)
 			com_error(ERR_FATAL, "couldn't allocate %i bytes of memory");
 
 		memset(buf, 0, size);
@@ -341,7 +341,7 @@ void hunk_free_temp_memory(void *buf)
 {
 	struct hunkheader *hdr;
 
-	if (!s_hunkdata) {
+	if (s_hunkdata == NULL) {
 		z_free(buf);
 		return;
 	}
@@ -364,7 +364,7 @@ void *hunk_alloc_align(int size, int align)
 {
 	void *buf;
 
-	if (!s_hunkdata)
+	if (s_hunkdata == NULL)
 		com_error(ERR_FATAL, "hunk memory system not initialized");
 
 	hunk_high.permanent = (size + hunk_high.permanent + (align - 1)) & ~(align - 1);
@@ -402,7 +402,7 @@ void *hunk_alloc_low_align(int size, int align)
 {
 	void *buf;
 
-	if (!s_hunkdata)
+	if (s_hunkdata == NULL)
 		com_error(ERR_FATAL, "hunk memory system not initialized");
 
 	hunk_low.permanent = (size + (align - 1) + hunk_low.permanent) & ~(align - 1);
@@ -437,7 +437,7 @@ void hunk_swap_temp(void)
 
 void hunk_swap_temp_low(void)
 {
-	if (s_hunkdata)
+	if (s_hunkdata != NULL)
 		hunk_low.temp = hunk_low.permanent;
 }
 
@@ -455,7 +455,7 @@ static void out_of_memory_error(void)
 void *z_malloc(size_t size)
 {
 	void *p = malloc(size);
-	if (!p)
+	if (p == NULL)
 		out_of_memory_error();
 
 	memset(p, 0, size);

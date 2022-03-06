@@ -125,7 +125,7 @@ static void com_writedefaults_f(void)
 */
 void com_add_commands(void)
 {
-	if (com_developer && com_developer->integer) {
+	if (com_developer != NULL && com_developer->integer > 0) {
 		cmd_add_command("error", com_error_f);
 		cmd_add_command("freeze", com_freeze_f);
 		cmd_add_command("crash", com_crash_f);
@@ -138,7 +138,7 @@ void com_add_commands(void)
 
 void com_remove_commands(void)
 {
-	if (com_developer && com_developer->integer) {
+	if (com_developer != NULL && com_developer->integer > 0) {
 		cmd_remove_command("error");
 		cmd_remove_command("freeze");
 		cmd_remove_command("crash");

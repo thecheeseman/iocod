@@ -43,8 +43,8 @@ static void cmd_list_f(void)
 		match = NULL;
 
 	i = 0;
-	for (cmd = cmd_functions; cmd; cmd = cmd->next) {
-		if (match && !com_filter(match, cmd->name, false))
+	for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
+		if (match != NULL && !com_filter(match, cmd->name, false))
 			continue;
 
 		com_printf("%s ", cmd->name);
@@ -84,7 +84,7 @@ static void cmd_exec_f(void)
 	q_strncpyz(filename, cmd_argv(1), sizeof(filename));
 	com_default_extension(filename, sizeof(filename), ".cfg");
 	len = fs_read_file(filename, (void **) &f);
-	if (!f || len < 0) {
+	if (f == 0 || len < 0) {
 		com_printf("couldn't exec %s\n", cmd_argv(1));
 		return;
 	}
@@ -159,26 +159,26 @@ static void cmd_alias_f(void)
 	cmd_name = cmd_argv(1);
 	alias = cmd_argv(2);
 
-	for (prev = &cmd_functions; *prev; prev = &cmd->next) {
+	for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
 		cmd = *prev;
 
-		if (!q_stricmp(alias, cmd->name)) {
+		if (q_stricmp(alias, cmd->name) == 0) {
 			com_printf("Command name '%s' already exists\n", cmd->name);
 			return;
 		}
 	}
 
-	for (prev = &cmd_functions; *prev; prev = &cmd->next) {
+	for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
 		cmd = *prev;
 
-		if (!q_stricmp(cmd_name, cmd->name)) {
+		if (q_stricmp(cmd_name, cmd->name) == 0) {
 			// found it
 			c = cmd->alias_count;
 
 			cmd->aliases = realloc(cmd->aliases, 
 								   sizeof(*cmd->aliases) * (c + 1));
-			cmd->aliases[c] = z_malloc(sizeof(char *) * strlen(alias) + 1);
-			q_strncpyz(cmd->aliases[c], alias, sizeof(cmd->aliases[c]));
+			cmd->aliases[c] = z_malloc(sizeof(char *) * (strlen(alias) + 1));
+			strcpy(cmd->aliases[c], alias);
 			cmd->alias_count++;
 
 			com_printf("Added alias '%s' to command '%s'\n", alias, cmd_name);

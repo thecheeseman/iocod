@@ -38,7 +38,7 @@ void com_init_journaling(void)
 	com_startup_variable("journal");
 
 	com_journal = cvar_get("journal", "0", CVAR_INIT);
-	if (!com_journal->integer)
+	if (com_journal->integer == 0)
 		return;
 
 	if (com_journal->integer == 1) {
@@ -53,7 +53,7 @@ void com_init_journaling(void)
 		fs_fopen_file_read("journaldata.dat", &com_journaldatafile, true, 0);
 	}
 
-	if (!com_journalfile || !com_journaldatafile) {
+	if (com_journalfile == 0 || com_journaldatafile == 0) {
 		cvar_set("com_journal", "0");
 
 		com_journalfile = 0;
@@ -84,7 +84,7 @@ void com_push_event(struct system_event *event)
 			com_printf("WARNING: com_push_event overflow\n");
 		}
 
-		if (ev->ptr)
+		if (ev->ptr != NULL)
 			z_free(ev->ptr);
 
 		com_pushed_eventstail++;
@@ -107,7 +107,7 @@ struct system_event com_get_real_event(void)
 		if (r != sizeof(ev))
 			com_error(ERR_FATAL, "Error reading from journal file");
 
-		if (ev.ptr_length) {
+		if (ev.ptr_length > 0) {
 			ev.ptr = z_malloc(ev.ptr_length);
 			r = fs_read(ev.ptr, ev.ptr_length, com_journalfile);
 			if (r != ev.ptr_length)
@@ -122,7 +122,7 @@ struct system_event com_get_real_event(void)
 			if (r != sizeof(ev))
 				com_error(ERR_FATAL, "Error writing to journal file");
 
-			if (ev.ptr_length) {
+			if (ev.ptr_length > 0) {
 				r = fs_write(ev.ptr, ev.ptr_length, com_journalfile);
 				if (r != ev.ptr_length)
 					com_error(ERR_FATAL, "Error writing to journal file");
@@ -150,12 +150,12 @@ void com_run_and_time_server_packet(struct netadr *evfrom, struct msg *buf)
 	int t1, t2, msec;
 
 	t1 = 0;
-	if (com_speeds->integer)
+	if (com_speeds->integer > 0)
 		t1 = sys_milliseconds();
 
 	sv_packet_event(*evfrom, buf);
 
-	if (com_speeds->integer) {
+	if (com_speeds->integer > 0) {
 		t2 = sys_milliseconds();
 
 		msec = t2 - t1;
@@ -179,60 +179,59 @@ int com_event_loop(void)
 		ev = com_get_event();
 
 		switch (ev.type) {
-			case SE_KEY:
-				cl_key_event(ev.value, ev.value2, ev.time);
-				break;
-			case SE_CHAR:
-				cl_char_event(ev.value);
-				break;
-			case SE_MOUSE:
-				cl_mouse_event(ev.value, ev.value2, ev.time);
-				break;
-			case SE_JOYSTICK_AXIS:
-				cl_joystick_event(ev.value, ev.value2, ev.time);
-				break;
-			case SE_CONSOLE:
-				cbuf_add_text((char *) ev.ptr);
-				cbuf_add_text("\n");
-				break;
-			case SE_PACKET:
-				if ((unsigned) buf.cursize > (unsigned) buf.maxsize) {
-					com_printf("com_event_loop: oversize packet\n");
+		case SE_KEY:
+			cl_key_event(ev.value, ev.value2, ev.time);
+			break;
+		case SE_CHAR:
+			cl_char_event(ev.value);
+			break;
+		case SE_MOUSE:
+			cl_mouse_event(ev.value, ev.value2, ev.time);
+			break;
+		case SE_JOYSTICK_AXIS:
+			cl_joystick_event(ev.value, ev.value2, ev.time);
+			break;
+		case SE_CONSOLE:
+			cbuf_add_text((char *) ev.ptr);
+			cbuf_add_text("\n");
+			break;
+		case SE_PACKET:
+			if ((unsigned) buf.cursize > (unsigned) buf.maxsize) {
+				com_printf("com_event_loop: oversize packet\n");
 
-					if (ev.ptr)
-						z_free(ev.ptr);
-
-					continue;
-				}
-
-				memcpy(buf.data, (byte *)((struct netadr *) ev.ptr + 1), 
-					   buf.cursize);
-
-				if (ev.ptr)
+				if (ev.ptr != NULL)
 					z_free(ev.ptr);
 
-				if (com_sv_running->integer)
-					com_run_and_time_server_packet(&evfrom, &buf);
-				else
-					cl_packet_event(evfrom, &buf);
-				break;
-			case SE_BAD_EVENT:
-				com_error(ERR_FATAL, "com_event_loop: bad event type %i", 
-						  ev.type);
-				break;
-			default:
-				// manually send packet events for the loopback channel
-				while (net_get_loop_packet(NS_CLIENT, &evfrom, &buf))
-					cl_packet_event(evfrom, &buf);
+				continue;
+			}
 
-				while (net_get_loop_packet(NS_SERVER, &evfrom, &buf)) {
-					if (com_sv_running->integer)
-						com_run_and_time_server_packet(&evfrom, &buf);
-				}
-				return ev.time;
+			memcpy(buf.data, (byte *)((struct netadr *) ev.ptr + 1), 
+					buf.cursize);
+
+			if (ev.ptr != NULL)
+				z_free(ev.ptr);
+
+			if (com_sv_running->integer > 0)
+				com_run_and_time_server_packet(&evfrom, &buf);
+			else
+				cl_packet_event(evfrom, &buf);
+			break;
+		case SE_BAD_EVENT:
+			com_error(ERR_FATAL, "com_event_loop: bad event type %i", ev.type);
+			break;
+		default:
+			// manually send packet events for the loopback channel
+			while (net_get_loop_packet(NS_CLIENT, &evfrom, &buf))
+				cl_packet_event(evfrom, &buf);
+
+			while (net_get_loop_packet(NS_SERVER, &evfrom, &buf)) {
+				if (com_sv_running->integer > 0)
+					com_run_and_time_server_packet(&evfrom, &buf);
+			}
+			return ev.time;
 		}
 
-		if (ev.ptr)
+		if (ev.ptr != NULL)
 			z_free(ev.ptr);
 	}
 

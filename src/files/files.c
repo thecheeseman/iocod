@@ -88,7 +88,7 @@ bool fs_pak_is_pure(struct pack *pack)
 {
 	int i;
 	
-	if (fs_num_serverpaks) {
+	if (fs_num_serverpaks > 0) {
 		for (i = 0; i < fs_num_serverpaks; i++) {
 			if (pack->checksum == fs_serverpaks[i])
 				return true; // approved
@@ -215,7 +215,7 @@ void fs_replace_separators(char *path)
 {
 	char *s;
 
-	for (s = path; *s; s++) {
+	for (s = path; *s != '\0'; s++) {
 		if (*s == '/' || *s == '\\')
 			*s = PATH_SEP;
 	}
@@ -228,7 +228,7 @@ void fs_build_ospath(const char *base, const char *game, const char *qpath, char
 {
 	int baselen, gamelen, qpathlen;
 
-	if (!game || !game[0])
+	if (game == NULL || *game == '\0')
 		game = fs_gamedir;
 
 	baselen = strlen(base);
@@ -253,7 +253,7 @@ void fs_build_ospath(const char *base, const char *game, const char *qpath, char
 bool fs_create_path(char *ospath)
 {
 	char *ofs;
-	if (strstr(ospath, "..") || strstr(ospath, "::")) {
+	if (strstr(ospath, "..") != NULL || strstr(ospath, "::") != NULL) {
 		com_warning("refusing to create relative path \"%s\"\n", ospath);
 		return true;
 	}
@@ -315,7 +315,7 @@ char *fs_shifted_strstr(const char *string, const char *substring, int shift)
 	char buf[MAX_STRING_TOKENS];
 	int i;
 
-	for (i = 0; substring[i]; i++)
+	for (i = 0; substring[i] != '\0'; i++)
 		buf[i] = substring[i] + shift;
 
 	buf[i] = '\0';
@@ -348,7 +348,7 @@ char *fs_shift_str(const char *string, int shift)
 */
 bool fs_search_localized(struct searchpath *search)
 {
-	if (!search->localized || !fs_ignorelocalized->integer)
+	if (search->localized || fs_ignorelocalized->integer == 0)
 		return true;
 
 	return false;
@@ -368,8 +368,8 @@ static void fs_load_folder_data(const char *folder, const char *ext)
 {
 	struct searchpath *p;
 
-	for (p = fs_searchpaths; p; p = p->next) {
-		if (!p->pack)
+	for (p = fs_searchpaths; p != NULL; p = p->next) {
+		if (p->pack == NULL)
 			fun_08061070(p->dir->path, p->dir->gamedir, folder, ext);
 	}
 }
@@ -391,62 +391,64 @@ static void fs_startup(const char *gamename)
 	fs_basepath = cvar_get("fs_basepath", sys_default_install_path(), CVAR_INIT);
 	fs_basegame = cvar_get("fs_basegame", "", CVAR_INIT);
 	homepath = sys_default_home_path();
-	if (!homepath || !homepath[0])
+	if (homepath == NULL || *homepath == '\0')
 		homepath = fs_basepath->string;
 	fs_homepath = cvar_get("fs_homepath", homepath, CVAR_INIT);
-	fs_gamedirvar = cvar_get("fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO);
+	fs_gamedirvar = cvar_get("fs_game", "", CVAR_INIT | CVAR_SYSTEM_INFO);
 	fs_restrict = cvar_get("fs_restrict", "", CVAR_INIT);
 	fs_ignorelocalized = cvar_get("fs_ignorelocalized", "0", 
 								  CVAR_CHEAT | CVAR_LATCH);
 
 	// cdpath
-	if (fs_cdpath->string[0])
+	if (*fs_cdpath->string != '\0')
 		fs_add_game_directory(fs_cdpath->string, gamename);
 
 	// basepath
-	if (fs_basepath->string[0]) {
+	if (*fs_basepath->string != '\0') {
 		fs_add_game_directory(fs_basepath->string, gamename);
 
 		// *nix check
-		if (fs_homepath->string[0] && q_stricmp(fs_homepath->string,
-												fs_basepath->string))
+		if (*fs_homepath->string != '\0' && 
+			q_stricmp(fs_homepath->string, fs_basepath->string) != 0)
 			fs_add_game_directory(fs_homepath->string, gamename);
 	}
 
 	// check for additional base game so mods and be based upon other mods
-	if (fs_basegame->string[0] && !q_stricmp(gamename, BASEGAME) &&
-		q_stricmp(fs_basegame->string, gamename)) {
+	if (*fs_basegame->string != '\0' && 
+		q_stricmp(gamename, BASEGAME) == 0 &&
+		q_stricmp(fs_basegame->string, gamename) != 0) {
 
 		// cdpath
-		if (fs_cdpath->string[0])
+		if (*fs_cdpath->string != '\0')
 			fs_add_game_directory(fs_cdpath->string, fs_basegame->string);
 
 		// basepath
-		if (fs_basepath->string[0]) {
+		if (*fs_basepath->string != '\0') {
 			fs_add_game_directory(fs_basepath->string, fs_basegame->string);
 
 			// *nix check
-			if (fs_homepath->string[0] && q_stricmp(fs_homepath->string,
-													fs_basepath->string))
+			if (*fs_homepath->string != '\0' && 
+				q_stricmp(fs_homepath->string, fs_basepath->string) != 0)
 				fs_add_game_directory(fs_homepath->string, fs_basegame->string);
 		}
 	}
 
 	// check additional game folder for mods
-	if (fs_gamedirvar->string[0] && !q_stricmp(gamename, BASEGAME) &&
-		q_stricmp(fs_gamedirvar->string, gamename)) {
+	if (*fs_gamedirvar->string != '\0' && 
+		q_stricmp(gamename, BASEGAME) == 0 &&
+		q_stricmp(fs_gamedirvar->string, gamename) != 0) {
 
 		// cdpath
-		if (fs_cdpath->string[0])
+		if (*fs_cdpath->string != '\0')
 			fs_add_game_directory(fs_cdpath->string, fs_gamedirvar->string);
 
 		// basepath
-		if (fs_basepath->string[0]) {
+		if (*fs_basepath->string != '\0') {
 			fs_add_game_directory(fs_basepath->string, fs_gamedirvar->string);
 
 			// *nix check
-			if (fs_homepath->string[0] && q_stricmp(fs_homepath->string,
-													fs_basepath->string))
+			if (*fs_homepath->string != '\0' &&
+				q_stricmp(fs_homepath->string, fs_basepath->string) != 0)
 				fs_add_game_directory(fs_homepath->string, fs_gamedirvar->string);
 		}
 	}
@@ -459,8 +461,8 @@ static void fs_startup(const char *gamename)
 	fs_load_folder_data("animtrees", ".atr");
 
 	com_read_cdkey(BASEGAME);
-	fs = cvar_get("fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO);
-	if (fs && fs->string[0])
+	fs = cvar_get("fs_game", "", CVAR_INIT | CVAR_SYSTEM_INFO);
+	if (fs != NULL && *fs->string != '\0')
 		com_append_cdkey(fs->string);
 
 	fs_add_commands();
@@ -521,7 +523,7 @@ static char *fs_get_localized_language_name(const char *pakname)
 	} else {
 		memset(fs_localized_paks[fs_localized_pakid], 0, MAX_QPATH);
 
-		for (i = 10; i < MAX_QPATH && pakname[i] && pakname[i] != '_'; i++)
+		for (i = 10; i < MAX_QPATH && pakname[i] != '\0' && pakname[i] != '_'; i++)
 			fs_localized_paks[fs_localized_pakid][i - 10] = pakname[i];
 	}
 
@@ -537,13 +539,14 @@ static int paksort(const void *a, const void *b)
 	bb = *(char **) b;
 
 	// check for localize files
-	if (!strncmp(aa, "          ", 10) && !strncmp(bb, "          ", 10)) {
+	if (strncmp(aa, "          ", 10) == 0 && 
+		strncmp(bb, "          ", 10) == 0) {
 		l1 = fs_get_localized_language_name(aa);
 		l2 = fs_get_localized_language_name(bb);
 
-		if (!q_stricmp(l1, "english") && q_stricmp(l2, "english"))
+		if (q_stricmp(l1, "english") == 0 && q_stricmp(l2, "english") != 0)
 			return -1;
-		else if (q_stricmp(l1, "english") && !q_stricmp(l2, "english"))
+		else if (q_stricmp(l1, "english") != 0 && q_stricmp(l2, "english") == 0)
 			return 1;
 	}
 
@@ -558,12 +561,12 @@ static void fs_update_search_paths(struct searchpath *sp)
 {
 	struct searchpath *p;
 
-	if (!sp->localized || !fs_searchpaths) {
+	if (!sp->localized || fs_searchpaths == NULL) {
 		sp->next = fs_searchpaths;
 		fs_searchpaths = sp;
 	} else {
 
-		for (p = fs_searchpaths; p->next && !p->next->localized; p = p->next);
+		for (p = fs_searchpaths; p->next != NULL && !p->next->localized; p = p->next);
 
 		sp->next = p->next;
 		p->next = sp;
@@ -595,7 +598,7 @@ static void fs_find_pack_files(const char *path, const char *dir)
 	for (i = 0; i < numfiles; i++) {
 		sorted[i] = pakfiles[i];
 		
-		if (!q_strncmp(sorted[i], "localized_", 10))
+		if (q_strncmp(sorted[i], "localized_", 10) == 0)
 			memcpy(sorted[i], "          ", 10);
 	}
 
@@ -607,13 +610,13 @@ static void fs_find_pack_files(const char *path, const char *dir)
 	for (i = 0; i < numfiles; i++) {
 		localized = false;
 
-		if (!q_strncmp(sorted[i], "          ", 10)) {
+		if (q_strncmp(sorted[i], "          ", 10) == 0) {
 			memcpy(sorted[i], "localized_", 10);
 
 			localized = true;
 
 			char *lname = fs_get_localized_language_name(sorted[i]);
-			if (!lname) {
+			if (lname == NULL) {
 				com_warning("Localized assets pak file %s/%s/%s " \
 							"has invalid name(no language specified). " \
 							"Proper naming convention is : " \
@@ -623,12 +626,12 @@ static void fs_find_pack_files(const char *path, const char *dir)
 			}
 
 			// skip non-english files
-			if (q_stricmp(lname, "english"))
+			if (q_stricmp(lname, "english") != 0)
 				continue;
 		}
 
 		fs_build_ospath(path, dir, sorted[i], ospath);
-		if (!(pak = fs_load_zip_file(ospath, sorted[i])))
+		if ((pak = fs_load_zip_file(ospath, sorted[i])) == NULL)
 			continue;
 
 		strcpy(pak->pak_gamename, dir);
@@ -664,7 +667,7 @@ static void fs_add_game_directory_real(const char *path, const char *dir,
 
 	sp = fs_searchpaths;
 	do {
-		if (!sp) {
+		if (sp == NULL) {
 			if (!localized) {
 				q_strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
 			} else {
@@ -689,8 +692,8 @@ static void fs_add_game_directory_real(const char *path, const char *dir,
 			return;
 		}
 
-		if (sp->dir != NULL && !q_stricmp(sp->dir->path, path)) {
-			if (!q_stricmp(sp->dir->gamedir, newdir)) {
+		if (sp->dir != NULL && q_stricmp(sp->dir->path, path) == 0) {
+			if (q_stricmp(sp->dir->gamedir, newdir) == 0) {
 				if (sp->localized != localized) {
 					com_warning("WARNING: game folder %s/%s added as " \
 								"both a localized & non - localized. " \
@@ -729,7 +732,7 @@ void fs_add_game_directory(const char *path, const char *dir)
 
 static bool fs_pak_is_not_localized(struct searchpath *path)
 {
-	if (!path->localized || !fs_ignorelocalized->integer)
+	if (!path->localized || fs_ignorelocalized->integer == 0)
 		return true;
 
 	return false;
@@ -743,7 +746,7 @@ static void fs_set_restrictions(void)
 {
 	struct searchpath *path;
 	
-	if (!fs_restrict->integer)
+	if (fs_restrict->integer == 0)
 		return;
 
 	cvar_set("fs_restrict", "1");
@@ -752,8 +755,8 @@ static void fs_set_restrictions(void)
 	fs_restart(0);
 	fs_startup(BASEDEMO);
 
-	for (path = fs_searchpaths; path; path = path->next) {
-		if (path->pack && fs_pak_is_not_localized(path) &&
+	for (path = fs_searchpaths; path != NULL; path = path->next) {
+		if (path->pack != NULL && fs_pak_is_not_localized(path) &&
 			path->pack->checksum != -0x4e0a6a0b) {
 			com_error(ERR_FATAL, "Corrupted pak0.pk3: %u", 
 					  path->pack->checksum);
@@ -812,7 +815,7 @@ void fs_restart(int checksumfeed)
 
 	// fs_readfile for config stuff here
 	if (fs_read_file("default_mp.cfg", NULL) <= 0) {
-		if (lastvalidbase[0]) {
+		if (*lastvalidbase != '\0') {
 			fs_pure_server_set_loaded_paks("", "");
 
 			cvar_set("fs_basepath", lastvalidbase);
@@ -832,7 +835,7 @@ void fs_restart(int checksumfeed)
 				  "Make sure iocod is run from the correct folder");
 	}
 
-	if (q_stricmp(fs_gamedirvar->string, lastvalidgame)) {
+	if (q_stricmp(fs_gamedirvar->string, lastvalidgame) != 0) {
 		if (!com_safe_mode())
 			cbuf_add_text("exec config_mp_server.cfg\n");
 	}
@@ -848,13 +851,13 @@ static void fs_close_searchpaths(struct searchpath *s)
 	while (s != NULL) {
 		p = s->next;
 
-		if (s->pack) {
+		if (s->pack != NULL) {
 			unzClose(s->pack->handle);
 			z_free(s->pack->buildbuffer);
 			z_free(s->pack);
 		}
 
-		if (s->dir)
+		if (s->dir != NULL)
 			z_free(s->dir);
 
 		z_free(s);
@@ -894,7 +897,7 @@ void fs_shutdown(bool closemfp)
 	int i;
 
 	for (i = 1; i < MAX_FILE_HANDLES; i++) {
-		if (fsh[i].filesize)
+		if (fsh[i].filesize > 0)
 			fs_fclose_file(i);
 	}
 
@@ -931,11 +934,11 @@ void fs_clear_pak_references(int flags)
 {
 	struct searchpath *search;
 
-	if (!flags)
+	if (flags == 0)
 		flags = -1;
 
-	for (search = fs_searchpaths; search; search = search->next) {
-		if (search->pack)
+	for (search = fs_searchpaths; search != NULL; search = search->next) {
+		if (search->pack != NULL)
 			search->pack->referenced &= ~flags;
 	}
 }

@@ -32,6 +32,518 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 
+#include "../game/script/script_redirects.h"
+
+bool scr_get_bool(int32_t index)
+{
+	return false;
+}
+
+int32_t scr_get_int(int32_t index)
+{
+	return 0;
+}
+
+int32_t scr_get_anim(intptr_t a, int32_t b, int32_t c)
+{
+	return 0;
+}
+
+int32_t scr_get_anim_tree(intptr_t a, int32_t b)
+{
+	return 0;
+}
+
+float scr_get_float(int32_t index)
+{
+	return 0.0;
+}
+
+char *scr_get_string(int32_t index)
+{
+	return NULL;
+}
+
+const char *scr_get_const_string(int32_t index)
+{
+	return NULL;
+}
+
+const char *scr_get_debug_string(int32_t index)
+{
+	return NULL;
+}
+
+char *scr_get_istring(int32_t index)
+{
+	return NULL;
+}
+
+const char *scr_get_const_istring(int32_t index)
+{
+	return NULL;
+}
+
+void scr_get_vector(int32_t index, vec3_t v)
+{
+
+}
+
+int32_t scr_get_func(int32_t index)
+{
+	return 0;
+}
+
+int32_t scr_get_type(int32_t index)
+{
+	return 0;
+}
+
+int32_t scr_get_pointer_type(int32_t index)
+{
+	return 0;
+}
+
+int32_t scr_get_entity_num(int32_t index, gentity_t *entity)
+{
+	return 0;
+}
+
+int32_t scr_get_num_param(void)
+{
+	return 0;
+}
+
+void scr_add_bool(bool value)
+{
+
+}
+
+void scr_add_int(int32_t value)
+{
+
+}
+
+void scr_add_float(float value)
+{
+
+}
+
+void scr_add_anim(int32_t value)
+{
+
+}
+
+void scr_add_undefined(void)
+{
+
+}
+
+void scr_add_entity_num(int32_t num, int32_t b)
+{
+
+}
+
+void scr_add_struct(int32_t value)
+{
+
+}
+
+void scr_add_string(char *string)
+{
+
+}
+
+void scr_add_istring(char *string)
+{
+
+}
+
+void scr_add_const_string(uint16_t string)
+{
+
+}
+
+void scr_add_vector(vec3_t vector)
+{
+
+}
+
+void scr_add_object(uint16_t value)
+{
+
+}
+
+void scr_add_array(void)
+{
+
+}
+
+void scr_add_array_string_indexed(uint16_t string)
+{
+
+}
+
+void scr_make_array(void)
+{
+
+}
+
+void scr_begin_load_scripts(void)
+{
+
+}
+
+void scr_begin_load_anim_trees(void)
+{
+
+}
+
+void scr_end_load_scripts(void)
+{
+
+}
+
+void scr_end_load_anim_trees(void)
+{
+
+}
+
+void scr_precache_anim_trees(void)
+{
+
+}
+
+void scr_free_scripts(void)
+{
+
+}
+
+void scr_free_game_variable(void)
+{
+
+}
+
+void scr_shutdown_system(void)
+{
+
+}
+
+bool scr_is_system_active(void)
+{
+	return false;
+}
+
+void scr_add_exec_thread(int32_t a, int32_t b)
+{
+
+}
+
+void scr_add_exec_thread_ent_num(int32_t a, int32_t b, int32_t c, int32_t d)
+{
+
+}
+
+uint16_t scr_exec_thread(int32_t a, int32_t b)
+{
+	return 0;
+}
+
+uint16_t scr_exec_thread_ent_num(int32_t a, int32_t b, int32_t c, int32_t d)
+{
+	return 0;
+}
+
+bool UNUSED scr_is_thread_alive(uint16_t thread)
+{
+	return false;
+}
+
+void scr_error(char *msg)
+{
+
+}
+
+void scr_error_with_dialog_message(char *msg)
+{
+
+}
+
+void scr_param_error(int32_t index, char *msg)
+{
+
+}
+
+void scr_object_error(int32_t a)
+{
+
+}
+
+void scr_set_dynamic_entity_field(int32_t a, int32_t b, int32_t c)
+{
+
+}
+
+void scr_free_entity_num(int32_t a, int32_t b)
+{
+
+}
+
+uint16_t scr_get_entity_id(int32_t a, int32_t b)
+{
+	return 0;
+}
+
+void scr_set_class_map(int32_t a, int32_t b)
+{
+
+}
+
+void scr_remove_class_map(void)
+{
+
+}
+
+void UNUSED scr_spacer1(void)
+{
+
+}
+
+void UNUSED scr_spacer2(void)
+{
+
+}
+
+void scr_add_class_field(uint16_t a, int32_t b, uint16_t c)
+{
+
+}
+
+void scr_add_fields(int32_t a, int32_t b)
+{
+
+}
+
+uint16_t scr_find_field(int32_t a, int32_t b)
+{
+	return 0;
+}
+
+int32_t scr_get_offset(uint16_t a, int32_t b)
+{
+	return 0;
+}
+
+void scr_copy_entity_num(int32_t a, int32_t b, int32_t c)
+{
+
+}
+
+void scr_init(int32_t a, int32_t b)
+{
+
+}
+
+void scr_shutdown(void)
+{
+
+}
+
+void scr_abort(void)
+{
+
+}
+
+void scr_set_loading(int32_t a)
+{
+
+}
+
+void scr_init_system(int32_t a, int32_t b)
+{
+
+}
+
+void scr_alloc_game_variable(void)
+{
+
+}
+
+void UNUSED scr_get_checksum(int32_t a)
+{
+
+}
+
+void UNUSED scr_has_source_files(void)
+{
+
+}
+
+void UNUSED scr_save_source(int32_t a)
+{
+
+}
+
+void UNUSED scr_load_source(int32_t a)
+{
+
+}
+
+void UNUSED scr_skip_source(int32_t a)
+{
+
+}
+
+void UNUSED scr_save_pre(int32_t a)
+{
+
+}
+
+void UNUSED scr_save_post(int32_t a)
+{
+
+}
+
+void UNUSED scr_save_shutdown(void)
+{
+
+}
+
+void UNUSED scr_spacer3(void)
+{
+
+}
+
+void UNUSED scr_load_pre(int32_t a, int32_t b)
+{
+
+}
+
+void UNUSED scr_load_shutdown(void)
+{
+
+}
+
+void UNUSED scr_spacer4(void)
+{
+
+}
+
+int32_t scr_load_script(char *script)
+{
+	return 0;
+}
+
+intptr_t scr_find_anim_tree(intptr_t a, int32_t b)
+{
+	return 0;
+}
+
+void scr_find_anim(char *animtree, char *name, intptr_t anim)
+{
+
+}
+
+int32_t scr_get_function_handle(char *script, char *function)
+{
+	return 0;
+}
+
+void scr_free_thread(uint16_t thread)
+{
+
+}
+
+uint16_t UNUSED scr_convert_thread_to_save(uint16_t thread)
+{
+	return 0;
+}
+
+uint16_t UNUSED scr_convert_thread_from_load(uint16_t thread)
+{
+	return 0;
+}
+
+void scr_set_string(int32_t a, uint16_t string)
+{
+
+}
+
+uint16_t scr_alloc_string(char *string, int32_t b)
+{
+	return 0;
+}
+
+void scr_notify_num(int32_t a, int32_t b, uint16_t c, int32_t d)
+{
+
+}
+
+void scr_notify_id(uint16_t a, uint16_t b, int32_t c)
+{
+
+}
+
+char *sl_convert_to_string(uint16_t string)
+{
+	return NULL;
+}
+
+uint16_t sl_get_string(int32_t a, byte b)
+{
+	return 0;
+}
+
+uint16_t sl_get_lowercase_string(int32_t a, byte b)
+{
+	return 0;
+}
+
+uint16_t sl_find_lowercase_string(int32_t a)
+{
+	return 0;
+}
+
+uint16_t UNUSED scr_create_canonical_filename(int32_t a)
+{
+	return 0;
+}
+
+void scr_set_time(int32_t time)
+{
+
+}
+
+void scr_run_current_threads(void)
+{
+
+}
+
+void scr_reset_timeout(void)
+{
+
+}
+
+int32_t scr_get_anims_index(int32_t a)
+{
+	return 0;
+}
+
+void UNUSED scr_get_anims(int32_t a)
+{
+
+}
+
+void *mt_alloc(int32_t a, int32_t b)
+{
+	return NULL;
+}
+
+void mt_free(void *a, int32_t b)
+{
+
+}
+
 //
 //
 struct gsc_function *(*_scr_get_function)(const char **name, int *developer);
@@ -77,7 +589,7 @@ intptr_t scr_far_hook(intptr_t addr)
 	_scr_get_bool = scr_get_bool;
 	_scr_get_int = scr_get_int;
 	_scr_get_anim = scr_get_anim;
-	_scr_get_animtree = scr_get_animtree;
+	_scr_get_anim_tree = scr_get_anim_tree;
 	_scr_get_float = scr_get_float;
 	_scr_get_string = scr_get_string;
 	_scr_get_const_string = scr_get_const_string;
@@ -106,10 +618,10 @@ intptr_t scr_far_hook(intptr_t addr)
 	_scr_add_array_string_indexed = scr_add_array_string_indexed;
 	_scr_make_array = scr_make_array;
 	_scr_begin_load_scripts = scr_begin_load_scripts;
-	_scr_begin_load_animtrees = scr_begin_load_animtrees;
+	_scr_begin_load_anim_trees = scr_begin_load_anim_trees;
 	_scr_end_load_scripts = scr_end_load_scripts;
-	_scr_end_load_animtrees = scr_end_load_animtrees;
-	_scr_precache_animtrees = scr_precache_animtrees;
+	_scr_end_load_anim_trees = scr_end_load_anim_trees;
+	_scr_precache_anim_trees = scr_precache_anim_trees;
 	_scr_free_scripts = scr_free_scripts;
 	_scr_free_game_variable = scr_free_game_variable;
 	_scr_shutdown_system = scr_shutdown_system;
@@ -150,7 +662,7 @@ intptr_t scr_far_hook(intptr_t addr)
 	_scr_load_pre = scr_load_pre;
 	_scr_load_shutdown = scr_load_shutdown;
 	_scr_load_script = scr_load_script;
-	_scr_find_animtree = scr_find_animtree;
+	_scr_find_anim_tree = scr_find_anim_tree;
 	_scr_find_anim = scr_find_anim;
 	_scr_get_function_handle = scr_get_function_handle;
 	_scr_free_thread = scr_free_thread;

@@ -60,13 +60,13 @@ void sv_status_f(void)
 static void sv_serverinfo_f(void)
 {
 	com_printf("Server info settings:\n");
-	info_print(cvar_info_string(CVAR_SERVERINFO));
+	info_print(cvar_info_string(CVAR_SERVER_INFO));
 }
 
 static void sv_systeminfo_f(void)
 {
 	com_printf("System info settings:\n");
-	info_print(cvar_info_string(CVAR_SYSTEMINFO));
+	info_print(cvar_info_string(CVAR_SYSTEM_INFO));
 }
 
 void sv_dumpuser_f(void)
@@ -96,7 +96,7 @@ void sv_map_restart_f(void)
 	if (com_timescale->value <= 0.0)
 		cvar_set_value("timescale", 1.0);
 
-	cvar_get("g_gametype", "dm", CVAR_SERVERINFO | CVAR_LATCH);
+	cvar_get("g_gametype", "dm", CVAR_SERVER_INFO | CVAR_LATCH);
 
 	keep_persistent = vm_call(gvm, GAME_GET_PERSISTENT);
 	if (!keep_persistent) {
@@ -265,7 +265,7 @@ void sv_configstrings_f(void)
 {
 	int i;
 
-	for (i = 0; i < MAX_CONFIGSTRINGS; i++) {
+	for (i = 0; i < MAX_CONFIG_STRINGS; i++) {
 		if (!sv.configstrings[i] || !sv.configstrings[i][0])
 			continue;
 

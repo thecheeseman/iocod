@@ -33,7 +33,7 @@ void sv_set_config_string(int index, const char *val)
 	int maxchunksize = MAX_STRING_CHARS - 24;
 	struct client *cl;
 
-	if (index < 0 || index >= MAX_CONFIGSTRINGS)
+	if (index < 0 || index >= MAX_CONFIG_STRINGS)
 		com_error(ERR_DROP, "bad index %i", index);
 
 	if (!val)
@@ -52,7 +52,7 @@ void sv_set_config_string(int index, const char *val)
 			if (cl->state < CS_PRIMED)
 				continue;
 
-			if (index == CS_SERVERINFO && cl->gentity &&
+			if (index == CS_SERVER_INFO && cl->gentity &&
 				(cl->gentity->r.sv_flags & SVF_NOSERVERINFO))
 				continue;
 
@@ -90,7 +90,7 @@ void sv_get_config_string(int index, char *buffer, int bufsize)
 	if (bufsize < 1)
 		com_error(ERR_DROP, "bufsize == %i", bufsize);
 
-	if (index < 0 || index >= MAX_CONFIGSTRINGS)
+	if (index < 0 || index >= MAX_CONFIG_STRINGS)
 		com_error(ERR_DROP, "bad index %i", index);
 
 	if (!sv.configstrings[index]) {
@@ -108,44 +108,44 @@ void sv_init(void)
 	//
 	// serverinfo vars
 	//
-	sv_gametype = cvar_get("g_gametype", "dm", CVAR_SERVERINFO | CVAR_LATCH);
+	sv_gametype = cvar_get("g_gametype", "dm", CVAR_SERVER_INFO | CVAR_LATCH);
 
-	cvar_get("sv_keywords", "", CVAR_SERVERINFO);
-	cvar_get("protocol", va("%i", PROTOCOL_VERSION), CVAR_SERVERINFO | CVAR_ROM);
+	cvar_get("sv_keywords", "", CVAR_SERVER_INFO);
+	cvar_get("protocol", va("%i", PROTOCOL_VERSION), CVAR_SERVER_INFO | CVAR_ROM);
 
-	sv_mapname = cvar_get("mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM);
-	sv_privateclients = cvar_get("sv_privateclients", "0", CVAR_SERVERINFO);
-	sv_hostname = cvar_get("sv_hostname", "iocodhost", CVAR_SERVERINFO | CVAR_ARCHIVE);
-	sv_maxclients = cvar_get("sv_maxclients", "20", CVAR_SERVERINFO | CVAR_LATCH);
+	sv_mapname = cvar_get("mapname", "nomap", CVAR_SERVER_INFO | CVAR_ROM);
+	sv_privateclients = cvar_get("sv_privateclients", "0", CVAR_SERVER_INFO);
+	sv_hostname = cvar_get("sv_hostname", "iocodhost", CVAR_SERVER_INFO | CVAR_ARCHIVE);
+	sv_maxclients = cvar_get("sv_maxclients", "20", CVAR_SERVER_INFO | CVAR_LATCH);
 
 	#ifdef CODVERSION1_5
 	sv_punkbuster = cvar_get("sv_punkbuster", "0", CVAR_ROM | CVAR_SERVERINFO | CVAR_ARCHIVE);
 	#endif
 
-	sv_maxrate = cvar_get("sv_maxrate", "0", CVAR_ARCHIVE | CVAR_SERVERINFO);
-	sv_maxping = cvar_get("sv_maxping", "0", CVAR_ARCHIVE | CVAR_SERVERINFO);
-	sv_minping = cvar_get("sv_minping", "0", CVAR_ARCHIVE | CVAR_SERVERINFO);
-	sv_floodprotect = cvar_get("sv_floodprotect", "0", CVAR_ARCHIVE | CVAR_SERVERINFO);
+	sv_maxrate = cvar_get("sv_maxrate", "0", CVAR_ARCHIVE | CVAR_SERVER_INFO);
+	sv_maxping = cvar_get("sv_maxping", "0", CVAR_ARCHIVE | CVAR_SERVER_INFO);
+	sv_minping = cvar_get("sv_minping", "0", CVAR_ARCHIVE | CVAR_SERVER_INFO);
+	sv_floodprotect = cvar_get("sv_floodprotect", "0", CVAR_ARCHIVE | CVAR_SERVER_INFO);
 
-	sv_allowanonymous = cvar_get("sv_allowanonymous", "0", CVAR_SERVERINFO);
+	sv_allowanonymous = cvar_get("sv_allowanonymous", "0", CVAR_SERVER_INFO);
 	sv_showcommands = cvar_get("sv_showcommands", "0", 0);
 
 	//
 	// systeminfo vars
 	//
 	#ifdef CODVERSION1_5
-	sv_disableclientconsole = cvar_get("sv_disableclientconsole", "0", CVAR_SYSTEMINFO);
+	sv_disableclientconsole = cvar_get("sv_disableclientconsole", "0", CVAR_SYSTEM_INFO);
 	#endif
 
-	cvar_get("sv_cheats", "0", CVAR_SYSTEMINFO | CVAR_ROM);
+	cvar_get("sv_cheats", "0", CVAR_SYSTEM_INFO | CVAR_ROM);
 	
-	sv_serverid = cvar_get("sv_serverid", "0", CVAR_SYSTEMINFO | CVAR_ROM);
-	sv_pure = cvar_get("sv_pure", "1", CVAR_SYSTEMINFO | CVAR_SERVERINFO);
+	sv_serverid = cvar_get("sv_serverid", "0", CVAR_SYSTEM_INFO | CVAR_ROM);
+	sv_pure = cvar_get("sv_pure", "1", CVAR_SYSTEM_INFO | CVAR_SERVER_INFO);
 
-	cvar_get("sv_paks", "", CVAR_SYSTEMINFO | CVAR_ROM);
-	cvar_get("sv_paknames", "", CVAR_SYSTEMINFO | CVAR_ROM);
-	cvar_get("sv_referencedpaks", "", CVAR_SYSTEMINFO | CVAR_ROM);
-	cvar_get("sv_referencedpaknames", "", CVAR_SYSTEMINFO | CVAR_ROM);
+	cvar_get("sv_paks", "", CVAR_SYSTEM_INFO | CVAR_ROM);
+	cvar_get("sv_paknames", "", CVAR_SYSTEM_INFO | CVAR_ROM);
+	cvar_get("sv_referencedpaks", "", CVAR_SYSTEM_INFO | CVAR_ROM);
+	cvar_get("sv_referencedpaknames", "", CVAR_SYSTEM_INFO | CVAR_ROM);
 
 	//
 	// server vars
@@ -287,7 +287,7 @@ void sv_clear_server(void)
 {
 	int i;
 
-	for (i = 0; i < MAX_CONFIGSTRINGS; i++) {
+	for (i = 0; i < MAX_CONFIG_STRINGS; i++) {
 		if (sv.configstrings[i])
 			z_free(sv.configstrings[i]);
 	}
@@ -346,7 +346,7 @@ void sv_spawn_server(char *server)
 	xmodelcheck = cvar_get("cl_xmodelcheck", "0", CVAR_LATCH | CVAR_ARCHIVE);
 	// fun_080cc4b0(xmodelcheck->integer);
 
-	cvar_get("g_gametype", "dm", CVAR_LATCH | CVAR_SERVERINFO);
+	cvar_get("g_gametype", "dm", CVAR_LATCH | CVAR_SERVER_INFO);
 
 	// why is this a float?
 	if (!cvar_variable_value("sv_running")) {
@@ -384,7 +384,7 @@ void sv_spawn_server(char *server)
 	// fun_08061980()
 
 	// allocate blank strings for each configstring
-	for (i = 0; i < MAX_CONFIGSTRINGS; i++)
+	for (i = 0; i < MAX_CONFIG_STRINGS; i++)
 		sv.configstrings[i] = copy_string("");
 
 	// why is this a float?
@@ -448,16 +448,16 @@ void sv_spawn_server(char *server)
 	sv_create_baseline();
 	// update clients here
 
-	q_strncpyz(system_info, cvar_info_string_big(CVAR_SYSTEMINFO), 
+	q_strncpyz(system_info, cvar_info_string_big(CVAR_SYSTEM_INFO), 
 			   sizeof(system_info));
-	cvar_modified_flags &= ~CVAR_SYSTEMINFO;
-	sv_set_config_string(CS_SYSTEMINFO, system_info);
+	cvar_modified_flags &= ~CVAR_SYSTEM_INFO;
+	sv_set_config_string(CS_SYSTEM_INFO, system_info);
 
-	sv_set_config_string(CS_SERVERINFO, cvar_info_string(CVAR_2004));
+	sv_set_config_string(CS_SERVER_INFO, cvar_info_string(CVAR_2004));
 	cvar_modified_flags &= ~CVAR_2004;
 
 	sv_set_cvar_config_string(140, 64, 2048);
-	cvar_modified_flags &= ~CVAR_WOLFINFO;
+	cvar_modified_flags &= ~CVAR_WOLF_INFO;
 
 	sv.state = SS_GAME;
 

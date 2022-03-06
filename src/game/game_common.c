@@ -50,7 +50,7 @@ void g_dprintf(const char *fmt, ...)
 	vsnprintf(msg, sizeof(msg), fmt, argptr);
 	va_end(argptr);
 
-	if (g_developer.integer)
+	if (g_developer.integer > 0)
 		trap_printf(msg);
 }
 
@@ -111,10 +111,10 @@ void g_log_printf(const char *fmt, ...)
 	vsprintf(string + 7, fmt, argptr);
 	va_end(argptr);
 
-	if (g_dedicated.integer)
+	if (g_dedicated.integer > 0)
 		g_printf("%s", string + 7);
 
-	if (!level.logfile)
+	if (level.logfile == 0)
 		return;
 
 	trap_fs_write(string, strlen(string), level.logfile);

@@ -68,7 +68,10 @@ typedef int boolean;
 #define PADLEN(base, alignment)	(PAD((base), (alignment)) - (base))
 #define PADP(base, alignment)	((void *) PAD((int) (base), (alignment)))
 
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+// from kernel.h
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#define FIELD_SIZEOF(t, f) (sizeof(((t*)0)->f))
+//
 
 #define MAX_FILE_HANDLES 64
 

@@ -107,7 +107,7 @@ struct memzone *smallzone;
 
 void com_begin_redirect(char *buffer, int buffersize, void (*flush)(char *))
 {
-	if (!buffer || !buffersize || !flush)
+	if (buffer == NULL || buffersize == 0 || flush == NULL)
 		return;
 
 	rd_buffer = buffer;
@@ -119,7 +119,7 @@ void com_begin_redirect(char *buffer, int buffersize, void (*flush)(char *))
 
 void com_end_redirect(void)
 {
-	if (rd_flush)
+	if (rd_flush != NULL)
 		rd_flush(rd_buffer);
 
 	rd_buffer = NULL;
@@ -175,7 +175,7 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
 	va_end(argptr);
 	
 	// is this even really used??
-	if (rd_buffer) {
+	if (rd_buffer != NULL) {
 		if (level != PRINT_LOGONLY) {
 			if ((strlen(msg) + strlen(rd_buffer)) > 
 				(unsigned)(rd_buffersize - 1)) {
@@ -193,7 +193,7 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
 	// to hide "cvar set %s %s" message in console
 	if (level != PRINT_LOGONLY) {
 		// echo to console if we're not a dedicated server
-		if (com_dedicated && !com_dedicated->integer)
+		if (com_dedicated != NULL && com_dedicated->integer == 0)
 			cl_console_print(msg);
 
 		// echo to dedicated console
@@ -201,8 +201,8 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
 	}
 
 	// logfile stuff
-	if (com_logfile && com_logfile->integer) {
-		if (!logfile && fs_initialized() && !opening_qconsole) {
+	if (com_logfile != NULL && com_logfile->integer > 0) {
+		if (logfile == 0 && fs_initialized() && !opening_qconsole) {
 			struct tm *newtime;
 			time_t aclock;
 
@@ -220,7 +220,7 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
 			opening_qconsole = false;
 		}
 
-		if (logfile && fs_initialized())
+		if (logfile > 0 && fs_initialized())
 			fs_write(msg, strlen(msg), logfile);
 	}
 }
@@ -246,7 +246,7 @@ void com_dprintf(const char *fmt, ...)
 	va_list argptr;
 	char msg[MAX_PRINT_MSG];
 
-	if (!com_developer || !com_developer->integer)
+	if (com_developer == NULL || com_developer->integer == 0)
 		return;
 
 	va_start(argptr, fmt);
@@ -366,7 +366,7 @@ static void com_error_handler(void)
 			break;
 		case ERR_DROP:
 		case ERR_DISCONNECT:
-			if (tty_colors && tty_colors->integer) {
+			if (tty_colors != NULL && tty_colors->integer > 0) {
 				com_printf("\n\033[31m********************\nERROR: \033[0m%s\n\033[31m********************\033[0m\n\n",
 					com_error_message);
 			} else {
@@ -396,7 +396,7 @@ static void com_error_handler(void)
 			hunk_clear();
 			cl_start_hunk_users();
 
-			if (com_cl_running && com_cl_running->integer) {
+			if (com_cl_running != NULL && com_cl_running->integer > 0) {
 				com_error_entered = false;
 				cl_cd_dialog();
 			} else {
@@ -439,7 +439,7 @@ void com_debug_warning_runner(const char *file, const char *func, int line,
 	va_list argptr;
 	char msg[MAX_PRINT_MSG - 6], dbgmsg[MAX_PRINT_MSG];
 
-	if (!com_developer || !com_developer->integer)
+	if (com_developer == NULL || com_developer->integer == 0)
 		return;
 
 	va_start(argptr, fmt);
@@ -461,7 +461,7 @@ void com_parse_commandline(char *commandline)
 	com_consolelines[0] = commandline;
 	com_num_consolelines = 1;
 
-	while (*commandline) {
+	while (*commandline != '\0') {
 		// look for a + seperator
 		if (*commandline == '+' || *commandline == '\n') {
 			if (com_num_consolelines == MAX_CONSOLE_LINES)
@@ -483,8 +483,8 @@ bool com_safe_mode(void)
 	for (i = 0; i < com_num_consolelines; i++) {
 		cmd_tokenize_string(com_consolelines[i]);
 
-		if (!q_stricmp(cmd_argv(0), "safe") || !q_stricmp(cmd_argv(0),
-														  "cvar_restart")) {
+		if (q_stricmp(cmd_argv(0), "safe") == 0 || 
+			q_stricmp(cmd_argv(0), "cvar_restart") == 0) {
 			com_consolelines[i][0] = 0;
 			return true;
 		}
@@ -502,11 +502,11 @@ void com_startup_variable(const char *match)
 	for (i = 0; i < com_num_consolelines; i++) {
 		cmd_tokenize_string(com_consolelines[i]);
 
-		if (q_stricmp(cmd_argv(0), "set"))
+		if (q_stricmp(cmd_argv(0), "set") != 0)
 			continue;
 
 		s = cmd_argv(1);
-		if (!match || !q_stricmp(s, match)) {
+		if (match == NULL || q_stricmp(s, match) == 0) {
 			cvar_set(s, cmd_argv(2));
 			cv = cvar_get(s, "", 0);
 			cv->flags |= CVAR_USER_CREATED;
@@ -520,10 +520,10 @@ bool com_add_startup_commands(void)
 	bool added = false;
 
 	for (i = 0; i < com_num_consolelines; i++) {
-		if (!com_consolelines[i] || !com_consolelines[i][0])
+		if (com_consolelines[i] == NULL || *com_consolelines[i] == '\0')
 			continue;
 
-		if (q_stricmpn(com_consolelines[i], "set", 3))
+		if (q_stricmpn(com_consolelines[i], "set", 3) != 0)
 			added = true;
 
 		cbuf_add_text(com_consolelines[i]);
@@ -549,7 +549,7 @@ char *com_string_contains(char *str1, char *str2, bool casesensitive)
 			}
 		}
 
-		if (!str2[j])
+		if (str2[j] == '\0')
 			return str1;
 	}
 
@@ -563,7 +563,7 @@ bool com_filter(char *filter, char *name, bool casesensitive)
 	int i;
 	bool found;
 
-	while (*filter) {
+	while (*filter != '\0') {
 		if (*filter == '*') {
 			filter++;
 
@@ -578,7 +578,7 @@ bool com_filter(char *filter, char *name, bool casesensitive)
 
 			if (strlen(buf)) {
 				ptr = com_string_contains(name, buf, casesensitive);
-				if (!ptr)
+				if (ptr == NULL)
 					return false;
 
 				name = ptr + strlen(buf);
@@ -592,7 +592,7 @@ bool com_filter(char *filter, char *name, bool casesensitive)
 			filter++;
 
 			found = false;
-			while (*filter && !found) {
+			while (*filter != '\0' && !found) {
 				if (*filter == ']' && *(filter + 1) != ']')
 					break;
 
@@ -621,7 +621,7 @@ bool com_filter(char *filter, char *name, bool casesensitive)
 			if (!found)
 				return false;
 
-			while (*filter) {
+			while (*filter != '\0') {
 				if (*filter == ']' && *(filter + 1) != ']')
 					break;
 
@@ -739,13 +739,13 @@ static int com_modify_msec(int msec)
 	//if (msec < 1 && com_timescale->value)
 	//    msec = 1;
 
-	if (com_dedicated->integer) {
+	if (com_dedicated->integer > 0) {
 		if (msec > 500 && msec < 500000)
 			com_printf("Hitch warning: %i msec frame time\n", msec);
 
 		clamptime = 5000;
 	} else {
-		if (com_sv_running->integer)
+		if (com_sv_running->integer > 0)
 			clamptime = 200;
 		else
 			clamptime = 5000;
@@ -762,7 +762,7 @@ static int com_modify_timescale(int msec)
 	if (com_timescale->value < 0.0)
 		cvar_set("timescale", "0");
 
-	if (com_fixedtime->integer)
+	if (com_fixedtime->integer > 0)
 		msec = com_fixedtime->integer;
 	else
 		msec = (int)((float) msec * com_timescale->value);
@@ -778,7 +778,7 @@ void com_write_config_to_file(const char *filename)
 	filehandle f;
 
 	f = fs_fopen_file_write(filename);
-	if (!f) {
+	if (f == 0) {
 		com_printf("Couldn't write %s.\n", filename);
 		return;
 	}
@@ -794,7 +794,7 @@ void com_write_defaults_to_file(const char *filename)
 	filehandle f;
 
 	f = fs_fopen_file_write(filename);
-	if (!f) {
+	if (f == 0) {
 		com_printf("Couldn't write %s.\n", filename);
 		return;
 	}
@@ -846,7 +846,7 @@ void com_frame(void)
 
 	// if "viewlog" has been modified, show or hide the log console
 	if (com_viewlog->modified) {
-		if (!com_dedicated->integer)
+		if (com_dedicated->integer == 0)
 			sys_show_console(com_viewlog->integer, 0);
 
 		com_viewlog->modified = false;
@@ -859,10 +859,10 @@ void com_frame(void)
 	// main event loop
 	//
 
-	if (com_speeds->integer)
+	if (com_speeds->integer > 0)
 		tbefore_firstevents = sys_milliseconds();
 
-	if (com_maxfps->integer > 0 && !com_dedicated->integer)
+	if (com_maxfps->integer > 0 && com_dedicated->integer == 0)
 		minmsec = 1000 / com_maxfps->integer;
 	else
 		minmsec = 1;
@@ -888,7 +888,7 @@ void com_frame(void)
 	// 
 	// server
 	//
-	if (com_speeds->integer)
+	if (com_speeds->integer > 0)
 		tbefore_server = sys_milliseconds();
 
 	sv_frame(msec);
@@ -904,7 +904,7 @@ void com_frame(void)
 		// get the latched value
 		cvar_get("dedicated", "0", 0);
 
-		if (!com_dedicated->integer) {
+		if (com_dedicated->integer == 0) {
 			cl_init();
 			sys_show_console(com_viewlog->integer, false);
 		} else {
@@ -917,22 +917,22 @@ void com_frame(void)
 	//
 	// client system
 	//
-	if (!com_dedicated->integer) {
+	if (com_dedicated->integer == 0) {
 		// timing
-		if (com_speeds->integer)
+		if (com_speeds->integer > 0)
 			tbefore_events = sys_milliseconds();
 
 		com_event_loop();
 		cbuf_execute();
 
 		// timing
-		if (com_speeds->integer)
+		if (com_speeds->integer > 0)
 			tbefore_client = sys_milliseconds();
 
 		cl_frame(msec, timescale);
 
 		// timing
-		if (com_speeds->integer)
+		if (com_speeds->integer > 0)
 			tafter = sys_milliseconds();
 
 		com_printf("%i %i %i %i %i\n", tbefore_firstevents, tbefore_server,
@@ -1011,7 +1011,7 @@ void com_init(char *cmdline)
 	cbuf_execute();
 
 	com_recommendedset = cvar_get("com_recommendedset", "0", CVAR_ARCHIVE);
-	if (!com_recommendedset->integer)
+	if (com_recommendedset->integer == 0)
 		com_set_recommended();
 	cvar_set("com_recommendedset", "1");
 
@@ -1039,7 +1039,7 @@ void com_init(char *cmdline)
 	com_introplayed = cvar_get("com_introplayed", "0", CVAR_ARCHIVE);
 	com_animcheck = cvar_get("com_animcheck", "0", 0);
 
-	if (com_dedicated && com_dedicated->integer)
+	if (com_dedicated != NULL && com_dedicated->integer > 0)
 		cvar_set("viewlog", "1");
 
 	// moved to commands/common_cmd.c
@@ -1077,10 +1077,10 @@ void com_init(char *cmdline)
 
 	cl_start_hunk_users();
 
-	if (!com_dedicated->integer) 
+	if (com_dedicated->integer == 0) 
 		sys_show_console(com_viewlog->integer, 0);
 
-	if (!com_dedicated->integer && !com_introplayed->integer) {
+	if (com_dedicated->integer == 0 && com_introplayed->integer == 0) {
 		cvar_set("com_introplayed", "1");
 		cbuf_add_text("cinematic atvi.roq\n");
 		cvar_set("nextmap", "cinematic iw_logo.roq");
@@ -1101,12 +1101,12 @@ void com_shutdown(void)
 
 	scr_shutdown();
 	
-	if (logfile) {
+	if (logfile != 0) {
 		fs_fclose_file(logfile);
 		logfile = 0;
 	}
 
-	if (com_journalfile) {
+	if (com_journalfile != 0) {
 		fs_fclose_file(com_journalfile);
 		com_journalfile = 0;
 	}

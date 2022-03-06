@@ -192,7 +192,7 @@ struct server {
 	int a;
 	
 	int models[256];			
-	char *configstrings[MAX_CONFIGSTRINGS];
+	char *configstrings[MAX_CONFIG_STRINGS];
 
 	int b;
 	int c;
