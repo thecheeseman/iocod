@@ -228,7 +228,7 @@ void g_run_frame(int time)
 
 extern intptr_t scr_far_hook(intptr_t addr);
 
-int DLLEXPORT vmMain(enum game_exports command, int arg0, int arg1, int arg2,
+intptr_t DLLEXPORT vmMain(enum game_exports command, int arg0, int arg1, int arg2,
 					 int arg3, int arg4)
 {
 	switch (command) {

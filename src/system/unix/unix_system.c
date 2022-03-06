@@ -178,10 +178,10 @@ void sys_show_console(int viewlog, int b)
 }
 
 void *sys_load_dll(const char *name, char *fqpath, 
-	int (**entrypoint)(vmptr_t, ...), int (*systemcalls)(vmptr_t, ...))
+	int (**entrypoint)(intptr_t, ...), int (*systemcalls)(intptr_t, ...))
 {
 	void *libhandle;
-	void (*dllentry)(int (*syscallptr)(vmptr_t, ...));
+	void (*dllentry)(intptr_t (*syscallptr)(intptr_t, ...));
 	char fname[MAX_OSPATH];
 	char /**pwdpath,*/ *homepath, *basepath, *gamedir;
 	char fn[MAX_OSPATH];
