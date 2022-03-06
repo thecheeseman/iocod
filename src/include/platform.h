@@ -28,7 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __PLATFORM_H__
 #define __PLATFORM_H__
 
-#include "buildnumber.h"
+#include "build_number.h"
 
 //
 // Windows specific

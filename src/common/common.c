@@ -970,8 +970,7 @@ void com_init(char *cmdline)
 
 	com_print_header("com_init", 40, '-');
 
-	com_printf("%s %s build %d (%s)\n", Q3_VERSION, PLATFORM_STRING, 
-			   BUILDNUMBER, __DATE__);
+	com_printf("%s %s %s\n", Q3_VERSION, PLATFORM_STRING, BUILD_INFO);
 
 	if (setjmp(abortframe)) {
 		com_error_handler();
@@ -1046,8 +1045,7 @@ void com_init(char *cmdline)
 	// moved to commands/common_cmd.c
 	com_add_commands();
 
-	s = va("%s %s build %d (%s)", Q3_VERSION, PLATFORM_STRING, 
-		   BUILDNUMBER, __DATE__);
+	s = va("%s %s %s", Q3_VERSION, PLATFORM_STRING, BUILD_INFO);
 	com_version = cvar_get("version", s, CVAR_ROM);
 	com_shortversion = cvar_get("shortversion", "1.1", 
 								CVAR_ROM | CVAR_SERVER_INFO);
