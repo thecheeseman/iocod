@@ -655,11 +655,11 @@ static void cm_set_border_inward(struct facet *facet, struct grid *grid,
 				back++;
 		}
 
-		if (front && !back) {
+		if (front > 0 && back == 0) {
 			facet->border_inward[k] = true;
-		} else if (back && !front) {
+		} else if (back > 0&& front == 0) {
 			facet->border_inward[k] = false;
-		} else if (!front && !back) {
+		} else if (front == 0 && back == 0) {
 			// flat side border
 			facet->border_planes[k] = -1;
 		} else {
@@ -712,7 +712,7 @@ bool cm_validate_facet(struct facet *facet)
 		 chop_winding_in_place(&w, plane, plane[3], 0.1f);
 	 }
 
-	 if (!w)
+	 if (w == NULL)
 		 return false;		// winding was completely chopped away
 
 	 // see if the facet is unreasonably large
@@ -766,7 +766,7 @@ void cm_add_facet_bevels(struct facet *facet)
 		chop_winding_in_place(&w, plane, plane[3], 0.1f);
 	}
 
-	if (!w)
+	if (w == NULL)
 		return;
 
 	winding_bounds(w, mins, maxs);

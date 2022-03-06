@@ -47,7 +47,7 @@ void fs_copy_file(char *fromospath, char *toospath)
 	}
 
 	f = fopen(fromospath, "rb");
-	if (!f)
+	if (f == NULL)
 		return;
 
 	fseek(f, 0, SEEK_END);
@@ -63,7 +63,7 @@ void fs_copy_file(char *fromospath, char *toospath)
 		return;
 
 	f = fopen(toospath, "wb");
-	if (!f) {
+	if (f == NULL) {
 		z_free(buf);
 		return;
 	}
@@ -97,7 +97,7 @@ bool fs_file_exists(const char *file)
 	fs_build_ospath(fs_homepath->string, fs_gamedir, file, testpath);
 
 	f = fopen(testpath, "rb");
-	if (f) {
+	if (f != NULL) {
 		fclose(f);
 		return true;
 	}
@@ -114,7 +114,7 @@ void fs_rename(const char *from, const char *to)
 {
 	char from_ospath[MAX_OSPATH], to_ospath[MAX_OSPATH];
 
-	if (!fs_searchpaths)
+	if (fs_searchpaths == NULL)
 		com_error(ERR_FATAL, "Filesystem call made without initialization");
 
 	// don't let sound stutter -- useless on server?
@@ -137,7 +137,7 @@ void fs_rename(const char *from, const char *to)
 */
 void fs_fclose_file(filehandle f)
 {
-	if (!fs_searchpaths)
+	if (fs_searchpaths == NULL)
 		com_error(ERR_FATAL, "Filesystem call made without initialization");
 
 	if (fsh[f].streamed)
@@ -153,7 +153,7 @@ void fs_fclose_file(filehandle f)
 	}
 
 	// we didn't find it as a pk3, so close it as a unique file
-	if (fsh[f].handlefiles.file.o)
+	if (fsh[f].handlefiles.file.o != NULL)
 		fclose(fsh[f].handlefiles.file.o);
 
 	memset(&fsh[f], 0, sizeof(fsh[f]));
@@ -186,7 +186,7 @@ filehandle fs_fopen_file_write(const char *filename)
 	q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
 
 	fsh[f].handlesync = false;
-	if (!fsh[f].handlefiles.file.o)
+	if (fsh[f].handlefiles.file.o == NULL)
 		f = 0;
 
 	return f;
@@ -224,7 +224,7 @@ filehandle fs_fopen_file_append(const char *filename)
 	q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
 
 	fsh[f].handlesync = false;
-	if (!fsh[f].handlefiles.file.o)
+	if (fsh[f].handlefiles.file.o == NULL)
 		f = 0;
 
 	return f;
@@ -259,15 +259,15 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 
 	if (file == NULL) {
 		// just want to see if file is there
-		for (search = fs_searchpaths; search; search = search->next) {
+		for (search = fs_searchpaths; search != NULL; search = search->next) {
 			if (!fs_search_localized(search))
 				continue;
 
-			if (search->pack)
+			if (search->pack != NULL)
 				hash = fs_hash_filename(filename, search->pack->hashsize);
 
 			// do we have a pk3 file
-			if (search->pack && search->pack->hashtable[hash]) {
+			if (search->pack != NULL && search->pack->hashtable[hash]) {
 				// search through all the pk3 files
 				pak = search->pack;
 				pakfile = pak->hashtable[hash];
@@ -277,12 +277,12 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 
 					pakfile = pakfile->next;
 				} while (pakfile != NULL);
-			} else if (search->dir) {
+			} else if (search->dir != NULL) {
 				dir = search->dir;
 
 				fs_build_ospath(dir->path, dir->gamedir, filename, ospath);
 				temp = fopen(ospath, "rb");
-				if (!temp)
+				if (temp == NULL)
 					continue;
 
 				fclose(temp);
@@ -300,7 +300,7 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 	// make absolutely sure that it can't back up the path.
 	// The searchpaths do guarantee that something will always
 	// be prepended, so we don't need to worry about "c:" or "//limbo"
-	if (strstr(filename, "..") || strstr(filename, "::")) {
+	if (strstr(filename, "..") != NULL || strstr(filename, "::") != NULL) {
 		*file = 0;
 		return -1;
 	}
@@ -312,15 +312,15 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 	fsh[*file].handlefiles.unique = uniquefile;
 
 	unpurepak = NULL;
-	for (search = fs_searchpaths; search; search = search->next) {
+	for (search = fs_searchpaths; search != NULL; search = search->next) {
 		if (!fs_search_localized(search))
 			continue;
 
 		pak = search->pack;
-		if (pak)
+		if (pak != NULL)
 			hash = fs_hash_filename(filename, pak->hashsize);
 
-		if (pak && pak->hashtable[hash]) {
+		if (pak != NULL && pak->hashtable[hash]) {
 			pakfile = pak->hashtable[hash];
 
 			do {
@@ -367,7 +367,7 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 							fsh[*file].handlefiles.file.z =
 								unzReOpen(pak->pak_filename, pak->handle);
 
-							if (!fsh[*file].handlefiles.file.z) {
+							if (fsh[*file].handlefiles.file.z == NULL) {
 								if (a) {
 									// TODO: whatever this is
 									// fun_080612a2(*file);
@@ -417,17 +417,17 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 
 				pakfile = pakfile->next;
 			} while (pakfile != NULL);
-		} else if (search->dir) {
+		} else if (search->dir != NULL) {
 			// check directory tree
 			l = strlen(filename);
 
 			// if we are running restricted, or if the filesystem is configured for pure
 			// the only files we allow are these
-			if (fs_restrict->integer || fs_num_serverpaks) {
-				if (q_stricmp(filename + l - 4, ".cfg") &&
-					q_stricmp(filename + l - 5, ".menu") &&
-					q_stricmp(filename + l - strlen(DEMOEXT), DEMOEXT) &&
-					q_stricmp(filename + l - 4, ".dat")) {
+			if (fs_restrict->integer > 0 || fs_num_serverpaks > 0) {
+				if (q_stricmp(filename + l - 4, ".cfg") != 0 &&
+					q_stricmp(filename + l - 5, ".menu") != 0 &&
+					q_stricmp(filename + l - strlen(DEMOEXT), DEMOEXT) != 0 &&
+					q_stricmp(filename + l - 4, ".dat") != 0) {
 					continue;
 				}
 			}
@@ -435,13 +435,13 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 			dir = search->dir;
 			fs_build_ospath(dir->path, dir->gamedir, filename, ospath);
 			fsh[*file].handlefiles.file.o = fopen(ospath, "rb");
-			if (!fsh[*file].handlefiles.file.o)
+			if (fsh[*file].handlefiles.file.o == NULL)
 				continue;
 
-			if (q_stricmp(filename + l - 4, ".cfg") &&
-				q_stricmp(filename + l - 5, ".menu") &&
-				q_stricmp(filename + l - strlen(DEMOEXT), DEMOEXT) &&
-				q_stricmp(filename + l - 4, ".dat")) {
+			if (q_stricmp(filename + l - 4, ".cfg") != 0 &&
+				q_stricmp(filename + l - 5, ".menu") != 0 &&
+				q_stricmp(filename + l - strlen(DEMOEXT), DEMOEXT) != 0 &&
+				q_stricmp(filename + l - 4, ".dat") != 0) {
 				fs_fake_checksum = random();
 			}
 
@@ -452,8 +452,8 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 						   dir->gamedir);
 
 			// if we are getting it from the cdpath, copy to the basepath
-			if (fs_copyfiles->integer && !q_stricmp(dir->path,
-													 fs_cdpath->string)) {
+			if (fs_copyfiles->integer > 0 && 
+				q_stricmp(dir->path,fs_cdpath->string) == 0) {
 				char newpath[MAX_OSPATH];
 				fs_build_ospath(fs_basepath->string, dir->gamedir, filename, 
 								newpath);
@@ -464,13 +464,13 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 		}
 
 		// not really necessary on server but its here
-		if (unpurepak)
+		if (unpurepak != NULL)
 			com_error(ERR_DROP, "Unpure client detected." \
 					  "Invalid .PK3 files referenced!\n %s", 
 					  unpurepak->pak_basename);
 	}
 
-	if (fs_debug->integer)
+	if (fs_debug->integer > 0)
 		com_printf("Can't find %s\n", filename);
 
 	*file = 0;
@@ -542,8 +542,8 @@ struct pack *fs_load_zip_file(char *zipfile, const char *basename)
 
 	// strip .pk3 if needed
 	if (strlen(pack->pak_basename) > 4 &&
-		!q_stricmp(pack->pak_basename + 
-				   strlen(pack->pak_basename) - 4, ".pk3")) {
+		q_stricmp((pack->pak_basename + strlen(pack->pak_basename) - 4), 
+				  ".pk3") == 0) {
 		pack->pak_basename[strlen(pack->pak_basename) - 4] = '\0';
 	}
 
@@ -594,7 +594,7 @@ struct pack *fs_load_zip_file(char *zipfile, const char *basename)
 	pack->checksum = com_block_checksum(fs_headerlongs, fs_numheaderlongs * 4);
 	pack->pure_checksum = com_block_checksum_key(fs_headerlongs, 
 												 fs_numheaderlongs * 4,
-		littlelong(fs_checksumfeed));
+												 littlelong(fs_checksumfeed));
 
 	pack->checksum = littlelong(pack->checksum);
 	pack->pure_checksum = littlelong(pack->pure_checksum);
@@ -621,39 +621,39 @@ int fs_read_file(const char *qpath, void **buffer)
 	//if (!fs_searchpaths)
 	//	com_error(ERR_FATAL, "Filesystem call made without initialization");
 
-	if (!qpath || !qpath[0])
+	if (qpath == NULL || *qpath == '\0')
 		com_error(ERR_FATAL, "empty name");
 
 	buf = NULL; // compiler warning
 
 	isconfig = false;
-	if (strstr(qpath, ".cfg")) {
+	if (strstr(qpath, ".cfg") != NULL) {
 		isconfig = true;
 
 		// if this is a .cfg file and we are playing back a journal, read
 		// it from the journal file
-		if (com_journal && com_journal->integer == 2) {
+		if (com_journal != NULL && com_journal->integer == 2) {
 			int r;
 
 			com_dprintf("Loading %s from journal file.\n", qpath);
 			r = fs_read(&len, sizeof(len), com_journaldatafile);
 			if (r != sizeof(len)) {
-				if (buffer)
+				if (buffer != NULL)
 					*buffer = NULL;
 
 				return -1;
 			}
 
 			// if the file didn't exist when the journal was created
-			if (!len) {
-				if (!buffer)
+			if (len == 0) {
+				if (buffer == NULL)
 					return 1; // hack for old journal files
 
 				*buffer = NULL;
 				return -1;
 			}
 
-			if (!buffer)
+			if (buffer == NULL)
 				return len;
 
 			buf = hunk_allocate_temp_memory(len + 1);
@@ -673,11 +673,11 @@ int fs_read_file(const char *qpath, void **buffer)
 
 	// look for it in the filesystem or packfiles
 	len = fs_fopen_file_read(qpath, &h, false, 0);
-	if (!h) {
-		if (buffer)
+	if (h == 0) {
+		if (buffer != NULL)
 			*buffer = NULL;
 
-		if (isconfig && com_journal && com_journal->integer == 1) {
+		if (isconfig && com_journal != NULL && com_journal->integer == 1) {
 			com_dprintf("Writing zero for %s to journal file.\n", qpath);
 			len = 0;
 			fs_write(&len, sizeof(len), com_journaldatafile);
@@ -687,8 +687,8 @@ int fs_read_file(const char *qpath, void **buffer)
 		return -1;
 	}
 
-	if (!buffer) {
-		if (isconfig && com_journal && com_journal->integer == 1) {
+	if (buffer == NULL) {
+		if (isconfig && com_journal != NULL && com_journal->integer == 1) {
 			com_dprintf("Writing len for %s to journal file.\n", qpath);
 			fs_write(&len, sizeof(len), com_journaldatafile);
 			fs_flush(com_journaldatafile);
@@ -711,7 +711,7 @@ int fs_read_file(const char *qpath, void **buffer)
 	fs_fclose_file(h);
 
 	// if we are journalling and it is a config file, write it to the journal file
-	if (isconfig && com_journal && com_journal->integer == 1) {
+	if (isconfig && com_journal != NULL && com_journal->integer == 1) {
 		com_dprintf("Writing %s to journal file.\n", qpath);
 
 		fs_write(&len, sizeof(len), com_journaldatafile);
@@ -736,7 +736,7 @@ int fs_read(void *buffer, int len, filehandle f)
 	//if (!fs_searchpaths)
 	//	com_error(ERR_FATAL, "Filesystem call made without initialization");
 
-	if (!f)
+	if (f == 0)
 		return 0;
 
 	buf = (byte *) buffer;
@@ -750,8 +750,8 @@ int fs_read(void *buffer, int len, filehandle f)
 			block = remaining;
 			read = fread(buf, 1, block, fsh[f].handlefiles.file.o);
 
-			if (!read) {
-				if (!tries)
+			if (read == 0) {
+				if (tries == 0)
 					tries = 1;
 				else
 					return len - remaining; // com_error(ERR_FATAL, "fs_read: 0 bytes read");
@@ -792,7 +792,7 @@ int fs_write(const void *buffer, int len, filehandle h)
 	byte *buf;
 	FILE *f;
 
-	if (!h)
+	if (h == 0)
 		return 0;
 
 	f = fs_file_for_handle(h);
@@ -803,8 +803,8 @@ int fs_write(const void *buffer, int len, filehandle h)
 	while (remaining) {
 		block = remaining;
 		written = fwrite(buf, 1, block, f);
-		if (!written) {
-			if (!tries) {
+		if (written == 0) {
+			if (tries == 0) {
 				tries = 1;
 			} else {
 				com_printf("fs_write: 0 bytes written\n");
@@ -841,7 +841,7 @@ void fs_printf(filehandle h, const char *fmt, ...)
 
 void fs_free_file(void *buf)
 {
-	if (!buf)
+	if (buf == NULL)
 		com_error(ERR_FATAL, "fs_free_file(null)");
 
 	_fs_loadstack--;

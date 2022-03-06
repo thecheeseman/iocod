@@ -36,7 +36,7 @@ bool cvar_command(void)
 	struct cvar *v;
 
 	v = cvar_find_var(cmd_argv(0));
-	if (!v)
+	if (v == NULL)
 		return false;
 
 	// perform a variable print or set
@@ -44,7 +44,7 @@ bool cvar_command(void)
 		com_printf("\"%s\" is: \"%s\" default: \"%s\"\n", v->name, v->string, 
 				   v->reset_string);
 
-		if (v->latched_string)
+		if (v->latched_string != NULL)
 			com_printf("latched: \"%s\"\n", v->latched_string);
 
 		return true;
@@ -117,10 +117,10 @@ static void cvar_setu_f(void)
 
 	cvar_set_f();
 	v = cvar_find_var(cmd_argv(1));
-	if (!v)
+	if (v == NULL)
 		return;
 
-	v->flags |= CVAR_USERINFO;
+	v->flags |= CVAR_USER_INFO;
 }
 
 /**
@@ -137,10 +137,10 @@ static void cvar_sets_f(void)
 
 	cvar_set_f();
 	v = cvar_find_var(cmd_argv(1));
-	if (!v)
+	if (v == NULL)
 		return;
 
-	v->flags |= CVAR_SERVERINFO;
+	v->flags |= CVAR_SERVER_INFO;
 }
 
 /**
@@ -157,7 +157,7 @@ static void cvar_seta_f(void)
 
 	cvar_set_f();
 	v = cvar_find_var(cmd_argv(1));
-	if (!v)
+	if (v == NULL)
 		return;
 
 	v->flags |= CVAR_ARCHIVE;
@@ -181,7 +181,10 @@ static void cvar_setf_f(void)
 	}
 
 	v = cvar_find_var(cmd_argv(1));
-	for (s = cmd_argv(2); *s; s++) {
+	if (v == NULL)
+		return;
+
+	for (s = cmd_argv(2); *s != '\0'; s++) {
 		if (*s == '^') {
 			invertnext = true;
 			continue;
@@ -189,8 +192,8 @@ static void cvar_setf_f(void)
 
 		flag = 0;
 		switch (toupper(*s)) {
-			case 'S': flag |= CVAR_SERVERINFO; break;
-			case 'U': flag |= CVAR_USERINFO; break;
+			case 'S': flag |= CVAR_SERVER_INFO; break;
+			case 'U': flag |= CVAR_USER_INFO; break;
 			case 'A': flag |= CVAR_ARCHIVE; break;
 
 				// probably not safe to let people change read-only cvars
@@ -245,20 +248,20 @@ static void cvar_list_f(void)
 		match = NULL;
 
 	com_printf("%-7s %-32s %s\n", " flags", "cvar name", "value");
-	if (tty_colors->integer)
+	if (tty_colors->integer > 0)
 		com_printf("\033[90m------- -------------------------------- --------------------------------\033[0m\n");
 	else
 		com_printf("------- -------------------------------- --------------------------------\n");
 
 	i = 0, matched = 0;
-	for (var = cvar_vars; var; var = var->next, i++) {
-		if (match && !com_filter(match, var->name, false))
+	for (var = cvar_vars; var != NULL; var = var->next, i++) {
+		if (match != NULL && !com_filter(match, var->name, false))
 			continue;
 
-		if (tty_colors->integer) {
+		if (tty_colors->integer > 0) {
 			com_printf("%s%s%s%s%s%s%s %-32s \"%s\"\n",
-				(var->flags & CVAR_SERVERINFO) ? "\033[34mS\033[0m" : " ", // blue
-				(var->flags & CVAR_USERINFO) ? "\033[35mU\033[0m" : " ", // magenta
+				(var->flags & CVAR_SERVER_INFO) ? "\033[34mS\033[0m" : " ", // blue
+				(var->flags & CVAR_USER_INFO) ? "\033[35mU\033[0m" : " ", // magenta
 				(var->flags & CVAR_ROM) ? "\033[32mR\033[0m" : " ", // green
 				(var->flags & CVAR_INIT) ? "\033[0mI\033[0m" : " ", // white
 				(var->flags & CVAR_ARCHIVE) ? "\033[36mA\033[0m" : " ", // cyan
@@ -267,8 +270,8 @@ static void cvar_list_f(void)
 				var->name, var->string);
 		} else {
 			com_printf("%s%s%s%s%s%s%s %-32s \"%s\"\n",
-				(var->flags & CVAR_SERVERINFO) ? "S" : " ",
-				(var->flags & CVAR_USERINFO) ? "U" : " ",
+				(var->flags & CVAR_SERVER_INFO) ? "S" : " ",
+				(var->flags & CVAR_USER_INFO) ? "U" : " ",
 				(var->flags & CVAR_ROM) ? "R" : " ",
 				(var->flags & CVAR_INIT) ? "I" : " ",
 				(var->flags & CVAR_ARCHIVE) ? "A" : " ",
@@ -280,7 +283,7 @@ static void cvar_list_f(void)
 		matched++;
 	}
 
-	if (match)
+	if (match != NULL)
 		com_printf("\n%i total cvars, %i matched \"%s\"\n", i, matched, match);
 	else
 		com_printf("\n%i total cvars\n", i);
@@ -302,7 +305,7 @@ static void cvar_set_from_cvar_f(void)
 
 	value = "";
 	var = cvar_find_var(cmd_argv(2));
-	if (var)
+	if (var != NULL)
 		value = var->string;
 
 	cvar_set2(cmd_argv(1), value, 0);
@@ -326,12 +329,12 @@ static void cvar_restart_f(void)
 	prev = &cvar_vars;
 	while (true) {
 		var = *prev;
-		if (!var)
+		if (var == NULL)
 			break;
 
 		// don't mess with rom values, or some inter-module
 		// communication will get broken (com_cl_running, etc)
-		if (var->flags & (CVAR_ROM | CVAR_INIT | CVAR_NORESTART)) {
+		if (var->flags & (CVAR_ROM | CVAR_INIT | CVAR_NO_RESTART)) {
 			prev = &var->next;
 			continue;
 		}
@@ -340,16 +343,16 @@ static void cvar_restart_f(void)
 		if (var->flags & CVAR_USER_CREATED) {
 			*prev = var->next;
 
-			if (var->name)
+			if (var->name != NULL)
 				z_free(var->name);
 
-			if (var->string)
+			if (var->string != NULL)
 				z_free(var->string);
 
-			if (var->latched_string)
+			if (var->latched_string != NULL)
 				z_free(var->latched_string);
 
-			if (var->reset_string)
+			if (var->reset_string != NULL)
 				z_free(var->reset_string);
 
 			// clear the var completely, since we

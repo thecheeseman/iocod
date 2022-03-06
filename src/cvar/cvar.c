@@ -48,7 +48,7 @@ static int32_t generate_hash_value(const char *fname)
 	int32_t hash;
 	char letter;
 
-	if (!fname)
+	if (fname == NULL)
 		com_error(ERR_DROP, "null name");
 
 	hash = 0, i = 0;
@@ -70,7 +70,7 @@ static int32_t generate_hash_value(const char *fname)
 */
 static bool cvar_validate_string(const char *s)
 {
-	if (!s)
+	if (s == NULL)
 		return false;
 
 	if (strchr(s, '\\'))
@@ -96,8 +96,8 @@ struct cvar *cvar_find_var(const char *var_name)
 
 	hash = generate_hash_value(var_name);
 
-	for (var = hashtable[hash]; var; var = var->hash_next) {
-		if (!q_stricmp(var_name, var->name))
+	for (var = hashtable[hash]; var != NULL; var = var->hash_next) {
+		if (q_stricmp(var_name, var->name) == 0)
 			return var;
 	}
 
@@ -115,7 +115,7 @@ float cvar_variable_value(const char *var_name)
 	struct cvar *var;
 
 	var = cvar_find_var(var_name);
-	if (!var)
+	if (var == NULL)
 		return 0.0;
 
 	return var->value;
@@ -132,7 +132,7 @@ int cvar_variable_integer_value(const char *var_name)
 	struct cvar *var;
 
 	var = cvar_find_var(var_name);
-	if (!var)
+	if (var == NULL)
 		return 0;
 
 	return var->integer;
@@ -149,7 +149,7 @@ char *cvar_variable_string(const char *var_name)
 	struct cvar *var;
 
 	var = cvar_find_var(var_name);
-	if (!var)
+	if (var == NULL)
 		return "";
 
 	return var->string;
@@ -167,7 +167,7 @@ void cvar_variable_string_buffer(const char *var_name, char *buffer, int bufsize
 	struct cvar *var;
 
 	var = cvar_find_var(var_name);
-	if (!var)
+	if (var == NULL)
 		*buffer = 0;
 	else
 		q_strncpyz(buffer, var->string, bufsize);
@@ -182,7 +182,7 @@ void cvar_command_completion(void (*callback)(const char *s))
 {
 	struct cvar *var;
 
-	for (var = cvar_vars; var; var = var->next)
+	for (var = cvar_vars; var != NULL; var = var->next)
 		callback(var->name);
 }
 
@@ -218,7 +218,7 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 	struct cvar *var;
 	int32_t hash;
 
-	if (!var_name || !var_value)
+	if (var_name == NULL || var_value == NULL)
 		com_error(ERR_FATAL, "cvar_get: NULL parameter");
 
 	if (!cvar_validate_string(var_name)) {
@@ -227,7 +227,7 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 	}
 
 	var = cvar_find_var(var_name);
-	if (var) {
+	if (var != NULL) {
 		// if the C code is now specifying a variable that the user already
 		// set a value for, take the new value as the reset value
 		if ((var->flags & CVAR_USER_CREATED) && 
@@ -246,18 +246,19 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 		var->flags |= flags;
 
 		// only allow one non-empty reset string without a warning
-		if (!var->reset_string[0]) {
+		if (*var->reset_string != '\0') {
 			// no reset string yet
 			z_free(var->reset_string);
 			var->reset_string = copy_string(var_value);
-		} else if (var_value[0] && strcmp(var->reset_string, var_value)) {
+		} else if (*var_value != '\0' && 
+				   strcmp(var->reset_string, var_value) != 0) {
 			com_dprintf("Warning: cvar \"%s\" given initial values: " \
 						"\"%s\" and \"%s\"\n",
 						var_name, var->reset_string, var_value);
 		}
 
 		// if we have a latched string, take that value now
-		if (var->latched_string) {
+		if (var->latched_string != NULL) {
 			char *s;
 
 			s = var->latched_string;
@@ -266,9 +267,9 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 			z_free(s);
 		}
 
-		if (flags & CVAR_USERINFO) {
+		if (flags & CVAR_USER_INFO) {
 			char *cleaned = cvar_clean_foreign_characters(var->string);
-			if (strcmp(var->string, cleaned))
+			if (strcmp(var->string, cleaned) != 0)
 				cvar_set2(var->name, var->string, false);
 		}
 
@@ -317,8 +318,8 @@ struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
 		com_error(ERR_FATAL, "invalid cvar name string: %s\n", var_name);
 
 	var = cvar_find_var(var_name);
-	if (!var) {
-		if (!value)
+	if (var == NULL) {
+		if (value == NULL)
 			return NULL;
 
 		// create it
@@ -328,21 +329,21 @@ struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
 			return cvar_get(var_name, value, 0);
 	}
 
-	if (!value)
+	if (value == NULL)
 		value = var->reset_string;
 
 	// this was added in RTCW
 	// copied here as a safety
-	if (var->flags & CVAR_USERINFO) {
+	if (var->flags & CVAR_USER_INFO) {
 		char *cleaned = cvar_clean_foreign_characters(value);
-		if (strcmp(value, cleaned)) {
+		if (strcmp(value, cleaned) != 0) {
 			com_printf(FOREIGN_MSG);
 			com_printf("Using %s instead of %s\n", cleaned, value);
 			return cvar_set2(var_name, cleaned, force);
 		}
 	}
 
-	if (!strcmp(value, var->string))
+	if (strcmp(value, var->string) == 0)
 		return var;
 
 	cvar_modified_flags |= var->flags;
@@ -364,7 +365,7 @@ struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
 		}
 
 		if (var->flags & CVAR_LATCH) {
-			if (var->latched_string) {
+			if (var->latched_string != NULL) {
 				if (strcmp(value, var->latched_string) == 0)
 					return var;
 				z_free(var->latched_string);
@@ -380,7 +381,7 @@ struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
 			return var;
 		}
 	} else {
-		if (var->latched_string) {
+		if (var->latched_string != NULL) {
 			z_free(var->latched_string);
 			var->latched_string = NULL;
 		}
@@ -432,17 +433,17 @@ void cvar_shutdown(void)
 {
 	struct cvar *cv;
 
-	for (cv = cvar_vars; cv; cv = cv->next) {
-		if (cv->name)
+	for (cv = cvar_vars; cv != NULL; cv = cv->next) {
+		if (cv->name != NULL) 
 			z_free(cv->name);
 
-		if (cv->string)
+		if (cv->string != NULL)
 			z_free(cv->string);
 
-		if (cv->latched_string)
+		if (cv->latched_string != NULL)
 			z_free(cv->latched_string);
 
-		if (cv->reset_string)
+		if (cv->reset_string != NULL)
 			z_free(cv->reset_string);
 	}
 }
@@ -452,9 +453,9 @@ void cvar_write_defaults(filehandle f)
 	struct cvar *var;
 	char buffer[1024];
 
-	for (var = cvar_vars; var; var = var->next) {
+	for (var = cvar_vars; var != NULL; var = var->next) {
 		// don't write cdkey
-		if (!q_stricmp(var->name, "cl_cdkey"))
+		if (q_stricmp(var->name, "cl_cdkey") == 0)
 			continue;
 
 		// what
@@ -472,14 +473,14 @@ void cvar_write_variables(filehandle f)
 	struct cvar *var;
 	char buffer[1024];
 
-	for (var = cvar_vars; var; var = var->next) {
+	for (var = cvar_vars; var != NULL; var = var->next) {
 		// don't write cdkey
-		if (!q_stricmp(var->name, "cl_cdkey"))
+		if (q_stricmp(var->name, "cl_cdkey") == 0)
 			continue;
 
 		if (var->flags & CVAR_ARCHIVE) {
 			// write the latched value, even if it hasn't taken effect yet
-			if (var->latched_string) {
+			if (var->latched_string != NULL) {
 				com_sprintf(buffer, sizeof(buffer),
 					"seta %s \"%s\"\n", var->name, var->latched_string);
 			} else {
@@ -499,7 +500,7 @@ char *cvar_info_string(int bit)
 
 	info[0] = '\0';
 
-	for (var = cvar_vars; var; var = var->next) {
+	for (var = cvar_vars; var != NULL; var = var->next) {
 		if (var->flags & bit)
 			info_set_value_for_key(info, var->name, var->string);
 	}
@@ -514,7 +515,7 @@ char *cvar_info_string_big(int bit)
 
 	info[0] = '\0';
 
-	for (var = cvar_vars; var; var = var->next) {
+	for (var = cvar_vars; var != NULL; var = var->next) {
 		if (var->flags & bit)
 			info_set_value_for_key_big(info, var->name, var->string);
 	}
@@ -527,13 +528,13 @@ void cvar_update_flags(void)
 {
 	struct cvar *var;
 
-	for (var = cvar_vars; var; var = var->next)
+	for (var = cvar_vars; var != NULL; var = var->next)
 		var->flags &= ~CVAR_8193;
 }
 
 void cvar_init(void)
 {
-	cvar_cheats = cvar_get("sv_cheats", "0", CVAR_ROM | CVAR_SYSTEMINFO);
+	cvar_cheats = cvar_get("sv_cheats", "0", CVAR_ROM | CVAR_SYSTEM_INFO);
 
 	cvar_add_commands();
 }

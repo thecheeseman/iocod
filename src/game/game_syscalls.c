@@ -30,7 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 static intptr_t (QDECL *syscall)(intptr_t arg, ...) = 
 	(intptr_t (QDECL *)(intptr_t, ...)) -1;
 
-void DLLEXPORT dllEntry(int(QDECL *syscallptr)(intptr_t arg, ...))
+void DLLEXPORT dllEntry(intptr_t(QDECL *syscallptr)(intptr_t arg, ...))
 {
 	syscall = syscallptr;
 }

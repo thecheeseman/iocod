@@ -23,14 +23,14 @@ void register_item(int num, int other)
 
 	if (!level.initializing) {
 		name = item->display_name;
-		if (!name || !name[0]) {
+		if (name == NULL || *name == '\0') {
 			if (num <= get_num_weapons()) {
 				weapon = get_info_for_weapon(num);
 				name = weapon->name;
 			}
 		}
 
-		if (!name || !name[0])
+		if (name == NULL || *name == '\0')
 			name = "<<unknown>>";
 
 		scr_error(va("game tried to register the item '%s' after " \

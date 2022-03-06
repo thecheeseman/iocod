@@ -245,18 +245,19 @@ void sv_frame(int msec)
 	// FUN_080bfea0(1);
 
 	if ((cvar_modified_flags & CVAR_2004)) {
-		sv_set_config_string(CS_SERVERINFO, cvar_info_string(CVAR_2004));
+		sv_set_config_string(CS_SERVER_INFO, cvar_info_string(CVAR_2004));
 		cvar_modified_flags &= ~CVAR_2004;
 	}
 
-	if ((cvar_modified_flags & CVAR_SYSTEMINFO)) {
-		sv_set_config_string(CS_SYSTEMINFO, cvar_info_string_big(CVAR_SYSTEMINFO));
-		cvar_modified_flags &= ~CVAR_SYSTEMINFO;
+	if ((cvar_modified_flags & CVAR_SYSTEM_INFO)) {
+		sv_set_config_string(CS_SYSTEM_INFO, 
+							 cvar_info_string_big(CVAR_SYSTEM_INFO));
+		cvar_modified_flags &= ~CVAR_SYSTEM_INFO;
 	}
 
-	if ((cvar_modified_flags & CVAR_WOLFINFO)) {
+	if ((cvar_modified_flags & CVAR_WOLF_INFO)) {
 		sv_set_cvar_config_string(140, 64, 2048);
-		cvar_modified_flags &= ~CVAR_WOLFINFO;
+		cvar_modified_flags &= ~CVAR_WOLF_INFO;
 	}
 
 	// fun_0809421b();
@@ -403,7 +404,7 @@ void sv_connectionless_packet(struct netadr from, struct msg *msg)
 		return;
 	#endif
 
-	if (q_strncmp("connect", &msg->data[4], 7) == 0)
+	if (q_strncmp("connect", (const char *) & msg->data[4], 7) == 0)
 		huff_decompress(msg, 12);
 
 	s = msg_read_string_line(msg);
@@ -415,15 +416,15 @@ void sv_connectionless_packet(struct netadr from, struct msg *msg)
 
 	if (q_stricmp(c, "getstatus") == 0)
 		svc_get_status(from);
-	else if (qstricmp(c, "getinfo") == 0)
+	else if (q_stricmp(c, "getinfo") == 0)
 		svc_get_info(from);
-	else if (qstricmp(c, "getchallenge") == 0)
+	else if (q_stricmp(c, "getchallenge") == 0)
 		sv_get_challenge(from);
-	else if (qstricmp(c, "connect") == 0)
+	else if (q_stricmp(c, "connect") == 0)
 		sv_direct_connect(from);
-	else if (qstricmp(c, "ipauthorize") == 0)
+	else if (q_stricmp(c, "ipauthorize") == 0)
 		sv_authorize_ip_packet(from);
-	else if (qstricmp(c, "rcon") == 0)
+	else if (q_stricmp(c, "rcon") == 0)
 		sv_remote_command(from);
 	//else if (qstricmp(c, "disconnect") == 0)
 	else

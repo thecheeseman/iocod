@@ -68,13 +68,13 @@ static void setup_logging(void)
 {
 	char server_info[MAX_STRING_CHARS];
 
-	if (g_log.string[0]) {
+	if (*g_log.string != '\0') {
 		if (g_log_sync.integer)
 			trap_fs_fopen_file(g_log.string, &level.logfile, FS_APPEND_SYNC);
 		else
 			trap_fs_fopen_file(g_log.string, &level.logfile, FS_APPEND);
 
-		if (!level.logfile) {
+		if (level.logfile == 0) {
 			g_printf("WARNING: couldn't open logfile '%s'\n", g_log.string);
 		} else {
 			trap_get_server_info(server_info, sizeof(server_info));
@@ -198,7 +198,7 @@ void g_shutdown_game(bool restart)
 	else
 		g_printf("==== ShutdownGame ====\n");
 
-	if (level.logfile) {
+	if (level.logfile != 0) {
 		if (restart)
 			g_log_printf("RestartGame:\n");
 		else

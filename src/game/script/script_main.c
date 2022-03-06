@@ -109,7 +109,7 @@ void scr_parse_gametype_list(void)
 		}
 
 		// strip extension
-		if (!q_stricmp(file + (len - 4), ".gsc"))
+		if (q_stricmp(file + (len - 4), ".gsc") == 0)
 			file[len - 4] = '\0';
 
 		if (num_gametypes == MAX_GAMETYPES) {
@@ -155,7 +155,7 @@ void scr_parse_gametype_list(void)
 			q_strncpyz(gametype->description, token, tlen + 1);
 
 			token = com_parse(&data);
-			if (token != NULL && !q_stricmp(token, "team"))
+			if (token != NULL && q_stricmp(token, "team") == 0)
 				gametype->team_based = true;
 			else
 				gametype->team_based = false;

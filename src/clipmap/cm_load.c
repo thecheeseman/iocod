@@ -152,7 +152,7 @@ void cmod_load_brushes(struct header_lump *l1, struct header_lump *l2)
 			   (brush_count * -6), side_count);
 	*/
 
-	if (side_count)
+	if (side_count > 0)
 		cm.brush_sides = hunk_alloc(side_count * sizeof(*cm.brush_sides));
 	else
 		cm.brush_sides = NULL;
@@ -524,7 +524,7 @@ void cmod_load_visibility(struct header_lump *l)
 {
 	byte *buf;
 
-	if (!l->file_len) {
+	if (l->file_len == 0) {
 		cm.cluster_bytes = (cm.num_clusters + 31) & ~31; // 32 bit magic again
 		cm.visibility = (byte *) hunk_alloc(cm.cluster_bytes);
 		memset(cm.visibility, 255, cm.cluster_bytes);
@@ -535,8 +535,8 @@ void cmod_load_visibility(struct header_lump *l)
 
 	cm.vised = true;
 	cm.visibility = (byte *) hunk_alloc(l->file_len);
-	cm.num_clusters = ((int *) buf)[0];
-	cm.cluster_bytes = ((int *) buf)[1];
+	cm.num_clusters = ((intptr_t *) buf)[0];
+	cm.cluster_bytes = ((intptr_t *) buf)[1];
 	memcpy(cm.visibility, buf + 2, l->file_len);
 }
 
@@ -615,11 +615,11 @@ void cm_load_map(const char *name, bool clientload, int *checksum)
 	char mapname[64];
 	static unsigned last_checksum;
 	int length;
-	int *buf;
+	intptr_t *buf;
 
 	struct bsp_header header;
 
-	if (!name || !name[0])
+	if (name == NULL || *name == '\0')
 		com_error(ERR_DROP, "null name");
 
 	q_strncpyz(mapname, name, sizeof(mapname));
@@ -630,11 +630,11 @@ void cm_load_map(const char *name, bool clientload, int *checksum)
 
 	com_printf_dbginfo("%s : %i\n", name, clientload);
 
-	if (!clientload || !com_sv_running->integer) {
+	if (!clientload || com_sv_running->integer == 0) {
 		memset(&cm, 0, sizeof(cm));
 
 		length = fs_read_file(name, (void **) &buf);
-		if (!buf)
+		if (buf == NULL)
 			com_error(ERR_DROP, "couldn't load %s", name);
 
 		last_checksum = com_block_checksum(buf, length);

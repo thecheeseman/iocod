@@ -142,13 +142,13 @@ bool sys_string_to_sockaddr(const char *s, struct sockaddr *sadr)
 	((struct sockaddr_in *) sadr)->sin_port = 0;
 
 	if (s[0] >= '0' && s[0] <= '9') {
-		*(int *) &((struct sockaddr_in *) sadr)->sin_addr = inet_addr(s);
+		*(intptr_t *) &((struct sockaddr_in *) sadr)->sin_addr = inet_addr(s);
 	} else {
-		if (!(h = gethostbyname(s)))
+		if ((h = gethostbyname(s)) == NULL)
 			return false;
 
-		*(int *) &((struct sockaddr_in *) sadr)->sin_addr = 
-			*(int *) h->h_addr_list[0];
+		*(intptr_t *) &((struct sockaddr_in *) sadr)->sin_addr = 
+			*(intptr_t *) h->h_addr_list[0];
 	}
 
 	return true;
@@ -158,13 +158,13 @@ void net_init(void)
 {
 	noudp = cvar_get("net_noudp", "0", 0);
 
-	if (!noudp->value && !ip_socket)
+	if (noudp->value == 0.0 && ip_socket == 0)
 		net_open_ip();
 }
 
 void net_shutdown(void)
 {
-	if (ip_socket) {
+	if (ip_socket != 0) {
 		close(ip_socket);
 		ip_socket = 0;
 	}
@@ -180,7 +180,7 @@ void net_get_local_address(void)
 		return;
 
 	hostinfo = gethostbyname(hostname);
-	if (!hostinfo)
+	if (hostinfo == NULL)
 		return;
 
 	com_printf("hostname: %s\n", hostinfo->h_name);
@@ -216,7 +216,7 @@ int net_ip_socket(char *netif, int port)
 	struct sockaddr_in address;
 	int fionbioval = 1;
 
-	if (netif)
+	if (netif != NULL)
 		com_printf("Opening IP socket: %s:%i\n", netif, port);
 	else
 		com_printf("Opening IP socket: localhost:%i\n", netif, port);
@@ -241,7 +241,7 @@ int net_ip_socket(char *netif, int port)
 		return 0;
 	}
 
-	if (!netif || !netif[0] || !q_stricmp(netif, "localhost"))
+	if (netif != NULL || *netif != '\0' || q_stricmp(netif, "localhost") == 0)
 		address.sin_addr.s_addr = INADDR_ANY;
 	else
 		sys_string_to_sockaddr(netif, (struct sockaddr *) &address);
@@ -273,7 +273,7 @@ void net_open_ip(void)
 	for (i = 0; i < 10; i++) {
 		ip_socket = net_ip_socket(ip->string, port + i);
 
-		if (ip_socket) {
+		if (ip_socket != 0) {
 			cvar_set_value("net_port", port + i);
 			net_get_local_address();
 			return;

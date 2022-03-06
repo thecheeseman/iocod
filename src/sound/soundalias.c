@@ -140,9 +140,9 @@ static int snd_parse_alias_channel(const char *token)
 */
 static int snd_parse_alias_type(const char *token)
 {
-	if (!q_stricmp(token, "streamed"))
+	if (q_stricmp(token, "streamed") == 0)
 		return 2;
-	else if (!q_stricmp(token, "loaded"))
+	else if (q_stricmp(token, "loaded") == 0)
 		return 1;
 	
 	com_error(ERR_DROP, "Sound alias file %s: unknown sound type '%s' " \
@@ -157,9 +157,9 @@ static int snd_parse_alias_type(const char *token)
 */
 static int snd_parse_alias_loop_type(const char *token)
 {
-	if (!q_stricmp(token, "looping"))
+	if (q_stricmp(token, "looping") == 0)
 		return 1;
-	else if (!q_stricmp(token, "nonlooping"))
+	else if (q_stricmp(token, "nonlooping") == 0)
 		return 0;
 
 	com_error(ERR_DROP, "Sound alias file %s: unknown sound loop type '%s' " \
@@ -196,10 +196,10 @@ static int snd_parse_alias_load_spec(const char *mapname, const char *token)
 		while (*p != '\0' && *p != ' ') 
 			p++;
 
-		if (!strcmp(p, mapname)) {
+		if (strcmp(p, mapname) == 0) {
 			return 0;
 		} else {
-			if (!strcmp(p, "all_mp"))
+			if (strcmp(p, "all_mp") == 0)
 				return 0;
 			else
 				return 1;
@@ -214,7 +214,7 @@ static int snd_parse_alias_load_spec(const char *mapname, const char *token)
 			pch = strstr(p, mapname);
 		}
 
-		if (!strcmp(p, "all_mp"))
+		if (strcmp(p, "all_mp") == 0)
 			return 1;
 		else
 			return 0;
@@ -229,7 +229,7 @@ static int snd_parse_alias_load_spec(const char *mapname, const char *token)
 static void snd_parse_alias_master_slave(const char *token, 
 										 struct soundalias *alias)
 {
-	if (!q_stricmp(token, "master")) {
+	if (q_stricmp(token, "master") == 0) {
 		alias->master = 1;
 		alias->slave = 0;
 	} else {
@@ -244,10 +244,10 @@ void snd_parse_alias_line(const char *mapname, char *token, int id,
 {
 	int i;
 
-	if (!id)
+	if (id == 0)
 		return;
 
-	if (fields[id])
+	if (fields[id] != '\0')
 		com_error(ERR_DROP, "Sound alias file %s: duplicate entry for the "\
 				  "'%s' column", alias_file, alias_keys[id]);
 
@@ -284,7 +284,7 @@ void snd_parse_alias_line(const char *mapname, char *token, int id,
 						  MAX_ALIAS_SUBTITLE_LEN - 1);
 
 			// verify only ascii characters are present
-			for (i = 0; token[i]; i++) {
+			for (i = 0; token[i] != '\0'; i++) {
 				if (token[i] < '\0') {
 					com_error(ERR_DROP, "Sound alias file %s: subtitle '%s' " \
 							  "has invalid character '%c' ascii %i", alias_file,
@@ -361,7 +361,7 @@ int snd_parse_alias_file(const char *map, const char *filename, int a, int b)
 
 	token = com_parse(&buf_p);
 
-	if (buf_p) {
+	if (buf_p != NULL) {
 
 	}
 

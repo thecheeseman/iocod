@@ -8,7 +8,7 @@ char *get_gametype_name_for_script(const char *str)
 	for (i = 0; i < g_scr_data.num_gametypes; i++) {
 		gt = &g_scr_data.gametypes[i];
 
-		if (!q_stricmp(gt->name, str))
+		if (q_stricmp(gt->name, str) == 0)
 			return gt->description;
 	}
 

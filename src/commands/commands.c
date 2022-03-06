@@ -122,7 +122,7 @@ void cmd_tokenize_string(const char *text_in)
 
 	_cmd_argc = 0;
 
-	if (!text_in)
+	if (text_in == NULL)
 		return;
 
 	q_strncpyz(cmd_cmd, text_in, sizeof(cmd_cmd));
@@ -136,10 +136,10 @@ void cmd_tokenize_string(const char *text_in)
 
 		while (true) {
 			// skip whitespace
-			while (*text && *text <= ' ')
+			while (*text != '\0' && *text <= ' ')
 				text++;
 
-			if (!*text)
+			if (*text == '\0')
 				return; // no more tokens
 
 			// skip // comments
@@ -148,10 +148,10 @@ void cmd_tokenize_string(const char *text_in)
 
 			// skip /* */ comments
 			if (text[0] == '/' && text[1] == '*') {
-				while (*text && (text[0] != '*' || text[1] != '/'))
+				while (*text != '\0' && (text[0] != '*' || text[1] != '/'))
 					text++;
 
-				if (!*text)
+				if (*text == '\0')
 					return; // no more
 
 				text+= 2;
@@ -166,11 +166,11 @@ void cmd_tokenize_string(const char *text_in)
 			_cmd_argc++;
 			text++;
 
-			while (*text && *text != '"')
+			while (*text != '\0' && *text != '"')
 				*textout++ = *text++;
 
 			*textout++ = 0;
-			if (!*text)
+			if (*text == '\0')
 				return; // no more
 
 			text++;
@@ -197,7 +197,7 @@ void cmd_tokenize_string(const char *text_in)
 
 		*textout++ = 0;
 
-		if (!*text)
+		if (*text == '\0')
 			return; // all done
 	}
 }
@@ -211,8 +211,8 @@ void cmd_add_command(const char *cmd_name, xcommand function)
 {
 	struct cmd_function *cmd;
 
-	for (cmd = cmd_functions; cmd; cmd = cmd->next) {
-		if (!q_stricmp(cmd_name, cmd->name)) {
+	for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
+		if (q_stricmp(cmd_name, cmd->name) == 0) {
 			if (function != NULL)
 				com_printf("cmd_add_command: %s already defined\n", cmd_name);
 
@@ -244,12 +244,12 @@ void cmd_remove_command(const char *cmd_name)
 	while (true) {
 		cmd = *back;
 
-		if (!cmd)
+		if (cmd == NULL)
 			return;
 
-		if (!q_stricmp(cmd_name, cmd->name)) {
+		if (q_stricmp(cmd_name, cmd->name) == 0) {
 			*back = cmd->next;
-			if (cmd->name)
+			if (cmd->name != NULL)
 				z_free(cmd->name);
 			
 			if (cmd->alias_count) {
@@ -276,22 +276,22 @@ void cmd_add_alias(const char *cmd_name, const char *alias)
 	struct cmd_function *cmd, **prev;
 	int c;
 
-	if (!cmd_name || !cmd_name[0])
+	if (cmd_name == NULL || *cmd_name == '\0')
 		com_error(ERR_DROP, "tried to add alias with NULL cmd name");
 
-	if (!alias || !alias[0])
+	if (alias == NULL || *alias == '\0')
 		com_error(ERR_DROP, "tried to add alias with NULL name");
 
-	for (prev = &cmd_functions; *prev; prev = &cmd->next) {
+	for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
 		cmd = *prev;
 
-		if (!q_stricmp(cmd_name, cmd->name)) {
+		if (q_stricmp(cmd_name, cmd->name) == 0) {
 			// found it
 			c = cmd->alias_count;
 
 			cmd->aliases = realloc(cmd->aliases, sizeof(*cmd->aliases) * (c + 1));
-			cmd->aliases[c] = z_malloc(sizeof(char *) * strlen(alias) + 1);
-			q_strncpyz(cmd->aliases[c], alias, sizeof(cmd->aliases[c]));
+			cmd->aliases[c] = z_malloc(sizeof(char *) * (strlen(alias) + 1));
+			strcpy(cmd->aliases[c], alias);
 			cmd->alias_count++;
 		}
 	}
@@ -306,7 +306,7 @@ void cmd_command_completion(void (*callback)(const char *s))
 {
 	struct cmd_function *cmd;
 
-	for (cmd = cmd_functions; cmd; cmd = cmd->next)
+	for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next)
 		callback(cmd->name);
 }
 
@@ -322,22 +322,22 @@ void cmd_execute_string(const char *text)
 	struct cmd_function *cmd, **prev;
 
 	cmd_tokenize_string(text);
-	if (!cmd_argc())
+	if (cmd_argc() == 0)
 		return; // no tokens
 
-	for (prev = &cmd_functions; *prev; prev = &cmd->next) {
+	for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
 		cmd = *prev;
 
 		// check for any aliases
 		aliasfound = false;
 		for (i = 0; i < cmd->alias_count; i++) {
-			if (!q_stricmp(_cmd_argv[0], cmd->aliases[i])) {
+			if (q_stricmp(_cmd_argv[0], cmd->aliases[i]) == 0) {
 				aliasfound = true;
 				break;
 			}
 		}
 
-		if (aliasfound || !q_stricmp(_cmd_argv[0], cmd->name)) {
+		if (aliasfound || q_stricmp(_cmd_argv[0], cmd->name) == 0) {
 			// rearrange the links so that the command will be
 			// near the head of the list next time it is used
 			*prev = cmd->next;
@@ -360,15 +360,15 @@ void cmd_execute_string(const char *text)
 		return;
 
 	// client
-	if (com_cl_running && com_cl_running->integer && cl_game_command())
+	if (com_cl_running != NULL && com_cl_running->integer > 0 && cl_game_command())
 		return;
 
 	// server
-	if (com_sv_running && com_sv_running->integer && sv_game_command())
+	if (com_sv_running != NULL && com_sv_running->integer > 0 && sv_game_command())
 		return;
 
 	// ui
-	if (com_cl_running && com_cl_running->integer && ui_game_command())
+	if (com_cl_running != NULL && com_cl_running->integer > 0 && ui_game_command())
 		return;
 
 	// send it as a server command if we are connected

@@ -54,7 +54,7 @@ struct loopback loopbacks[2];
 
 static void net_dumpprofile_f(void)
 {
-	if (!profiling_mode)
+	if (profiling_mode == 0)
 		com_printf("Network profiling is not on. " \
 				   "Set net_profile to turn on network profiling\n");
 	// else

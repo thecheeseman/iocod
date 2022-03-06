@@ -39,7 +39,7 @@ struct shared_entity *sv_gentity_num(int num)
 #define VMA(x) ((void *) args[x])
 #define VMF(x) ((float *) args)[x]
 
-int sv_game_systemcalls(vmptr_t *args)
+intptr_t sv_game_systemcalls(intptr_t *args)
 {
 	switch (args[0]) {
 		case G_PRINT:
@@ -67,7 +67,7 @@ int sv_game_systemcalls(vmptr_t *args)
 		case G_HUNK_ALLOC_INTERNAL:
 		case G_HUNK_ALLOC_LOW_INTERNAL:
 		case G_HUNK_ALLOC_ALIGN_INTERNAL:
-		case G_HUNK_ALLOC_ALIGN_LOW_INTERNAL:
+		case G_HUNK_ALLOC_LOW_ALIGN_INTERNAL:
 		case G_HUNK_ALLOCATE_TEMP_MEMORY_INTERNAL:
 		case G_HUNK_FREE_TEMP_MEMORY_INTERNAL:
 		case G_FS_FOPEN_FILE:
@@ -78,9 +78,9 @@ int sv_game_systemcalls(vmptr_t *args)
 		case G_LOCATE_GAME_DATA:
 		case G_DROP_CLIENT:
 		case G_SEND_SERVER_COMMAND:
-		case G_SET_CONFIGSTRING:
-		case G_GET_CONFIGSTRING:
-		case G_GET_CONFIGSTRING_CONST:
+		case G_SET_CONFIG_STRING:
+		case G_GET_CONFIG_STRING:
+		case G_GET_CONFIG_STRING_CONST:
 		case G_GET_USERINFO:
 		case G_SET_USERINFO:
 		case G_GET_SERVERINFO:
@@ -107,7 +107,7 @@ int sv_game_systemcalls(vmptr_t *args)
 		case G_ENTITY_CONTACT:
 		case G_GET_USERCMD:
 		case G_GET_ENTITY_TOKEN:
-		case G_FS_GETFILELIST:
+		case G_FS_GET_FILE_LIST:
 		case G_REAL_TIME:
 		case G_SNAPVECTOR:
 		case G_ENTITY_CONTACTCAPSULE:
@@ -183,8 +183,8 @@ int sv_game_systemcalls(vmptr_t *args)
 		case G_DOBJ_GET_TREE:
 		case G_XANIM_GET_ANIM_TREE_SIZE:
 		case G_XMODEL_DEBUG_BOXES:
-		case G_GET_WEAPONINFO_MEMORY:
-		case G_FREE_WEAPONINFO_MEMORY:
+		case G_GET_WEAPON_INFO_MEMORY:
+		case G_FREE_WEAPON_INFO_MEMORY:
 		case G_FREE_CLIENT_SCRIPT_PERS:
 		case G_RESET_ENTITY_PARSE_POINT:
 			break;

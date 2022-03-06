@@ -493,7 +493,7 @@ void update_cvars(void)
 	struct cvar_table *cv;
 
 	for (i = 0, cv = cvar_table; i < cvar_table_size; i++, cv++) {
-		if (!cv->vm_cvar)
+		if (cv->vm_cvar == NULL)
 			continue;
 
 		trap_cvar_update(cv->vm_cvar);

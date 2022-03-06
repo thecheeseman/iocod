@@ -51,7 +51,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #define CVAR_8192			8192
 #define CVAR_8193			(CVAR_8192 | CVAR_ARCHIVE)
-#define CVAR_2004			(CVAR_SERVERINFO | CVAR_8192)
+#define CVAR_2004			(CVAR_SERVER_INFO | CVAR_8192)
 
 // nothing outside the cvar_*() functions should modify these fields!
 struct cvar {
