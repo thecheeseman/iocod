@@ -986,7 +986,7 @@ void com_init(char *cmdline)
 	cvar_init();
 	com_parse_commandline(cmdline);
 
-	swap_init();
+	//swap_init();
 	cbuf_init();
 
 	com_init_zone_memory(); 

@@ -30,9 +30,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <unistd.h>
 #include <fcntl.h>
 
+#ifndef DISABLE_CURL
+#include <curl/curl.h>
+#endif
+
 uid_t saved_euid;
 
 void init_signals(void); // signals.c
+void auto_update(int argc, char *argv[]); // autoupdate.c
 
 void gpl_notice(void)
 {
@@ -49,6 +54,8 @@ int main(int argc, char* argv[])
 {
 	int len, i;
 	char* cmdline;
+
+	init_signals();
 
 	// go back to real user for config loads ??
 	saved_euid = geteuid();
@@ -74,6 +81,18 @@ int main(int argc, char* argv[])
 	gpl_notice();
 	//
 
+	swap_init();
+
+	//
+	#if !defined(DISABLE_CURL)
+	curl_global_init(CURL_GLOBAL_ALL);
+	#endif
+
+	#if !defined(DISABLE_AUTO_UPDATE)
+	auto_update(argc, argv);
+	#endif
+	//
+
 	sys_events_init();
 	com_init(cmdline);
 	z_free(cmdline); // no longer needed
@@ -82,7 +101,6 @@ int main(int argc, char* argv[])
 	sys_console_input_init();
 
 	fcntl(0, F_SETFL, fcntl(0, F_GETFL, 0) | FNDELAY);
-	init_signals();
 
 	while (1) {
 		sys_configure_fpu();
