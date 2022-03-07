@@ -35,7 +35,8 @@ sources, as well as the excellent work done on [CoDExtended][3] by
 [riicchhaarrd][4], [dftd][5], and the rest of the xtnded team. Inevitably, 
 as the xtnded project was originally influenced and inspired by 
 [kungfooman][7]'s [libcod][6] project, that project has been included here 
-for posterity.
+for posterity. Additionally, any other projects who inspired or influenced
+code decisions are listed below.
 
 id-software
 - [Quake III Team Arena GPL Source][1]
@@ -47,6 +48,9 @@ xtnded team
 kungfooman
 - [libcod][6]
 
+Minqi Pan et al.
+- [libautoupdate][9]
+
 [1]: <https://github.com/id-Software/Quake-III-Arena>
 [2]: <https://github.com/id-Software/RTCW-MP>
 [3]: <https://github.com/xtnded/codextended>
@@ -55,14 +59,22 @@ kungfooman
 [6]: <https://github.com/kungfooman/libcod>
 [7]: <https://github.com/kungfooman>
 [8]: <https://github.com/id-software>
+[9]: <https://github.com/pmq20/libautoupdate>
 
 Requirements
 ------------
+
+If you want to compile the project yourself, you will need the following:
 - `cmake` version 3.13 or above
+- `libcurl4-openssl-dev`
+- `git`
 - compatible C compiler (`gcc`, `clang` or `msvc`)
 
 If compiling for 32-bit, please specify the build flag `-DFORCE_32_BIT`
 to ensure a proper 32-bit binary is created.
+
+If you just want to run the already built binaries, you will need:
+- `libcurl4`
 
 Compiliation
 ------------
