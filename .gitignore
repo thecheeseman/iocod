@@ -56,6 +56,11 @@ dkms.conf
 
 # ignore builds for now
 out/
+updateserver/
+releases/
+
+# curl
+src/include/curl
 
 # also ignore these just so the repository is clean
 Doxyfile
