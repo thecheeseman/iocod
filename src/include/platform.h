@@ -37,27 +37,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
 
-#if defined(_WIN64)
-// WIN64
-#define ARCH_STRING "x86_64"
-
-#if defined(_MSC_VER)
-#define OS_STRING "win_msvc64"
-#elif defined(__MINGW64__)]
-#define OS_STRING "win_mingw64"
-// WIN64
-#endif
-#else
-// WIN32
-#define ARCH_STRING "x86"
-
 #if defined(_MSC_VER)
 #define OS_STRING "win_msvc"
-#elif defined(__MINGW32__)]
+#elif defined(__MINGW32__) || defined(__MINGW64__)
 #define OS_STRING "win_mingw"
-#endif
-// WIN32
-#endif
+#else
+#error Unknown or unsupported Windows OS
+#endif // _MSC_VER
+
+#if defined(_WIN64)
+#define ARCH_STRING "x86_64"
+#else
+#define ARCH_STRING "x86"
+#endif // _WIN64
 
 // windows common
 #define DLL_EXT "dll"
@@ -76,8 +68,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef __BASE_FILE__
 #define __BASE_FILE__ __FILE__
-#endif
-#endif
+#endif // __BASE_FILE__
+#endif // _WIN32
 
 //
 // Linux
@@ -97,7 +89,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define ARCH_STRING "i386"
 #elif defined(__x86_64__)
 #define ARCH_STRING "x86_64"
-#endif
+#endif // __i386__
 
 #if __FLOAT_WORD_ORDER == __BIG_ENDIAN
 #define Q3_BIG_ENDIAN
