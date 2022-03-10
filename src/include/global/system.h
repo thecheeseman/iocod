@@ -75,8 +75,8 @@ void sys_error(const char *error, ...);
 void sys_warn(char *warning, ...);
 void sys_show_console(int viewlog, int b);
 void *sys_load_dll(const char *name, char *fqpath,
-				   int (**entrypoint)(intptr_t, ...), 
-				   int (*systemcalls)(intptr_t, ...));
+				   intptr_t (**entrypoint)(intptr_t, ...), 
+				   intptr_t (*systemcalls)(intptr_t, ...));
 void sys_unload_dll(void *dllhandle);
 
 //

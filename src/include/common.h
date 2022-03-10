@@ -137,7 +137,7 @@ bool net_get_loop_packet(int sock, struct netadr *from, struct msg *msg);
 //
 //
 struct vm {
-	int (*system_call)(intptr_t *parms);
+	intptr_t (*system_call)(intptr_t *parms);
 
 	char name[MAX_QPATH];
 	char full_qpath[MAX_QPATH + 1];
@@ -145,13 +145,13 @@ struct vm {
 	char data[3];
 
 	void *dll_handle;
-	int (*entry_point)(intptr_t callnum, ...);
+	intptr_t (*entry_point)(intptr_t callnum, ...);
 };
 
 void vm_init(void);
-struct vm *vm_create(const char *module, int (*systemcalls)(intptr_t *));
+struct vm *vm_create(const char *module, intptr_t (*systemcalls)(intptr_t *));
 void vm_free(struct vm *vm);
 void vm_clear(void);
-int QDECL vm_call(struct vm *vm, intptr_t callnum, ...);
+intptr_t QDECL vm_call(struct vm *vm, intptr_t callnum, ...);
 
 #endif // __COMMON_H__

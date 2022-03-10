@@ -39,7 +39,7 @@ void vm_init(void)
 	memset(vmtable, 0, sizeof(vmtable));
 }
 
-int QDECL vm_dll_syscall(intptr_t arg, ...)
+intptr_t QDECL vm_dll_syscall(intptr_t arg, ...)
 {
 	intptr_t args[16];
 	size_t i;
@@ -55,7 +55,7 @@ int QDECL vm_dll_syscall(intptr_t arg, ...)
 	//return currentvm->system_call(&arg);
 }
 
-struct vm *vm_create(const char *module, int (*system_calls)(intptr_t *))
+struct vm *vm_create(const char *module, intptr_t (*system_calls)(intptr_t *))
 {
 	struct vm *vm;
 	int i;
@@ -118,7 +118,7 @@ void vm_clear(void)
 	lastvm = NULL;
 }
 
-int QDECL vm_call(struct vm *vm, intptr_t callnum, ...)
+intptr_t QDECL vm_call(struct vm *vm, intptr_t callnum, ...)
 {
 	int r;
 	struct vm *oldvm;
