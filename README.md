@@ -3,12 +3,11 @@ iocod
 
 Table of Contents
 1. [Introduction](#introduction)
-2. [Sources](#sources)
-3. [Requirements](#requirements)
-4. [Compilation](#compilation)
-5. [Installation](#installation)
-6. [License](#license)
-7. [Excluded Code](#excluded-code)
+2. [Build Requirements](#build-requirements)
+3. [Installation](#installation)
+4. [Sources](#sources)
+5. [License](#license)
+6. [Excluded Code](#excluded-code)
 
 Introduction
 ------------
@@ -26,6 +25,66 @@ the official product media.
 
 This material is not made or supported in any way by Infinity Ward, 
 Activision, or Microsoft.
+
+Build Requirements
+------------------
+
+Debian/Ubuntu:
+- `gcc`
+- `make` _or_ optionally `ninja-build`
+- `cmake`
+
+Windows:
+- Visual Studio 2019/2022.
+
+Other requirements:
+- cURL
+    - Debian/Ubuntu: `libcurl4-openssl-dev`
+	- Windows: use [vcpkg](https://vcpkg.io/en/index.html) to install
+	- _Note: you can disable cURL support with the build flag `-DDISABLE_CURL=ON`_
+
+### 32-bit Compile Requirements
+
+If you are running a 64-bit system and would like to compile 32-bit binaries,
+you will need to do a couple special things. 
+
+You will first need to install the 32-bit runtime libraries by doing the 
+following:
+- `dpkg --add-architecture i386`
+- `apt update`
+- `apt install gcc-multilib`
+
+Then, when building, please specify `-DFORCE_32_BIT=ON` to ensure a proper 
+32-bit binary is created.
+
+### Building
+
+Compilation is straight forward:
+
+1. `mkdir out && cd out`
+2. `cmake .. [build flags]`
+    - Optionally, if you want to use [Ninja][10]: `cmake .. -G Ninja [build flags]`. 
+3. `cmake --build .`
+
+You should end up with a `iocod` executable and a `game mp` library in the 
+`main` folder.
+
+[10]: <https://ninja-build.org/>
+
+#### Optional build flags
+
+- `-DFORCE_32_BIT=ON` force 32-bit compilation
+- `-DDISABLE_AUTO_UPDATE=ON` disable auto update feature 
+- `-DDISABLE_CURL=ON` disable cURL features (also disables auto update)
+
+Install
+-------
+
+Simply put the `iocod` binary into your Call of Duty server's root path, 
+and then place the `game.mp.arch` library in the `main` folder.
+
+**Note**: If you are using the pre-built binaries, you will need to install
+- Debian/Ubuntu: `sudo apt install libcurl4`
 
 Sources
 -------
@@ -60,27 +119,6 @@ Minqi Pan et al.
 [7]: <https://github.com/kungfooman>
 [8]: <https://github.com/id-software>
 [9]: <https://github.com/pmq20/libautoupdate>
-
-Requirements
-------------
-
-If you want to compile the project yourself, you will need the following:
-- `cmake` version 3.13 or above
-- `libcurl4-openssl-dev`
-- `git`
-- compatible C compiler (`gcc`, `clang` or `msvc`)
-
-If compiling for 32-bit, please specify the build flag `-DFORCE_32_BIT`
-to ensure a proper 32-bit binary is created.
-
-If you just want to run the already built binaries, you will need:
-- `libcurl4`
-
-Compiliation
-------------
-
-Installation
-------------
 
 License
 -------
