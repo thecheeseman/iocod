@@ -13,6 +13,7 @@ Table of Contents
 5. [Conditions](#Conditions)
 6. [Switch Statements](#Switch-Statements)
 7. [Functions](#Functions)
+8. [Naming Conventions](#Naming-Conventions)
 
 ## Indentation
 
@@ -222,4 +223,35 @@ struct big_data *get_all_of_my_data(int data1,
 {
     // body
 }
+```
+
+## Naming Conventions
+
+In line with the Linux Kernel style guide, variables, functions, and any named
+values should be clear, concise, and explain exactly what they do.
+
+- names should always be _lowercase_ and **not** use camelCase
+- names should _never_ use Hungarian notation (mNumber, fFloat)
+- underscores (`_`) should be used to separate different nouns / words in 
+  longer names
+    - e.g. `parseweaponstruct` -> `parse_weapon_struct`
+- names like `i` or `j` are acceptable in cases where they are used to denote
+  loop counters
+
+The only exceptions are:
+
+- macros constants, which should be defined in all _UPPERCASE_
+
+An example of what not to do:
+```
+int mLoopCounter;
+char *MYSTRING;
+float SomeFloatingNumber = 1.5;
+```
+
+Better examples:
+```
+int i;
+char *message;
+float three_halfs = 1.5;
 ```
