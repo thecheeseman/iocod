@@ -215,16 +215,19 @@ struct netfield player_state_fields[] = {
 // TEMP
 void huff_decompress(struct msg *msg, int a)
 {
-
+	UNUSED(msg);
+	UNUSED(a);
 }
 
 void msg_begin_reading_oob(struct msg *msg)
 {
-
+	UNUSED(msg);
 }
 
 char *msg_read_string_line(struct msg *msg)
 {
+	UNUSED(msg);
+
 	return "";
 }
 

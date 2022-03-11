@@ -72,6 +72,8 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
 	va_list argptr;
 	char msg[1024];
 
+	UNUSED(level);
+
 	va_start(argptr, fmt);
 	vsnprintf(msg, sizeof(msg), fmt, argptr);
 	va_end(argptr);
@@ -84,6 +86,11 @@ void com_error_runner(enum error_code code, const char *file, const char *func,
 {
 	va_list argptr;
 	char err[1024];
+
+	UNUSED(code);
+	UNUSED(file);
+	UNUSED(func);
+	UNUSED(line);
 
 	va_start(argptr, fmt);
 	vsnprintf(err, sizeof(err), fmt, argptr);

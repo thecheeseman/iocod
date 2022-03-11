@@ -31,11 +31,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-
 struct cvar *cl_shownet;
 struct cvar *cl_language;
 
@@ -57,12 +52,12 @@ void cl_start_hunk_users(void)
 
 void cl_console_print(const char *msg)
 {
-
+	UNUSED(msg);
 }
 
 void cl_disconnect(bool showmainmenu)
 {
-
+	UNUSED(showmainmenu);
 }
 
 void cl_flush_memory(void)
@@ -87,37 +82,45 @@ void s_clear_sound_buffer(void)
 
 void cl_key_event(int value, int value2, int time)
 {
-
+	UNUSED(value);
+	UNUSED(value2);
+	UNUSED(time);
 }
 
 void cl_char_event(int value)
 {
-
+	UNUSED(value);
 }
 
 void cl_mouse_event(int value, int value2, int time)
 {
-
+	UNUSED(value);
+	UNUSED(value2);
+	UNUSED(time);
 }
 
 void cl_joystick_event(int value, int value2, int time)
 {
-
+	UNUSED(value);
+	UNUSED(value2);
+	UNUSED(time);
 }
 
 void cl_packet_event(struct netadr evfrom, struct msg *buf)
 {
-
+	UNUSED(evfrom);
+	UNUSED(buf);
 }
 
 void cl_frame(int msec, int timescale)
 {
-
+	UNUSED(msec);
+	UNUSED(timescale);
 }
 
 void key_write_bindings(filehandle f)
 {
-
+	UNUSED(f);
 }
 
 void cl_map_loading(void)
@@ -142,9 +145,5 @@ bool ui_game_command(void)
 
 void cl_forward_command_to_server(const char *text)
 {
-
+	UNUSED(text);
 }
-
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif

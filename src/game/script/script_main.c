@@ -5,32 +5,42 @@ struct game_script_data g_scr_data;
 // temp
 void scr_set_entity_field(int a, int b)
 {
-
+	UNUSED(a);
+	UNUSED(b);
 }
 
 void scr_get_entity_field(int a, int b)
 {
-
+	UNUSED(a);
+	UNUSED(b);
 }
 
 void scr_set_hud_elem_field(int a, int b)
 {
-
+	UNUSED(a);
+	UNUSED(b);
 }
 
 void scr_get_hud_elem_field(int a, int b)
 {
-
+	UNUSED(a);
+	UNUSED(b);
 }
 // temp
 
 struct gsc_function *scr_get_function(const char **name, int *developer)
 {
+	UNUSED(name);
+	UNUSED(developer);
+
 	return NULL;
 }
 
 struct gsc_function *scr_get_method(const char **name, int *developer)
 {
+	UNUSED(name);
+	UNUSED(developer);
+
 	return NULL;
 }
 
@@ -52,6 +62,8 @@ void scr_get_object_field(int a, int b, int c)
 
 int scr_load_read(int a)
 {
+	UNUSED(a);
+
 	return 0;
 }
 

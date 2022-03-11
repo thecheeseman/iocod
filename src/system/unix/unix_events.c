@@ -75,8 +75,8 @@ struct system_event sys_get_event(void)
 {
 	struct system_event ev;
 	char *s = NULL;
-	struct msg netmsg;
-	struct netadr adr;
+	//struct msg netmsg;
+	//struct netadr adr;
 
 	// return if we have event data
 	if (eventhead > eventtail) {

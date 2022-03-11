@@ -42,7 +42,7 @@ int	c_winding_points;
 struct winding *alloc_winding(int points)
 {
 	struct winding *w;
-	int	s;
+	//int	s;
 
 	c_winding_allocs++;
 	c_winding_points += points;

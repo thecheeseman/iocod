@@ -173,6 +173,8 @@ void test_localized_strings(void)
 
 int main(int argc, char *argv[])
 {
+	UNUSED(argc);
+	UNUSED(argv);
 	test_functionality();
 	test_localized_strings();
 

@@ -50,10 +50,10 @@ static char *remote_version;
 static size_t check_header_for_version_string(char *str, size_t size, 
 									   size_t num_items, void *user_data)
 {
-	char *newstr;
 	int len;
-
 	size_t numbytes = size * num_items;
+
+	UNUSED(user_data);
 
 	if (strstr(str, "location: ") != NULL) {
 		len = strlen(str + 10) - 2;
@@ -72,6 +72,8 @@ static size_t check_for_failed_download(char *str, size_t size,
 {
 	int len;
 	size_t numbytes = size * num_items;
+
+	UNUSED(user_data);
 
 	if (strstr(str, "location: ") != NULL && !download_failed) {
 		len = strlen(str + 10) - 2;
@@ -409,8 +411,10 @@ int auto_update(int argc, char *argv[])
 {
 	CURL *handle;
 	CURLcode res;
-	int i, ret = AU_OK;
+	int ret = AU_OK;
 	char current_version[32] = {0};
+
+	UNUSED(argc);
 
 	strcat(current_version, "v");
 	strcat(current_version, VERSION_NUMBER);

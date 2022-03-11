@@ -221,7 +221,7 @@ uint16_t scr_exec_thread_ent_num(int32_t a, int32_t b, int32_t c, int32_t d)
     return (*_scr_exec_thread_ent_num)(a, b, c, d);
 }
 
-bool UNUSED scr_is_thread_alive(uint16_t thread)
+bool SCRIPT_UNUSED scr_is_thread_alive(uint16_t thread)
 {
     return (*_scr_is_thread_alive)(thread);
 }
@@ -271,12 +271,12 @@ void scr_remove_class_map(void)
     (*_scr_remove_class_map)();
 }
 
-void UNUSED scr_spacer1(void)
+void SCRIPT_UNUSED scr_spacer1(void)
 {
     (*_scr_spacer1)();
 }
 
-void UNUSED scr_spacer2(void)
+void SCRIPT_UNUSED scr_spacer2(void)
 {
     (*_scr_spacer2)();
 }
@@ -336,62 +336,62 @@ void scr_alloc_game_variable(void)
     (*_scr_alloc_game_variable)();
 }
 
-void UNUSED scr_get_checksum(int32_t a)
+void SCRIPT_UNUSED scr_get_checksum(int32_t a)
 {
     (*_scr_get_checksum)(a);
 }
 
-void UNUSED scr_has_source_files(void)
+void SCRIPT_UNUSED scr_has_source_files(void)
 {
     (*_scr_has_source_files)();
 }
 
-void UNUSED scr_save_source(int32_t a)
+void SCRIPT_UNUSED scr_save_source(int32_t a)
 {
     (*_scr_save_source)(a);
 }
 
-void UNUSED scr_load_source(int32_t a)
+void SCRIPT_UNUSED scr_load_source(int32_t a)
 {
     (*_scr_load_source)(a);
 }
 
-void UNUSED scr_skip_source(int32_t a)
+void SCRIPT_UNUSED scr_skip_source(int32_t a)
 {
     (*_scr_skip_source)(a);
 }
 
-void UNUSED scr_save_pre(int32_t a)
+void SCRIPT_UNUSED scr_save_pre(int32_t a)
 {
     (*_scr_save_pre)(a);
 }
 
-void UNUSED scr_save_post(int32_t a)
+void SCRIPT_UNUSED scr_save_post(int32_t a)
 {
     (*_scr_save_post)(a);
 }
 
-void UNUSED scr_save_shutdown(void)
+void SCRIPT_UNUSED scr_save_shutdown(void)
 {
     (*_scr_save_shutdown)();
 }
 
-void UNUSED scr_spacer3(void)
+void SCRIPT_UNUSED scr_spacer3(void)
 {
     (*_scr_spacer3)();
 }
 
-void UNUSED scr_load_pre(int32_t a, int32_t b)
+void SCRIPT_UNUSED scr_load_pre(int32_t a, int32_t b)
 {
     (*_scr_load_pre)(a, b);
 }
 
-void UNUSED scr_load_shutdown(void)
+void SCRIPT_UNUSED scr_load_shutdown(void)
 {
     (*_scr_load_shutdown)();
 }
 
-void UNUSED scr_spacer4(void)
+void SCRIPT_UNUSED scr_spacer4(void)
 {
     (*_scr_spacer4)();
 }
@@ -421,12 +421,12 @@ void scr_free_thread(uint16_t thread)
     (*_scr_free_thread)(thread);
 }
 
-uint16_t UNUSED scr_convert_thread_to_save(uint16_t thread)
+uint16_t SCRIPT_UNUSED scr_convert_thread_to_save(uint16_t thread)
 {
     return (*_scr_convert_thread_to_save)(thread);
 }
 
-uint16_t UNUSED scr_convert_thread_from_load(uint16_t thread)
+uint16_t SCRIPT_UNUSED scr_convert_thread_from_load(uint16_t thread)
 {
     return (*_scr_convert_thread_from_load)(thread);
 }
@@ -471,7 +471,7 @@ uint16_t sl_find_lowercase_string(int32_t a)
     return (*_sl_find_lowercase_string)(a);
 }
 
-uint16_t UNUSED scr_create_canonical_filename(int32_t a)
+uint16_t SCRIPT_UNUSED scr_create_canonical_filename(int32_t a)
 {
     return (*_scr_create_canonical_filename)(a);
 }
@@ -496,7 +496,7 @@ int32_t scr_get_anims_index(int32_t a)
     return (*_scr_get_anims_index)(a);
 }
 
-void UNUSED scr_get_anims(int32_t a)
+void SCRIPT_UNUSED scr_get_anims(int32_t a)
 {
     (*_scr_get_anims)(a);
 }

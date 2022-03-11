@@ -97,6 +97,8 @@ static char *alias_file;
 
 static bool snd_validate_token(const char *token)
 {
+	UNUSED(token);
+
 	return true;
 }
 
@@ -351,6 +353,10 @@ int snd_parse_alias_file(const char *map, const char *filename, int a, int b)
 {
 	int len;
 	char *buf, *buf_p, *token;
+
+	UNUSED(token);
+	UNUSED(map);
+	UNUSED(b);
 
 	len = fs_read_file(filename, (void **) &buf);
 	if (len < 0)

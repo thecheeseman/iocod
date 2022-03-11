@@ -342,6 +342,8 @@ void sv_spawn_server(char *server)
 	char system_info[16384];
 	struct cvar *xmodelcheck;
 	bool keep_persistent;
+
+	UNUSED(xmodelcheck);
 	
 	xmodelcheck = cvar_get("cl_xmodelcheck", "0", CVAR_LATCH | CVAR_ARCHIVE);
 	// fun_080cc4b0(xmodelcheck->integer);
@@ -470,6 +472,8 @@ void sv_spawn_server(char *server)
 
 void sv_shutdown(char *finalmsg)
 {
+	UNUSED(finalmsg);
+
 	if (!com_sv_running || !com_sv_running->integer)
 		return;
 

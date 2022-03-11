@@ -18,7 +18,7 @@ redirects_header	script_redirects.h
 redirects_body		script_redirects.c
 
 // for unused functions, just as a reference
-unused_define		UNUSED
+unused_define		SCRIPT_UNUSED
 
 //////////////////////////
 // function definitions //

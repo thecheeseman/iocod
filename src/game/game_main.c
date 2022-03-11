@@ -231,6 +231,8 @@ extern intptr_t scr_far_hook(intptr_t addr);
 intptr_t DLLEXPORT vmMain(enum game_exports command, int arg0, int arg1, int arg2,
 					 int arg3, int arg4)
 {
+	UNUSED(arg4);
+
 	switch (command) {
 		case GAME_INIT:
 			g_init_game(arg0, arg1, arg2, arg3);

@@ -30,8 +30,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 static int num_planes;
 static struct patch_plane planes[MAX_PATCH_PLANES];
 
-static const struct patch_collide *debug_patch_collide;
-static const struct facet *debug_facet;
+//static const struct patch_collide *debug_patch_collide;
+//static const struct facet *debug_facet;
 static bool debug_block;
 static vec3_t debug_block_points[4];
 
@@ -96,6 +96,8 @@ bool cm_needs_subdivision(vec3_t a, vec3_t b, vec3_t c, int first_vert) {
 	vec3_t delta;
 	float dist;
 	int	i;
+
+	UNUSED(first_vert);
 
 	// calculate the linear midpoint
 	for (i = 0; i < 3; i++)
@@ -612,6 +614,8 @@ static void cm_set_border_inward(struct facet *facet, struct grid *grid,
 	int	k, l;
 	float *points[4];
 	int	numPoints;
+
+	UNUSED(grid_planes);
 
 	switch (which) {
 		case -1:
@@ -1209,12 +1213,16 @@ int cm_terrain_func1(int count, uint16_t *arr, uint16_t idx1, uint16_t idx2)
 struct terrain_collide *cm_generate_terrain_collide(int num_indexes,
 	uint16_t *indexes, int num_verts, vec3_t *points, vec3_t *origin)
 {
-	int i, j, c, r1;
-	uint16_t idx1, idx2, idx3;
-	uint16_t edges[MAX_TERRAIN_VAL];
-	uint16_t arr1[MAX_TERRAIN_VAL][2];
-	vec3_t v1, v2, v3, v4;
+	//int i, j, c, r1;
+	//uint16_t idx1, idx2, idx3;
+	//uint16_t edges[MAX_TERRAIN_VAL];
+	//uint16_t arr1[MAX_TERRAIN_VAL][2];
+	//vec3_t v1, v2, v3, v4;
 	struct terrain_collide *pf;
+
+	UNUSED(indexes);
+	UNUSED(points);
+	UNUSED(origin);
 
 	if (num_indexes % 3)
 		com_error(ERR_DROP, "num_indexes % 3 != 0, corrupt bsp?");

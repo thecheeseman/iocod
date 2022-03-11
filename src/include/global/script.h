@@ -154,7 +154,7 @@ extern struct client_field client_fields[];
 // but i still prefer to use 
 typedef struct gentity gentity_t;
 
-#define UNUSED
+#define SCRIPT_UNUSED
 #include "global/script_declarations.h"
 
 intptr_t scr_far_hook(intptr_t addr);

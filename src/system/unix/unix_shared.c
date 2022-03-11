@@ -49,7 +49,7 @@ void sys_mkdir(const char *path)
 
 void sys_end_streamed_file(filehandle f)
 {
-
+	UNUSED(f);
 }
 
 int sys_milliseconds(void)

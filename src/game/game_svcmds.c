@@ -200,7 +200,7 @@ void svcmd_say(void)
 // because server doesn't have this enabled
 void svcmd_configstrings(void)
 {
-	int i, sel, start, max;
+	int i, sel;
 	char s[MAX_STRING_CHARS];
 
 	if (trap_argc() > 1) {

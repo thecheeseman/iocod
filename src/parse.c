@@ -60,7 +60,7 @@ static struct parse_info parse_info[MAX_PARSE_INFO];
 static int parse_info_num;
 static struct parse_info *pi = &parse_info[0];
 
-static char line[1024];
+//static char line[1024];
 
 /**
  * @brief 
@@ -199,7 +199,6 @@ static char *skip_whitespace(char *data, bool *has_new_lines)
 
 static char *com_parse_ext2(char **data_p, bool allow_line_breaks)
 {
-	int len;
 	char *c = *data_p;
 
 	pi->token[0] = '\0';

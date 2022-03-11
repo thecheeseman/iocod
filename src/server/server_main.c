@@ -72,7 +72,8 @@ struct cvar *sv_wwwdldisconnected;
 
 void sv_packet_event(struct netadr from, struct msg *msg)
 {
-
+	UNUSED(from);
+	UNUSED(msg);
 }
 
 bool sv_check_paused(void)
@@ -106,7 +107,9 @@ bool sv_check_paused(void)
 
 void sv_set_cvar_config_string(int index, int count, int bit)
 {
-
+	UNUSED(index);
+	UNUSED(count);
+	UNUSED(bit);
 }
 
 void sv_calculate_pings(void)
@@ -152,18 +155,20 @@ void sv_send_client_messages(void)
 
 void sv_master_heartbeat(const char *heartbeat)
 {
-
+	UNUSED(heartbeat);
 }
 
 void sv_bot_frame(int time)
 {
-
+	UNUSED(time);
 }
 
 void sv_frame(int msec)
 {
 	int frame_msec, start_time;
 	char mapname[64];
+
+	UNUSED(start_time);
 
 	if (sv_killserver->integer) {
 		sv_shutdown_localized("EXE_SERVERKILLED");
@@ -324,7 +329,8 @@ char *sv_expand_new_lines(char *in) {
 
 void sv_add_server_command(struct client *cl, const char *cmd)
 {
-
+	UNUSED(cl);
+	UNUSED(cmd);
 }
 
 // 1.5 has 4 params
@@ -360,32 +366,32 @@ void sv_send_server_command(struct client *cl, const char *fmt, ...)
 
 void svc_get_status(struct netadr from)
 {
-
+	UNUSED(from);
 }
 
 void svc_get_info(struct netadr from)
 {
-
+	UNUSED(from);
 }
 
 void sv_get_challenge(struct netadr from)
 {
-
+	UNUSED(from);
 }
 
 void sv_direct_connect(struct netadr from)
 {
-
+	UNUSED(from);
 }
 
 void sv_authorize_ip_packet(struct netadr from)
 {
-
+	UNUSED(from);
 }
 
 void sv_remote_command(struct netadr from)
 {
-
+	UNUSED(from);
 }
 
 void sv_connectionless_packet(struct netadr from, struct msg *msg)

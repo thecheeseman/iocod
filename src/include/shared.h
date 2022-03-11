@@ -39,6 +39,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <limits.h>
 #include <stdint.h>
 
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
+// from kernel.h
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#define FIELD_SIZEOF(t, f) (sizeof(((t*)0)->f))
+//
+
+#define UNUSED(x) (void)(x)
+
 #define Q3_VERSION "iocod"
 #define BASEGAME "main"
 #define BASEDEMO "demomain" // not really necessary
@@ -68,16 +79,7 @@ typedef int boolean;
 #define PADLEN(base, alignment)	(PAD((base), (alignment)) - (base))
 #define PADP(base, alignment)	((void *) PAD((int) (base), (alignment)))
 
-// from kernel.h
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-#define FIELD_SIZEOF(t, f) (sizeof(((t*)0)->f))
-//
-
 #define MAX_FILE_HANDLES 64
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
 
 // TODO: increase this ?
 #define MAX_QINT            0x7fffffff
