@@ -95,7 +95,7 @@ static int alias_channels_count = sizeof(alias_channels) / sizeof(*alias_channel
 
 static char *alias_file;
 
-static bool snd_validate_token(const char *token)
+static bool INCOMPLETE snd_validate_token(const char *token)
 {
 	UNUSED(token);
 
@@ -349,7 +349,7 @@ void snd_parse_alias_line(const char *mapname, char *token, int id,
  * @param b 
  * @return 
 */
-int snd_parse_alias_file(const char *map, const char *filename, int a, int b)
+int INCOMPLETE snd_parse_alias_file(const char *map, const char *filename, int a, int b)
 {
 	int len;
 	char *buf, *buf_p, *token;

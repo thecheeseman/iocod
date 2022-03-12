@@ -98,17 +98,17 @@ void com_meminfo_f(void)
 			   BYTESTOMB(hunk_low.permanent + hunk_high.permanent));
 }
 
-void fun_080c27ec(void *a, void *b)
+void INCOMPLETE fun_080c27ec(void *a, void *b)
 {
 	(void) a; (void) b; //-Werror=unusued-parameter
 }
 
-void fun_08061888(void *a, void *b)
+void INCOMPLETE fun_08061888(void *a, void *b)
 {
 	(void) a; (void) b; //-Werror=unusued-parameter
 }
 
-void fun_08061980(void)
+void INCOMPLETE fun_08061980(void)
 {
 
 }

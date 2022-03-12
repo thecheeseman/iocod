@@ -610,7 +610,7 @@ void print_bsp_info(const char *mapname, int length, struct bsp_header *header)
  * @param clientload 
  * @param checksum
 */
-void cm_load_map(const char *name, bool clientload, int *checksum)
+void INCOMPLETE cm_load_map(const char *name, bool clientload, int *checksum)
 {
 	char mapname[64];
 	static unsigned last_checksum;

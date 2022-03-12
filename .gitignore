@@ -66,6 +66,10 @@ src/include/curl
 Doxyfile
 build_number.cmake
 
+# cscope
+cscope-gen.sh
+cscope.*
+
 # cmake
 CMakeLists.txt
 CMakeSettings.json

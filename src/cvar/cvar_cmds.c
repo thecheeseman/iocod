@@ -314,7 +314,7 @@ static void cvar_set_from_cvar_f(void)
 /**
  * @brief 
 */
-static void cvar_dump_f(void)
+static void INCOMPLETE cvar_dump_f(void)
 {
 
 }

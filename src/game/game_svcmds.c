@@ -185,7 +185,7 @@ static void svcmd_remove_ip(void)
 	g_printf("Didn't find %s.\n", str);
 }
 
-void svcmd_entity_list(void)
+void INCOMPLETE svcmd_entity_list(void)
 {
 
 }

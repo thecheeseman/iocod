@@ -607,7 +607,7 @@ static int cm_edge_plane_num(struct grid *grid,
  * @param j 
  * @param which 
 */
-static void cm_set_border_inward(struct facet *facet, struct grid *grid,
+static void INCOMPLETE cm_set_border_inward(struct facet *facet, struct grid *grid,
 								 int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2],
 								 int i, int j, int which)
 {
@@ -1177,7 +1177,8 @@ struct patch_collide *cm_generate_patch_collide(int width, int height,
  * @param idx2 
  * @return 
 */
-int cm_terrain_func1(int count, uint16_t *arr, uint16_t idx1, uint16_t idx2)
+int INCOMPLETE cm_terrain_func1(int count, uint16_t *arr, uint16_t idx1, 
+								uint16_t idx2)
 {
 	int i;
 
@@ -1210,7 +1211,7 @@ int cm_terrain_func1(int count, uint16_t *arr, uint16_t idx1, uint16_t idx2)
  * @todo finish decompiling / rewritting
 */
 #define MAX_TERRAIN_VAL 65536
-struct terrain_collide *cm_generate_terrain_collide(int num_indexes,
+struct terrain_collide * INCOMPLETE cm_generate_terrain_collide(int num_indexes,
 	uint16_t *indexes, int num_verts, vec3_t *points, vec3_t *origin)
 {
 	//int i, j, c, r1;

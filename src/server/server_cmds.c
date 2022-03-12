@@ -32,27 +32,27 @@ void sv_heartbeat_f(void)
 	svs.next_heartbeat_time = -9999999;
 }
 
-void sv_kick_f(void)
+void INCOMPLETE sv_kick_f(void)
 {
 
 }
 
-void sv_banuser_f(void)
+void INCOMPLETE sv_banuser_f(void)
 {
 
 }
 
-void sv_banclient_f(void)
+void INCOMPLETE sv_banclient_f(void)
 {
 
 }
 
-void sv_clientkick_f(void)
+void INCOMPLETE sv_clientkick_f(void)
 {
 
 }
 
-void sv_status_f(void)
+void INCOMPLETE sv_status_f(void)
 {
 
 }
@@ -69,7 +69,7 @@ static void sv_systeminfo_f(void)
 	info_print(cvar_info_string(CVAR_SYSTEM_INFO));
 }
 
-void sv_dumpuser_f(void)
+void INCOMPLETE sv_dumpuser_f(void)
 {
 
 }
@@ -79,7 +79,7 @@ void sv_dumpuser_f(void)
  * @param 
  * @todo finish writing function
 */
-void sv_map_restart_f(void)
+void INCOMPLETE sv_map_restart_f(void)
 {
 	char mapname[MAX_QPATH];
 	bool keep_persistent;
@@ -172,17 +172,17 @@ void sv_map_f(void)
 		cvar_set("sv_cheats", "0");
 }
 
-void sv_maprotate_f(void)
+void INCOMPLETE sv_maprotate_f(void)
 {
 
 }
 
-void sv_gamecompletestatus_f(void)
+void INCOMPLETE sv_gamecompletestatus_f(void)
 {
 
 }
 
-void sv_killserver_f(void)
+void INCOMPLETE sv_killserver_f(void)
 {
 
 }
@@ -213,49 +213,49 @@ void sv_consay_f(void)
 }
 
 #ifdef CODVERSION1_5
-void sv_tell_f(void)
+void INCOMPLETE sv_tell_f(void)
 {
 
 }
 #endif
 
-void sv_scriptusage_f(void)
+void INCOMPLETE sv_scriptusage_f(void)
 {
 
 }
 
-void sv_stringusage_f(void)
+void INCOMPLETE sv_stringusage_f(void)
 {
 
 }
 
 #ifdef CODVERSION1_5
-void sv_tempbanuser_f(void)
+void INCOMPLETE sv_tempbanuser_f(void)
 {
 
 }
 
-void sv_tempbanclient_f(void)
+void INCOMPLETE sv_tempbanclient_f(void)
 {
 
 }
 
-void sv_unbanuser_f(void)
+void INCOMPLETE sv_unbanuser_f(void)
 {
 
 }
 
-void sv_set_drawfriend_f(void)
+void INCOMPLETE sv_set_drawfriend_f(void)
 {
 
 }
 
-void sv_set_friendlyfire_f(void)
+void INCOMPLETE sv_set_friendlyfire_f(void)
 {
 
 }
 
-void sv_set_killcam_f(void)
+void INCOMPLETE sv_set_killcam_f(void)
 {
 
 }

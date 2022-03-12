@@ -270,7 +270,7 @@ void com_dprintf(const char *fmt, ...)
  * @param fmt 
  * @param  
 */
-void com_error_runner(enum error_code code, const char *file, const char *func, 
+void INCOMPLETE com_error_runner(enum error_code code, const char *file, const char *func,
 					  int line, const char *fmt, ...)
 {
 	va_list argptr;
@@ -351,7 +351,7 @@ void com_error_runner(enum error_code code, const char *file, const char *func,
 	longjmp(abortframe, -1);
 }
 
-static void com_error_handler(void)
+static void INCOMPLETE com_error_handler(void)
 {
 	struct cvar *v;
 
@@ -789,7 +789,7 @@ void com_write_config_to_file(const char *filename)
 	fs_fclose_file(f);
 }
 
-void com_write_defaults_to_file(const char *filename)
+void INCOMPLETE com_write_defaults_to_file(const char *filename)
 {
 	filehandle f;
 
@@ -942,7 +942,7 @@ void com_frame(void)
 	com_frame_number++;
 }
 
-static void com_set_recommended(void)
+static void INCOMPLETE com_set_recommended(void)
 {
 	void *cfg;
 	int len;
@@ -964,7 +964,7 @@ static void com_set_recommended(void)
 	// fn_080c6b84();
 }
 
-void com_init(char *cmdline)
+void INCOMPLETE com_init(char *cmdline)
 {
 	char *s;
 
@@ -1091,7 +1091,7 @@ void com_init(char *cmdline)
 	com_print_header("com_init complete", 40, '-');
 }
 
-void com_shutdown(void)
+void INCOMPLETE com_shutdown(void)
 {
 	/*
 	fun_0806dec0();
@@ -1120,12 +1120,12 @@ void com_shutdown(void)
 	net_shutdown();
 }
 
-void com_read_cdkey(const char *filename)
+void INCOMPLETE com_read_cdkey(const char *filename)
 {
-	(void) filename; //-Werror=unusued-parameter
+	UNUSED(filename);
 }
 
-void com_append_cdkey(const char *filename)
+void INCOMPLETE com_append_cdkey(const char *filename)
 {
-	(void) filename; //-Werror=unusued-parameter
+	UNUSED(filename);
 }

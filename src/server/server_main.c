@@ -70,7 +70,7 @@ struct cvar *sv_wwwbaseurl;
 struct cvar *sv_wwwdldisconnected;
 #endif
 
-void sv_packet_event(struct netadr from, struct msg *msg)
+void INCOMPLETE sv_packet_event(struct netadr from, struct msg *msg)
 {
 	UNUSED(from);
 	UNUSED(msg);
@@ -105,14 +105,14 @@ bool sv_check_paused(void)
 	return true;
 }
 
-void sv_set_cvar_config_string(int index, int count, int bit)
+void INCOMPLETE sv_set_cvar_config_string(int index, int count, int bit)
 {
 	UNUSED(index);
 	UNUSED(count);
 	UNUSED(bit);
 }
 
-void sv_calculate_pings(void)
+void INCOMPLETE sv_calculate_pings(void)
 {
 
 }
@@ -143,27 +143,27 @@ void sv_game_run_frame(void)
 	hunk_swap_temp_low();
 }
 
-void sv_check_timeouts(void)
+void INCOMPLETE sv_check_timeouts(void)
 {
 
 }
 
-void sv_send_client_messages(void)
+void INCOMPLETE sv_send_client_messages(void)
 {
 
 }
 
-void sv_master_heartbeat(const char *heartbeat)
+void INCOMPLETE sv_master_heartbeat(const char *heartbeat)
 {
 	UNUSED(heartbeat);
 }
 
-void sv_bot_frame(int time)
+void INCOMPLETE sv_bot_frame(int time)
 {
 	UNUSED(time);
 }
 
-void sv_frame(int msec)
+void INCOMPLETE sv_frame(int msec)
 {
 	int frame_msec, start_time;
 	char mapname[64];
@@ -327,7 +327,7 @@ char *sv_expand_new_lines(char *in) {
 	return string;
 }
 
-void sv_add_server_command(struct client *cl, const char *cmd)
+void INCOMPLETE sv_add_server_command(struct client *cl, const char *cmd)
 {
 	UNUSED(cl);
 	UNUSED(cmd);
@@ -364,37 +364,37 @@ void sv_send_server_command(struct client *cl, const char *fmt, ...)
 	}
 }
 
-void svc_get_status(struct netadr from)
+void INCOMPLETE svc_get_status(struct netadr from)
 {
 	UNUSED(from);
 }
 
-void svc_get_info(struct netadr from)
+void INCOMPLETE svc_get_info(struct netadr from)
 {
 	UNUSED(from);
 }
 
-void sv_get_challenge(struct netadr from)
+void INCOMPLETE sv_get_challenge(struct netadr from)
 {
 	UNUSED(from);
 }
 
-void sv_direct_connect(struct netadr from)
+void INCOMPLETE sv_direct_connect(struct netadr from)
 {
 	UNUSED(from);
 }
 
-void sv_authorize_ip_packet(struct netadr from)
+void INCOMPLETE sv_authorize_ip_packet(struct netadr from)
 {
 	UNUSED(from);
 }
 
-void sv_remote_command(struct netadr from)
+void INCOMPLETE sv_remote_command(struct netadr from)
 {
 	UNUSED(from);
 }
 
-void sv_connectionless_packet(struct netadr from, struct msg *msg)
+void INCOMPLETE sv_connectionless_packet(struct netadr from, struct msg *msg)
 {
 	char *s, *c;
 

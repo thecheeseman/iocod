@@ -354,7 +354,7 @@ bool fs_search_localized(struct searchpath *search)
 	return false;
 }
 
-void fun_08061070(char *a, char *b, const char *c, const char *d)
+void INCOMPLETE fun_08061070(char *a, char *b, const char *c, const char *d)
 {
 	(void) a; (void) b; (void) c; (void) d; //-Werror=unusued-parameter
 }
@@ -792,7 +792,7 @@ void fs_init_filesystem(void)
 	q_strncpyz(lastvalidgame, fs_gamedirvar->string, sizeof(lastvalidgame));
 }
 
-void fs_pure_server_set_loaded_paks(const char *paksums, const char *paknames)
+void INCOMPLETE fs_pure_server_set_loaded_paks(const char *paksums, const char *paknames)
 {
 	(void) paksums; (void) paknames; //-Werror=unusued-parameter
 }
@@ -892,7 +892,7 @@ struct searchpath *currentpaths = NULL;
 // 
 // searchpaths2 is some other data structure relating to files
 // probably script stuff
-void fs_shutdown(bool closemfp)
+void INCOMPLETE fs_shutdown(bool closemfp)
 {
 	int i;
 

@@ -97,7 +97,7 @@ extern void set_up_weapon_info(void);
  * @param restart 
  * @param param4 
 */
-void g_init_game(int level_time, int random_seed, int restart, int param4)
+void INCOMPLETE g_init_game(int level_time, int random_seed, int restart, int param4)
 {
 	char info_winner[MAX_STRING_CHARS];
 
@@ -191,7 +191,7 @@ void g_init_game(int level_time, int random_seed, int restart, int param4)
 	level.initializing = false;
 }
 
-void g_shutdown_game(bool restart)
+void INCOMPLETE g_shutdown_game(bool restart)
 {
 	if (restart)
 		g_printf("==== RestartGame ====\n");
@@ -216,7 +216,7 @@ void g_shutdown_game(bool restart)
 	trap_free_weapon_info_memory(0); // not sure what the 0 is for but whatever
 }
 
-void g_run_frame(int time)
+void INCOMPLETE g_run_frame(int time)
 {
 	level.frame_num++;
 	level.previous_time = level.time;
@@ -228,8 +228,8 @@ void g_run_frame(int time)
 
 extern intptr_t scr_far_hook(intptr_t addr);
 
-intptr_t DLLEXPORT vmMain(enum game_exports command, int arg0, int arg1, int arg2,
-					 int arg3, int arg4)
+intptr_t DLLEXPORT INCOMPLETE vmMain(enum game_exports command, int arg0, 
+									 int arg1, int arg2, int arg3, int arg4)
 {
 	UNUSED(arg4);
 

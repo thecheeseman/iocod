@@ -26,7 +26,7 @@ bool get_hint_string_index(int *hint, char *string)
 	return true;
 }
 
-int model_index(const char *model)
+int INCOMPLETE model_index(const char *model)
 {
 	int i;
 	const char *str;

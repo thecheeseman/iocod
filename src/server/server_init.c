@@ -336,7 +336,7 @@ void sv_create_baseline(void)
 	}
 }
 
-void sv_spawn_server(char *server)
+void INCOMPLETE sv_spawn_server(char *server)
 {
 	int i, checksum;
 	char system_info[16384];
@@ -470,7 +470,7 @@ void sv_spawn_server(char *server)
 	com_print_header("", 40, '-');
 }
 
-void sv_shutdown(char *finalmsg)
+void INCOMPLETE sv_shutdown(char *finalmsg)
 {
 	UNUSED(finalmsg);
 

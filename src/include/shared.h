@@ -49,6 +49,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
 #define UNUSED(x) (void)(x)
+#define INCOMPLETE
 
 #define Q3_VERSION "iocod"
 #define BASEGAME "main"

@@ -39,7 +39,7 @@ struct shared_entity *sv_gentity_num(int num)
 #define VMA(x) ((void *) args[x])
 #define VMF(x) ((float *) args)[x]
 
-intptr_t sv_game_systemcalls(intptr_t *args)
+intptr_t INCOMPLETE sv_game_systemcalls(intptr_t *args)
 {
 	switch (args[0]) {
 		case G_PRINT:
@@ -196,7 +196,7 @@ intptr_t sv_game_systemcalls(intptr_t *args)
 	return 0;
 }
 
-static void sv_init_game_vm(bool restart, bool keep_persistent)
+static void INCOMPLETE sv_init_game_vm(bool restart, bool keep_persistent)
 {
 	// sv.entityparsepoint = cm_entity_string();
 
@@ -235,7 +235,7 @@ void sv_init_game_progs(bool keep_persistent)
 	sv_init_game_vm(false, keep_persistent);
 }
 
-void sv_shutdown_game_progs(void)
+void INCOMPLETE sv_shutdown_game_progs(void)
 {
 	if (!gvm)
 		return;
@@ -251,7 +251,7 @@ void sv_shutdown_game_progs(void)
 	// fun_080bfea0(2);
 }
 
-bool sv_game_command(void)
+bool INCOMPLETE sv_game_command(void)
 {
 	if (sv.state != SS_GAME)
 		return false;
