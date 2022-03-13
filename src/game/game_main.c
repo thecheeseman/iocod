@@ -90,6 +90,11 @@ static void setup_logging(void)
 
 extern void set_up_weapon_info(void);
 
+#ifdef USE_LUA
+extern void lua_initialise(void);
+extern void lua_shutdown(void);
+#endif
+
 /**
  * @brief 
  * @param level_time 
@@ -181,10 +186,15 @@ void INCOMPLETE g_init_game(int level_time, int random_seed, int restart, int pa
 	scr_init_system(true, level.time);
 	scr_set_loading(true);
 	scr_alloc_game_variable();
+	*/
+
 	scr_load_gametype();
 	scr_load_level();
 	scr_startup_gametype();
-	*/
+
+	#ifdef USE_LUA
+	lua_initialise();
+	#endif
 
 	model_index("xmodel/weapon_mg42");
 
@@ -212,6 +222,10 @@ void INCOMPLETE g_shutdown_game(bool restart)
 
 	// free entities
 	// hudelem_destroy_all();
+
+	#ifdef USE_LUA
+	lua_shutdown();
+	#endif
 
 	trap_free_weapon_info_memory(0); // not sure what the 0 is for but whatever
 }

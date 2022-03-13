@@ -97,6 +97,13 @@ intptr_t scr_far_hook(intptr_t addr)
 }
 
 #define MAX_DESCRIPTION_LENGTH 1024
+#ifdef USE_LUA
+#define GT_EXT "lua"
+#define GT_LOC "luascripts/gametypes"
+#else
+#define GT_EXT "gsc"
+#define GT_LOC "maps/mp/gametypes"
+#endif
 void scr_parse_gametype_list(void)
 {
 	int nfiles, i, len, tlen, gtnamelen, num_gametypes, flen;
@@ -106,8 +113,7 @@ void scr_parse_gametype_list(void)
 	filehandle fp;
 
 	memset(g_scr_data.gametypes, 0, sizeof(g_scr_data.gametypes));
-	nfiles = trap_fs_get_file_list("maps/mp/gametypes", "gsc", list, 
-								   sizeof(list));
+	nfiles = trap_fs_get_file_list(GT_LOC, GT_EXT, list, sizeof(list));
 
 	num_gametypes = 0;
 	file = list;
@@ -121,7 +127,7 @@ void scr_parse_gametype_list(void)
 		}
 
 		// strip extension
-		if (q_stricmp(file + (len - 4), ".gsc") == 0)
+		if (q_stricmp(file + (len - 4), va(".%s", GT_EXT)) == 0)
 			file[len - 4] = '\0';
 
 		if (num_gametypes == MAX_GAMETYPES) {
@@ -140,7 +146,7 @@ void scr_parse_gametype_list(void)
 		q_strlwr(gametype->name);
 
 		// description file
-		filename = va("maps/mp/gametypes/%s.txt", file);
+		filename = va("%s/%s.txt", GT_LOC, file);
 		flen = trap_fs_fopen_file(filename, &fp, FS_READ);
 		if (flen < 1 || flen > MAX_DESCRIPTION_LENGTH) {
 			if (flen < 1) {
@@ -179,8 +185,11 @@ void scr_parse_gametype_list(void)
 		num_gametypes++;
 		file += len + 1;
 	}
+
+	g_scr_data.num_gametypes = num_gametypes;
 }
 
+#ifndef USE_LUA
 void scr_load_gametype(void)
 {
 
@@ -195,3 +204,4 @@ void scr_startup_gametype(void)
 {
 
 }
+#endif

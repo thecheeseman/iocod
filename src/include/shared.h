@@ -39,6 +39,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <limits.h>
 #include <stdint.h>
 
+#ifdef USE_LUA
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+
+extern lua_State *L;
+#endif
+
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
