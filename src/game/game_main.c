@@ -64,6 +64,8 @@ static void set_player_size(void)
 	player_maxs[2] = g_bounds_height_standing.value;
 }
 
+struct logger glog;
+
 static void setup_logging(void)
 {
 	char server_info[MAX_STRING_CHARS];
@@ -86,6 +88,13 @@ static void setup_logging(void)
 	} else {
 		g_printf("not logging to disk\n");
 	}
+
+	//
+	log_init(&glog, "gamelog", "gamelog.log", LOGLEVEL_DEBUG, LOGOPT_DEFAULT);
+
+	log_disable_stdout(&glog);
+	log_print(&glog, "init_game: %s", server_info);
+	log_enable_stdout(&glog);
 }
 
 extern void set_up_weapon_info(void);
@@ -207,6 +216,13 @@ void INCOMPLETE g_shutdown_game(bool restart)
 		g_log_printf("----------------------------------------------------");
 		trap_fs_fclose_file(level.logfile);
 	}
+
+	log_disable_stdout(&glog);
+	if (restart)
+		log_print(&glog, "restart game");
+	else
+		log_print(&glog, "shutdown game");
+	log_close(&glog);
 
 	// free entities
 

@@ -34,6 +34,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "script/script_local.h"
 #include "bg/bg_local.h"
 
+extern struct logger glog;
+
 extern vec3_t player_mins, player_maxs;
 extern int randomseed;
 

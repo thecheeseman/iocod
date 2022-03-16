@@ -63,13 +63,12 @@ Compilation is straight forward:
 
 1. `mkdir out && cd out`
 2. `cmake .. [build flags]`
-    - Optionally, if you want to use [Ninja][10]: `cmake .. -G Ninja [build flags]`. 
+    - Optionally, if you want to use [Ninja](<https://ninja-build.org/>): 
+	`cmake .. -G Ninja [build flags]`. 
 3. `cmake --build .`
 
 You should end up with a `iocod` executable and a `game mp` library in the 
 `main` folder.
-
-[10]: <https://ninja-build.org/>
 
 #### Optional build flags
 
@@ -110,6 +109,9 @@ kungfooman
 Minqi Pan et al.
 - [libautoupdate][9]
 
+Yuki Suzumoto
+- [c-logger][10]
+
 [1]: <https://github.com/id-Software/Quake-III-Arena>
 [2]: <https://github.com/id-Software/RTCW-MP>
 [3]: <https://github.com/xtnded/codextended>
@@ -119,6 +121,7 @@ Minqi Pan et al.
 [7]: <https://github.com/kungfooman>
 [8]: <https://github.com/id-software>
 [9]: <https://github.com/pmq20/libautoupdate>
+[10]: <https://github.com/yksz/c-logger>
 
 License
 -------
@@ -182,3 +185,24 @@ license for such code and complying with the applicable license terms.
 	either the merchantability of this software or the suitability of this software 
 	for any particular purpose. It is provided <93>as is<94> without express or 
 	implied warranty of any kind.
+
+#### c-logger License
+	Copyright (c) 2015 Yuki Suzumoto
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
