@@ -55,6 +55,4 @@ if (USE_LUA)
     list(APPEND GAME_SOURCES ${lua})
 endif()
 
-message(${GAME_SOURCES})
-
 target_sources(game PRIVATE ${GAME_SOURCES})

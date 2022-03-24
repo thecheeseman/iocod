@@ -54,9 +54,7 @@ following:
 - `apt update`
 - `apt install gcc-multilib`
 
-Make sure to use the build flag `-DCMAKE_TOOLCHAIN_FILE=<toolchain>` in order
-to force 32-bit compatibility. See [Optional build flags] or [Examples] below 
-for available 32-bit toolchains.
+Make sure to use the build flag `-DCOMPILE_32_BIT=ON` to force 32-bit compilation.
 
 ### Building
 
@@ -73,9 +71,7 @@ You should end up with a `iocod` executable and a `game mp` library in the
 
 #### Optional build flags
 
-- `-DCMAKE_TOOLCHAIN_FILE=<toolchain>` available toolchains:
-    - `cmake/linux-i386.cmake`
-    - `cmake/win32.cmake`
+- `-DCOMPILE_32_BIT-ON` force 32-bit compilation
 - `-DDISABLE_AUTO_UPDATE=ON` disable auto update feature 
 - `-DDISABLE_CURL=ON` disable cURL features (also disables auto update)
 

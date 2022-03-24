@@ -25,7 +25,6 @@
             ],
             "wslPath": "Debian",
             "remoteCopyAdditionalIncludeDirectories": [ "/usr/include/i386-linux-gnu" ],
-            "cmakeToolchain": "C:/Users/cheese/source/repos/iocod/cmake/linux-i386.cmake"
         },
         {
             "name": "WSL-GCC-Debug-x64",
@@ -63,7 +62,6 @@
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
             "inheritEnvironments": [ "msvc_x86" ],
-            "cmakeToolchain": "C:/Users/cheese/source/repos/iocod/cmake/win32.cmake"
         },
         {
             "name": "x64-Debug",

@@ -37,14 +37,14 @@ else()
   set(DEBUG 0)
 endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 foreach(CFGNAME ${CMAKE_CONFIGURATION_TYPES})
   string(TOUPPER ${CFGNAME} CFGNAME)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CFGNAME} ${CMAKE_BINARY_DIR}/bin)
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFGNAME} ${CMAKE_BINARY_DIR}/lib)
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFGNAME} ${CMAKE_BINARY_DIR}/lib)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CFGNAME} ${CMAKE_BINARY_DIR}/out)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFGNAME} ${CMAKE_BINARY_DIR}/out)
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFGNAME} ${CMAKE_BINARY_DIR}/out)
 endforeach()
 
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
@@ -53,6 +53,7 @@ set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
 #
 # main options
 #
+option(COMPILE_32_BIT "Compile 32-bit binaries and game dll" OFF)
 option(DISABLE_CURL "Disable cURL library support" OFF)
 option(DISABLE_AUTO_UPDATE "Disable auto-update feature" OFF)
 option(USE_LUA "Use Lua as scripting language instead of GSC" OFF)
@@ -72,7 +73,7 @@ endif()
 # then let's just make sure we're actually on a 64-bit system
 #
 set(COMPILE_64_BIT FALSE)
-if (NOT DEFINED COMPILE_32_BIT)
+if (COMPILE_32_BIT)
     include(CheckCSourceCompiles)
 
     check_c_source_compiles("
