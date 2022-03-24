@@ -40,8 +40,8 @@ Windows:
 Other requirements:
 - cURL
     - Debian/Ubuntu: `libcurl4-openssl-dev`
-	- Windows: use [vcpkg](https://vcpkg.io/en/index.html) to install
-	- _Note: you can disable cURL support with the build flag `-DDISABLE_CURL=ON`_
+    - Windows: use [vcpkg](https://vcpkg.io/en/index.html) to install
+    - _Note: you can disable cURL support with the build flag `-DDISABLE_CURL=ON`_
 
 ### 32-bit Compile Requirements
 
@@ -54,17 +54,18 @@ following:
 - `apt update`
 - `apt install gcc-multilib`
 
-Then, when building, please specify `-DFORCE_32_BIT=ON` to ensure a proper 
-32-bit binary is created.
+Make sure to use the build flag `-DCMAKE_TOOLCHAIN_FILE=<toolchain>` in order
+to force 32-bit compatibility. See [Optional build flags] or [Examples] below 
+for available 32-bit toolchains.
 
 ### Building
 
 Compilation is straight forward:
 
 1. `mkdir out && cd out`
-2. `cmake .. [build flags]`
+2. `cmake [build flags] ..`
     - Optionally, if you want to use [Ninja](<https://ninja-build.org/>): 
-	`cmake .. -G Ninja [build flags]`. 
+    `cmake -G Ninja [build flags] ..`. 
 3. `cmake --build .`
 
 You should end up with a `iocod` executable and a `game mp` library in the 
@@ -72,9 +73,29 @@ You should end up with a `iocod` executable and a `game mp` library in the
 
 #### Optional build flags
 
-- `-DFORCE_32_BIT=ON` force 32-bit compilation
+- `-DCMAKE_TOOLCHAIN_FILE=<toolchain>` available toolchains:
+    - `cmake/linux-i386.cmake`
+    - `cmake/win32.cmake`
 - `-DDISABLE_AUTO_UPDATE=ON` disable auto update feature 
 - `-DDISABLE_CURL=ON` disable cURL features (also disables auto update)
+
+#### Examples
+
+1. Basic x64 build
+
+    ```
+    mkdir out && cd out
+    cmake -G Ninja ..
+    cmake --build .
+    ```
+
+2. Basic 32-bit Linux build
+
+    ```
+    mkdir out && cd out
+    cmake -G ninja -DCMAKE_TOOLCHAIN_FILE=cmake/linux-i386.cmake ..
+    cmake --build .
+    ```
 
 Install
 -------
@@ -126,15 +147,15 @@ Yuki Suzumoto
 License
 -------
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
 
 For more information or to read the full license agreement, see 
 [LICENSE](LICENSE).
@@ -148,61 +169,61 @@ terms. You are solely responsible for obtaining from the copyright holder a
 license for such code and complying with the applicable license terms.
 
 #### Unzip License
-	IO on .zip files using portions of zlib
-	src/external/unzip.c
-	Copyright (C) 1998 Gilles Vollant
-	zlib is Copyright (C) 1995-1998 Jean-loup Gailly and Mark Adler
+    IO on .zip files using portions of zlib
+    src/external/unzip.c
+    Copyright (C) 1998 Gilles Vollant
+    zlib is Copyright (C) 1995-1998 Jean-loup Gailly and Mark Adler
 
-	This software is provided 'as-is', without any express or implied
-	warranty.  In no event will the authors be held liable for any damages
-	arising from the use of this software.
+    This software is provided 'as-is', without any express or implied
+    warranty.  In no event will the authors be held liable for any damages
+    arising from the use of this software.
 
-	Permission is granted to anyone to use this software for any purpose,
-	including commercial applications, and to alter it and redistribute it
-	freely, subject to the following restrictions:
+    Permission is granted to anyone to use this software for any purpose,
+    including commercial applications, and to alter it and redistribute it
+    freely, subject to the following restrictions:
 
-	1. The origin of this software must not be misrepresented; you must not
-		claim that you wrote the original software. If you use this software
-		in a product, an acknowledgment in the product documentation would be
-		appreciated but is not required.
-	2. Altered source versions must be plainly marked as such, and must not be
-		misrepresented as being the original software.
-	3. This notice may not be removed or altered from any source distribution.
+    1. The origin of this software must not be misrepresented; you must not
+        claim that you wrote the original software. If you use this software
+        in a product, an acknowledgment in the product documentation would be
+        appreciated but is not required.
+    2. Altered source versions must be plainly marked as such, and must not be
+        misrepresented as being the original software.
+    3. This notice may not be removed or altered from any source distribution.
 
 #### MD4 License
-	MD4 Message-Digest Algorithm
-	src/external/md4.c
-	Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All rights reserved.
+    MD4 Message-Digest Algorithm
+    src/external/md4.c
+    Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All rights reserved.
 
-	License to copy and use this software is granted provided that it is identified
-	as the <93>RSA Data Security, Inc. MD4 Message-Digest Algorithm<94> in all 
-	material mentioning or referencing this software or this function.
+    License to copy and use this software is granted provided that it is identified
+    as the <93>RSA Data Security, Inc. MD4 Message-Digest Algorithm<94> in all 
+    material mentioning or referencing this software or this function.
 
-	License is also granted to make and use derivative works provided that such 
-	works are identified as <93>derived from the RSA Data Security, Inc. 
-	MD4 Message-Digest Algorithm<94> in all material mentioning or referencing the 
-	derived work. RSA Data Security, Inc. makes no representations concerning 
-	either the merchantability of this software or the suitability of this software 
-	for any particular purpose. It is provided <93>as is<94> without express or 
-	implied warranty of any kind.
+    License is also granted to make and use derivative works provided that such 
+    works are identified as <93>derived from the RSA Data Security, Inc. 
+    MD4 Message-Digest Algorithm<94> in all material mentioning or referencing the 
+    derived work. RSA Data Security, Inc. makes no representations concerning 
+    either the merchantability of this software or the suitability of this software 
+    for any particular purpose. It is provided <93>as is<94> without express or 
+    implied warranty of any kind.
 
 #### c-logger License
-	Copyright (c) 2015 Yuki Suzumoto
+    Copyright (c) 2015 Yuki Suzumoto
 
-	Permission is hereby granted, free of charge, to any person obtaining a copy
-	of this software and associated documentation files (the "Software"), to deal
-	in the Software without restriction, including without limitation the rights
-	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the Software is
-	furnished to do so, subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-	The above copyright notice and this permission notice shall be included in all
-	copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.

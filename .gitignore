@@ -76,5 +76,5 @@ cpplint.sh
 CPPLINT.cfg
 
 # cmake
-CMakeLists.txt
-CMakeSettings.json
+#CMakeLists.txt
+#CMakeSettings.json

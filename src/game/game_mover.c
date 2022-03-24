@@ -1,3 +1,4 @@
+#if 0
 char *hint_strings[] = {
 	"",
 	"HINT_NONE",
@@ -12,3 +13,4 @@ char *hint_strings[] = {
 
 	NULL
 };
+#endif
