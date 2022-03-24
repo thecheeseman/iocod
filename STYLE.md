@@ -17,7 +17,7 @@ Table of Contents
 
 ## Indentation
 
-Indentation should be with `tabs` and not spaces.
+Indentation should be with `spaces`.
 
 Linus would not approve, but for the best Visual Studio experience, set 
 `Tab Size` and `Indent Size` to `4` (defaults). Tabs set to `8` unfortunately

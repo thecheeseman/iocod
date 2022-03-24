@@ -70,6 +70,11 @@ build_number.cmake
 cscope-gen.sh
 cscope.*
 
+# cpplint
+cpplint.def
+cpplint.sh
+CPPLINT.cfg
+
 # cmake
 CMakeLists.txt
 CMakeSettings.json
