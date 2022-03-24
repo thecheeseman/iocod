@@ -23,24 +23,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __LOGGER_H__
 #define __LOGGER_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <time.h>
-#include <errno.h>
-
-#if defined(_WIN32)
-#include <winsock2.h>
-#else
-#ifdef ENABLE_THREADING
-#include <pthread.h>
-#endif
-#include <sys/time.h>
-#include <sys/syscall.h>
-#include <unistd.h>
-#endif
-
 #define l_malloc malloc
 #define l_free free
 #define l_error(...) fprintf(stderr, __VA_ARGS__)
@@ -56,62 +38,62 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* defined(_WIN32) */
 
 enum log_level {
-	LOGLEVEL_NONE,
-	LOGLEVEL_FATAL,
-	LOGLEVEL_ERROR,
-	LOGLEVEL_WARN,
-	LOGLEVEL_INFO,
-	LOGLEVEL_DEBUG,
-	LOGLEVEL_TRACE,
-	LOGLEVEL_ALL
+    LOGLEVEL_NONE,
+    LOGLEVEL_FATAL,
+    LOGLEVEL_ERROR,
+    LOGLEVEL_WARN,
+    LOGLEVEL_INFO,
+    LOGLEVEL_DEBUG,
+    LOGLEVEL_TRACE,
+    LOGLEVEL_ALL
 };
 
 enum log_error {
-	LOGERR_OK,
-	LOGERR_NULL_LOG,
-	LOGERR_COULDNT_OPEN
+    LOGERR_OK,
+    LOGERR_NULL_LOG,
+    LOGERR_COULDNT_OPEN
 };
 
 enum log_options {
-	LOGOPT_NONE = 0,
-	LOGOPT_ECHO_STDOUT = 1,
-	LOGOPT_AUTO_OPEN = 2
+    LOGOPT_NONE = 0,
+    LOGOPT_ECHO_STDOUT = 1,
+    LOGOPT_AUTO_OPEN = 2
 };
 
 #define LOGOPT_DEFAULT (LOGOPT_AUTO_OPEN | LOGOPT_ECHO_STDOUT)
 
 struct logger {
-	char name[64];
-	char path[256];
+    char name[64];
+    char path[256];
 
-	enum log_level level;
-	enum log_options options;
+    enum log_level level;
+    enum log_options options;
 
-	FILE *fp;
-	size_t file_size;
-	int lasterr;
+    FILE *fp;
+    size_t file_size;
+    int lasterr;
 
-	struct timeval now;
+    struct timeval now;
 
-	// https://github.com/yksz/c-logger
-	#if defined(ENABLE_THREADING)
-	#if defined(_WIN32)
-	CRITICAL_SECTION mutex;
-	#else
-	pthread_mutex_t mutex;
-	#endif /* defined(_WIN32) */
-	#endif /* defined(ENABLE_THREADING) */
+    // https://github.com/yksz/c-logger
+    #if defined(ENABLE_THREADING)
+    #if defined(_WIN32)
+    CRITICAL_SECTION mutex;
+    #else
+    pthread_mutex_t mutex;
+    #endif /* defined(_WIN32) */
+    #endif /* defined(ENABLE_THREADING) */
 };
 
 void log_init(struct logger *l, const char *name, const char *path,
-			  enum log_level level, enum log_options options);
+              enum log_level level, enum log_options options);
 enum log_error log_open(struct logger *l);
 void log_close(struct logger *l);
 void log_clear(struct logger *l);
 void log_disable_stdout(struct logger *l);
 void log_enable_stdout(struct logger *l);
 void log_print_log(struct logger *l, enum log_level level, const char *function,
-				   const char *filename, int line, const char *fmt, ...);
+                   const char *filename, int line, const char *fmt, ...);
 
 // https://github.com/yksz/c-logger
 
