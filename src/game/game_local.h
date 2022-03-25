@@ -460,8 +460,6 @@ void g_printf(const char *fmt, ...);
 void g_dprintf(const char *fmt, ...);
 void g_error(const char *fmt, ...);
 void com_printf_runner(enum print_level level, const char *fmt, ...);
-void com_error_runner(enum error_code code, const char *file, const char *func,
-					  int line, const char *fmt, ...);
 void g_log_printf(const char *fmt, ...);
 
 //

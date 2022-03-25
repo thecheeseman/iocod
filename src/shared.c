@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
+#include "common/common_error.h"
+
 void com_sprintf(char *dest, int size, const char *fmt, ...)
 {
 	int len;

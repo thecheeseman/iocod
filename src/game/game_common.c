@@ -81,7 +81,7 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
 	g_printf("%s", msg);
 }
 
-void com_error_runner(enum error_code code, const char *file, const char *func,
+void com_error_runner(int code, const char *file, const char *func,
 					  int line, const char *fmt, ...)
 {
 	va_list argptr;

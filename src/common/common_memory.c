@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
+#include "common/common_error.h"
+
 #define HUNK_MAGIC  0x89537892
 #define HUNK_FREE_MAGIC 0x89537893
 

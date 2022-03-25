@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "cvar_local.h"
+#include "common/common_error.h"
 
 struct cvar *cvar_vars;
 struct cvar *cvar_cheats;

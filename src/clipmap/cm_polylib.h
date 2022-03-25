@@ -58,4 +58,4 @@ struct winding *copy_winding(struct winding *w);
 void chop_winding_in_place(struct winding **inout, vec3_t normal,
 						   vec_t dist, vec_t epsilon);
 
-#endif /* CLIPMAP_CM_POLYLIB_h */
+#endif /* CLIPMAP_CM_POLYLIB_H */

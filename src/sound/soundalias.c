@@ -4,6 +4,8 @@
 #include "shared.h"
 #include "common.h"
 
+#include "common/common_error.h"
+
 #define MAX_ALIAS_STRING_LEN	64
 #define MAX_ALIAS_SUBTITLE_LEN	4096
 

@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "cbuf.h"
 #include "common.h"
+#include "common/common_error.h"
 #include "types/byte.h"
 
 #define MAX_CMD_BUFFER 16384

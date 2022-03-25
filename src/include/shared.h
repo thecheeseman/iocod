@@ -92,17 +92,6 @@ enum print_level {
     PRINT_LOGONLY
 };
 
-enum error_code {
-    ERR_FATAL,                  // exit the entire game with a popup window
-    ERR_DROP,                   // print to console and disconnect from game
-    ERR_SERVERDISCONNECT,       // don't kill server
-    ERR_DISCONNECT,             // client disconnected from the server
-    ERR_NEED_CD,                // pop up the need-cd dialog
-    ERR_END_OF_GAME,
-    ERR_6,
-    ERR_7
-};
-
 enum fs_mode {
     FS_READ,
     FS_WRITE,
@@ -509,13 +498,6 @@ struct player_state {
 #ifndef com_printf
 void com_printf_runner(enum print_level level, const char *fmt, ...);
 #define com_printf(...) com_printf_runner(PRINT_ALL, __VA_ARGS__)
-#endif
-
-#ifndef com_error
-void com_error_runner(enum error_code code, const char *file, const char *func,
-                      int line, const char *fmt, ...);
-#define com_error(code, ...) \
-    com_error_runner(code, __BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 #endif
 
 //

@@ -27,6 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "shared.h"
 #include "common.h"
+#include "common/common_error.h"
 
 #include <unistd.h>
 #include <sys/socket.h>

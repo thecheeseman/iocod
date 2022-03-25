@@ -57,7 +57,6 @@ extern struct cvar *com_introplayed;
 extern struct cvar *com_animcheck;
 extern struct cvar *com_journal;
 extern struct cvar *com_recommendedset;
-extern bool com_error_entered;
 
 extern int com_frame_time;
 
@@ -111,48 +110,6 @@ void com_printf_dbginfo_runner(const char *file, const char *func, int line,
  * @param ... Message to print
 */
 void com_dprintf(const char *fmt, ...);
-
-/**
- * @brief Wrapper for com_error() - allow debug info to be printed
- * with src file/line info
- * @param code Error code
- * @param file Filename filled from __BASE_FILE__ macro
- * @param func Function name filled from __func__
- * @param line Line number filled from __LINE__
- * @param fmt Format of string
- * @param ... varargs
-*/
-void com_error_runner(enum error_code code, const char *file, const char *func,
-					  int line, const char *fmt, ...);
-
-void com_warning_runner(const char *file, const char *func, int line,
-						const char *fmt, ...);
-void com_debug_warning_runner(const char *file, const char *func, int line,
-								const char *fmt, ...);
-
-/**
- * @brief Raise an error
- * @param code Error code
- * @param args... Error message
-*/
-#define com_error(code, ...) \
-	com_error_runner(code, __BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
-
-/**
- * @brief Wrapper for sys_warn for better warning messages
- * @param fmt Format of string
- * @param ... varargs
-*/
-#define com_warning(...) \
-	com_warning_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
-
-/**
- * @brief Wrapper for sys_warn for better warning messages
- * @param fmt Format of string
- * @param ... varargs
-*/
-#define com_debug_warning(...) \
-	com_debug_warning_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
 /**
  * @brief Split commandline string into cbuf chunks for processing
