@@ -1,3 +1,6 @@
+
+#include "parse.h"
+
 #include "shared.h"
 #include "common.h"
 

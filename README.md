@@ -29,78 +29,67 @@ Activision, or Microsoft.
 Build Requirements
 ------------------
 
-Debian/Ubuntu:
-- `gcc`
-- `make` _or_ optionally `ninja-build`
+**Linux**
+- `gcc` 
+- `make` 
 - `cmake`
+- _(optional)_ cURL
+    - Debian/Unbuntu: `apt install libcurl4 libcurl4-openssl-dev`
+    - CentOS: `yum install libcurl libcurl-devel`
 
-Windows:
+**Windows**
 - Visual Studio 2019/2022.
+- _(optional)_ use [vcpkg](https://vcpkg.io/en/index.html) to install cURL libraries
 
-Other requirements:
-- cURL
-    - Debian/Ubuntu: `libcurl4-openssl-dev`
-    - Windows: use [vcpkg](https://vcpkg.io/en/index.html) to install
-    - _Note: you can disable cURL support with the build flag `-DDISABLE_CURL=ON`_
+_Note:_ You can force-disable any cURL support via the build flag: `
+-DDISABLE_CURL=ON`
 
 ### 32-bit Compile Requirements
 
 If you are running a 64-bit system and would like to compile 32-bit binaries,
 you will need to do a couple special things. 
 
-You will first need to install the 32-bit runtime libraries by doing the 
-following:
-- `dpkg --add-architecture i386`
-- `apt update`
-- `apt install gcc-multilib`
+**Debian/Ubuntu**
+```
+dpkg --add-architecture i386
+apt update
+apt install gcc-multilib
+```
 
-Make sure to use the build flag `-DCOMPILE_32_BIT=ON` to force 32-bit compilation.
+**CentOS**
+```
+yum install glibc.i686 glibc-devel.i686
+```
+
+Then you can compile with:
+```
+cmake -DCOMPILE_32_BIT=ON . && cmake --build .
+```
 
 ### Building
 
-Compilation is straight forward:
+Compilation is super simple: 
+```
+cmake . && cmake --build .
+```
 
-1. `mkdir out && cd out`
-2. `cmake [build flags] ..`
-    - Optionally, if you want to use [Ninja](<https://ninja-build.org/>): 
-    `cmake -G Ninja [build flags] ..`. 
-3. `cmake --build .`
-
-You should end up with a `iocod` executable and a `game mp` library in the 
-`main` folder.
-
-#### Optional build flags
+Optionally, you can add the following build flags:
 
 - `-DCOMPILE_32_BIT-ON` force 32-bit compilation
 - `-DDISABLE_AUTO_UPDATE=ON` disable auto update feature 
 - `-DDISABLE_CURL=ON` disable cURL features (also disables auto update)
 
-#### Examples
+For example, to build a 32-bit binary with no cURL, you can run:
 
-1. Basic x64 build
-
-    ```
-    mkdir out && cd out
-    cmake -G Ninja ..
-    cmake --build .
-    ```
-
-2. Basic 32-bit Linux build
-
-    ```
-    mkdir out && cd out
-    cmake -G ninja -DCMAKE_TOOLCHAIN_FILE=cmake/linux-i386.cmake ..
-    cmake --build .
-    ```
+```
+cmake -DCOMPILE_32_BIT=ON -DDISABLE_CURL=ON . && cmake --build .
+```
 
 Install
 -------
 
 Simply put the `iocod` binary into your Call of Duty server's root path, 
 and then place the `game.mp.arch` library in the `main` folder.
-
-**Note**: If you are using the pre-built binaries, you will need to install
-- Debian/Ubuntu: `sudo apt install libcurl4`
 
 Sources
 -------

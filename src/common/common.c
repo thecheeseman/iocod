@@ -25,6 +25,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include "parse.h"
+
 #include "shared.h"
 #include "common.h"
 #include <setjmp.h>

@@ -1,3 +1,5 @@
+#include "parse.h"
+
 #include "script_local.h"
 
 struct game_script_data g_scr_data;
