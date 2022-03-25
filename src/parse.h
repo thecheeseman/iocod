@@ -1,7 +1,7 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include "bool.h"
+#include "types/bool.h"
 
 void com_begin_parse_session(const char *name);
 void com_end_parse_session(void);

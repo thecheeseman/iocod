@@ -1,3 +1,4 @@
+#include "qmath.h"
 #include "../game_local.h"
 
 const char *weapon_type_str[] = {

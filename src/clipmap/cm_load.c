@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "cm_local.h"
+#include "qmath.h"
 
 /**
  * @brief local map structure
