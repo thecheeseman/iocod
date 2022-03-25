@@ -26,6 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "game_local.h"
+#include "common/error.h"
+#include "common/print.h"
 
 // replacement for com_printf
 void g_printf(const char *fmt, ...)
@@ -81,7 +83,7 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
 	g_printf("%s", msg);
 }
 
-void com_error_runner(int code, const char *file, const char *func,
+void com_error_runner(enum error_code code, const char *file, const char *func,
 					  int line, const char *fmt, ...)
 {
 	va_list argptr;

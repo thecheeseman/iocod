@@ -2,7 +2,8 @@
 #include "common.h"
 
 #include "commands/cbuf.h"
-#include "common_error.h"
+#include "common/error.h"
+#include "common/print.h"
 #include "parse.h"
 
 bool com_error_entered;

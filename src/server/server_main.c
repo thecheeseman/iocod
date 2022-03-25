@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "commands/cbuf.h"
+#include "common/print.h"
 #include "server_local.h"
 
 struct server sv;

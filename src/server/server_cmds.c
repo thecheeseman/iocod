@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "server_local.h"
+#include "common/print.h"
 
 void sv_heartbeat_f(void)
 {

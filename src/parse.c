@@ -21,7 +21,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "shared.h"
-#include "common/common_error.h"
+#include "common/error.h"
+#include "common/print.h"
 
 // multiple character punctuation tokens
 static const char *punctuation[] = {

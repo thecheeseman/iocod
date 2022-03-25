@@ -26,7 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "commands/cbuf.h"
-#include "common/common_error.h"
+#include "common/error.h"
+#include "common/print.h"
 #include "files_local.h"
 
 char fs_gamedir[MAX_OSPATH];

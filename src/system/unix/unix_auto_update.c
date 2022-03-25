@@ -1,6 +1,8 @@
 #include "shared.h"
 #include "common.h"
 
+#include "common/print.h"
+
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>

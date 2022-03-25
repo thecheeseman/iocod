@@ -33,7 +33,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 #include <ctype.h>
 #include <limits.h>
 #include <stdint.h>
@@ -57,9 +56,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "platform.h"
 
 // typedefs
-typedef int filehandle;
 #include "types/byte.h"
 #include "types/bool.h"
+#include "types/filehandle.h"
 #include "types/vector.h"
 
 // from ioquake
@@ -83,14 +82,6 @@ typedef int filehandle;
 #define PITCH               0       // up / down
 #define YAW                 1       // left / right
 #define ROLL                2       // fall over
-
-enum print_level {
-    PRINT_ALL,
-    PRINT_DEVELOPER,
-    PRINT_WARNING,
-    PRINT_ERROR,
-    PRINT_LOGONLY
-};
 
 enum fs_mode {
     FS_READ,
@@ -125,8 +116,6 @@ enum fs_origin {
 #define MAX_NAME_LENGTH     32      // max length of a client name
 
 #define MAX_SAY_TEXT        150
-
-#define MAX_PRINT_MSG		4096
 
 struct usercmd {
     int server_time;
@@ -491,14 +480,6 @@ struct player_state {
     (x[0] == 1.0 ? PLANE_X : \
         (x[1] == 1.0 ? PLANE_Y : \
             (x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL)))
-
-//
-// defines here from common.h
-//
-#ifndef com_printf
-void com_printf_runner(enum print_level level, const char *fmt, ...);
-#define com_printf(...) com_printf_runner(PRINT_ALL, __VA_ARGS__)
-#endif
 
 //
 // infostrings

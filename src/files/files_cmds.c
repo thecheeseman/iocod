@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "files_local.h"
+#include "common/print.h"
 
 void fs_path(bool ignorelocalized)
 {

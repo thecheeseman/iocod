@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "cvar_local.h"
+#include "common/print.h"
 
 /**
  * @brief Handles variable inspection and changing from the console

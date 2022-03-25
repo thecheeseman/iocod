@@ -198,6 +198,7 @@ add_executable(iocod "")
 # game library 
 #
 add_library(game SHARED "")
+target_compile_definitions(game PRIVATE GAME_DLL)
 
 #
 # main source directory

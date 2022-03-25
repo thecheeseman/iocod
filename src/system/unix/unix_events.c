@@ -27,6 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "shared.h"
 #include "common.h"
+#include "common/print.h"
 
 #define MAX_QUEUED_EVENTS   256
 #define MASK_QUEUED_EVENTS  (MAX_QUEUED_EVENTS - 1)

@@ -26,7 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "clipmap/clipmap.h"
-#include "common/common_error.h"
+#include "common/error.h"
+#include "common/print.h"
 #include "server_local.h"
 
 void sv_set_config_string(int index, const char *val)

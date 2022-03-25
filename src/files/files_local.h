@@ -32,6 +32,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "unzip.h"
 
+#include "common/print.h"
+
 struct fileinpack {
 	uint32_t pos;
 	int a;

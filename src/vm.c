@@ -28,7 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
-#include "common/common_error.h"
+#include "common/error.h"
 
 #define MAX_VM 3
 struct vm vmtable[MAX_VM];

@@ -28,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "commands/cbuf.h"
 #include "shared.h"
 #include "common.h"
+#include "common/print.h"
 
 // linked from cmd.c
 extern struct cmd_function *cmd_functions;

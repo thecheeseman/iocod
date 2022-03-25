@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
+#include "common/print.h"
+
 #include <unistd.h>
 #include <pwd.h>
 #include <sys/stat.h>

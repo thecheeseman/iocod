@@ -28,7 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
-#include "common/common_error.h"
+#include "common/error.h"
 #include "cm_patch.h"
 #include "cm_polylib.h"
 #include "qmath.h"

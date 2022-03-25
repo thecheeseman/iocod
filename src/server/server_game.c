@@ -26,7 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "server_local.h"
-#include "common/common_error.h"
+#include "common/error.h"
+#include "common/print.h"
 
 struct shared_entity *sv_gentity_num(int num)
 {

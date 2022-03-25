@@ -1,8 +1,9 @@
 ﻿{
   "configurations": [
     {
-      "name": "linux-i386",
-      "generator": "Unix Makefiles",
+        "name": "linux-i386",
+        "generator": "Ninja",
+      //"generator": "Unix Makefiles",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
@@ -21,17 +22,18 @@
       ]
     },
     {
-      "name": "linux-x86_64",
-      "generator": "Unix Makefiles",
-      "configurationType": "Debug",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeExecutable": "cmake",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "inheritEnvironments": [ "linux_x64" ],
-      "wslPath": "Debian"
+        "name": "linux-x86_64",
+        "generator": "Ninja",
+        //"generator": "Unix Makefiles",
+        "configurationType": "Debug",
+        "buildRoot": "${projectDir}\\out\\build\\${name}",
+        "installRoot": "${projectDir}\\out\\install\\${name}",
+        "cmakeExecutable": "cmake",
+        "cmakeCommandArgs": "",
+        "buildCommandArgs": "",
+        "ctestCommandArgs": "",
+        "inheritEnvironments": [ "linux_x64" ],
+        "wslPath": "Debian"
     },
     {
       "name": "windows-x86",
