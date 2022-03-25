@@ -56,7 +56,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define BASEDEMO "demomain" // not really necessary
 
 #include "platform.h"
-#include "logger.h"
 
 // typedefs
 typedef unsigned char byte;

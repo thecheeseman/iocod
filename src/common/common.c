@@ -978,7 +978,7 @@ void INCOMPLETE com_init(char *cmdline)
 	}
 
 	//
-	tty_colors = cvar_get("tty_colors", "0", 0);
+	tty_colors = cvar_get("tty_colors", "1", 0);
 	com_startup_variable("tty_colors");
 	//
 

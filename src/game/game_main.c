@@ -25,6 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include "logger.h"
 #include "game_local.h"
 
 // TEMP
@@ -90,7 +91,7 @@ static void setup_logging(void)
 	}
 
 	//
-	log_init(&glog, "gamelog", "gamelog.log", LOGLEVEL_DEBUG, LOGOPT_DEFAULT);
+	log_init(&glog, "gamelog", "gamelog.log", LOG_LEVEL_DEBUG, LOG_OPT_DEFAULT);
 
 	log_disable_stdout(&glog);
 	log_print(&glog, "init_game: %s", server_info);

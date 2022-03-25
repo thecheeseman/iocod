@@ -41,15 +41,37 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "logger.h"
 
-static const char *level_output_char[] = {
-    [LOGLEVEL_NONE] = "",
-    [LOGLEVEL_FATAL] = "F",
-    [LOGLEVEL_ERROR] = "E",
-    [LOGLEVEL_WARN] = "W",
-    [LOGLEVEL_INFO] = "I",
-    [LOGLEVEL_DEBUG] = "D",
-    [LOGLEVEL_TRACE] = "T",
-    [LOGLEVEL_ALL] = ""
+static const char *level_output_str[] = {
+    [LOG_LEVEL_NONE] = " ",
+    [LOG_LEVEL_FATAL] = "F",
+    [LOG_LEVEL_ERROR] = "E",
+    [LOG_LEVEL_WARN] = "W",
+    [LOG_LEVEL_INFO] = "I",
+    [LOG_LEVEL_DEBUG] = "D",
+    [LOG_LEVEL_TRACE] = "T",
+    [LOG_LEVEL_ALL] = " "
+};
+
+static const char *stdlevel_output_str[] = {
+    [LOG_LEVEL_NONE] = " ",
+    [LOG_LEVEL_FATAL] = "******** FATAL ERROR ******** ",
+    [LOG_LEVEL_ERROR] = "**** ERROR **** ",
+    [LOG_LEVEL_WARN] = "WARNING: ",
+    [LOG_LEVEL_INFO] = "info: ",
+    [LOG_LEVEL_DEBUG] = " ",
+    [LOG_LEVEL_TRACE] = " ",
+    [LOG_LEVEL_ALL] = " "
+};
+
+static const char *color_output_str[] = {
+    [LOG_LEVEL_NONE] = "",
+    [LOG_LEVEL_FATAL] = LOG_COLOR_FATAL,
+    [LOG_LEVEL_ERROR] = LOG_COLOR_ERROR,
+    [LOG_LEVEL_WARN] = LOG_COLOR_WARN,
+    [LOG_LEVEL_INFO] = LOG_COLOR_INFO,
+    [LOG_LEVEL_DEBUG] = LOG_COLOR_DEBUG,
+    [LOG_LEVEL_TRACE] = LOG_COLOR_TRACE,
+    [LOG_LEVEL_ALL] = ""
 };
 
 /**
@@ -182,7 +204,7 @@ void log_init(struct logger *l, const char *name, const char *path,
     #endif /* defined(_WIN32) */
     #endif /* defined(ENABLE_THREADING) */
 
-    if (options & LOGOPT_AUTO_OPEN)
+    if (options & LOG_OPT_AUTO_OPEN)
         log_open(l);
 }
 
@@ -192,17 +214,17 @@ void log_init(struct logger *l, const char *name, const char *path,
 enum log_error log_open(struct logger *l)
 {
     if (l == NULL)
-        return LOGERR_NULL_LOG;
+        return LOG_ERR_NULL_LOG;
 
     l->fp = fopen(l->path, "ab");
     if (l->fp == NULL) {
         l->lasterr = errno;
 
         l_error("couldn't open log file %s: %s", l->path, strerror(errno));
-        return LOGERR_COULDNT_OPEN;
+        return LOG_ERR_COULDNT_OPEN;
     }
 
-    return LOGERR_OK;
+    return LOG_ERR_OK;
 }
 
 /**
@@ -237,7 +259,7 @@ void log_disable_stdout(struct logger *l)
     if (l == NULL)
         return;
 
-    l->options &= ~LOGOPT_ECHO_STDOUT;
+    l->options &= ~LOG_OPT_ECHO_STDOUT;
 }
 
 void log_enable_stdout(struct logger *l)
@@ -245,7 +267,7 @@ void log_enable_stdout(struct logger *l)
     if (l == NULL)
         return;
 
-    l->options |= LOGOPT_ECHO_STDOUT;
+    l->options |= LOG_OPT_ECHO_STDOUT;
 }
 
 /**
@@ -259,15 +281,14 @@ void log_print_log(struct logger *l, enum log_level level, const char *function,
     char timestamp[LOG_MAX_TIMESTAMP];
     long threadid;
     int size;
-    const char *flag;
-
+ 
     if (l == NULL || l->fp == NULL)
         return;
 
     // allow LOGLEVEL_ALL prints to always print
     // otherwise, if this message's level is more verbose than our log level
     // ignore it
-    if (level != LOGLEVEL_ALL && level > l->level)
+    if (level != LOG_LEVEL_ALL && level > l->level)
         return;
 
     gettimeofday(&l->now, NULL);
@@ -280,7 +301,7 @@ void log_print_log(struct logger *l, enum log_level level, const char *function,
     // level date   time        threadid file:function:line:  message
     // F 2022-03-15 21:05:10.395830 1651 logger.c:main:262: this is a fatal message
     if ((size = fprintf(l->fp, "%s %s %ld %s:%s:%d: ", 
-                        level_output_char[level], timestamp, threadid, filename,
+                        level_output_str[level], timestamp, threadid, filename,
                         function, line)) > 0) {
         l->file_size += size;
     }
@@ -297,26 +318,15 @@ void log_print_log(struct logger *l, enum log_level level, const char *function,
     fflush(l->fp);
 
     // optional stdout
-    if (l->options & LOGOPT_ECHO_STDOUT) {
+    if (l->options & LOG_OPT_ECHO_STDOUT) {
         va_start(carg, fmt);
         vsnprintf(msg, sizeof(msg), fmt, carg);
         va_end(carg);
 
-        switch (level) {
-        case LOGLEVEL_FATAL: flag = "**** FATAL **** "; break;
-        case LOGLEVEL_ERROR: flag = "**** ERROR **** "; break;
-        case LOGLEVEL_WARN: flag = "WARNING: "; break;
-        case LOGLEVEL_INFO: flag = "info: "; break;
-        case LOGLEVEL_DEBUG:
-        case LOGLEVEL_TRACE:
-        case LOGLEVEL_NONE:
-        case LOGLEVEL_ALL:
-        default: 
-            flag = "";
-            break;
-        }
-
-        fprintf(stdout, "%s:%s:%d: %s%s\n", filename, function, line, flag, msg);
+        fprintf(stdout, "%s%s", CSI_START, color_output_str[level]);
+        fprintf(stdout, "%s:%s:%d: %s%s", filename, function, line, 
+                stdlevel_output_str[level], msg);
+        fprintf(stdout, "%s\n", CSI_END);
         fflush(stdout);
     }
 
