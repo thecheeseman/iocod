@@ -1,78 +1,59 @@
 ﻿{
-    "configurations": [
+  "configurations": [
+    {
+      "name": "linux-i386",
+      "generator": "Unix Makefiles",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeExecutable": "cmake",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "linux_x86" ],
+      "wslPath": "Debian",
+      "remoteCopyAdditionalIncludeDirectories": [ "/usr/include/i386-linux-gnu" ],
+      "variables": [
         {
-            "name": "WSL-GCC-Debug-x86",
-            "generator": "Unix Makefiles",
-            //"generator": "Ninja",
-            "configurationType": "Debug",
-            "buildRoot": "${projectDir}\\out\\build\\${name}",
-            "installRoot": "${projectDir}\\out\\install\\${name}",
-            "cmakeExecutable": "cmake",
-            "buildCommandArgs": "",
-            "ctestCommandArgs": "",
-            "inheritEnvironments": [ "linux_x86" ],
-            "variables": [
-                {
-                    "name": "CMAKE_C_FLAGS",
-                    "value": "",
-                    "type": "STRING"
-                },
-                {
-                    "name": "CMAKE_EXE_LINKER_FLAGS",
-                    "value": "",
-                    "type": "STRING"
-                }
-            ],
-            "wslPath": "Debian",
-            "remoteCopyAdditionalIncludeDirectories": [ "/usr/include/i386-linux-gnu" ],
-        },
-        {
-            "name": "WSL-GCC-Debug-x64",
-            "generator": "Unix Makefiles",
-            //"generator": "Ninja",
-            "configurationType": "Debug",
-            "buildRoot": "${projectDir}\\out\\build\\${name}",
-            "installRoot": "${projectDir}\\out\\install\\${name}",
-            "cmakeExecutable": "cmake",
-            "cmakeCommandArgs": "",
-            "buildCommandArgs": "",
-            "ctestCommandArgs": "",
-            "inheritEnvironments": [ "linux_x64" ],
-            "wslPath": "Debian",
-            "variables": [
-                {
-                    "name": "CMAKE_C_FLAGS",
-                    "value": "",
-                    "type": "STRING"
-                },
-                {
-                    "name": "CMAKE_EXE_LINKER_FLAGS",
-                    "value": "",
-                    "type": "STRING"
-                }
-            ]
-        },
-        {
-            "name": "x86-Debug",
-            "generator": "Ninja",
-            "configurationType": "Debug",
-            "buildRoot": "${projectDir}\\out\\build\\${name}",
-            "installRoot": "${projectDir}\\out\\install\\${name}",
-            "cmakeCommandArgs": "",
-            "buildCommandArgs": "",
-            "ctestCommandArgs": "",
-            "inheritEnvironments": [ "msvc_x86" ],
-        },
-        {
-            "name": "x64-Debug",
-            "generator": "Ninja",
-            "configurationType": "Debug",
-            "buildRoot": "${projectDir}\\out\\build\\${name}",
-            "installRoot": "${projectDir}\\out\\install\\${name}",
-            "cmakeCommandArgs": "",
-            "buildCommandArgs": "",
-            "ctestCommandArgs": "",
-            "inheritEnvironments": [ "msvc_x64_x64" ]
+          "name": "COMPILE_32_BIT",
+          "value": "True",
+          "type": "BOOL"
         }
-    ]
+      ]
+    },
+    {
+      "name": "linux-x86_64",
+      "generator": "Unix Makefiles",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeExecutable": "cmake",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "linux_x64" ],
+      "wslPath": "Debian"
+    },
+    {
+      "name": "windows-x86",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ]
+    },
+    {
+      "name": "windows-x64",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ]
+    }
+  ]
 }

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.19)
 project("iocod" C)
 
 set(CMAKE_C_STANDARD 11)
@@ -73,7 +73,7 @@ endif()
 # then let's just make sure we're actually on a 64-bit system
 #
 set(COMPILE_64_BIT FALSE)
-if (COMPILE_32_BIT)
+if (NOT COMPILE_32_BIT)
     include(CheckCSourceCompiles)
 
     check_c_source_compiles("
