@@ -20,8 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#include <string.h>
+
 #include "shared.h"
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 // multiple character punctuation tokens
@@ -352,7 +355,7 @@ static char *com_parse_ext(char **data_p, bool allow_line_breaks)
 
         if (j == l) {
             // a valid multi-character punctuation
-            memcpy(pi->token, *punc, l);
+            com_memcpy(pi->token, *punc, l);
             pi->token[l] = 0;
             data += l;
             *data_p = (char *) data;

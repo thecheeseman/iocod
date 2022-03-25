@@ -20,20 +20,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file common_fields.c
- * @date 2022-02-04
-*/
+#include <string.h>
 
 #include "shared.h"
 #include "common.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 void field_clear(struct field *edit)
 {
-	memset(edit->buffer, 0, MAX_EDIT_LINE);
-	edit->cursor = 0;
-	edit->scroll = 0;
+    com_memset(edit->buffer, 0, MAX_EDIT_LINE);
+    edit->cursor = 0;
+    edit->scroll = 0;
 }
 
 static const char *completionstring;
@@ -43,122 +41,122 @@ static struct field *completionfield;
 
 static void find_matches(const char *s)
 {
-	int i;
+    int i;
 
-	if (q_stricmpn(s, completionstring, strlen(completionstring)) != 0)
-		return;
+    if (q_stricmpn(s, completionstring, strlen(completionstring)) != 0)
+        return;
 
-	matchcount++;
-	if (matchcount == 1) {
-		q_strncpyz(shortestmatch, s, sizeof(shortestmatch));
-		return;
-	}
+    matchcount++;
+    if (matchcount == 1) {
+        q_strncpyz(shortestmatch, s, sizeof(shortestmatch));
+        return;
+    }
 
-	// cut shortestmatch to the amount common with s
-	for (i = 0; s[i]; i++) {
-		if (tolower(shortestmatch[i]) != tolower(s[i]))
-			shortestmatch[i] = 0;
-	}
+    // cut shortestmatch to the amount common with s
+    for (i = 0; s[i]; i++) {
+        if (tolower(shortestmatch[i]) != tolower(s[i]))
+            shortestmatch[i] = 0;
+    }
 }
 
 static void print_matches(const char *s)
 {
-	if (q_stricmpn(s, shortestmatch, strlen(shortestmatch)) == 0)
-		com_printf("    %s\n", s);
+    if (q_stricmpn(s, shortestmatch, strlen(shortestmatch)) == 0)
+        com_printf("    %s\n", s);
 }
 
 static void key_concat_args(void)
 {
-	size_t i;
-	char *arg;
+    size_t i;
+    char *arg;
 
-	for (i = 1; i < cmd_argc(); i++) {
-		q_strcat(completionfield->buffer, sizeof(completionfield->buffer), " ");
-		arg = cmd_argv(i);
+    for (i = 1; i < cmd_argc(); i++) {
+        q_strcat(completionfield->buffer, sizeof(completionfield->buffer), " ");
+        arg = cmd_argv(i);
 
-		while (*arg != '\0') {
-			if (*arg == ' ') {
-				q_strcat(completionfield->buffer, 
-						 sizeof(completionfield->buffer), "\"");
-				break;
-			}
+        while (*arg != '\0') {
+            if (*arg == ' ') {
+                q_strcat(completionfield->buffer, 
+                         sizeof(completionfield->buffer), "\"");
+                break;
+            }
 
-			arg++;
-		}
+            arg++;
+        }
 
-		q_strcat(completionfield->buffer, 
-				 sizeof(completionfield->buffer), cmd_argv(i));
+        q_strcat(completionfield->buffer, 
+                 sizeof(completionfield->buffer), cmd_argv(i));
 
-		if (*arg == ' ') {
-			q_strcat(completionfield->buffer,
-					 sizeof(completionfield->buffer), "\"");
-		}
-	}
+        if (*arg == ' ') {
+            q_strcat(completionfield->buffer,
+                     sizeof(completionfield->buffer), "\"");
+        }
+    }
 }
 
 static void concat_remaining(const char *src, const char *start)
 {
-	char *str = strstr(src, start);
+    char *str = strstr(src, start);
 
-	if (str != NULL) {
-		key_concat_args();
-		return;
-	}
+    if (str != NULL) {
+        key_concat_args();
+        return;
+    }
 
-	str += strlen(start);
-	q_strcat(completionfield->buffer, sizeof(completionfield->buffer), str);
+    str += strlen(start);
+    q_strcat(completionfield->buffer, sizeof(completionfield->buffer), str);
 }
 
 void field_complete_command(struct field *field)
 {
-	struct field temp;
-	completionfield = field;
+    struct field temp;
+    completionfield = field;
 
-	// only look at the first token for completion purposes
-	cmd_tokenize_string(completionfield->buffer);
+    // only look at the first token for completion purposes
+    cmd_tokenize_string(completionfield->buffer);
 
-	completionstring = cmd_argv(0);
-	if (completionstring[0] == '\\' || completionstring[0] == '/')
-		completionstring++;
+    completionstring = cmd_argv(0);
+    if (completionstring[0] == '\\' || completionstring[0] == '/')
+        completionstring++;
 
-	matchcount = 0;
-	shortestmatch[0] = 0;
+    matchcount = 0;
+    shortestmatch[0] = 0;
 
-	if (strlen(completionstring) == 0)
-		return;
+    if (strlen(completionstring) == 0)
+        return;
 
-	cmd_command_completion(find_matches);
-	cvar_command_completion(find_matches);
+    cmd_command_completion(find_matches);
+    cvar_command_completion(find_matches);
 
-	if (matchcount == 0)
-		return; // nope
+    if (matchcount == 0)
+        return; // nope
 
-	memcpy(&temp, completionfield, sizeof(struct field));
+    com_memcpy(&temp, completionfield, sizeof(struct field));
 
-	if (matchcount == 1) {
-		com_sprintf(completionfield->buffer, 
-					sizeof(completionfield->buffer), "\\%s", shortestmatch);
+    if (matchcount == 1) {
+        com_sprintf(completionfield->buffer, 
+                    sizeof(completionfield->buffer), "\\%s", shortestmatch);
 
-		if (cmd_argc() == 1) {
-			q_strcat(completionfield->buffer,
-					 sizeof(completionfield->buffer), " ");
-		} else {
-			concat_remaining(temp.buffer, completionstring);
-		}
+        if (cmd_argc() == 1) {
+            q_strcat(completionfield->buffer,
+                     sizeof(completionfield->buffer), " ");
+        } else {
+            concat_remaining(temp.buffer, completionstring);
+        }
 
-		completionfield->cursor = strlen(completionfield->buffer);
-		return;
-	}
+        completionfield->cursor = strlen(completionfield->buffer);
+        return;
+    }
 
-	// multiple matches, complete to shortest
-	com_sprintf(completionfield->buffer, sizeof(completionfield->buffer), 
-				"\\%s", shortestmatch);
-	completionfield->cursor = strlen(completionfield->buffer);
-	concat_remaining(temp.buffer, completionstring);
+    // multiple matches, complete to shortest
+    com_sprintf(completionfield->buffer, sizeof(completionfield->buffer), 
+                "\\%s", shortestmatch);
+    completionfield->cursor = strlen(completionfield->buffer);
+    concat_remaining(temp.buffer, completionstring);
 
-	com_printf("]%s\n", completionfield->buffer);
+    com_printf("]%s\n", completionfield->buffer);
 
-	// run through again, printing matches
-	cmd_command_completion(print_matches);
-	cvar_command_completion(print_matches);
+    // run through again, printing matches
+    cmd_command_completion(print_matches);
+    cvar_command_completion(print_matches);
 }

@@ -20,14 +20,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file game_common.c
- * @date 2022-02-19
-*/
+#include <string.h>
 
 #include "game_local.h"
 #include "common/error.h"
 #include "common/print.h"
+
+
 
 // replacement for com_printf
 void g_printf(const char *fmt, ...)

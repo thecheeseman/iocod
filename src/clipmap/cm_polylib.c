@@ -29,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 
 #include "common/error.h"
+#include "common/memory.h"
 #include "cm_polylib.h"
 #include "qmath.h"
 
@@ -58,7 +59,7 @@ struct winding *alloc_winding(int points)
     //s = sizeof(vec_t) * 3 * points + sizeof(int);
     //w = z_malloc(s);
     w = z_malloc(sizeof(*w)); // not sure why the specifics above
-    memset(w, 0, sizeof(*w));
+    com_memset(w, 0, sizeof(*w));
     return w;
 }
 
@@ -111,7 +112,7 @@ void remove_colinear_points(struct winding *w)
     c_removed += w->num_points - nump;
     w->num_points = nump;
 
-    memcpy(w->p, p, nump * sizeof(p[0]));
+    com_memcpy(w->p, p, nump * sizeof(p[0]));
 }
 
 /**
@@ -275,7 +276,7 @@ struct winding *copy_winding(struct winding *w)
 
     c = alloc_winding(w->num_points);
     size = (intptr_t) ((struct winding *) 0)->p[w->num_points];
-    memcpy(c, w, size);
+    com_memcpy(c, w, size);
     return c;
 }
 

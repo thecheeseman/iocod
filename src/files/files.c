@@ -20,13 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file files.c
- * @date 2022-02-04
-*/
+#include <string.h>
 
 #include "commands/cbuf.h"
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
 #include "files_local.h"
 
@@ -241,11 +239,11 @@ void fs_build_ospath(const char *base, const char *game, const char *qpath, char
 	if ((baselen + gamelen + qpathlen) > MAX_OSPATH)
 		com_error(ERR_FATAL, "os path length exceeded");
 
-	memcpy(buf, base, baselen);
+	com_memcpy(buf, base, baselen);
 	buf[baselen] = '/';
-	memcpy(buf + baselen + 1, game, gamelen);
+	com_memcpy(buf + baselen + 1, game, gamelen);
 	buf[baselen + gamelen + 1] = '/';
-	memcpy(buf + gamelen + baselen + 2, qpath, qpathlen + 1);
+	com_memcpy(buf + gamelen + baselen + 2, qpath, qpathlen + 1);
 
 	fs_replace_separators(buf);
 }
@@ -524,7 +522,7 @@ static char *fs_get_localized_language_name(const char *pakname)
 	if (strlen(pakname) < 10) {
 		fs_localized_paks[fs_localized_pakid][0] = '\0';
 	} else {
-		memset(fs_localized_paks[fs_localized_pakid], 0, MAX_QPATH);
+		com_memset(fs_localized_paks[fs_localized_pakid], 0, MAX_QPATH);
 
 		for (i = 10; i < MAX_QPATH && pakname[i] != '\0' && pakname[i] != '_'; i++)
 			fs_localized_paks[fs_localized_pakid][i - 10] = pakname[i];
@@ -602,7 +600,7 @@ static void fs_find_pack_files(const char *path, const char *dir)
 		sorted[i] = pakfiles[i];
 		
 		if (q_strncmp(sorted[i], "localized_", 10) == 0)
-			memcpy(sorted[i], "          ", 10);
+			com_memcpy(sorted[i], "          ", 10);
 	}
 
 	// original: qsort(sorted, numfiles, 4, paksort)
@@ -614,7 +612,7 @@ static void fs_find_pack_files(const char *path, const char *dir)
 		localized = false;
 
 		if (q_strncmp(sorted[i], "          ", 10) == 0) {
-			memcpy(sorted[i], "localized_", 10);
+			com_memcpy(sorted[i], "localized_", 10);
 
 			localized = true;
 

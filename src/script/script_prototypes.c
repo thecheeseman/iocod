@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "script_local.h"
+#include "common/memory.h"
 
 #include "../game/script/script_redirects.h"
 
@@ -689,7 +690,7 @@ intptr_t scr_far_hook(intptr_t addr)
 	// game dll will pass us the address of its internal scr_get_function()
 	// so just copy that address directly into our local prototypes
 	if (addr)
-		memcpy(&_scr_get_function, &addr, sizeof(intptr_t) * 5);
+		com_memcpy(&_scr_get_function, &addr, sizeof(intptr_t) * 5);
 
 	_scr_get_bool = scr_get_bool;
 	_scr_get_int = scr_get_int;

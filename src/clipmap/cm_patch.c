@@ -29,6 +29,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 
 #include "common/error.h"
+#include "common/hunk.h"
+#include "common/memory.h"
 #include "cm_patch.h"
 #include "cm_polylib.h"
 #include "qmath.h"
@@ -1023,7 +1025,7 @@ static void cm_patch_collide_from_grid(struct grid *grid,
                 com_error(ERR_DROP, "MAX_FACETS");
 
             facet = &facets[num_facets];
-            memset(facet, 0, sizeof(*facet));
+            com_memset(facet, 0, sizeof(*facet));
 
             if (grid_planes[i][j][0] == grid_planes[i][j][1]) {
                 if (grid_planes[i][j][0] == -1)
@@ -1074,7 +1076,7 @@ static void cm_patch_collide_from_grid(struct grid *grid,
                     com_error(ERR_DROP, "MAX_FACETS");
 
                 facet = &facets[num_facets];
-                memset(facet, 0, sizeof(*facet));
+                com_memset(facet, 0, sizeof(*facet));
 
                 facet->surface_plane = grid_planes[i][j][1];
                 facet->num_borders = 3;
@@ -1105,9 +1107,9 @@ static void cm_patch_collide_from_grid(struct grid *grid,
     pf->num_planes = num_planes;
     pf->num_facets = num_facets;
     pf->facets = hunk_alloc(num_facets * sizeof(*pf->facets));
-    memcpy(pf->facets, facets, num_facets * sizeof(*pf->facets));
+    com_memcpy(pf->facets, facets, num_facets * sizeof(*pf->facets));
     pf->planes = hunk_alloc(num_planes * sizeof(*pf->planes));
-    memcpy(pf->planes, planes, num_planes * sizeof(*pf->planes));
+    com_memcpy(pf->planes, planes, num_planes * sizeof(*pf->planes));
 }
 
 /**

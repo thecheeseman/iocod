@@ -28,8 +28,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
 
+#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -74,7 +76,7 @@ bool net_compare_base_address(struct netadr a, struct netadr b)
     }
 
     if (a.type == NA_IPX) {
-        if ((memcmp(a.ipx, b.ipx, 10) == 0))
+        if ((com_memcmp(a.ipx, b.ipx, 10) == 0))
             return true;
 
         return false;
@@ -101,7 +103,7 @@ bool net_compare_address(struct netadr a, struct netadr b)
     }
 
     if (a.type == NA_IPX) {
-        if ((memcmp(a.ipx, b.ipx, 10) == 0) && a.port == b.port)
+        if ((com_memcmp(a.ipx, b.ipx, 10) == 0) && a.port == b.port)
             return true;
 
         return false;
@@ -138,7 +140,7 @@ bool sys_string_to_sockaddr(const char *s, struct sockaddr *sadr)
 {
     struct hostent *h;
 
-    memset(sadr, 0, sizeof(*sadr));
+    com_memset(sadr, 0, sizeof(*sadr));
     ((struct sockaddr_in *) sadr)->sin_family = AF_INET;
 
     ((struct sockaddr_in *) sadr)->sin_port = 0;

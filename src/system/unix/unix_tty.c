@@ -28,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
+#include <string.h>
 #include <termios.h>
 #include <signal.h>
 #include <stdio.h>

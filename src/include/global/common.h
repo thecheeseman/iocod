@@ -33,11 +33,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // common/common.c
 //
 //
-extern FILE *debuglogfile;
-extern filehandle logfile;
-extern filehandle com_journalfile;
-extern filehandle com_journaldatafile;
-
 extern struct cvar *com_developer;
 extern struct cvar *com_maxfps;
 extern struct cvar *com_dedicated;
@@ -207,28 +202,5 @@ int com_event_loop(void);
 //
 void field_clear(struct field *edit);
 void field_complete_command(struct field *edit);
-
-//
-//
-// common/memory.c
-//
-//
-void com_init_zone_memory(void);
-void hunk_clear(void);
-void hunk_clear2(void);
-void hunk_clear_to_mark_low(void);
-void com_init_hunk_memory(void);
-void com_hunk_shutdown(void);
-void *hunk_alloc_align(int size, int align);
-void *hunk_alloc(int size);
-void *hunk_alloc_low_align(int size, int align);
-void *hunk_alloc_low(int size);
-void *hunk_allocate_temp_memory(int size);
-void *hunk_allocate_temp_memory_high(int size);
-void hunk_free_temp_memory(void *buf);
-void hunk_swap_temp(void);
-void hunk_swap_temp_low(void);
-void hunk_set_mark_low(void);
-//void z_memory_dump(const char *name, const void *addr, const int len);
 
 #endif // __COMMON_GLOBAL_H__

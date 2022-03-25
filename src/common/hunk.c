@@ -20,15 +20,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file common_memory.c
- * @date 2022-02-04
-*/
-
 #include "shared.h"
 #include "common.h"
 
 #include "common/error.h"
+#include "common/hunk.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 #define HUNK_MAGIC  0x89537892
@@ -45,28 +42,14 @@ struct hunkused {
 	int permanent;
 	int temp;
 };
-/*
-struct hunkblock {
-	int size;
-	byte printed;
-	struct hunkblock *next;
-	char *label;
-	char *file;
-	int line;
-};
-
-static struct hunkblock *hunkblocks;
-*/
 
 static struct hunkused hunk_low, hunk_high;
-//static struct hunkused *hunk_permanent, *hunk_temp;
 
 #define MIN_DEDICATED_COM_HUNKMEGS 1
 #define MIN_COM_HUNKMEGS 80
 
 static byte *s_hunkdata = NULL;
 static int s_hunktotal;
-//static int s_zonetotal;
 
 static int s_hunkalloced; // not sure
 
@@ -253,7 +236,7 @@ void *hunk_allocate_temp_memory(int size)
 		if (buf == NULL)
 			com_error(ERR_FATAL, "couldn't allocate %i bytes of memory");
 
-		memset(buf, 0, size);
+		com_memset(buf, 0, size);
 		return buf;
 	}
 
@@ -381,7 +364,7 @@ void *hunk_alloc_align(int size, int align)
 
 	s_hunkalloced = hunk_high.permanent + hunk_low.permanent;
 
-	memset(buf, 0, size);
+    com_memset(buf, 0, size);
 	return buf;
 }
 
@@ -419,7 +402,7 @@ void *hunk_alloc_low_align(int size, int align)
 
 	s_hunkalloced = hunk_high.permanent + hunk_low.permanent;
 
-	memset(buf, 0, size);
+	com_memset(buf, 0, size);
 	return buf;
 }
 
@@ -449,27 +432,6 @@ void hunk_set_mark_low(void)
 	hunk_low.mark = hunk_low.permanent;
 }
 
-static void out_of_memory_error(void)
-{
-	fprintf(stderr, "OUT OF MEMORY! ABORTING!!!\n");
-	exit(-1);
-}
-
-void *z_malloc(size_t size)
-{
-	void *p = malloc(size);
-	if (p == NULL)
-		out_of_memory_error();
-
-	memset(p, 0, size);
-	return p;
-}
-
-void z_free(void *p)
-{
-	if (p != NULL)
-		free(p);
-}
 /*
 void z_memory_dump(const char *name, const void *addr, const int len)
 {

@@ -20,10 +20,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#include <string.h>
+
 #include "shared.h"
 #include "cbuf.h"
 #include "common.h"
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
 #include "types/byte.h"
 
@@ -64,7 +67,7 @@ void cbuf_add_text(const char *text)
         return;
     }
 
-    memcpy(&cmd_text.data[cmd_text.cursize], text, l);
+    com_memcpy(&cmd_text.data[cmd_text.cursize], text, l);
     cmd_text.cursize += l;
 }
 
@@ -87,7 +90,7 @@ void cbuf_insert_text(const char *text)
     for (i = cmd_text.cursize - 1; i >= 0; i--)
         cmd_text.data[i + len] = cmd_text.data[i];
 
-    memcpy(cmd_text.data, text, len - 1);
+    com_memcpy(cmd_text.data, text, len - 1);
     cmd_text.data[len - 1] = '\n';
     cmd_text.cursize += len;
 }
@@ -151,7 +154,7 @@ void cbuf_execute(void)
         if (i >= (MAX_CMD_LINE - 1))
             i = MAX_CMD_LINE - 1;
 
-        memcpy(line, text, i);
+        com_memcpy(line, text, i);
         line[i] = 0;
 
         // delete the text from the command buffer and move remaining commands down
@@ -162,7 +165,7 @@ void cbuf_execute(void)
         } else {
             i++;
             cmd_text.cursize -= i;
-            memmove(text, text + i, cmd_text.cursize);
+            com_memmove(text, text + i, cmd_text.cursize);
         }
 
         // execute the command line

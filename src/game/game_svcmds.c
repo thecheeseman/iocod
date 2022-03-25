@@ -1,5 +1,7 @@
 #include "game_local.h"
 
+#include <string.h>
+
 struct ip_filter {
 	unsigned int mask;
 	unsigned int compare;

@@ -14,6 +14,11 @@ void *com_memcpy(void *dest, const void *src, size_t n)
     return memcpy(dest, src, n);
 }
 
+void *com_memmove(void *dest, const void *src, size_t n)
+{
+    return memmove(dest, src, n);
+}
+
 void *com_memset(void *str, int c, size_t n)
 {
     return memset(str, c, n);

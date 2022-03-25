@@ -362,7 +362,7 @@ void parse_function(void)
 			}
 
 			// copy over
-			memcpy(&prototype.params[prototype.num_params], &param, 
+			com_memcpy(&prototype.params[prototype.num_params], &param, 
 				   sizeof(struct parameter));
 			prototype.num_params++;
 		} else if (!strcasecmp(token, "unused")) {
@@ -382,7 +382,7 @@ void parse_function(void)
 	#endif
 
 	// copy out
-	memcpy(&prototypes[prototypes_count], &prototype,
+	com_memcpy(&prototypes[prototypes_count], &prototype,
 		   sizeof(struct function_prototype));
 	prototypes_count++;
 }

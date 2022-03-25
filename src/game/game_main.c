@@ -20,11 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file game_main.c
- * @date 2022-02-04
-*/
-
+#include "common/memory.h"
 #include "logger.h"
 #include "game_local.h"
 
@@ -128,9 +124,9 @@ void INCOMPLETE g_init_game(int level_time, int random_seed, int restart, int pa
 	set_player_size();
 
 	// memsets
-	memset(&level, 0, sizeof(level));
-	memset(&bg, 0, sizeof(bg));
-	memset(&bgs, 0, sizeof(bgs));
+    com_memset(&level, 0, sizeof(level));
+    com_memset(&bg, 0, sizeof(bg));
+    com_memset(&bgs, 0, sizeof(bgs));
 
 	level.initializing = true;
 	level.time = level_time;

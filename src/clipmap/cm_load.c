@@ -26,6 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "common/error.h"
+#include "common/hunk.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 #include "cm_local.h"
@@ -66,7 +68,7 @@ static void cmod_load_shaders(struct header_lump *l)
     cm.shaders = hunk_alloc(count * sizeof(*cm.shaders));
     cm.num_shaders = count;
 
-    memcpy(cm.shaders, in, count * sizeof(*cm.shaders));
+    com_memcpy(cm.shaders, in, count * sizeof(*cm.shaders));
 }
 
 /**
@@ -533,7 +535,7 @@ static void cmod_load_visibility(struct header_lump *l)
     if (l->file_len == 0) {
         cm.cluster_bytes = (cm.num_clusters + 31) & ~31; // 32 bit magic again
         cm.visibility = (byte *) hunk_alloc(cm.cluster_bytes);
-        memset(cm.visibility, 255, cm.cluster_bytes);
+        com_memset(cm.visibility, 255, cm.cluster_bytes);
         return;
     }
 
@@ -543,7 +545,7 @@ static void cmod_load_visibility(struct header_lump *l)
     cm.visibility = (byte *) hunk_alloc(l->file_len);
     cm.num_clusters = ((intptr_t *) buf)[0];
     cm.cluster_bytes = ((intptr_t *) buf)[1];
-    memcpy(cm.visibility, buf + 2, l->file_len);
+    com_memcpy(cm.visibility, buf + 2, l->file_len);
 }
 
 /**
@@ -555,7 +557,7 @@ static void cmod_load_entity_string(struct header_lump *l)
 {
     cm.entity_string = hunk_alloc(l->file_len);
     cm.num_entity_chars = l->file_len;
-    memcpy(cm.entity_string, (cmod_base + l->file_ofs), l->file_len);
+    com_memcpy(cm.entity_string, (cmod_base + l->file_ofs), l->file_len);
 }
 
 /**
@@ -638,7 +640,7 @@ void INCOMPLETE cm_load_map(const char *name, bool clientload, int *checksum)
     com_printf_dbginfo("%s : %i\n", name, clientload);
 
     if (!clientload || com_sv_running->integer == 0) {
-        memset(&cm, 0, sizeof(cm));
+        com_memset(&cm, 0, sizeof(cm));
 
         length = fs_read_file(name, (void **) &buf);
         if (buf == NULL)

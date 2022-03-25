@@ -55,4 +55,7 @@ if (USE_LUA)
     list(APPEND GAME_SOURCES ${lua})
 endif()
 
+# other common stuff
+list(APPEND GAME_SOURCES "common/memory.c")
+
 target_sources(game PRIVATE ${GAME_SOURCES})

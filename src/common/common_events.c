@@ -30,6 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "commands/cbuf.h"
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 #define MAX_PUSHED_EVENTS 256
@@ -69,7 +70,7 @@ void com_init_journaling(void)
 
 void com_init_push_event(void)
 {
-	memset(com_pushed_events, 0, sizeof(com_pushed_events));
+	com_memset(com_pushed_events, 0, sizeof(com_pushed_events));
 
 	com_pushed_eventshead = 0;
 	com_pushed_eventstail = 0;
@@ -209,7 +210,7 @@ int com_event_loop(void)
 				continue;
 			}
 
-			memcpy(buf.data, (byte *)((struct netadr *) ev.ptr + 1), 
+			com_memcpy(buf.data, (byte *)((struct netadr *) ev.ptr + 1), 
 					buf.cursize);
 
 			if (ev.ptr != NULL)

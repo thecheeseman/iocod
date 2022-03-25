@@ -1,10 +1,12 @@
+#include <string.h>
+
 #include "game_local.h"
 
 static bool item_registered[MAX_ITEMS];
 
 void clear_registered_items(void)
 {
-	memset(item_registered, 0, sizeof(item_registered));
+    memset(item_registered, 0, sizeof(item_registered));
 
 	item_registered[0] = true;
 }

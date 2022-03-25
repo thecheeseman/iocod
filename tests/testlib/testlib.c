@@ -1,4 +1,7 @@
+#include <string.h>
+
 #include "testlib.h"
+#include "common/memory.h"
 #include <unistd.h>
 
 char *copy_string(const char *in)
@@ -6,7 +9,7 @@ char *copy_string(const char *in)
 	char *out;
 
 	out = malloc(strlen(in) + 1);
-	memset(out, 0, (strlen(in) + 1)); // was sizeof(in)
+    com_memset(out, 0, (strlen(in) + 1)); // was sizeof(in)
 	strcpy(out, in);
 	return out;
 }

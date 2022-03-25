@@ -25,10 +25,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include <string.h>
+
 #include "shared.h"
 #include "common.h"
 
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 void com_sprintf(char *dest, int size, const char *fmt, ...)
@@ -180,7 +183,7 @@ char *va(char *format, ...)
         index = 0;
 
     buf = &string[index];
-    memcpy(buf, temp_buffer, len + 1);
+    com_memcpy(buf, temp_buffer, len + 1);
     index += len + 1;
     return buf;
 }

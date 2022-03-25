@@ -20,12 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file server_main.c
- * @date 2022-02-04
-*/
+#include <string.h>
 
 #include "commands/cbuf.h"
+#include "common/hunk.h"
 #include "common/print.h"
 #include "server_local.h"
 
@@ -74,44 +72,44 @@ struct cvar *sv_wwwdldisconnected;
 
 void INCOMPLETE sv_packet_event(struct netadr from, struct msg *msg)
 {
-	UNUSED(from);
-	UNUSED(msg);
+    UNUSED(from);
+    UNUSED(msg);
 }
 
 bool sv_check_paused(void)
 {
-	int count, i;
-	struct client *cl;
+    int count, i;
+    struct client *cl;
 
-	if (!cl_paused->integer)
-		return false;
+    if (!cl_paused->integer)
+        return false;
 
-	count = 0;
-	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
-		if (cl->state >= CS_CONNECTED && 
-			cl->netchan.remote_address.type != NA_BOT)
-			count++;
-	}
+    count = 0;
+    for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
+        if (cl->state >= CS_CONNECTED && 
+            cl->netchan.remote_address.type != NA_BOT)
+            count++;
+    }
 
-	// can't pause if theres more than 1 player
-	if (count > 1) {
-		if (sv_paused->integer)
-			cvar_set("sv_paused", "0");
+    // can't pause if theres more than 1 player
+    if (count > 1) {
+        if (sv_paused->integer)
+            cvar_set("sv_paused", "0");
 
-		return false;
-	}
+        return false;
+    }
 
-	if (!sv_paused->integer)
-		cvar_set("sv_paused", "1");
+    if (!sv_paused->integer)
+        cvar_set("sv_paused", "1");
 
-	return true;
+    return true;
 }
 
 void INCOMPLETE sv_set_cvar_config_string(int index, int count, int bit)
 {
-	UNUSED(index);
-	UNUSED(count);
-	UNUSED(bit);
+    UNUSED(index);
+    UNUSED(count);
+    UNUSED(bit);
 }
 
 void INCOMPLETE sv_calculate_pings(void)
@@ -122,27 +120,27 @@ void INCOMPLETE sv_calculate_pings(void)
 // _DAT_080e30cc is only ever written to, never read from?
 void sv_game_run_frame(void)
 {
-	vm_call(gvm, GAME_UPDATE_CVARS);
+    vm_call(gvm, GAME_UPDATE_CVARS);
 
-	// some magic here
-	/*
-	bVar1 = DAT_0833df04 == -1;
-	DAT_0833df04 = DAT_0833df04 + 1;
-	if (bVar1) {
-		DAT_0833df04 = 1;
-	}
-	_DAT_080e30cc = 1;
-	*/
-	// some magic here
+    // some magic here
+    /*
+    bVar1 = DAT_0833df04 == -1;
+    DAT_0833df04 = DAT_0833df04 + 1;
+    if (bVar1) {
+        DAT_0833df04 = 1;
+    }
+    _DAT_080e30cc = 1;
+    */
+    // some magic here
 
-	#ifdef CODVERSION1_5
-	vm_call(gvm, GAME_RUN_FRAME, svs.time2);
-	#else
-	vm_call(gvm, GAME_RUN_FRAME, svs.time);
-	#endif
+    #ifdef CODVERSION1_5
+    vm_call(gvm, GAME_RUN_FRAME, svs.time2);
+    #else
+    vm_call(gvm, GAME_RUN_FRAME, svs.time);
+    #endif
 
-	// _DAT_080e30cc = 0;
-	hunk_swap_temp_low();
+    // _DAT_080e30cc = 0;
+    hunk_swap_temp_low();
 }
 
 void INCOMPLETE sv_check_timeouts(void)
@@ -157,285 +155,285 @@ void INCOMPLETE sv_send_client_messages(void)
 
 void INCOMPLETE sv_master_heartbeat(const char *heartbeat)
 {
-	UNUSED(heartbeat);
+    UNUSED(heartbeat);
 }
 
 void INCOMPLETE sv_bot_frame(int time)
 {
-	UNUSED(time);
+    UNUSED(time);
 }
 
 void INCOMPLETE sv_frame(int msec)
 {
-	int frame_msec, start_time;
-	char mapname[64];
+    int frame_msec, start_time;
+    char mapname[64];
 
-	UNUSED(start_time);
+    UNUSED(start_time);
 
-	if (sv_killserver->integer) {
-		sv_shutdown_localized("EXE_SERVERKILLED");
-		cvar_set("sv_killserver", "0");
-		return;
-	}
+    if (sv_killserver->integer) {
+        sv_shutdown_localized("EXE_SERVERKILLED");
+        cvar_set("sv_killserver", "0");
+        return;
+    }
 
-	if (!com_sv_running->integer)
-		return;
+    if (!com_sv_running->integer)
+        return;
 
-	if (sv_check_paused())
-		return;
+    if (sv_check_paused())
+        return;
 
-	if (sv_fps->integer < 1)
-		cvar_set("sv_fps", "10");
-	frame_msec = 1000 / sv_fps->integer;
+    if (sv_fps->integer < 1)
+        cvar_set("sv_fps", "10");
+    frame_msec = 1000 / sv_fps->integer;
 
-	sv.time_residual += msec;
-	if (frame_msec > sv.time_residual)
-		return;
+    sv.time_residual += msec;
+    if (frame_msec > sv.time_residual)
+        return;
 
-	q_strncpyz(mapname, sv_mapname->string, sizeof(mapname));
+    q_strncpyz(mapname, sv_mapname->string, sizeof(mapname));
 
-	// if time is about to hit the 32nd bit, kick all clients
-	// and clear sv.time, rather
-	// than checking for negative time wraparound everywhere.
-	// 2giga-milliseconds = 23 days, so it won't be too often
-	#ifdef CODVERSION1_5
-	if (svs.time > 0x70000000 || svs.time2 > 0x70000000) {
-	#else
-	if (svs.time > 0x70000000) {
-	#endif
-		sv_shutdown_localized("EXE_SERVERRESTARTTIMEWRAP");
-		cbuf_add_text(va("map %s\n", mapname));
-	}
+    // if time is about to hit the 32nd bit, kick all clients
+    // and clear sv.time, rather
+    // than checking for negative time wraparound everywhere.
+    // 2giga-milliseconds = 23 days, so it won't be too often
+    #ifdef CODVERSION1_5
+    if (svs.time > 0x70000000 || svs.time2 > 0x70000000) {
+    #else
+    if (svs.time > 0x70000000) {
+    #endif
+        sv_shutdown_localized("EXE_SERVERRESTARTTIMEWRAP");
+        cbuf_add_text(va("map %s\n", mapname));
+    }
 
-	if (svs.next_snapshot_entities >= 0x7ffffffe - svs.num_snapshot_entities) {
-		sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15numSnapshotEntities");
-		cbuf_add_text(va("map %s\n", mapname));
-		return;
-	}
+    if (svs.next_snapshot_entities >= 0x7ffffffe - svs.num_snapshot_entities) {
+        sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15numSnapshotEntities");
+        cbuf_add_text(va("map %s\n", mapname));
+        return;
+    }
 
-	if (svs.next_cached_snapshot_entities >= 0x7fffbffe) {
-		sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextCachedSnapshotEntities");
-		cbuf_add_text(va("map %s\n", mapname));
-		return;
-	}
+    if (svs.next_cached_snapshot_entities >= 0x7fffbffe) {
+        sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextCachedSnapshotEntities");
+        cbuf_add_text(va("map %s\n", mapname));
+        return;
+    }
 
-	if (svs.next_cached_snapshot_clients >= 0x7fffeffe) {
-		sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextCachedSnapshotClients");
-		cbuf_add_text(va("map %s\n", mapname));
-		return;
-	}
+    if (svs.next_cached_snapshot_clients >= 0x7fffeffe) {
+        sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextCachedSnapshotClients");
+        cbuf_add_text(va("map %s\n", mapname));
+        return;
+    }
 
-	if (svs.next_archived_snapshot_frames >= 0x7ffffb4e) {
-		sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextArchivedSnapshotFrames");
-		cbuf_add_text(va("map %s\n", mapname));
-		return;
-	}
+    if (svs.next_archived_snapshot_frames >= 0x7ffffb4e) {
+        sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextArchivedSnapshotFrames");
+        cbuf_add_text(va("map %s\n", mapname));
+        return;
+    }
 
-	if (svs.next_archived_snapshot_buffer >= 0x7dfffffe) {
-		sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextArchivedSnapshotBuffer");
-		cbuf_add_text(va("map %s\n", mapname));
-		return;
-	}
+    if (svs.next_archived_snapshot_buffer >= 0x7dfffffe) {
+        sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextArchivedSnapshotBuffer");
+        cbuf_add_text(va("map %s\n", mapname));
+        return;
+    }
 
-	if (svs.next_cached_snapshot_frames >= 0x7ffffdfe) {
-		sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextCachedSnapshotFrames");
-		cbuf_add_text(va("map %s\n", mapname));
-		return;
-	}
+    if (svs.next_cached_snapshot_frames >= 0x7ffffdfe) {
+        sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15nextCachedSnapshotFrames");
+        cbuf_add_text(va("map %s\n", mapname));
+        return;
+    }
 
-	if (svs.next_snapshot_clients >= 0x7ffffffe - svs.num_snapshot_clients) {
-		sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15numSnapshotClients");
-		cbuf_add_text(va("map %s\n", mapname));
-		return;
-	}
+    if (svs.next_snapshot_clients >= 0x7ffffffe - svs.num_snapshot_clients) {
+        sv_shutdown_localized("EXE_SERVERRESTARTMISC\x15numSnapshotClients");
+        cbuf_add_text(va("map %s\n", mapname));
+        return;
+    }
 
-	// FUN_080bfea0(1);
+    // FUN_080bfea0(1);
 
-	if ((cvar_modified_flags & CVAR_2004)) {
-		sv_set_config_string(CS_SERVER_INFO, cvar_info_string(CVAR_2004));
-		cvar_modified_flags &= ~CVAR_2004;
-	}
+    if ((cvar_modified_flags & CVAR_2004)) {
+        sv_set_config_string(CS_SERVER_INFO, cvar_info_string(CVAR_2004));
+        cvar_modified_flags &= ~CVAR_2004;
+    }
 
-	if ((cvar_modified_flags & CVAR_SYSTEM_INFO)) {
-		sv_set_config_string(CS_SYSTEM_INFO, 
-							 cvar_info_string_big(CVAR_SYSTEM_INFO));
-		cvar_modified_flags &= ~CVAR_SYSTEM_INFO;
-	}
+    if ((cvar_modified_flags & CVAR_SYSTEM_INFO)) {
+        sv_set_config_string(CS_SYSTEM_INFO, 
+                             cvar_info_string_big(CVAR_SYSTEM_INFO));
+        cvar_modified_flags &= ~CVAR_SYSTEM_INFO;
+    }
 
-	if ((cvar_modified_flags & CVAR_WOLF_INFO)) {
-		sv_set_cvar_config_string(140, 64, 2048);
-		cvar_modified_flags &= ~CVAR_WOLF_INFO;
-	}
+    if ((cvar_modified_flags & CVAR_WOLF_INFO)) {
+        sv_set_cvar_config_string(140, 64, 2048);
+        cvar_modified_flags &= ~CVAR_WOLF_INFO;
+    }
 
-	// fun_0809421b();
+    // fun_0809421b();
 
-	if (com_speeds->integer)
-		start_time = sys_milliseconds();
-	else
-		start_time = 0;
+    if (com_speeds->integer)
+        start_time = sys_milliseconds();
+    else
+        start_time = 0;
 
-	sv_calculate_pings();
+    sv_calculate_pings();
 
-	// added
-	if (com_dedicated->integer)
-		sv_bot_frame(svs.time);
-	// added
+    // added
+    if (com_dedicated->integer)
+        sv_bot_frame(svs.time);
+    // added
 
-	while (true) {
-		sv.time_residual -= frame_msec;
-		svs.time += frame_msec;
+    while (true) {
+        sv.time_residual -= frame_msec;
+        svs.time += frame_msec;
 
-		#ifdef CODVERSION1_5
-		svs.time2 += frame_msec;
-		#endif
+        #ifdef CODVERSION1_5
+        svs.time2 += frame_msec;
+        #endif
 
-		sv_game_run_frame();
-		scr_set_loading(false);
+        sv_game_run_frame();
+        scr_set_loading(false);
 
-		if (frame_msec < 1 || sv.time_residual < frame_msec)
-			break;
+        if (frame_msec < 1 || sv.time_residual < frame_msec)
+            break;
 
-		//sv_archival();
-	}
+        //sv_archival();
+    }
 
-	//if (com_speeds->integer)
-	//		time_game = sys_milliseconds() - start_time;
+    //if (com_speeds->integer)
+    //		time_game = sys_milliseconds() - start_time;
 
-	sv_check_timeouts();
-	sv_send_client_messages();
+    sv_check_timeouts();
+    sv_send_client_messages();
 
-	// if (com_timescale->value < 0.0)
-	//		sv_archival();
+    // if (com_timescale->value < 0.0)
+    //		sv_archival();
 
-	sv_master_heartbeat(HEARTBEAT_GAME);
+    sv_master_heartbeat(HEARTBEAT_GAME);
 }
 
 char *sv_expand_new_lines(char *in) {
-	static char string[MAX_STRING_CHARS];
-	size_t l;
+    static char string[MAX_STRING_CHARS];
+    size_t l;
 
-	l = 0;
-	while (*in && l < sizeof(string) - 3) {
-		if (*in == '\n') {
-			string[l++] = '\\';
-			string[l++] = 'n';
-		} else {
-			string[l++] = *in;
-		}
-		in++;
-	}
-	string[l] = 0;
+    l = 0;
+    while (*in && l < sizeof(string) - 3) {
+        if (*in == '\n') {
+            string[l++] = '\\';
+            string[l++] = 'n';
+        } else {
+            string[l++] = *in;
+        }
+        in++;
+    }
+    string[l] = 0;
 
-	return string;
+    return string;
 }
 
 void INCOMPLETE sv_add_server_command(struct client *cl, const char *cmd)
 {
-	UNUSED(cl);
-	UNUSED(cmd);
+    UNUSED(cl);
+    UNUSED(cmd);
 }
 
 // 1.5 has 4 params
 void sv_send_server_command(struct client *cl, const char *fmt, ...)
 {
-	va_list argptr;
-	char message[MAX_MSGLEN];
-	struct client *client;
-	int i;
+    va_list argptr;
+    char message[MAX_MSGLEN];
+    struct client *client;
+    int i;
 
-	va_start(argptr, fmt);
-	vsnprintf(message, sizeof(message), fmt, argptr);
-	va_end(argptr);
+    va_start(argptr, fmt);
+    vsnprintf(message, sizeof(message), fmt, argptr);
+    va_end(argptr);
 
-	if (cl != NULL) {
-		sv_add_server_command(cl, message);
-		return;
-	}
+    if (cl != NULL) {
+        sv_add_server_command(cl, message);
+        return;
+    }
 
-	// hack to echo broadcast prints to console
-	if (com_dedicated->integer && !strncmp(message, "print", 5))
-		com_printf("broadcast: %s\n", sv_expand_new_lines(message));
+    // hack to echo broadcast prints to console
+    if (com_dedicated->integer && !strncmp(message, "print", 5))
+        com_printf("broadcast: %s\n", sv_expand_new_lines(message));
 
-	// send the data to all relevant clients
-	for (i = 0, client = svs.clients; i < sv_maxclients->integer; 
-		 i++, client++) {
-		if (client->state < CS_PRIMED)
-			continue;
+    // send the data to all relevant clients
+    for (i = 0, client = svs.clients; i < sv_maxclients->integer; 
+         i++, client++) {
+        if (client->state < CS_PRIMED)
+            continue;
 
-		sv_add_server_command(client, message);
-	}
+        sv_add_server_command(client, message);
+    }
 }
 
 void INCOMPLETE svc_get_status(struct netadr from)
 {
-	UNUSED(from);
+    UNUSED(from);
 }
 
 void INCOMPLETE svc_get_info(struct netadr from)
 {
-	UNUSED(from);
+    UNUSED(from);
 }
 
 void INCOMPLETE sv_get_challenge(struct netadr from)
 {
-	UNUSED(from);
+    UNUSED(from);
 }
 
 void INCOMPLETE sv_direct_connect(struct netadr from)
 {
-	UNUSED(from);
+    UNUSED(from);
 }
 
 void INCOMPLETE sv_authorize_ip_packet(struct netadr from)
 {
-	UNUSED(from);
+    UNUSED(from);
 }
 
 void INCOMPLETE sv_remote_command(struct netadr from)
 {
-	UNUSED(from);
+    UNUSED(from);
 }
 
 void INCOMPLETE sv_connectionless_packet(struct netadr from, struct msg *msg)
 {
-	char *s, *c;
+    char *s, *c;
 
-	msg_begin_reading_oob(msg);
-	msg_read_long(msg); // skip the -1 marker
+    msg_begin_reading_oob(msg);
+    msg_read_long(msg); // skip the -1 marker
 
-	// some netchan allocation here
-	// fun_0808dd10(msg->cursize);
+    // some netchan allocation here
+    // fun_0808dd10(msg->cursize);
 
-	#ifdef CODVERSION1_5
-	// punkbuster stuff
-	if (q_stricmpn(&msg->data[4], "pb_", 3) == 0)
-		return;
-	#endif
+    #ifdef CODVERSION1_5
+    // punkbuster stuff
+    if (q_stricmpn(&msg->data[4], "pb_", 3) == 0)
+        return;
+    #endif
 
-	if (q_strncmp("connect", (const char *) & msg->data[4], 7) == 0)
-		huff_decompress(msg, 12);
+    if (q_strncmp("connect", (const char *) & msg->data[4], 7) == 0)
+        huff_decompress(msg, 12);
 
-	s = msg_read_string_line(msg);
-	cmd_tokenize_string(s);
+    s = msg_read_string_line(msg);
+    cmd_tokenize_string(s);
 
-	c = cmd_argv(0);
+    c = cmd_argv(0);
 
-	com_dprintf("sv packet %s: %s\n", net_address_to_string(from), c);
+    com_dprintf("sv packet %s: %s\n", net_address_to_string(from), c);
 
-	if (q_stricmp(c, "getstatus") == 0)
-		svc_get_status(from);
-	else if (q_stricmp(c, "getinfo") == 0)
-		svc_get_info(from);
-	else if (q_stricmp(c, "getchallenge") == 0)
-		sv_get_challenge(from);
-	else if (q_stricmp(c, "connect") == 0)
-		sv_direct_connect(from);
-	else if (q_stricmp(c, "ipauthorize") == 0)
-		sv_authorize_ip_packet(from);
-	else if (q_stricmp(c, "rcon") == 0)
-		sv_remote_command(from);
-	//else if (qstricmp(c, "disconnect") == 0)
-	else
-		com_dprintf("bad connectionless packet from %s:\n%s\n", 
-					net_address_to_string(from), s);
+    if (q_stricmp(c, "getstatus") == 0)
+        svc_get_status(from);
+    else if (q_stricmp(c, "getinfo") == 0)
+        svc_get_info(from);
+    else if (q_stricmp(c, "getchallenge") == 0)
+        sv_get_challenge(from);
+    else if (q_stricmp(c, "connect") == 0)
+        sv_direct_connect(from);
+    else if (q_stricmp(c, "ipauthorize") == 0)
+        sv_authorize_ip_packet(from);
+    else if (q_stricmp(c, "rcon") == 0)
+        sv_remote_command(from);
+    //else if (qstricmp(c, "disconnect") == 0)
+    else
+        com_dprintf("bad connectionless packet from %s:\n%s\n", 
+                    net_address_to_string(from), s);
 }

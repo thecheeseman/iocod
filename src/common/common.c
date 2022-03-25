@@ -20,15 +20,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file common.c
- * @date 2022-02-04
-*/
+#include <string.h>
 
 #include "shared.h"
 #include "common.h"
 
 #include "common/error.h"
+#include "common/hunk.h"
+#include "common/memory.h"
 #include "common/print.h"
 #include "commands/cbuf.h"
 #include "parse.h"
@@ -352,7 +351,7 @@ char *copy_string(const char *in)
     #endif
 
     out = z_malloc(strlen(in) + 1);
-    memset(out, 0, (strlen(in) + 1)); // was sizeof(in)
+    com_memset(out, 0, (strlen(in) + 1)); // was sizeof(in)
     strcpy(out, in);
     return out;
 }

@@ -27,6 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "shared.h"
 #include "common.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 struct cvar *showpackets;
@@ -42,57 +43,57 @@ int profiling_mode;
 
 #define MAX_LOOPBACK 16
 struct loopmsg {
-	byte data[MAX_PACKETLEN];
-	int datalen;
+    byte data[MAX_PACKETLEN];
+    int datalen;
 };
 
 struct loopback {
-	struct loopmsg msgs[MAX_LOOPBACK];
-	int get, send;
+    struct loopmsg msgs[MAX_LOOPBACK];
+    int get, send;
 };
 
 struct loopback loopbacks[2];
 
 static void net_dumpprofile_f(void)
 {
-	if (profiling_mode == 0)
-		com_printf("Network profiling is not on. " \
-				   "Set net_profile to turn on network profiling\n");
-	// else
-	// fun_0808d4d0(1);
+    if (profiling_mode == 0)
+        com_printf("Network profiling is not on. " \
+                   "Set net_profile to turn on network profiling\n");
+    // else
+    // fun_0808d4d0(1);
 }
 
 void netchan_init(int port)
 {
-	showpackets = cvar_get("showpackets", "0", CVAR_TEMP);
-	showdrop = cvar_get("showdrop", "0", CVAR_TEMP);
-	qport = cvar_get("net_qport", va("%i", port), CVAR_INIT);
-	profile = cvar_get("net_profile", "0", CVAR_TEMP);
-	showprofile = cvar_get("net_showprofile", "0", CVAR_TEMP);
-	lanauthorize = cvar_get("net_lanauthorize", "0", 0);
+    showpackets = cvar_get("showpackets", "0", CVAR_TEMP);
+    showdrop = cvar_get("showdrop", "0", CVAR_TEMP);
+    qport = cvar_get("net_qport", va("%i", port), CVAR_INIT);
+    profile = cvar_get("net_profile", "0", CVAR_TEMP);
+    showprofile = cvar_get("net_showprofile", "0", CVAR_TEMP);
+    lanauthorize = cvar_get("net_lanauthorize", "0", 0);
 
-	cmd_add_command("net_dumpprofile", net_dumpprofile_f);
+    cmd_add_command("net_dumpprofile", net_dumpprofile_f);
 }
 
 bool net_get_loop_packet(int sock, struct netadr *from, struct msg *msg)
 {
-	int i;
-	struct loopback *loop;
+    int i;
+    struct loopback *loop;
 
-	loop = &loopbacks[sock];
+    loop = &loopbacks[sock];
 
-	if (loop->send - loop->get > MAX_LOOPBACK)
-		loop->get = loop->send - MAX_LOOPBACK;
+    if (loop->send - loop->get > MAX_LOOPBACK)
+        loop->get = loop->send - MAX_LOOPBACK;
 
-	if (loop->get >= loop->send)
-		return false;
+    if (loop->get >= loop->send)
+        return false;
 
-	i = loop->get & (MAX_LOOPBACK - 1);
-	loop->get++;
+    i = loop->get & (MAX_LOOPBACK - 1);
+    loop->get++;
 
-	memcpy(msg->data, loop->msgs[i].data, loop->msgs[i].datalen);
-	msg->cursize = loop->msgs[i].datalen;
-	memset(from, 0, sizeof(*from));
-	from->type = NA_LOOPBACK;
-	return true;
+    com_memcpy(msg->data, loop->msgs[i].data, loop->msgs[i].datalen);
+    msg->cursize = loop->msgs[i].datalen;
+    com_memset(from, 0, sizeof(*from));
+    from->type = NA_LOOPBACK;
+    return true;
 }
