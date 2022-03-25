@@ -229,8 +229,6 @@ void hunk_free_temp_memory(void *buf);
 void hunk_swap_temp(void);
 void hunk_swap_temp_low(void);
 void hunk_set_mark_low(void);
-void *z_malloc(size_t size);
-void z_free(void *p);
 //void z_memory_dump(const char *name, const void *addr, const int len);
 
 #endif // __COMMON_GLOBAL_H__

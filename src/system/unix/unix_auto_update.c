@@ -1,11 +1,13 @@
 #include "shared.h"
 #include "common.h"
 
+#include "common/memory.h"
 #include "common/print.h"
 
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <string.h>
 #include "unzip.h"
 
 #if !defined(DISABLE_CURL) && !defined(DISABLE_AUTO_UPDATE)
@@ -268,7 +270,7 @@ static int unpack_update(void)
 				strstr(filename, "game_mp_") != NULL)
 				game_dll_name = strdup(filename);
 
-			memset(outname, 0, sizeof(outname));
+			com_memset(outname, 0, sizeof(outname));
 			snprintf(outname, sizeof(outname), "%s/%s", dir, filename);
 			out = fopen(outname, "wb");
 			if (out == NULL) {
@@ -370,7 +372,7 @@ static int apply_update(char *argv[])
 			goto end;
 		}
 
-		memcpy(path, argv[0], strlen(argv[0]));
+		com_memcpy(path, argv[0], strlen(argv[0]));
 	}
 
 	res = stat(path, &current_st);

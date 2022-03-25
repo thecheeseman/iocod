@@ -1,10 +1,12 @@
+#include <string.h>
+#include <time.h>
+
 #include "shared.h"
 #include "common.h"
 
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
-
-#include <time.h>
 
 static char *rd_buffer;
 static int rd_buffersize;

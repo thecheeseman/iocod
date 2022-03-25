@@ -25,10 +25,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include <string.h>
+
 #include "shared.h"
 #include "common.h"
 #include <unistd.h>
 #include <fcntl.h>
+
+#include "common/memory.h"
 
 #ifndef DISABLE_CURL
 #include <curl/curl.h>
@@ -41,71 +45,71 @@ void auto_update(int argc, char *argv[]); // autoupdate.c
 
 void gpl_notice(void)
 {
-	fprintf(stderr, 
-			"iocod, copyright(C) 2021 - 2022 thecheeseman\n" \
-			"iocod comes with ABSOLUTELY NO WARRANTY; " \
-			"for details use the command 'gplinfo'.\n" \
-			"This is free software, andyou are welcome to " \
-			"redistribute it under certain conditions; use 'gplinfo' " \
-			"for details.\n");
+    fprintf(stderr, 
+            "iocod, copyright(C) 2021 - 2022 thecheeseman\n" \
+            "iocod comes with ABSOLUTELY NO WARRANTY; " \
+            "for details use the command 'gplinfo'.\n" \
+            "This is free software, andyou are welcome to " \
+            "redistribute it under certain conditions; use 'gplinfo' " \
+            "for details.\n");
 }
 
 int main(int argc, char* argv[])
 {
-	int len, i;
-	char* cmdline;
+    int len, i;
+    char* cmdline;
 
-	init_signals();
+    init_signals();
 
-	// go back to real user for config loads ??
-	saved_euid = geteuid();
-	seteuid(geteuid());
+    // go back to real user for config loads ??
+    saved_euid = geteuid();
+    seteuid(geteuid());
 
-	sys_set_default_cd_path(""); // no cd path
+    sys_set_default_cd_path(""); // no cd path
 
-	sys_check_for_version(argc, argv);
+    sys_check_for_version(argc, argv);
 
-	// merge the command line
-	for (len = i = 1; i < argc; i++)
-		len += strlen(argv[i]) + 1;
-	cmdline = z_malloc(len);
-	*cmdline = 0;
+    // merge the command line
+    for (len = i = 1; i < argc; i++)
+        len += strlen(argv[i]) + 1;
+    cmdline = z_malloc(len);
+    *cmdline = 0;
 
-	for (i = 1; i < argc; i++) {
-		if (i > 1)
-			strcat(cmdline, " ");
-		strcat(cmdline, argv[i]);
-	}
+    for (i = 1; i < argc; i++) {
+        if (i > 1)
+            strcat(cmdline, " ");
+        strcat(cmdline, argv[i]);
+    }
 
-	//
-	gpl_notice();
-	//
+    //
+    gpl_notice();
+    //
 
-	swap_init();
+    swap_init();
 
-	//
-	#if !defined(DISABLE_CURL)
-	curl_global_init(CURL_GLOBAL_ALL);
-	#endif
+    //
+    #if !defined(DISABLE_CURL)
+    curl_global_init(CURL_GLOBAL_ALL);
+    #endif
 
-	#if !defined(DISABLE_AUTO_UPDATE)
-	auto_update(argc, argv);
-	#endif
-	//
+    #if !defined(DISABLE_AUTO_UPDATE)
+    auto_update(argc, argv);
+    #endif
+    //
 
-	sys_events_init();
-	com_init(cmdline);
-	z_free(cmdline); // no longer needed
-	net_init();
+    sys_events_init();
+    com_init(cmdline);
+    z_free(cmdline); // no longer needed
+    net_init();
 
-	sys_console_input_init();
+    sys_console_input_init();
 
-	fcntl(0, F_SETFL, fcntl(0, F_GETFL, 0) | FNDELAY);
+    fcntl(0, F_SETFL, fcntl(0, F_GETFL, 0) | FNDELAY);
 
-	while (1) {
-		sys_configure_fpu();
-		com_frame();
-	}
+    while (1) {
+        sys_configure_fpu();
+        com_frame();
+    }
 
-	return 0;
+    return 0;
 }

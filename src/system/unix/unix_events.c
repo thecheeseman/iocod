@@ -25,8 +25,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include <string.h>
+
 #include "shared.h"
 #include "common.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 #define MAX_QUEUED_EVENTS   256
@@ -39,79 +42,80 @@ byte sys_packetreceived[MAX_MSGLEN];
 
 void sys_events_init(void)
 {
-	memset(&eventqueue[0], 0, MAX_QUEUED_EVENTS * sizeof(struct system_event));
-	memset(&sys_packetreceived[0], 0, MAX_MSGLEN * sizeof(byte));
+    com_memset(&eventqueue[0], 0, MAX_QUEUED_EVENTS * 
+               sizeof(struct system_event));
+    com_memset(&sys_packetreceived[0], 0, MAX_MSGLEN * sizeof(byte));
 }
 
 void sys_queue_event(int time, enum system_event_type type, 
-					 int value, int value2, int ptr_length, void *ptr)
+                     int value, int value2, int ptr_length, void *ptr)
 {
-	struct system_event *ev;
+    struct system_event *ev;
 
-	ev = &eventqueue[eventhead & MASK_QUEUED_EVENTS];
+    ev = &eventqueue[eventhead & MASK_QUEUED_EVENTS];
 
-	if (eventhead - eventtail >= MASK_QUEUED_EVENTS) {
-		com_printf("sys_queue_event: overflow\n");
+    if (eventhead - eventtail >= MASK_QUEUED_EVENTS) {
+        com_printf("sys_queue_event: overflow\n");
 
-		if (ev->ptr)
-			z_free(ev->ptr);
+        if (ev->ptr)
+            z_free(ev->ptr);
 
-		eventtail++;
-	}
+        eventtail++;
+    }
 
-	eventhead++;
+    eventhead++;
 
-	if (time == 0)
-		time = sys_milliseconds();
+    if (time == 0)
+        time = sys_milliseconds();
 
-	ev->time = time;
-	ev->type = type;
-	ev->value = value;
-	ev->value2 = value2;
-	ev->ptr_length = ptr_length;
-	ev->ptr = ptr;
+    ev->time = time;
+    ev->type = type;
+    ev->value = value;
+    ev->value2 = value2;
+    ev->ptr_length = ptr_length;
+    ev->ptr = ptr;
 }
 
 struct system_event sys_get_event(void)
 {
-	struct system_event ev;
-	char *s = NULL;
-	//struct msg netmsg;
-	//struct netadr adr;
+    struct system_event ev;
+    char *s = NULL;
+    //struct msg netmsg;
+    //struct netadr adr;
 
-	// return if we have event data
-	if (eventhead > eventtail) {
-		eventtail++;
-		return eventqueue[(eventtail - 1) & MASK_QUEUED_EVENTS];
-	}
+    // return if we have event data
+    if (eventhead > eventtail) {
+        eventtail++;
+        return eventqueue[(eventtail - 1) & MASK_QUEUED_EVENTS];
+    }
 
-	// sys_send_key_events();
+    // sys_send_key_events();
 
-	// check for console commands
-	s = sys_console_input();
-	if (s) {
-		char *b;
-		int len;
+    // check for console commands
+    s = sys_console_input();
+    if (s) {
+        char *b;
+        int len;
 
-		len = strlen(s) + 1;
-		b = z_malloc(len);
-		strcpy(b, s);
-		sys_queue_event(0, SE_CONSOLE, 0, 0, len, b);
-	}
+        len = strlen(s) + 1;
+        b = z_malloc(len);
+        strcpy(b, s);
+        sys_queue_event(0, SE_CONSOLE, 0, 0, len, b);
+    }
 
-	// in_frame();
+    // in_frame();
 
-	// check for network packets
+    // check for network packets
 
-	// return if we have event data
-	if (eventhead > eventtail) {
-		eventtail++;
-		return eventqueue[(eventtail - 1) & MASK_QUEUED_EVENTS];
-	}
+    // return if we have event data
+    if (eventhead > eventtail) {
+        eventtail++;
+        return eventqueue[(eventtail - 1) & MASK_QUEUED_EVENTS];
+    }
 
-	// create an empty event to return
-	memset(&ev, 0, sizeof(ev));
-	ev.time = sys_milliseconds();
+    // create an empty event to return
+    com_memset(&ev, 0, sizeof(ev));
+    ev.time = sys_milliseconds();
 
-	return ev;
+    return ev;
 }

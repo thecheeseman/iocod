@@ -31,7 +31,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <assert.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <limits.h>

@@ -25,9 +25,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include <string.h>
+
 #include "shared.h"
 #include "common.h"
 #include "common/error.h"
+#include "common/memory.h"
 #include "common/print.h"
 
 static size_t _cmd_argc;
@@ -44,7 +47,7 @@ struct cmd_function *cmd_functions;
 */
 size_t cmd_argc(void)
 {
-	return _cmd_argc;
+    return _cmd_argc;
 }
 
 /**
@@ -54,10 +57,10 @@ size_t cmd_argc(void)
 */
 char *cmd_argv(size_t arg)
 {
-	if (arg >= _cmd_argc)
-		return "";
+    if (arg >= _cmd_argc)
+        return "";
 
-	return _cmd_argv[arg];
+    return _cmd_argv[arg];
 }
 
 /**
@@ -67,18 +70,18 @@ char *cmd_argv(size_t arg)
 */
 char *cmd_args(void)
 {
-	static char cmd_args[MAX_STRING_CHARS];
-	size_t i;
+    static char cmd_args[MAX_STRING_CHARS];
+    size_t i;
 
-	cmd_args[0] = '\0';
-	for (i = 1; i < _cmd_argc; i++) {
-		strcat(cmd_args, _cmd_argv[i]);
+    cmd_args[0] = '\0';
+    for (i = 1; i < _cmd_argc; i++) {
+        strcat(cmd_args, _cmd_argv[i]);
 
-		if (i != _cmd_argc - 1)
-			strcat(cmd_args, " ");
-	}
+        if (i != _cmd_argc - 1)
+            strcat(cmd_args, " ");
+    }
 
-	return cmd_args;
+    return cmd_args;
 }
 
 /**
@@ -88,18 +91,18 @@ char *cmd_args(void)
 */
 char *cmd_args_from(size_t arg)
 {
-	static char cmd_args[BIG_INFO_STRING];
-	size_t i;
+    static char cmd_args[BIG_INFO_STRING];
+    size_t i;
 
-	cmd_args[0] = '\0';
-	for (i = arg; i < _cmd_argc; i++) {
-		strcat(cmd_args, _cmd_argv[i]);
+    cmd_args[0] = '\0';
+    for (i = arg; i < _cmd_argc; i++) {
+        strcat(cmd_args, _cmd_argv[i]);
 
-		if (i != _cmd_argc - 1)
-			strcat(cmd_args, " ");
-	}
+        if (i != _cmd_argc - 1)
+            strcat(cmd_args, " ");
+    }
 
-	return cmd_args;
+    return cmd_args;
 }
 
 /**
@@ -110,7 +113,7 @@ char *cmd_args_from(size_t arg)
 */
 void cmd_argv_buffer(size_t arg, char *buffer, size_t bufsize)
 {
-	q_strncpyz(buffer, cmd_argv(arg), bufsize);
+    q_strncpyz(buffer, cmd_argv(arg), bufsize);
 }
 
 /**
@@ -119,89 +122,89 @@ void cmd_argv_buffer(size_t arg, char *buffer, size_t bufsize)
 */
 void cmd_tokenize_string(const char *text_in)
 {
-	const char *text;
-	char *textout;
+    const char *text;
+    char *textout;
 
-	_cmd_argc = 0;
+    _cmd_argc = 0;
 
-	if (text_in == NULL)
-		return;
+    if (text_in == NULL)
+        return;
 
-	q_strncpyz(cmd_cmd, text_in, sizeof(cmd_cmd));
+    q_strncpyz(cmd_cmd, text_in, sizeof(cmd_cmd));
 
-	text = text_in;
-	textout = cmd_tokenized;
+    text = text_in;
+    textout = cmd_tokenized;
 
-	while (true) {
-		if (_cmd_argc == MAX_STRING_TOKENS)
-			return;
+    while (true) {
+        if (_cmd_argc == MAX_STRING_TOKENS)
+            return;
 
-		while (true) {
-			// skip whitespace
-			while (*text != '\0' && *text <= ' ')
-				text++;
+        while (true) {
+            // skip whitespace
+            while (*text != '\0' && *text <= ' ')
+                text++;
 
-			if (*text == '\0')
-				return; // no more tokens
+            if (*text == '\0')
+                return; // no more tokens
 
-			// skip // comments
-			if (text[0] == '/' && text[1] == '/')
-				return;
+            // skip // comments
+            if (text[0] == '/' && text[1] == '/')
+                return;
 
-			// skip /* */ comments
-			if (text[0] == '/' && text[1] == '*') {
-				while (*text != '\0' && (text[0] != '*' || text[1] != '/'))
-					text++;
+            // skip /* */ comments
+            if (text[0] == '/' && text[1] == '*') {
+                while (*text != '\0' && (text[0] != '*' || text[1] != '/'))
+                    text++;
 
-				if (*text == '\0')
-					return; // no more
+                if (*text == '\0')
+                    return; // no more
 
-				text+= 2;
-			} else {
-				break; // ready to parse
-			}
-		}
+                text+= 2;
+            } else {
+                break; // ready to parse
+            }
+        }
 
-		// handle quoted strings
-		if (*text == '"') {
-			_cmd_argv[_cmd_argc] = textout;
-			_cmd_argc++;
-			text++;
+        // handle quoted strings
+        if (*text == '"') {
+            _cmd_argv[_cmd_argc] = textout;
+            _cmd_argc++;
+            text++;
 
-			while (*text != '\0' && *text != '"')
-				*textout++ = *text++;
+            while (*text != '\0' && *text != '"')
+                *textout++ = *text++;
 
-			*textout++ = 0;
-			if (*text == '\0')
-				return; // no more
+            *textout++ = 0;
+            if (*text == '\0')
+                return; // no more
 
-			text++;
-			continue;
-		}
+            text++;
+            continue;
+        }
 
-		// regular token
-		_cmd_argv[_cmd_argc] = textout;
-		_cmd_argc++;
+        // regular token
+        _cmd_argv[_cmd_argc] = textout;
+        _cmd_argc++;
 
-		// skip until whitespace, quote, or command
-		while (*text > ' ') {
-			if (text[0] == '"')
-				break;
+        // skip until whitespace, quote, or command
+        while (*text > ' ') {
+            if (text[0] == '"')
+                break;
 
-			if (text[0] == '/' && text[1] == '/')
-				break;
+            if (text[0] == '/' && text[1] == '/')
+                break;
 
-			if (text[0] == '/' && text[1] == '*')
-				break;
+            if (text[0] == '/' && text[1] == '*')
+                break;
 
-			*textout++ = *text++;
-		}
+            *textout++ = *text++;
+        }
 
-		*textout++ = 0;
+        *textout++ = 0;
 
-		if (*text == '\0')
-			return; // all done
-	}
+        if (*text == '\0')
+            return; // all done
+    }
 }
 
 /**
@@ -211,26 +214,26 @@ void cmd_tokenize_string(const char *text_in)
 */
 void cmd_add_command(const char *cmd_name, xcommand function)
 {
-	struct cmd_function *cmd;
+    struct cmd_function *cmd;
 
-	for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
-		if (q_stricmp(cmd_name, cmd->name) == 0) {
-			if (function != NULL)
-				com_printf("cmd_add_command: %s already defined\n", cmd_name);
+    for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
+        if (q_stricmp(cmd_name, cmd->name) == 0) {
+            if (function != NULL)
+                com_printf("cmd_add_command: %s already defined\n", cmd_name);
 
-			return;
-		}
-	}
+            return;
+        }
+    }
 
-	cmd = z_malloc(sizeof(struct cmd_function));
-	cmd->name = copy_string(cmd_name);
-	cmd->function = function;
+    cmd = z_malloc(sizeof(struct cmd_function));
+    cmd->name = copy_string(cmd_name);
+    cmd->function = function;
 
-	cmd->alias_count = 0;
-	cmd->aliases = z_malloc(sizeof(*cmd->aliases));
+    cmd->alias_count = 0;
+    cmd->aliases = z_malloc(sizeof(*cmd->aliases));
 
-	cmd->next = cmd_functions;
-	cmd_functions = cmd;
+    cmd->next = cmd_functions;
+    cmd_functions = cmd;
 }
 
 /**
@@ -239,32 +242,32 @@ void cmd_add_command(const char *cmd_name, xcommand function)
 */
 void cmd_remove_command(const char *cmd_name)
 {
-	int i;
-	struct cmd_function *cmd, **back;
+    int i;
+    struct cmd_function *cmd, **back;
 
-	back = &cmd_functions;
-	while (true) {
-		cmd = *back;
+    back = &cmd_functions;
+    while (true) {
+        cmd = *back;
 
-		if (cmd == NULL)
-			return;
+        if (cmd == NULL)
+            return;
 
-		if (q_stricmp(cmd_name, cmd->name) == 0) {
-			*back = cmd->next;
-			if (cmd->name != NULL)
-				z_free(cmd->name);
-			
-			if (cmd->alias_count) {
-				for (i = 0; i < cmd->alias_count; i++)
-					z_free(cmd->aliases[i]);
-			}
-			z_free(cmd->aliases);
-			z_free(cmd);
-			return;
-		}
+        if (q_stricmp(cmd_name, cmd->name) == 0) {
+            *back = cmd->next;
+            if (cmd->name != NULL)
+                z_free(cmd->name);
+            
+            if (cmd->alias_count) {
+                for (i = 0; i < cmd->alias_count; i++)
+                    z_free(cmd->aliases[i]);
+            }
+            z_free(cmd->aliases);
+            z_free(cmd);
+            return;
+        }
 
-		back = &cmd->next;
-	}
+        back = &cmd->next;
+    }
 }
 
 /**
@@ -275,28 +278,28 @@ void cmd_remove_command(const char *cmd_name)
 */
 void cmd_add_alias(const char *cmd_name, const char *alias)
 {
-	struct cmd_function *cmd, **prev;
-	int c;
+    struct cmd_function *cmd, **prev;
+    int c;
 
-	if (cmd_name == NULL || *cmd_name == '\0')
-		com_error(ERR_DROP, "tried to add alias with NULL cmd name");
+    if (cmd_name == NULL || *cmd_name == '\0')
+        com_error(ERR_DROP, "tried to add alias with NULL cmd name");
 
-	if (alias == NULL || *alias == '\0')
-		com_error(ERR_DROP, "tried to add alias with NULL name");
+    if (alias == NULL || *alias == '\0')
+        com_error(ERR_DROP, "tried to add alias with NULL name");
 
-	for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
-		cmd = *prev;
+    for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
+        cmd = *prev;
 
-		if (q_stricmp(cmd_name, cmd->name) == 0) {
-			// found it
-			c = cmd->alias_count;
+        if (q_stricmp(cmd_name, cmd->name) == 0) {
+            // found it
+            c = cmd->alias_count;
 
-			cmd->aliases = realloc(cmd->aliases, sizeof(*cmd->aliases) * (c + 1));
-			cmd->aliases[c] = z_malloc(sizeof(char *) * (strlen(alias) + 1));
-			strcpy(cmd->aliases[c], alias);
-			cmd->alias_count++;
-		}
-	}
+            cmd->aliases = realloc(cmd->aliases, sizeof(*cmd->aliases) * (c + 1));
+            cmd->aliases[c] = z_malloc(sizeof(char *) * (strlen(alias) + 1));
+            strcpy(cmd->aliases[c], alias);
+            cmd->alias_count++;
+        }
+    }
 }
 
 /**
@@ -306,10 +309,10 @@ void cmd_add_alias(const char *cmd_name, const char *alias)
 */
 void cmd_command_completion(void (*callback)(const char *s))
 {
-	struct cmd_function *cmd;
+    struct cmd_function *cmd;
 
-	for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next)
-		callback(cmd->name);
+    for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next)
+        callback(cmd->name);
 }
 
 /**
@@ -319,62 +322,62 @@ void cmd_command_completion(void (*callback)(const char *s))
 */
 void cmd_execute_string(const char *text)
 {
-	int i;
-	bool aliasfound;
-	struct cmd_function *cmd, **prev;
+    int i;
+    bool aliasfound;
+    struct cmd_function *cmd, **prev;
 
-	cmd_tokenize_string(text);
-	if (cmd_argc() == 0)
-		return; // no tokens
+    cmd_tokenize_string(text);
+    if (cmd_argc() == 0)
+        return; // no tokens
 
-	for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
-		cmd = *prev;
+    for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
+        cmd = *prev;
 
-		// check for any aliases
-		aliasfound = false;
-		for (i = 0; i < cmd->alias_count; i++) {
-			if (q_stricmp(_cmd_argv[0], cmd->aliases[i]) == 0) {
-				aliasfound = true;
-				break;
-			}
-		}
+        // check for any aliases
+        aliasfound = false;
+        for (i = 0; i < cmd->alias_count; i++) {
+            if (q_stricmp(_cmd_argv[0], cmd->aliases[i]) == 0) {
+                aliasfound = true;
+                break;
+            }
+        }
 
-		if (aliasfound || q_stricmp(_cmd_argv[0], cmd->name) == 0) {
-			// rearrange the links so that the command will be
-			// near the head of the list next time it is used
-			*prev = cmd->next;
-			cmd->next = cmd_functions;
-			cmd_functions = cmd;
+        if (aliasfound || q_stricmp(_cmd_argv[0], cmd->name) == 0) {
+            // rearrange the links so that the command will be
+            // near the head of the list next time it is used
+            *prev = cmd->next;
+            cmd->next = cmd_functions;
+            cmd_functions = cmd;
 
-			// perform the action 
-			// let the cgame or game handle it
-			if (!cmd->function)
-				break;
-			else
-				cmd->function();
-		
-			return;
-		}
-	}
+            // perform the action 
+            // let the cgame or game handle it
+            if (!cmd->function)
+                break;
+            else
+                cmd->function();
+        
+            return;
+        }
+    }
 
-	// check cvars
-	if (cvar_command())
-		return;
+    // check cvars
+    if (cvar_command())
+        return;
 
-	// client
-	if (com_cl_running != NULL && com_cl_running->integer > 0 && cl_game_command())
-		return;
+    // client
+    if (com_cl_running != NULL && com_cl_running->integer > 0 && cl_game_command())
+        return;
 
-	// server
-	if (com_sv_running != NULL && com_sv_running->integer > 0 && sv_game_command())
-		return;
+    // server
+    if (com_sv_running != NULL && com_sv_running->integer > 0 && sv_game_command())
+        return;
 
-	// ui
-	if (com_cl_running != NULL && com_cl_running->integer > 0 && ui_game_command())
-		return;
+    // ui
+    if (com_cl_running != NULL && com_cl_running->integer > 0 && ui_game_command())
+        return;
 
-	// send it as a server command if we are connected
-	// this will usually result in a chat message
-	cl_forward_command_to_server(text);
+    // send it as a server command if we are connected
+    // this will usually result in a chat message
+    cl_forward_command_to_server(text);
 }
 
