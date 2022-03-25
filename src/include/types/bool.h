@@ -1,6 +1,10 @@
 #ifndef INCLUDE_TYPES_BOOL_H
 #define INCLUDE_TYPES_BOOL_H
 
+#ifdef bool
+#undef bool
+#endif
+
 typedef int boolean;
 #define bool boolean
 

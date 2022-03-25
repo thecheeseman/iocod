@@ -79,7 +79,6 @@ enum {
 //
 #include "global/cmd.h"
 #include "global/common.h"
-#include "global/cvar.h"
 #include "global/files.h"
 #include "global/net.h"
 #include "global/null_client.h"

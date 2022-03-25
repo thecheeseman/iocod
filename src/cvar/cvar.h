@@ -20,13 +20,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file cvar.h
- * @date 2022-02-04
-*/
+#ifndef CVAR_CVAR_H
+#define CVAR_CVAR_H
 
-#ifndef __CVAR_H__
-#define __CVAR_H__
+#include "types/bool.h"
+#include "types/filehandle.h"
+
+#define MAX_CVARS             1024
+#define FILE_HASH_SIZE        256
+#define	MAX_CVAR_VALUE_STRING 256
 
 #define	CVAR_ARCHIVE		1	// set to cause it to be saved to vars.rc
 // used for system variables, not for player
@@ -35,12 +37,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define	CVAR_SERVER_INFO	4	// sent in response to front end requests
 #define	CVAR_SYSTEM_INFO	8	// these cvars will be duplicated on all clients
 #define	CVAR_INIT			16	// don't allow change from console at all,
-								// but can be set from the command line
+                                // but can be set from the command line
 #define	CVAR_LATCH			32	// will only change when C code next does
-								// a Cvar_Get(), so it can't be changed
-								// without proper initialization.  modified
-								// will be set, even though the value hasn't
-								// changed yet
+                                // a Cvar_Get(), so it can't be changed
+                                // without proper initialization.  modified
+                                // will be set, even though the value hasn't
+                                // changed yet
 #define	CVAR_ROM			64	// display only, cannot be set by user at all
 #define	CVAR_USER_CREATED	128	// created by a set command
 #define	CVAR_TEMP			256	// can be set even when cheats are disabled, but is not archived
@@ -55,49 +57,104 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // nothing outside the cvar_*() functions should modify these fields!
 struct cvar {
-	char *name;
-	char *string;
-	char *reset_string;		// cvar_restart will reset to this value
-	char *latched_string;		// for CVAR_LATCH vars
-	int	flags;
-	bool modified;			// set each time the cvar is changed
-	int	modification_count;	// incremented each time the cvar is changed
-	float value;				// atof( string )
-	int	integer;			// atoi( string )
-	struct cvar *next;
-	struct cvar *hash_next;
+    char *name;
+    char *string;
+    char *reset_string;		// cvar_restart will reset to this value
+    char *latched_string;		// for CVAR_LATCH vars
+    int	flags;
+    bool modified;			// set each time the cvar is changed
+    int	modification_count;	// incremented each time the cvar is changed
+    float value;				// atof( string )
+    int	integer;			// atoi( string )
+    struct cvar *next;
+    struct cvar *hash_next;
 };
-
-#define	MAX_CVAR_VALUE_STRING	256
 
 typedef int	cvarhandle;
 
 // the modules that run in the virtual machine can't access the cvar_t directly,
 // so they must ask for structured updates
 struct vmcvar {
-	cvarhandle handle;
-	int	modification_count;
-	float value;
-	int	integer;
-	char string[MAX_CVAR_VALUE_STRING];
+    cvarhandle handle;
+    int	modification_count;
+    float value;
+    int	integer;
+    char string[MAX_CVAR_VALUE_STRING];
 };
 
+extern int cvar_modified_flags;
+
 //
+// cvar_string.c
+//
+/**
+ * @brief Validate a cvar string
+ * @param s String to validate
+ * @return False if string contains '\' or '"' or ';' chars, true otherwise
+*/
+bool cvar_validate_string(const char *s);
+
+/**
+ * @brief Return a cvar's string value
+ * @param var_name Name of the cvar to search for
+ * @return A string containing the value
+*/
+char *cvar_variable_string(const char *var_name);
+
+/**
+ * @brief Return a cvar's string value into the given string buffer
+ * @param var_name Name of the cvar to search for
+ * @param buffer Pointer to string buffer
+ * @param bufsize Size of the string buffer
+*/
+void cvar_variable_string_buffer(const char *var_name, char *buffer, 
+                                 int bufsize);
+
+/**
+ * @brief Some cvar values need to be safe from foreign characters
+ * @author idsoftware
+ * @param value Value to clean
+ * @return A cleaned string
+*/
+char *cvar_clean_foreign_characters(const char *value);
+
+//
+// cvar_value.c
+//
+/**
+ * @brief Return a cvar's floating point value
+ * @param var_name Name of the cvar to search for
+ * @return A float containing the value
+*/
+float cvar_variable_value(const char *var_name);
+
+/**
+ * @brief Return a cvar's integer value
+ * @param var_name Name of the cvar to search for
+ * @return An integer containing the value
+*/
+int cvar_variable_integer_value(const char *var_name);
+
+//
+// cvar_shared
+//
+void cvar_remove_commands(void);
+
 //
 // cvar.c
 //
-//
-extern int cvar_modified_flags;
-
-float cvar_variable_value(const char *var_name);
-int cvar_variable_integer_value(const char *var_name);
-char *cvar_variable_string(const char *var_name);
-void cvar_variable_string_buffer(const char *var_name, char *buffer,
-								 int bufsize);
 void cvar_command_completion(void (*callback)(const char *s));
-char *cvar_clean_foreign_characters(const char *value);
+
+/**
+ * @brief Return a cvar, or create a new one if it doesn't exist
+*/
 struct cvar *cvar_get(const char *var_name, const char *var_value, int flags);
+
+/**
+ * @brief Set a cvar value
+*/
 struct cvar *cvar_set2(const char *var_name, const char *value, bool force);
+
 void cvar_set(const char *var_name, const char *value);
 void cvar_set_latched(const char *var_name, const char *value);
 void cvar_set_value(const char *var_name, float value);
@@ -108,15 +165,7 @@ void cvar_write_defaults(filehandle f);
 char *cvar_info_string(int bit);
 char *cvar_info_string_big(int bit);
 void cvar_update_flags(void);
+bool cvar_command(void);
 void cvar_init(void);
 
-//
-//
-// cvar/cvar_cmds.c
-//
-//
-bool cvar_command(void);
-void cvar_add_commands(void);
-void cvar_remove_commands(void);
-
-#endif // __CVAR_H__
+#endif /* CVAR_CVAR_H */

@@ -20,12 +20,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#include <ctype.h>
 #include <string.h>
 
 #include "commands/cbuf.h"
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 #include "files_local.h"
 
 char fs_gamedir[MAX_OSPATH];

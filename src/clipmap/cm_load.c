@@ -29,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/hunk.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 #include "cm_local.h"
 #include "cm_patch.h"

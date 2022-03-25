@@ -20,12 +20,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#include <ctype.h>
 #include <string.h>
 
 #include "shared.h"
 #include "common.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 void field_clear(struct field *edit)
 {

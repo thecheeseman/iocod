@@ -7,6 +7,7 @@
 #include "common/error.h"
 #include "common/hunk.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 #include "parse.h"
 
 bool com_error_entered;

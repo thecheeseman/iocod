@@ -30,7 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "shared.h"
 #include "game.h"
-#include "global/cvar.h"
+#include "cvar/cvar.h"
 #include "script/script_local.h"
 #include "bg/bg_local.h"
 

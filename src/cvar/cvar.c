@@ -20,14 +20,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file cvar.c
- * @date 2022-02-04
-*/
+#if defined(HAVE_CONFIG_H) && defined(HAVE_STDLIB_H)
+#include <stdlib.h>
+#endif
 
 #include <string.h>
 
-#include "cvar_local.h"
+#include "shared.h"
+#include "common.h"
+
+#include "cvar/cvar.h"
+#include "cvar/cvar_shared.h"
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
@@ -39,150 +42,6 @@ int cvar_modified_flags;
 struct cvar cvar_indexes[MAX_CVARS];
 int cvar_num_indexes;
 
-struct cvar *hashtable[FILE_HASH_SIZE];
-
-/**
- * @brief Return a hash value for the given filename
- * @author idsoftware
- * @param fname Name to hash
- * @return A hash of the filename
-*/
-static int32_t generate_hash_value(const char *fname)
-{
-    int i;
-    int32_t hash;
-    char letter;
-
-    if (fname == NULL)
-        com_error(ERR_DROP, "null name");
-
-    hash = 0, i = 0;
-    while (fname[i] != '\0') {
-        letter = tolower(fname[i]);
-        hash += (int32_t)(letter) * (i + 119);
-        i++;
-    }
-
-    hash &= (FILE_HASH_SIZE - 1);
-    return hash;
-}
-
-/**
- * @brief Validate a cvar string
- * @author idsoftware
- * @param s String to validate
- * @return False if string contains '\' or '"' or ';' chars, true otherwise
-*/
-static bool cvar_validate_string(const char *s)
-{
-    if (s == NULL)
-        return false;
-
-    if (strchr(s, '\\'))
-        return false;
-
-    if (strchr(s, '\"'))
-        return false;
-
-    if (strchr(s, ';'))
-        return false;
-
-    return true;
-}
-
-/**
- * @brief Internal hash table lookup
- * @author idsoftware
-*/
-struct cvar *cvar_find_var(const char *var_name)
-{
-    struct cvar *var;
-    int32_t hash;
-
-    hash = generate_hash_value(var_name);
-
-    for (var = hashtable[hash]; var != NULL; var = var->hash_next) {
-        if (q_stricmp(var_name, var->name) == 0)
-            return var;
-    }
-
-    return NULL;
-}
-
-/**
- * @brief Return a cvar's floating point value
- * @author idsoftware
- * @param var_name Name of the cvar to search for
- * @return A float containing the value
-*/
-float cvar_variable_value(const char *var_name)
-{
-    struct cvar *var;
-
-    var = cvar_find_var(var_name);
-    if (var == NULL)
-        return 0.0;
-
-    return var->value;
-}
-
-/**
- * @brief Return a cvar's integer value
- * @author idsoftware
- * @param var_name Name of the cvar to search for
- * @return An integer containing the value
-*/
-int cvar_variable_integer_value(const char *var_name)
-{
-    struct cvar *var;
-
-    var = cvar_find_var(var_name);
-    if (var == NULL)
-        return 0;
-
-    return var->integer;
-}
-
-/**
- * @brief Return a cvar's string value
- * @author idsoftware
- * @param var_name Name of the cvar to search for
- * @return A string containing the value
-*/
-char *cvar_variable_string(const char *var_name)
-{
-    struct cvar *var;
-
-    var = cvar_find_var(var_name);
-    if (var == NULL)
-        return "";
-
-    return var->string;
-}
-
-/**
- * @brief Return a cvar's string value into the given string buffer
- * @author idsoftware
- * @param var_name Name of the cvar to search for
- * @param buffer Pointer to string buffer 
- * @param bufsize Size of the string buffer
-*/
-void cvar_variable_string_buffer(const char *var_name, char *buffer, int bufsize)
-{
-    struct cvar *var;
-
-    var = cvar_find_var(var_name);
-    if (var == NULL)
-        *buffer = 0;
-    else
-        q_strncpyz(buffer, var->string, bufsize);
-}
-
-/**
- * @brief 
- * @author idsoftware
- * @param callback 
-*/
 void cvar_command_completion(void (*callback)(const char *s))
 {
     struct cvar *var;
@@ -191,33 +50,6 @@ void cvar_command_completion(void (*callback)(const char *s))
         callback(var->name);
 }
 
-/**
- * @brief Some cvar values need to be safe from foreign characters
- * @author idsoftware
- * @param value Value to clean
- * @return A cleaned string
-*/
-char *cvar_clean_foreign_characters(const char *value)
-{
-    static char clean[MAX_CVAR_VALUE_STRING];
-    int i, j;
-
-    j = 0;
-    for (i = 0; value[i] != '\0'; i++) {
-        if (!(value[i] & 128)) {
-            clean[j] = value[i];
-            j++;
-        }
-    }
-    clean[j] = '\0';
-
-    return clean;
-}
-
-/**
- * @brief Return a cvar, or create a new one if it doesn't exist
- * @author idsoftware
-*/
 struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 {
     struct cvar *var;
@@ -307,11 +139,8 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
     return var;
 }
 
-#define FOREIGN_MSG "Foreign charactesr are not allowed in userinfo variables\n"
+#define FOREIGN_MSG "Foreign characters are not allowed in userinfo variables\n"
 
-/**
- * @brief Set a cvar value
-*/
 struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
 {
     struct cvar *var;
@@ -496,36 +325,6 @@ void cvar_write_variables(filehandle f)
             fs_printf(f, "%s", buffer);
         }
     }
-}
-
-char *cvar_info_string(int bit)
-{
-    static char info[MAX_INFO_STRING];
-    struct cvar *var;
-
-    info[0] = '\0';
-
-    for (var = cvar_vars; var != NULL; var = var->next) {
-        if (var->flags & bit)
-            info_set_value_for_key(info, var->name, var->string);
-    }
-
-    return info;
-}
-
-char *cvar_info_string_big(int bit)
-{
-    static char info[BIG_INFO_STRING];
-    struct cvar *var;
-
-    info[0] = '\0';
-
-    for (var = cvar_vars; var != NULL; var = var->next) {
-        if (var->flags & bit)
-            info_set_value_for_key_big(info, var->name, var->string);
-    }
-
-    return info;
 }
 
 // only called from sv_setgametype

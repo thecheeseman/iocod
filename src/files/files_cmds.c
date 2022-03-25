@@ -27,53 +27,54 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "files_local.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 void fs_path(bool ignorelocalized)
 {
-	struct searchpath *sp;
-	int i;
+    struct searchpath *sp;
+    int i;
 
-	if (fs_ignorelocalized->integer > 0)
-		com_printf("    localized assets are being ignored\n");
+    if (fs_ignorelocalized->integer > 0)
+        com_printf("    localized assets are being ignored\n");
 
-	com_printf("Current search path:\n");
+    com_printf("Current search path:\n");
 
-	for (sp = fs_searchpaths; sp != NULL; sp = sp->next) {
-		if (!ignorelocalized || fs_search_localized(sp)) {
-			if (sp->pack != NULL) {
-				com_printf("%s (%d files)\n", sp->pack->pak_filename,
-						   sp->pack->numfiles);
+    for (sp = fs_searchpaths; sp != NULL; sp = sp->next) {
+        if (!ignorelocalized || fs_search_localized(sp)) {
+            if (sp->pack != NULL) {
+                com_printf("%s (%d files)\n", sp->pack->pak_filename,
+                           sp->pack->numfiles);
 
-				if (fs_num_serverpaks > 0) {
-					if (fs_pak_is_pure(sp->pack))
-						com_printf("    not on the pure list\n");
-					else
-						com_printf("    on the pure list\n");
-				}
-			} else {
-				com_printf("%s/%s\n", sp->dir->path, sp->dir->gamedir);
-			}
-		}
-	}
+                if (fs_num_serverpaks > 0) {
+                    if (fs_pak_is_pure(sp->pack))
+                        com_printf("    not on the pure list\n");
+                    else
+                        com_printf("    on the pure list\n");
+                }
+            } else {
+                com_printf("%s/%s\n", sp->dir->path, sp->dir->gamedir);
+            }
+        }
+    }
 
-	com_printf("\nFile Handles:\n");
-	for (i = 1; i < MAX_FILE_HANDLES; i++) {
-		if (fsh[i].handlefiles.file.o != NULL)
-			com_printf("handle %d: %s\n", i, fsh[i].name);
-	}
+    com_printf("\nFile Handles:\n");
+    for (i = 1; i < MAX_FILE_HANDLES; i++) {
+        if (fsh[i].handlefiles.file.o != NULL)
+            com_printf("handle %d: %s\n", i, fsh[i].name);
+    }
 }
 
 static void fs_path_f(void)
 {
-	fs_path(false);
+    fs_path(false);
 }
 
 void fs_add_commands(void)
 {
-	cmd_add_command("path", fs_path_f);
+    cmd_add_command("path", fs_path_f);
 }
 
 void fs_remove_commands(void)
 {
-	cmd_remove_command("path");
+    cmd_remove_command("path");
 }

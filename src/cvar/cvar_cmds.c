@@ -1,30 +1,14 @@
-/*
-================================================================================
-iocod
-Copyright (C) 2021-2022 thecheeseman
-
-This file is part of the iocod GPL source code.
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-================================================================================
-*/
-
+#include <ctype.h>
 #include <string.h>
 
-#include "cvar_local.h"
+#include "shared.h"
+#include "common.h"
+
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar_shared.h"
+
+extern struct cvar *tty_colors;
 
 /**
  * @brief Handles variable inspection and changing from the console
@@ -40,7 +24,7 @@ bool cvar_command(void)
 
     // perform a variable print or set
     if (cmd_argc() == 1) {
-        com_printf("\"%s\" is: \"%s\" default: \"%s\"\n", v->name, v->string, 
+        com_printf("\"%s\" is: \"%s\" default: \"%s\"\n", v->name, v->string,
                    v->reset_string);
 
         if (v->latched_string != NULL)
@@ -191,20 +175,20 @@ static void cvar_setf_f(void)
 
         flag = 0;
         switch (toupper(*s)) {
-            case 'S': flag |= CVAR_SERVER_INFO; break;
-            case 'U': flag |= CVAR_USER_INFO; break;
-            case 'A': flag |= CVAR_ARCHIVE; break;
+        case 'S': flag |= CVAR_SERVER_INFO; break;
+        case 'U': flag |= CVAR_USER_INFO; break;
+        case 'A': flag |= CVAR_ARCHIVE; break;
 
-                // probably not safe to let people change read-only cvars
-                // or screw with cheat protected ones without an sv_cheats check
-                // case 'R': flag |= CVAR_ROM; break;
-                // case 'I': flag |= CVAR_INIT; break;
-                // case 'L': flag |= CVAR_LATCH; break;
-                // case 'C': flag |= CVAR_CHEAT; break;
-            default:
-                com_printf("Unknown flag: %c\n", *s);
-                breakall = true;
-                break;
+            // probably not safe to let people change read-only cvars
+            // or screw with cheat protected ones without an sv_cheats check
+            // case 'R': flag |= CVAR_ROM; break;
+            // case 'I': flag |= CVAR_INIT; break;
+            // case 'L': flag |= CVAR_LATCH; break;
+            // case 'C': flag |= CVAR_CHEAT; break;
+        default:
+            com_printf("Unknown flag: %c\n", *s);
+            breakall = true;
+            break;
         }
 
         if (breakall)
@@ -259,24 +243,24 @@ static void cvar_list_f(void)
 
         if (tty_colors->integer > 0) {
             com_printf("%s%s%s%s%s%s%s %-32s \"%s\"\n",
-                (var->flags & CVAR_SERVER_INFO) ? "\033[34mS\033[0m" : " ", // blue
-                (var->flags & CVAR_USER_INFO) ? "\033[35mU\033[0m" : " ", // magenta
-                (var->flags & CVAR_ROM) ? "\033[32mR\033[0m" : " ", // green
-                (var->flags & CVAR_INIT) ? "\033[0mI\033[0m" : " ", // white
-                (var->flags & CVAR_ARCHIVE) ? "\033[36mA\033[0m" : " ", // cyan
-                (var->flags & CVAR_LATCH) ? "\033[33mL\033[0m" : " ", // yellow
-                (var->flags & CVAR_CHEAT) ? "\033[31mC\033[0m" : " ", // red
-                var->name, var->string);
+                       (var->flags & CVAR_SERVER_INFO) ? "\033[34mS\033[0m" : " ", // blue
+                       (var->flags & CVAR_USER_INFO) ? "\033[35mU\033[0m" : " ", // magenta
+                       (var->flags & CVAR_ROM) ? "\033[32mR\033[0m" : " ", // green
+                       (var->flags & CVAR_INIT) ? "\033[0mI\033[0m" : " ", // white
+                       (var->flags & CVAR_ARCHIVE) ? "\033[36mA\033[0m" : " ", // cyan
+                       (var->flags & CVAR_LATCH) ? "\033[33mL\033[0m" : " ", // yellow
+                       (var->flags & CVAR_CHEAT) ? "\033[31mC\033[0m" : " ", // red
+                       var->name, var->string);
         } else {
             com_printf("%s%s%s%s%s%s%s %-32s \"%s\"\n",
-                (var->flags & CVAR_SERVER_INFO) ? "S" : " ",
-                (var->flags & CVAR_USER_INFO) ? "U" : " ",
-                (var->flags & CVAR_ROM) ? "R" : " ",
-                (var->flags & CVAR_INIT) ? "I" : " ",
-                (var->flags & CVAR_ARCHIVE) ? "A" : " ",
-                (var->flags & CVAR_LATCH) ? "L" : " ",
-                (var->flags & CVAR_CHEAT) ? "C" : " ",
-                var->name, var->string);
+                       (var->flags & CVAR_SERVER_INFO) ? "S" : " ",
+                       (var->flags & CVAR_USER_INFO) ? "U" : " ",
+                       (var->flags & CVAR_ROM) ? "R" : " ",
+                       (var->flags & CVAR_INIT) ? "I" : " ",
+                       (var->flags & CVAR_ARCHIVE) ? "A" : " ",
+                       (var->flags & CVAR_LATCH) ? "L" : " ",
+                       (var->flags & CVAR_CHEAT) ? "C" : " ",
+                       var->name, var->string);
         }
 
         matched++;
@@ -311,7 +295,7 @@ static void cvar_set_from_cvar_f(void)
 }
 
 /**
- * @brief 
+ * @brief
 */
 static void INCOMPLETE cvar_dump_f(void)
 {
@@ -366,9 +350,6 @@ static void cvar_restart_f(void)
     }
 }
 
-/**
- * @brief Add commands
-*/
 void cvar_add_commands(void)
 {
     cmd_add_command("toggle", cvar_toggle_f);

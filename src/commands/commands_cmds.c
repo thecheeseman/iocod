@@ -33,6 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "commands/cbuf.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 // linked from cmd.c
 extern struct cmd_function *cmd_functions;

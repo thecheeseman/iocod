@@ -92,6 +92,17 @@ if (NOT COMPILE_32_BIT)
     endif()
 endif()
 
+include(CheckIncludeFiles)
+CHECK_INCLUDE_FILES(dlfcn.h HAVE_DLFCN_H)
+CHECK_INCLUDE_FILES(stddef.h HAVE_STDDEF_H)
+CHECK_INCLUDE_FILES(stdint.h HAVE_STDINT_H)
+CHECK_INCLUDE_FILES(stdlib.h HAVE_STDLIB_H)
+CHECK_INCLUDE_FILES(string.h HAVE_STRING_H)
+CHECK_INCLUDE_FILES(strings.h HAVE_STRINGS_H)
+CHECK_INCLUDE_FILES(sys/stat.h HAVE_SYS_STAT_H)
+CHECK_INCLUDE_FILES(sys/types.h HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILES(unistd.h HAVE_UNISTD_H)
+
 #
 # if we're building from a git clone, then we can use git versioning
 # if we don't have git available, then assuming we downloaded from
@@ -135,6 +146,7 @@ if (NOT DISABLE_CURL)
     if (CURL_FOUND)
         include_directories(${CURL_INCLUDE_DIR})
         SET(CURL_LINK "-lcurl")
+        SET(HAVE_CURL_H ON)
     else()
         set(DISABLE_CURL ON)
         add_compile_options(-DDISABLE_CURL)
@@ -156,6 +168,7 @@ if (USE_LUA)
 
     if (LUA_FOUND)
         set(LUA_LINK "-llua5.3")
+        set(HAVE_LUA_53 ON)
         include_directories(${LUA_INCLUDE_DIR})
         add_compile_options(-DUSE_LUA)
     endif()
@@ -166,8 +179,17 @@ set(CMAKE_THREAD_PREFER_PTHREAD ON)
 find_package(Threads)
 if (Threads_FOUND)
     set(THREADS_LINK ${CMAKE_THREAD_LIBS_INIT})
-    add_compile_options(-DENABLE_THREADING)
+
+    set(ENABLE_THREADING ON)
+
+    if (CMAKE_USE_PTHREADS_INIT)
+        set(HAVE_PTHREAD_H ON)
+    endif()
 endif()
+
+configure_file("${PROJECT_SOURCE_DIR}/config.h.in" 
+    "${PROJECT_BINARY_DIR}/config.h")
+include_directories(${PROJECT_BINARY_DIR})
 
 #
 # headers
@@ -188,6 +210,8 @@ if (WIN32)
 else()
     add_compile_options(-Wall -Wextra -Wformat=2 -Wformat-overflow=2)
 endif()
+
+add_compile_options(-include config.h)
 
 #
 # main dedicated server

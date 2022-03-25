@@ -27,6 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/hunk.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 #define HUNK_MAGIC  0x89537892
 #define HUNK_FREE_MAGIC 0x89537893

@@ -31,6 +31,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
+#include "cvar/cvar.h"
+
 struct cvar *cl_shownet;
 struct cvar *cl_language;
 

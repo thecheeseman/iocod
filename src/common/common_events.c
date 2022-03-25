@@ -32,6 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 #define MAX_PUSHED_EVENTS 256
 static int com_pushed_eventshead = 0;

@@ -28,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "files_local.h"
 #include "common/error.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 /**
  * @brief

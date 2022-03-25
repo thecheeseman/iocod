@@ -7,6 +7,7 @@
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 static char *rd_buffer;
 static int rd_buffersize;

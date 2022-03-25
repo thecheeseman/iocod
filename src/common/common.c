@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#include <ctype.h>
 #include <string.h>
 
 #include "shared.h"
@@ -30,6 +31,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "commands/cbuf.h"
+#include "cvar/cvar.h"
 #include "parse.h"
 
 #define MAX_NUM_ARGVS 50

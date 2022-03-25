@@ -33,6 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "unzip.h"
 
 #include "common/print.h"
+#include "cvar/cvar.h"
 
 struct fileinpack {
 	uint32_t pos;

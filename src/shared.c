@@ -20,11 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file shared.c
- * @date 2022-02-04
-*/
-
+#include <ctype.h>
 #include <string.h>
 
 #include "shared.h"

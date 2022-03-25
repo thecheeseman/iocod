@@ -32,13 +32,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <limits.h>
 #include <stdint.h>
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
 
 // from kernel.h
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
