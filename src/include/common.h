@@ -28,7 +28,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#include <stdbool.h>
 #include <stdarg.h>
 
 #define MAX_MSGLEN 16384
@@ -78,7 +77,6 @@ enum {
 // for each corresponding module
 //
 //
-#include "global/cbuf.h"
 #include "global/cm.h"
 #include "global/cmd.h"
 #include "global/common.h"

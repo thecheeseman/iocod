@@ -20,23 +20,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file cbuf.h
- * @date 2022-02-04
-*/
+#ifndef COMMANDS_CBUF_H
+#define COMMANDS_CBUF_H
 
-#ifndef __CBUF_H__
-#define __CBUF_H__
+enum cbuf_exec_type {
+    EXEC_NOW, /* don't return until completed, a VM should
+              NEVER use this, because some commands might
+              cause the VM to be unloaded... */
+    EXEC_INSERT, /* insert at current position, but don't run yet */
+    EXEC_APPEND  /* add to end of the command buffer (normal case) */
+};
 
-// 
-//
-// commands/cmd.c
-//
-//
 void cbuf_init(void);
 void cbuf_add_text(const char *text);
 void cbuf_insert_text(const char *text);
 void cbuf_execute_text(enum cbuf_exec_type type, const char *text);
 void cbuf_execute(void);
 
-#endif // __CBUF_H__
+#endif /* COMMANDS_CBUF_H */

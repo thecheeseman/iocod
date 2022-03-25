@@ -25,6 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include "commands/cbuf.h"
 #include "server_local.h"
 
 struct server sv;
