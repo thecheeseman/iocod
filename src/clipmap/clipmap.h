@@ -20,14 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file cm.h
- * @date 2022-02-04
-*/
+#ifndef CLIPMAP_CLIPMAP_H
+#define CLIPMAP_CLIPMAP_H
 
-#ifndef __CM_H__
-#define __CM_H__
+#include "types/bool.h"
 
 void cm_load_map(const char *name, bool clientload, int *checksum);
 
-#endif // __CM_H__
+#endif /* CLIPMAP_CLIPMAP_H */

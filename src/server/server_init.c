@@ -25,6 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
+#include "clipmap/clipmap.h"
 #include "server_local.h"
 
 void sv_set_config_string(int index, const char *val)

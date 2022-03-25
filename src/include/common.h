@@ -77,7 +77,6 @@ enum {
 // for each corresponding module
 //
 //
-#include "global/cm.h"
 #include "global/cmd.h"
 #include "global/common.h"
 #include "global/cvar.h"
