@@ -20,13 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file cm_polylib.h
- * @date 2022-02-05
-*/
+#ifndef CLIPMAP_CM_POLYLIB_H
+#define CLIPMAP_CM_POLYLIB_H
 
-#ifndef __CM_POLYLIB_H__
-#define __CM_POLYLIB_H__
+#include "types/vector.h"
 
 struct winding {
 	int num_points;
@@ -60,4 +57,5 @@ struct winding *base_winding_for_plane(vec3_t normal, vec_t dist);
 struct winding *copy_winding(struct winding *w);
 void chop_winding_in_place(struct winding **inout, vec3_t normal,
 						   vec_t dist, vec_t epsilon);
-#endif // __CM_POLYLIB_H__
+
+#endif /* CLIPMAP_CM_POLYLIB_h */

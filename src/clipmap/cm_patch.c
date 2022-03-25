@@ -25,7 +25,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
-#include "cm_local.h"
+#include "shared.h"
+#include "common.h"
+
+#include "cm_patch.h"
+#include "cm_polylib.h"
 #include "qmath.h"
 
 static int num_planes;

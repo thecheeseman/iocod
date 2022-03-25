@@ -25,7 +25,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-05
 */
 
-#include "cm_local.h"
+#include "shared.h"
+#include "common.h"
+
+#include "cm_polylib.h"
 #include "qmath.h"
 
 // counters are only bumped when running single threaded,
