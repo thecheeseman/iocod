@@ -3,11 +3,11 @@
 
 #include "common/memory.h"
 #include "common/print.h"
+#include "stringlib.h"
 
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <string.h>
 #include "unzip.h"
 
 #if !defined(DISABLE_CURL) && !defined(DISABLE_AUTO_UPDATE)

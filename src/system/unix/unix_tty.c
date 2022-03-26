@@ -30,11 +30,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cvar/cvar.h"
 
-#include <string.h>
 #include <termios.h>
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
+
+#include "stringlib.h"
 
 bool stdin_active = true;
 

@@ -1,5 +1,3 @@
-#include <string.h>
-
 #include "shared.h"
 #include "common.h"
 
@@ -9,6 +7,7 @@
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "parse.h"
+#include "stringlib.h"
 
 bool com_error_entered;
 static char com_error_message[MAX_PRINT_MSG];

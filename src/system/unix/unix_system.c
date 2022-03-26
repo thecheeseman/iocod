@@ -32,12 +32,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <errno.h>
 #include <signal.h>
 #include <dlfcn.h>
-#include <string.h>
 
 #include "shared.h"
 #include "common.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 #define MAX_CMD 1024
 static char exit_cmdline[MAX_CMD] = "";

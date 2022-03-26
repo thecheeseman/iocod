@@ -1,6 +1,5 @@
-#include <string.h>
-
 #include "game_local.h"
+#include "stringlib.h"
 
 char *concat_args(int start) 
 {

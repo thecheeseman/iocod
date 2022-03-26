@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "common/memory.h"
+#include "stringlib.h"
 
 int com_memcmp(const void *str1, const void *str2, size_t n)
 {

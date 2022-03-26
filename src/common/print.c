@@ -1,4 +1,3 @@
-#include <string.h>
 #include <time.h>
 
 #include "shared.h"
@@ -8,6 +7,7 @@
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 static char *rd_buffer;
 static int rd_buffersize;

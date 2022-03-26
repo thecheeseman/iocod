@@ -1,9 +1,6 @@
-#if defined(HAVE_CONFIG_H) && defined(HAVE_STRING_H)
-#include <string.h>
-#endif
-
 #include "shared.h"
 #include "cvar/cvar_shared.h"
+#include "stringlib.h"
 
 /**
  * @brief Validate a cvar string

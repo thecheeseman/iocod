@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <ctype.h>
-#include <string.h>
 
 #include "clipmap/clipmap.h"
 #include "common/error.h"
@@ -30,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "server_local.h"
+#include "stringlib.h"
 
 void sv_set_config_string(int index, const char *val)
 {

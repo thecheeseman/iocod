@@ -1,6 +1,5 @@
-#include <string.h>
-
 #include "game_local.h"
+#include "stringlib.h"
 
 static bool item_registered[MAX_ITEMS];
 

@@ -20,17 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file unix_events.c
- * @date 2022-02-04
-*/
-
-#include <string.h>
-
 #include "shared.h"
 #include "common.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "stringlib.h"
 
 #define MAX_QUEUED_EVENTS   256
 #define MASK_QUEUED_EVENTS  (MAX_QUEUED_EVENTS - 1)

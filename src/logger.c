@@ -22,7 +22,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdarg.h>
 #include <time.h>
 #include <errno.h>
@@ -40,6 +39,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 #include "logger.h"
+#include "stringlib.h"
 
 static const char *level_output_str[] = {
     [LOG_LEVEL_NONE] = " ",

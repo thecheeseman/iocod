@@ -20,12 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include <string.h>
-
 #include "shared.h"
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "stringlib.h"
 
 // multiple character punctuation tokens
 static const char *punctuation[] = {

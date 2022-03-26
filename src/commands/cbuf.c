@@ -20,8 +20,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include <string.h>
-
 #include "shared.h"
 #include "cbuf.h"
 #include "common.h"
@@ -29,6 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "types/byte.h"
+#include "stringlib.h"
 
 #define MAX_CMD_BUFFER 16384
 #define MAX_CMD_LINE 1024

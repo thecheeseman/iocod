@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <ctype.h>
-#include <string.h>
 
 #include "shared.h"
 #include "common.h"
@@ -29,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "stringlib.h"
 
 void com_sprintf(char *dest, int size, const char *fmt, ...)
 {

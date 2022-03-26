@@ -37,7 +37,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <sys/time.h>
 #include <errno.h>
 #include <dirent.h>
-#include <string.h>
+
+#include "stringlib.h"
 
 static char cdpath[MAX_OSPATH];
 static char installpath[MAX_OSPATH];

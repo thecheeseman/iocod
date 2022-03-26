@@ -20,13 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include <string.h>
-
 #include "game_local.h"
 #include "common/error.h"
 #include "common/print.h"
-
-
+#include "stringlib.h"
 
 // replacement for com_printf
 void g_printf(const char *fmt, ...)

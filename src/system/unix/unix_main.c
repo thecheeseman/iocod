@@ -20,13 +20,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file unix_main.c
- * @date 2022-02-04
-*/
-
-#include <string.h>
-
 #include "shared.h"
 #include "common.h"
 #include <unistd.h>
@@ -37,6 +30,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef DISABLE_CURL
 #include <curl/curl.h>
 #endif
+
+#include "stringlib.h"
 
 uid_t saved_euid;
 

@@ -1,5 +1,4 @@
 #include <ctype.h>
-#include <string.h>
 
 #include "shared.h"
 #include "common.h"
@@ -7,6 +6,7 @@
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar_shared.h"
+#include "stringlib.h"
 
 extern struct cvar *tty_colors;
 
