@@ -20,14 +20,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include <string.h>
-
 #include "commands/cbuf.h"
 #include "common/hunk.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "server_local.h"
-
+#include "stringlib.h"
 
 struct server sv;
 struct vm *gvm = NULL;
@@ -408,11 +406,11 @@ void INCOMPLETE sv_connectionless_packet(struct netadr from, struct msg *msg)
 
     #ifdef CODVERSION1_5
     // punkbuster stuff
-    if (q_stricmpn(&msg->data[4], "pb_", 3) == 0)
+    if (strncasecmp(&msg->data[4], "pb_", 3) == 0)
         return;
     #endif
 
-    if (q_strncmp("connect", (const char *) & msg->data[4], 7) == 0)
+    if (strncmp("connect", (const char *) & msg->data[4], 7) == 0)
         huff_decompress(msg, 12);
 
     s = msg_read_string_line(msg);
@@ -422,17 +420,17 @@ void INCOMPLETE sv_connectionless_packet(struct netadr from, struct msg *msg)
 
     com_dprintf("sv packet %s: %s\n", net_address_to_string(from), c);
 
-    if (q_stricmp(c, "getstatus") == 0)
+    if (strcasecmp(c, "getstatus") == 0)
         svc_get_status(from);
-    else if (q_stricmp(c, "getinfo") == 0)
+    else if (strcasecmp(c, "getinfo") == 0)
         svc_get_info(from);
-    else if (q_stricmp(c, "getchallenge") == 0)
+    else if (strcasecmp(c, "getchallenge") == 0)
         sv_get_challenge(from);
-    else if (q_stricmp(c, "connect") == 0)
+    else if (strcasecmp(c, "connect") == 0)
         sv_direct_connect(from);
-    else if (q_stricmp(c, "ipauthorize") == 0)
+    else if (strcasecmp(c, "ipauthorize") == 0)
         sv_authorize_ip_packet(from);
-    else if (q_stricmp(c, "rcon") == 0)
+    else if (strcasecmp(c, "rcon") == 0)
         sv_remote_command(from);
     //else if (qstricmp(c, "disconnect") == 0)
     else

@@ -20,16 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file server_cmds.c
- * @date 2022-02-04
-*/
-
-#include <string.h>
-
 #include "server_local.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 void sv_heartbeat_f(void)
 {
@@ -104,7 +98,7 @@ void INCOMPLETE sv_map_restart_f(void)
 
     keep_persistent = vm_call(gvm, GAME_GET_PERSISTENT);
     if (!keep_persistent) {
-        if (q_stricmp(sv.gametype, sv_gametype->string)) {
+        if (strcasecmp(sv.gametype, sv_gametype->string)) {
             com_printf("g_gametype variable change -- restarting\n");
 
             q_strncpyz(mapname, cvar_variable_string("mapname"), 
@@ -144,7 +138,7 @@ void sv_map_f(void)
     if (!map)
         return;
 
-    if (!q_stricmpn(map, "mp/", 3) || !q_stricmpn(map, "mp\\", 3))
+    if (strncasecmp(map, "mp/", 3) == 0 || strncasecmp(map, "mp\\", 3) == 0)
         fmt = "maps/%s.bsp";
     else
         fmt = "maps/mp/%s.bsp";
@@ -157,7 +151,7 @@ void sv_map_f(void)
 
     // force latched values to get set
     cmd = cmd_argv(0);
-    if (!q_stricmp(cmd, "devmap"))
+    if (strcasecmp(cmd, "devmap") == 0)
         cheat = true;
 
     q_strncpyz(mapname, map, sizeof(mapname));
@@ -165,7 +159,7 @@ void sv_map_f(void)
     if (com_sv_running->integer && com_timescale->value <= 0.0)
         cvar_set_value("timescale", 1.0);
 
-    if (!com_sv_running->integer || q_stricmp(mapname, sv_mapname->string))
+    if (!com_sv_running->integer || strcasecmp(mapname, sv_mapname->string))
         sv_spawn_server(mapname);
     else
         sv_map_restart_f();

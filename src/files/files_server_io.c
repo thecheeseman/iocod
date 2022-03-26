@@ -29,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/error.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 /**
  * @brief
@@ -116,7 +117,7 @@ int fs_sv_fopen_file_read(const char *filename, filehandle *fp)
 
     if (fsh[f].handlefiles.file.o == NULL) {
         // search basepath
-        if (q_stricmp(fs_homepath->string, fs_basepath->string) != 0) {
+        if (strcasecmp(fs_homepath->string, fs_basepath->string) != 0) {
             fs_build_ospath(fs_basepath->string, filename, "", ospath);
             FS_DEBUG_PRINT("%s\n", ospath);
 

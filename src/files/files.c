@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <ctype.h>
-#include <string.h>
 
 #include "commands/cbuf.h"
 #include "common/error.h"
@@ -29,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "files_local.h"
+#include "stringlib.h"
 
 char fs_gamedir[MAX_OSPATH];
 
@@ -412,14 +412,14 @@ static void fs_startup(const char *gamename)
 
 		// *nix check
 		if (*fs_homepath->string != '\0' && 
-			q_stricmp(fs_homepath->string, fs_basepath->string) != 0)
+            strcasecmp(fs_homepath->string, fs_basepath->string) != 0)
 			fs_add_game_directory(fs_homepath->string, gamename);
 	}
 
 	// check for additional base game so mods and be based upon other mods
 	if (*fs_basegame->string != '\0' && 
-		q_stricmp(gamename, BASEGAME) == 0 &&
-		q_stricmp(fs_basegame->string, gamename) != 0) {
+        strcasecmp(gamename, BASEGAME) == 0 &&
+        strcasecmp(fs_basegame->string, gamename) != 0) {
 
 		// cdpath
 		if (*fs_cdpath->string != '\0')
@@ -431,15 +431,15 @@ static void fs_startup(const char *gamename)
 
 			// *nix check
 			if (*fs_homepath->string != '\0' && 
-				q_stricmp(fs_homepath->string, fs_basepath->string) != 0)
+                strcasecmp(fs_homepath->string, fs_basepath->string) != 0)
 				fs_add_game_directory(fs_homepath->string, fs_basegame->string);
 		}
 	}
 
 	// check additional game folder for mods
 	if (*fs_gamedirvar->string != '\0' && 
-		q_stricmp(gamename, BASEGAME) == 0 &&
-		q_stricmp(fs_gamedirvar->string, gamename) != 0) {
+        strcasecmp(gamename, BASEGAME) == 0 &&
+        strcasecmp(fs_gamedirvar->string, gamename) != 0) {
 
 		// cdpath
 		if (*fs_cdpath->string != '\0')
@@ -451,7 +451,7 @@ static void fs_startup(const char *gamename)
 
 			// *nix check
 			if (*fs_homepath->string != '\0' &&
-				q_stricmp(fs_homepath->string, fs_basepath->string) != 0)
+                strcasecmp(fs_homepath->string, fs_basepath->string) != 0)
 				fs_add_game_directory(fs_homepath->string, fs_gamedirvar->string);
 		}
 	}
@@ -547,9 +547,11 @@ static int paksort(const void *a, const void *b)
 		l1 = fs_get_localized_language_name(aa);
 		l2 = fs_get_localized_language_name(bb);
 
-		if (q_stricmp(l1, "english") == 0 && q_stricmp(l2, "english") != 0)
+		if (strcasecmp(l1, "english") == 0 &&
+            strcasecmp(l2, "english") != 0)
 			return -1;
-		else if (q_stricmp(l1, "english") != 0 && q_stricmp(l2, "english") == 0)
+		else if (strcasecmp(l1, "english") != 0 && 
+                 strcasecmp(l2, "english") == 0)
 			return 1;
 	}
 
@@ -601,7 +603,7 @@ static void fs_find_pack_files(const char *path, const char *dir)
 	for (i = 0; i < numfiles; i++) {
 		sorted[i] = pakfiles[i];
 		
-		if (q_strncmp(sorted[i], "localized_", 10) == 0)
+		if (strncmp(sorted[i], "localized_", 10) == 0)
 			com_memcpy(sorted[i], "          ", 10);
 	}
 
@@ -613,7 +615,7 @@ static void fs_find_pack_files(const char *path, const char *dir)
 	for (i = 0; i < numfiles; i++) {
 		localized = false;
 
-		if (q_strncmp(sorted[i], "          ", 10) == 0) {
+		if (strncmp(sorted[i], "          ", 10) == 0) {
 			com_memcpy(sorted[i], "localized_", 10);
 
 			localized = true;
@@ -629,7 +631,7 @@ static void fs_find_pack_files(const char *path, const char *dir)
 			}
 
 			// skip non-english files
-			if (q_stricmp(lname, "english") != 0)
+			if (strcasecmp(lname, "english") != 0)
 				continue;
 		}
 
@@ -695,8 +697,8 @@ static void fs_add_game_directory_real(const char *path, const char *dir,
 			return;
 		}
 
-		if (sp->dir != NULL && q_stricmp(sp->dir->path, path) == 0) {
-			if (q_stricmp(sp->dir->gamedir, newdir) == 0) {
+		if (sp->dir != NULL && strcasecmp(sp->dir->path, path) == 0) {
+			if (strcasecmp(sp->dir->gamedir, newdir) == 0) {
 				if (sp->localized != localized) {
 					com_warning("WARNING: game folder %s/%s added as " \
 								"both a localized & non - localized. " \
@@ -838,7 +840,7 @@ void fs_restart(int checksumfeed)
 				  "Make sure iocod is run from the correct folder");
 	}
 
-	if (q_stricmp(fs_gamedirvar->string, lastvalidgame) != 0) {
+	if (strcasecmp(fs_gamedirvar->string, lastvalidgame) != 0) {
 		if (!com_safe_mode())
 			cbuf_add_text("exec config_mp_server.cfg\n");
 	}

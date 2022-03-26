@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #endif
 
-#include <string.h>
+#include "stringlib.h"
 
 #include "shared.h"
 #include "common.h"
@@ -289,7 +289,7 @@ void cvar_write_defaults(filehandle f)
 
     for (var = cvar_vars; var != NULL; var = var->next) {
         // don't write cdkey
-        if (q_stricmp(var->name, "cl_cdkey") == 0)
+        if (strcasecmp(var->name, "cl_cdkey") == 0)
             continue;
 
         // what
@@ -309,7 +309,7 @@ void cvar_write_variables(filehandle f)
 
     for (var = cvar_vars; var != NULL; var = var->next) {
         // don't write cdkey
-        if (q_stricmp(var->name, "cl_cdkey") == 0)
+        if (strcasecmp(var->name, "cl_cdkey") == 0)
             continue;
 
         if (var->flags & CVAR_ARCHIVE) {

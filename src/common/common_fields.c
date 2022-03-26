@@ -21,13 +21,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <ctype.h>
-#include <string.h>
-
 #include "shared.h"
 #include "common.h"
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 void field_clear(struct field *edit)
 {
@@ -45,7 +44,7 @@ static void find_matches(const char *s)
 {
     int i;
 
-    if (q_stricmpn(s, completionstring, strlen(completionstring)) != 0)
+    if (strncasecmp(s, completionstring, strlen(completionstring)) != 0)
         return;
 
     matchcount++;
@@ -63,7 +62,7 @@ static void find_matches(const char *s)
 
 static void print_matches(const char *s)
 {
-    if (q_stricmpn(s, shortestmatch, strlen(shortestmatch)) == 0)
+    if (strncasecmp(s, shortestmatch, strlen(shortestmatch)) == 0)
         com_printf("    %s\n", s);
 }
 

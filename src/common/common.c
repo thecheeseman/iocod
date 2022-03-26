@@ -21,10 +21,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <ctype.h>
-#include <string.h>
 
 #include "shared.h"
 #include "common.h"
+
+#include "stringlib.h"
 
 #include "common/error.h"
 #include "common/hunk.h"
@@ -126,8 +127,8 @@ bool com_safe_mode(void)
     for (i = 0; i < com_num_consolelines; i++) {
         cmd_tokenize_string(com_consolelines[i]);
 
-        if (q_stricmp(cmd_argv(0), "safe") == 0 || 
-            q_stricmp(cmd_argv(0), "cvar_restart") == 0) {
+        if (strcasecmp(cmd_argv(0), "safe") == 0 ||
+            strcasecmp(cmd_argv(0), "cvar_restart") == 0) {
             com_consolelines[i][0] = 0;
             return true;
         }
@@ -145,11 +146,11 @@ void com_startup_variable(const char *match)
     for (i = 0; i < com_num_consolelines; i++) {
         cmd_tokenize_string(com_consolelines[i]);
 
-        if (q_stricmp(cmd_argv(0), "set") != 0)
+        if (strcasecmp(cmd_argv(0), "set") != 0)
             continue;
 
         s = cmd_argv(1);
-        if (match == NULL || q_stricmp(s, match) == 0) {
+        if (match == NULL || strcasecmp(s, match) == 0) {
             cvar_set(s, cmd_argv(2));
             cv = cvar_get(s, "", 0);
             cv->flags |= CVAR_USER_CREATED;
@@ -166,7 +167,7 @@ bool com_add_startup_commands(void)
         if (com_consolelines[i] == NULL || *com_consolelines[i] == '\0')
             continue;
 
-        if (q_stricmpn(com_consolelines[i], "set", 3) != 0)
+        if (strncasecmp(com_consolelines[i], "set", 3) != 0)
             added = true;
 
         cbuf_add_text(com_consolelines[i]);

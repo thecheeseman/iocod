@@ -76,6 +76,7 @@ void q_strncpyz(char *dest, const char *src, int destsize)
     dest[destsize - 1] = 0;
 }
 
+#if 0
 int q_stricmpn(const char *s1, const char *s2, int n) {
     int c1, c2;
 
@@ -124,6 +125,7 @@ int q_strncmp(const char *s1, const char *s2, int n)
 
     return 0;       // strings are equal
 }
+#endif
 
 void q_strcat(char *dest, int size, const char *src)
 {
@@ -328,7 +330,7 @@ char *info_value_for_key(const char *s, const char *key)
 
         *o = 0;
 
-        if (!q_stricmp(key, pkey))
+        if (strcasecmp(key, pkey) == 0)
             return value[valueindex];
 
         if (!*s)

@@ -128,9 +128,7 @@ struct usercmd {
 
 void com_sprintf(char *dest, int size, const char *fmt, ...);
 void com_default_extension(char *path, int maxsize, const char *extension);
-int q_stricmpn(const char *s1, const char *s2, int n);
-int q_stricmp(const char *s1, const char *s2);
-int q_strncmp(const char *s1, const char *s2, int n);
+
 void q_strncpyz(char *dest, const char *src, int destsize);
 void q_strcat(char *dest, int size, const char *src);
 char *q_strlwr(char *s1);

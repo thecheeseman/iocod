@@ -20,19 +20,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file commands.c
- * @date 2022-02-04
-*/
-
-#include <string.h>
-
 #include "shared.h"
 #include "common.h"
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 static size_t _cmd_argc;
 static char *_cmd_argv[MAX_STRING_TOKENS];
@@ -218,7 +212,7 @@ void cmd_add_command(const char *cmd_name, xcommand function)
     struct cmd_function *cmd;
 
     for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
-        if (q_stricmp(cmd_name, cmd->name) == 0) {
+        if (strcasecmp(cmd_name, cmd->name) == 0) {
             if (function != NULL)
                 com_printf("cmd_add_command: %s already defined\n", cmd_name);
 
@@ -253,7 +247,7 @@ void cmd_remove_command(const char *cmd_name)
         if (cmd == NULL)
             return;
 
-        if (q_stricmp(cmd_name, cmd->name) == 0) {
+        if (strcasecmp(cmd_name, cmd->name) == 0) {
             *back = cmd->next;
             if (cmd->name != NULL)
                 z_free(cmd->name);
@@ -291,7 +285,7 @@ void cmd_add_alias(const char *cmd_name, const char *alias)
     for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
         cmd = *prev;
 
-        if (q_stricmp(cmd_name, cmd->name) == 0) {
+        if (strcasecmp(cmd_name, cmd->name) == 0) {
             // found it
             c = cmd->alias_count;
 
@@ -337,13 +331,13 @@ void cmd_execute_string(const char *text)
         // check for any aliases
         aliasfound = false;
         for (i = 0; i < cmd->alias_count; i++) {
-            if (q_stricmp(_cmd_argv[0], cmd->aliases[i]) == 0) {
+            if (strcasecmp(_cmd_argv[0], cmd->aliases[i]) == 0) {
                 aliasfound = true;
                 break;
             }
         }
 
-        if (aliasfound || q_stricmp(_cmd_argv[0], cmd->name) == 0) {
+        if (aliasfound || strcasecmp(_cmd_argv[0], cmd->name) == 0) {
             // rearrange the links so that the command will be
             // near the head of the list next time it is used
             *prev = cmd->next;

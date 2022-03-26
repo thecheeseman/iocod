@@ -20,19 +20,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file files_io.c
- * @date 2022-02-04
-*/
-
-#include <string.h>
-
 #include "files_local.h"
 #include "common/error.h"
 #include "common/hunk.h"
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 /**
  * @brief Copy a fully specified file from one place to another
@@ -341,13 +335,13 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
                         // these are loaded from all pk3s
                         // from every pk3 file..
                         if (!(pak->referenced & FS_GENERAL_REF)) {
-                            if (q_stricmp(filename + l - 7, ".shader") &&
-                                q_stricmp(filename + l - 4, ".txt") &&
-                                q_stricmp(filename + l - 4, ".cfg") &&
-                                q_stricmp(filename + l - 7, ".config") &&
+                            if (strcasecmp(filename + l - 7, ".shader") &&
+                                strcasecmp(filename + l - 4, ".txt") &&
+                                strcasecmp(filename + l - 4, ".cfg") &&
+                                strcasecmp(filename + l - 7, ".config") &&
                                 strstr(filename, "levelshots") == NULL &&
-                                q_stricmp(filename + l - 6, ".arena") &&
-                                q_stricmp(filename + l - 5, ".menu")) {
+                                strcasecmp(filename + l - 6, ".arena") &&
+                                strcasecmp(filename + l - 5, ".menu")) {
                                 pak->referenced |= FS_GENERAL_REF;
                             }
                         }
@@ -431,10 +425,10 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
             // if we are running restricted, or if the filesystem is configured for pure
             // the only files we allow are these
             if (fs_restrict->integer > 0 || fs_num_serverpaks > 0) {
-                if (q_stricmp(filename + l - 4, ".cfg") != 0 &&
-                    q_stricmp(filename + l - 5, ".menu") != 0 &&
-                    q_stricmp(filename + l - strlen(DEMOEXT), DEMOEXT) != 0 &&
-                    q_stricmp(filename + l - 4, ".dat") != 0) {
+                if (strcasecmp(filename + l - 4, ".cfg") != 0 &&
+                    strcasecmp(filename + l - 5, ".menu") != 0 &&
+                    strcasecmp(filename + l - strlen(DEMOEXT), DEMOEXT) != 0 &&
+                    strcasecmp(filename + l - 4, ".dat") != 0) {
                     continue;
                 }
             }
@@ -445,10 +439,10 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
             if (fsh[*file].handlefiles.file.o == NULL)
                 continue;
 
-            if (q_stricmp(filename + l - 4, ".cfg") != 0 &&
-                q_stricmp(filename + l - 5, ".menu") != 0 &&
-                q_stricmp(filename + l - strlen(DEMOEXT), DEMOEXT) != 0 &&
-                q_stricmp(filename + l - 4, ".dat") != 0) {
+            if (strcasecmp(filename + l - 4, ".cfg") != 0 &&
+                strcasecmp(filename + l - 5, ".menu") != 0 &&
+                strcasecmp(filename + l - strlen(DEMOEXT), DEMOEXT) != 0 &&
+                strcasecmp(filename + l - 4, ".dat") != 0) {
                 fs_fake_checksum = random();
             }
 
@@ -460,7 +454,7 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
 
             // if we are getting it from the cdpath, copy to the basepath
             if (fs_copyfiles->integer > 0 && 
-                q_stricmp(dir->path,fs_cdpath->string) == 0) {
+                strcasecmp(dir->path,fs_cdpath->string) == 0) {
                 char newpath[MAX_OSPATH];
                 fs_build_ospath(fs_basepath->string, dir->gamedir, filename, 
                                 newpath);
@@ -549,7 +543,7 @@ struct pack *fs_load_zip_file(char *zipfile, const char *basename)
 
     // strip .pk3 if needed
     if (strlen(pack->pak_basename) > 4 &&
-        q_stricmp((pack->pak_basename + strlen(pack->pak_basename) - 4), 
+        strcasecmp((pack->pak_basename + strlen(pack->pak_basename) - 4),
                   ".pk3") == 0) {
         pack->pak_basename[strlen(pack->pak_basename) - 4] = '\0';
     }

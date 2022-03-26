@@ -1,8 +1,7 @@
-#include <string.h>
-
 #include "common/memory.h"
 #include "qmath.h"
 #include "../game_local.h"
+#include "stringlib.h"
 
 const char *weapon_type_str[] = {
     "bullet",
@@ -685,7 +684,7 @@ int bg_get_ammo_type_for_name(const char *name)
     int i;
 
     for (i = 0; i < num_ammo_types; i++ ) {
-        if (q_stricmp(ammo_types[i], name) == 0)
+        if (strcasecmp(ammo_types[i], name) == 0)
             return i;
     }
 
@@ -704,13 +703,13 @@ static void setup_ammo_indexes(void)
         q_strlwr(weapon->ammo_name);
 
         for (j = 0; j < num_ammo_types; j++) {
-            if (q_stricmp(ammo_types[j], weapon->ammo_name) == 0) {
+            if (strcasecmp(ammo_types[j], weapon->ammo_name) == 0) {
                 weapon->ammo_name_index = j;
 
                 if (j > 0 && ammo_max[j] != weapon->max_ammo) {
                     for (k = 1; k < i; k++) {
                         weapon2 = bg_weapons[k];
-                        if (q_stricmp(ammo_types[j], weapon2->ammo_name) == 0 &&
+                        if (strcasecmp(ammo_types[j], weapon2->ammo_name) == 0 &&
                             weapon2->max_ammo == ammo_max[j]) {
                             g_error("Max ammo mismatch for '%s' ammo: " \
                                     "'%s' set to %d, but '%s' already " \
@@ -759,14 +758,14 @@ static void setup_shared_ammo_indexes(void)
         q_strlwr(weapon->shared_ammo_cap_name);
 
         for (j = 0; j < num_shared_ammo_caps; j++) {
-            if (q_stricmp(shared_ammo_cap_names[j], 
+            if (strcasecmp(shared_ammo_cap_names[j],
                           weapon->shared_ammo_cap_name) == 0) {
                 weapon->shared_ammo_cap_index = j;
 
                 if (j > 0 && shared_ammo_caps[j] != weapon->shared_ammo_cap) {
                     for (k = 1; k < i; k++) {
                         weapon2 = bg_weapons[k];
-                        if (q_stricmp(shared_ammo_cap_names[j], 
+                        if (strcasecmp(shared_ammo_cap_names[j],
                                       weapon2->shared_ammo_cap_name) == 0 &&
                             weapon2->shared_ammo_cap == shared_ammo_caps[j]) {
                             g_error("Shared ammo mismatch for '%s' ammo: " \
@@ -809,7 +808,7 @@ int bg_get_ammo_clip_for_name(const char *name)
     int i;
 
     for (i = 0; i < num_clip_types; i++) {
-        if (q_stricmp(clip_types[i], name) == 0)
+        if (strcasecmp(clip_types[i], name) == 0)
             return i;
     }
 
@@ -828,13 +827,13 @@ static void setup_clip_indexes(void)
         q_strlwr(weapon->clip_name);
 
         for (j = 0; j < num_clip_types; j++) {
-            if (q_stricmp(clip_types[j], weapon->clip_name) == 0) {
+            if (strcasecmp(clip_types[j], weapon->clip_name) == 0) {
                 weapon->clip_name_index = j;
 
                 if (j > 0 && clip_max[j] != weapon->clip_size) {
                     for (k = 1; k < i; k++) {
                         weapon2 = bg_weapons[k];
-                        if (q_stricmp(clip_types[j], weapon2->clip_name) == 0 &&
+                        if (strcasecmp(clip_types[j], weapon2->clip_name) == 0 &&
                             weapon2->clip_size == clip_max[j]) {
                             g_error("Clip size mismatch for '%s' ammo: " \
                                     "'%s' set to %d, but '%s' already " \
@@ -891,7 +890,7 @@ static void fill_in_weapon_items(void)
         if (item->type == IT_AMMO) {
             for (j = 1; j <= bg_num_weapons; j++) {
                 weapon = bg_weapons[j];
-                if (q_stricmpn(item->display_name, weapon->name,
+                if (strncasecmp(item->display_name, weapon->name,
                                 strlen(weapon->name)) == 0) {
                     item->tag = j;
                     item->ammo_name_index = weapon->ammo_name_index;
@@ -933,7 +932,7 @@ static void setup_alt_weapon_indexes(void)
                 for (j = 1; j <= bg_num_weapons; j++) {
                     weapon2 = bg_weapons[j];
 
-                    if (q_stricmp(weapon->alt_weapon, weapon2->name) == 0) {
+                    if (strcasecmp(weapon->alt_weapon, weapon2->name) == 0) {
                         weapon->alt_weapon_index = j;
                         if (weapon->weapon_slot != weapon2->weapon_slot) {
                             g_error("Weapon '%s' does not have the same weapon " \
@@ -991,7 +990,7 @@ static int compare_weapon_file_names(const void *a, const void *b)
     aa = *(char **) a;
     bb = *(char **) b;
 
-    return q_stricmp(aa, bb);
+    return strcasecmp(aa, bb);
 }
 
 void set_up_weapon_info(void)

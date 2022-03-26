@@ -1,11 +1,8 @@
-#include <string.h>
-
 #include "parse.h"
-
 #include "shared.h"
 #include "common.h"
-
 #include "common/error.h"
+#include "stringlib.h"
 
 #define MAX_ALIAS_STRING_LEN	64
 #define MAX_ALIAS_SUBTITLE_LEN	4096
@@ -121,7 +118,7 @@ static int snd_parse_alias_channel(const char *token)
 
 	// check if its in our list
 	for (i = 0; i < alias_channels_count; i++) {
-		if (q_stricmp(token, alias_channels[i])) {
+		if (strcasecmp(token, alias_channels[i])) {
 			matched = true;
 			break;
 		}
@@ -148,9 +145,9 @@ static int snd_parse_alias_channel(const char *token)
 */
 static int snd_parse_alias_type(const char *token)
 {
-	if (q_stricmp(token, "streamed") == 0)
+	if (strcasecmp(token, "streamed") == 0)
 		return 2;
-	else if (q_stricmp(token, "loaded") == 0)
+	else if (strcasecmp(token, "loaded") == 0)
 		return 1;
 	
 	com_error(ERR_DROP, "Sound alias file %s: unknown sound type '%s' " \
@@ -165,9 +162,9 @@ static int snd_parse_alias_type(const char *token)
 */
 static int snd_parse_alias_loop_type(const char *token)
 {
-	if (q_stricmp(token, "looping") == 0)
+	if (strcasecmp(token, "looping") == 0)
 		return 1;
-	else if (q_stricmp(token, "nonlooping") == 0)
+	else if (strcasecmp(token, "nonlooping") == 0)
 		return 0;
 
 	com_error(ERR_DROP, "Sound alias file %s: unknown sound loop type '%s' " \
@@ -237,7 +234,7 @@ static int snd_parse_alias_load_spec(const char *mapname, const char *token)
 static void snd_parse_alias_master_slave(const char *token, 
 										 struct soundalias *alias)
 {
-	if (q_stricmp(token, "master") == 0) {
+	if (strcasecmp(token, "master") == 0) {
 		alias->master = 1;
 		alias->slave = 0;
 	} else {

@@ -31,8 +31,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
-#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -246,7 +246,7 @@ int net_ip_socket(char *netif, int port)
         return 0;
     }
 
-    if (netif != NULL || *netif != '\0' || q_stricmp(netif, "localhost") == 0)
+    if (netif != NULL || *netif != '\0' || strcasecmp(netif, "localhost") == 0)
         address.sin_addr.s_addr = INADDR_ANY;
     else
         sys_string_to_sockaddr(netif, (struct sockaddr *) &address);

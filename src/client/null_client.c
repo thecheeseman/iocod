@@ -38,8 +38,8 @@ struct cvar *cl_language;
 
 void cl_init(void)
 {
-	cl_shownet = cvar_get("cl_shownet", "0", CVAR_TEMP);
-	cl_language = cvar_get("cl_language", "0", CVAR_ARCHIVE);
+    cl_shownet = cvar_get("cl_shownet", "0", CVAR_TEMP);
+    cl_language = cvar_get("cl_language", "0", CVAR_ARCHIVE);
 }
 
 void cl_init_key_commands(void)
@@ -54,12 +54,12 @@ void cl_start_hunk_users(void)
 
 void cl_console_print(const char *msg)
 {
-	UNUSED(msg);
+    UNUSED(msg);
 }
 
 void cl_disconnect(bool showmainmenu)
 {
-	UNUSED(showmainmenu);
+    UNUSED(showmainmenu);
 }
 
 void cl_flush_memory(void)
@@ -84,45 +84,45 @@ void s_clear_sound_buffer(void)
 
 void cl_key_event(int value, int value2, int time)
 {
-	UNUSED(value);
-	UNUSED(value2);
-	UNUSED(time);
+    UNUSED(value);
+    UNUSED(value2);
+    UNUSED(time);
 }
 
 void cl_char_event(int value)
 {
-	UNUSED(value);
+    UNUSED(value);
 }
 
 void cl_mouse_event(int value, int value2, int time)
 {
-	UNUSED(value);
-	UNUSED(value2);
-	UNUSED(time);
+    UNUSED(value);
+    UNUSED(value2);
+    UNUSED(time);
 }
 
 void cl_joystick_event(int value, int value2, int time)
 {
-	UNUSED(value);
-	UNUSED(value2);
-	UNUSED(time);
+    UNUSED(value);
+    UNUSED(value2);
+    UNUSED(time);
 }
 
 void cl_packet_event(struct netadr evfrom, struct msg *buf)
 {
-	UNUSED(evfrom);
-	UNUSED(buf);
+    UNUSED(evfrom);
+    UNUSED(buf);
 }
 
 void cl_frame(int msec, int timescale)
 {
-	UNUSED(msec);
-	UNUSED(timescale);
+    UNUSED(msec);
+    UNUSED(timescale);
 }
 
 void key_write_bindings(filehandle f)
 {
-	UNUSED(f);
+    UNUSED(f);
 }
 
 void cl_map_loading(void)
@@ -137,15 +137,15 @@ void cl_shutdown_all(void)
 
 bool cl_game_command(void)
 {
-	return false;
+    return false;
 }
 
 bool ui_game_command(void)
 {
-	return false;
+    return false;
 }
 
 void cl_forward_command_to_server(const char *text)
 {
-	UNUSED(text);
+    UNUSED(text);
 }

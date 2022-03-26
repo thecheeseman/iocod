@@ -25,8 +25,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2022-02-04
 */
 
-#include <string.h>
-
 #include "shared.h"
 #include "common.h"
 
@@ -34,6 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "stringlib.h"
 
 // linked from cmd.c
 extern struct cmd_function *cmd_functions;
@@ -169,7 +168,7 @@ static void cmd_alias_f(void)
     for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
         cmd = *prev;
 
-        if (q_stricmp(alias, cmd->name) == 0) {
+        if (strcasecmp(alias, cmd->name) == 0) {
             com_printf("Command name '%s' already exists\n", cmd->name);
             return;
         }
@@ -178,7 +177,7 @@ static void cmd_alias_f(void)
     for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
         cmd = *prev;
 
-        if (q_stricmp(cmd_name, cmd->name) == 0) {
+        if (strcasecmp(cmd_name, cmd->name) == 0) {
             // found it
             c = cmd->alias_count;
 

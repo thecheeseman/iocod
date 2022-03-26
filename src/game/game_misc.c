@@ -1,5 +1,5 @@
-#include <string.h>
 #include "game_local.h"
+#include "stringlib.h"
 
 bool get_hint_string_index(int *hint, char *string)
 {
@@ -40,7 +40,7 @@ int INCOMPLETE model_index(const char *model)
 		if (str == NULL || *str == '\0')
 			break;
 
-		if (q_stricmp(model, str) == 0)
+		if (strcasecmp(model, str) == 0)
 			return i;
 	}
 

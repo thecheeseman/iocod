@@ -93,15 +93,28 @@ if (NOT COMPILE_32_BIT)
 endif()
 
 include(CheckIncludeFiles)
-CHECK_INCLUDE_FILES(dlfcn.h HAVE_DLFCN_H)
-CHECK_INCLUDE_FILES(stddef.h HAVE_STDDEF_H)
-CHECK_INCLUDE_FILES(stdint.h HAVE_STDINT_H)
-CHECK_INCLUDE_FILES(stdlib.h HAVE_STDLIB_H)
-CHECK_INCLUDE_FILES(string.h HAVE_STRING_H)
-CHECK_INCLUDE_FILES(strings.h HAVE_STRINGS_H)
-CHECK_INCLUDE_FILES(sys/stat.h HAVE_SYS_STAT_H)
-CHECK_INCLUDE_FILES(sys/types.h HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILES(unistd.h HAVE_UNISTD_H)
+include(CheckSymbolExists)
+
+check_include_files(dlfcn.h HAVE_DLFCN_H)
+check_include_files(stddef.h HAVE_STDDEF_H)
+check_include_files(stdint.h HAVE_STDINT_H)
+check_include_files(stdlib.h HAVE_STDLIB_H)
+
+check_include_files(string.h HAVE_STRING_H)
+if (HAVE_STRING_H)
+    check_symbol_exists(strdup "string.h" HAVE_STRDUP)
+    check_symbol_exists(strndup "string.h" HAVE_STRNDUP)
+endif()
+
+check_include_files(strings.h HAVE_STRINGS_H)
+if (HAVE_STRINGS_H)
+    check_symbol_exists(strcasecmp "strings.h" HAVE_STRCASECMP)
+    check_symbol_exists(strncasecmp "strings.h" HAVE_STRNCASECMP)
+endif()
+
+check_include_files(sys/stat.h HAVE_SYS_STAT_H)
+check_include_files(sys/types.h HAVE_SYS_TYPES_H)
+check_include_files(unistd.h HAVE_UNISTD_H)
 
 #
 # if we're building from a git clone, then we can use git versioning

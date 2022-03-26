@@ -1,6 +1,5 @@
 #include "game_local.h"
-
-#include <string.h>
+#include "stringlib.h"
 
 struct ip_filter {
 	unsigned int mask;
@@ -280,7 +279,7 @@ bool console_command(void)
 	trap_argv(0, cmd, sizeof(cmd));
 
 	for (svcmd = svcmds; svcmd->name; svcmd++) {
-		if (q_stricmp(cmd, svcmd->name) == 0) {
+		if (strcasecmp(cmd, svcmd->name) == 0) {
 			svcmd->func();
 			return true;
 		}

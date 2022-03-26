@@ -1,4 +1,5 @@
 #include "testlib.h"
+#include "stringlib.h"
 
 // just only compare 2 digits of precision
 #define FEQUAL(A, B) (fabs(A - B) < 0.01)
@@ -131,7 +132,7 @@ char *get_localized_string(const char *match)
 
 		token = com_parse_on_line(&p);
 
-		if (!q_stricmp(match, ref)) {
+		if (strcasecmp(match, ref) == 0) {
 			str = copy_string(token);
 			goto end;
 		}

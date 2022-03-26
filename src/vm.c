@@ -30,6 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "common/error.h"
 #include "common/memory.h"
+#include "stringlib.h"
 
 #define MAX_VM 3
 struct vm vmtable[MAX_VM];
@@ -71,7 +72,7 @@ struct vm *vm_create(const char *module, intptr_t (*system_calls)(intptr_t *))
 
     // see if we already have the vm
     for (i = 0; i < MAX_VM; i++) {
-        if (!q_stricmp(vmtable[i].name, module)) {
+        if (strcasecmp(vmtable[i].name, module) == 0) {
             vm = &vmtable[i];
             return vm;
         }
