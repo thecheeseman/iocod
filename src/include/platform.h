@@ -69,12 +69,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __BASE_FILE__
 #define __BASE_FILE__ __FILE__
 #endif // __BASE_FILE__
-#endif // _WIN32
 
 //
-// Linux
+// linux
 //
-#if defined(__linux__) 
+#elif defined(__linux__) 
 
 #include <endian.h>
 
@@ -89,13 +88,40 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define ARCH_STRING "i386"
 #elif defined(__x86_64__)
 #define ARCH_STRING "x86_64"
-#endif // __i386__
+#endif
 
 #if __FLOAT_WORD_ORDER == __BIG_ENDIAN
 #define Q3_BIG_ENDIAN
 #else
 #define Q3_LITTLE_ENDIAN
 #endif
+
+#define QDECL 
+#define QCALL 
+
+#define DLLEXPORT
+#define DLLIMPORT
+
+//
+// macos
+//
+#elif defined(__APPLE__)
+
+#define OS_STRING "macos"
+#define DLL_EXT "dylib"
+
+#define IDINLINE inline
+#define PATH_SEP '/'
+
+#if defined(__i386__)
+#define ARCH_STRING "i386"
+#elif defined(__x86_64__)
+#define ARCH_STRING "x86_64"
+#elif defined(__arm64__) || defined(__aarch64__)
+#define ARCH_STRING "arm64"
+#endif
+
+#define Q3_LITTLE_ENDIAN
 
 #define QDECL 
 #define QCALL 
