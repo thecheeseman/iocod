@@ -6,7 +6,11 @@
 #endif
 
 #if !defined(HAVE_STRDUP)
-extern char *strdup(const char *str);
+extern char *strdup(const char *s);
+#endif
+
+#if !defined(HAVE_STRNDUP)
+extern char *strndup(const char *s, size_t n);
 #endif
 
 #if defined(HAVE_CONFIG_H) && defined(HAVE_STRINGS_H)

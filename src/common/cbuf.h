@@ -20,8 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#ifndef COMMANDS_CBUF_H
-#define COMMANDS_CBUF_H
+#ifndef COMMON_CBUF_H
+#define COMMON_CBUF_H
 
 enum cbuf_exec_type {
     EXEC_NOW, /* don't return until completed, a VM should
@@ -37,4 +37,4 @@ void cbuf_insert_text(const char *text);
 void cbuf_execute_text(enum cbuf_exec_type type, const char *text);
 void cbuf_execute(void);
 
-#endif /* COMMANDS_CBUF_H */
+#endif /* COMMON_CBUF_H */

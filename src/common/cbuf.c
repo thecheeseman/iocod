@@ -21,8 +21,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "shared.h"
-#include "cbuf.h"
 #include "common.h"
+#include "common/cbuf.h"
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"

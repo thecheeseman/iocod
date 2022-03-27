@@ -4,14 +4,19 @@ TODO
 - figure out how to parse terrain data
 - general naming conventions for folders and files
     - remove any prefixes e.g. `common_` or `server_`
-	- just simplify naming so that each file is named what it needs to be
-	- shorter names are preferred
+    - just simplify naming so that each file is named what it needs to be
+    - shorter names are preferred
 - game dll
     - as above, separate into more folders to make it cleaner
     - scripts
-		- module support?
+        - module support?
 - implement OOB / networking so server can at least send/receive packets
 - files_io:372 // TODO: whatever this is // fun_080612a2(*file);
+
+- modularize:
+    - files
+    - common stuff
+    - system stuff
 
 Incomplete Functions
 --------------------

@@ -1,7 +1,7 @@
 #include "shared.h"
 #include "common.h"
 
-#include "commands/cbuf.h"
+#include "common/cbuf.h"
 #include "common/error.h"
 #include "common/hunk.h"
 #include "common/print.h"

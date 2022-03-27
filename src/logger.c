@@ -24,20 +24,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
-#include <errno.h>
 #include <stdio.h>
 
 #if defined(_WIN32)
-#include <winsock2.h>
+#include <windows.h>
 #else
 #ifdef ENABLE_THREADING
 #include <pthread.h>
 #endif
+#include <errno.h>
 #include <sys/time.h>
 #include <sys/syscall.h>
 #include <unistd.h>
 #endif
 
+#include "compat/gettimeofday.h"
 #include "logger.h"
 #include "stringlib.h"
 
@@ -113,39 +114,6 @@ static long get_current_thread_id(void)
     return syscall(SYS_gettid);
     #endif
 }
-
-#if defined(_WIN32)
-/**
- * @author yksz (https://github.com/yksz/c-logger)
-*/
-static int gettimeofday(struct timeval *tv, void *tz)
-{
-    const UINT64 epochFileTime = 116444736000000000ULL;
-    FILETIME ft;
-    ULARGE_INTEGER li;
-    UINT64 t;
-
-    if (tv == NULL) {
-        return -1;
-    }
-    GetSystemTimeAsFileTime(&ft);
-    li.LowPart = ft.dwLowDateTime;
-    li.HighPart = ft.dwHighDateTime;
-    t = (li.QuadPart - epochFileTime) / 10;
-    tv->tv_sec = (long) (t / 1000000);
-    tv->tv_usec = t % 1000000;
-    return 0;
-}
-
-/**
- * @author yksz (https://github.com/yksz/c-logger)
-*/
-static struct tm *localtime_r(const time_t *timep, struct tm *result)
-{
-    localtime_s(result, timep);
-    return result;
-}
-#endif
 
 /**
  * @author yksz (https://github.com/yksz/c-logger)

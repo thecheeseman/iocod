@@ -1,39 +1,47 @@
 #include <ctype.h>
+#include <stdlib.h>
 #include "stringlib.h"
 
 #if !defined(HAVE_STRDUP)
-#include <stdlib.h>
-
-char *strdup(const char *str)
+char *strdup(const char *s)
 {
-    int len;
-    char *buf;
+    size_t len = strlen(s) + 1;
+    void *new = malloc(len);
 
-    if ((char *) str == NULL)
+    if (new == NULL)
         return NULL;
 
-    len = strlen(str) + 1;
-    buf = malloc(len);
-
-    if (buf != NULL) {
-        memset(buf, 0, len);
-        memcpy(buf, str, len - 1);
-    }
-
-    return buf;
+    return (char *) memcpy(new, s, len);
 }
 #endif /* !defined(HAVE_STRDUP) */
+
+#if !defined(HAVE_STRNDUP)
+char *strndup(const char *s, size_t n)
+{
+    size_t len = strlen(s, n);
+    char *new = malloc(len + 1);
+
+    if (new == NULL)
+        return NULL;
+
+    new[len] = '\0';
+    return (char *) memcpy(new, s, len);
+}
+#endif
 
 #if !defined(HAVE_STRCASECMP)
 int strcasecmp(const char *s1, const char *s2)
 {
-    const unsigned char *u1 = (const unsigned char *) s1;
-    const unsigned char *u2 = (const unsigned char *) s2;
+    const unsigned char *p1 = (const unsigned char *) s1;
+    const unsigned char *p2 = (const unsigned char *) s2;
     int result;
 
-    while ((result = tolower(*u1) - tolower(*u2)) == 0 && *u1 != '\0') {
-        *u1++;
-        *u2++;
+    if (p1 == p2)
+        return 0;
+
+    while ((result = tolower(*p1) - tolower(*p2++)) == 0) {
+        if (*p1++ == '\0')
+            break;
     }
 
     return result;
@@ -43,20 +51,18 @@ int strcasecmp(const char *s1, const char *s2)
 #if !defined(HAVE_STRNCASECMP)
 int strncasecmp(const char *s1, const char *s2, size_t n)
 {
-    const unsigned char *u1 = (const unsigned char *) s1;
-    const unsigned char *u2 = (const unsigned char *) s2;
+    const unsigned char *p1 = (const unsigned char *) s1;
+    const unsigned char *p2 = (const unsigned char *) s2;
     int result;
 
-    for (; n != 0; n--) {
-        result = tolower(*u1) - tolower(*u2);
+    if (p1 == p2 || n == 0)
+        return 0;
 
-        if (result != 0)
-            return result;
-
-        if (*u1 == '\0')
-            return 0;
+    while ((result = tolower(*p1) - tolower(*p2++)) == 0) {
+        if (*p1++ == '\0' || --n == 0)
+            break;
     }
 
-    return 0;
+    return result;
 }
 #endif /* !defined(HAVE_STRNCASECMP) */

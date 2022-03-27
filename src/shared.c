@@ -469,7 +469,7 @@ void info_remove_key_big(char *s, const char *key)
 
 }
 
-boolean info_validate(const char *s) 
+bool info_validate(const char *s) 
 {
     if (strchr(s, '\"'))
         return false;

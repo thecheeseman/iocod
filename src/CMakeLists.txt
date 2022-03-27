@@ -8,6 +8,7 @@ foreach (subdir
     clipmap
     commands
     common 
+    compat
     cvar 
     external 
     files 
@@ -43,6 +44,7 @@ foreach (f
 endforeach()
 
 foreach (subdir
+    compat
     game
     game/bg
     game/script)

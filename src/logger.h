@@ -29,7 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "stringlib.h"
 
 #if defined(_WIN32)
-#include <winsock2.h>
+#include <winsock.h>
 #else
 #ifdef ENABLE_THREADING
 #include <pthread.h>
@@ -51,39 +51,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* defined(_WIN32) */
 
 /* https://github.com/armink/EasyLogger/blob/master/easylogger/src/elog.c */
-#define CSI_START                      "\033["
-#define CSI_END                        "\033[0m"
+#define CSI_START                       "\033["
+#define CSI_END                         "\033[0m"
 /* output log front color */
-#define F_BLACK                        "30;"
-#define F_RED                          "31;"
-#define F_GREEN                        "32;"
-#define F_YELLOW                       "33;"
-#define F_BLUE                         "34;"
-#define F_MAGENTA                      "35;"
-#define F_CYAN                         "36;"
-#define F_WHITE                        "37;"
+#define LFF_BLACK                       "30;"
+#define LFF_RED                         "31;"
+#define LFF_GREEN                       "32;"
+#define LFF_YELLOW                      "33;"
+#define LFF_BLUE                        "34;"
+#define LFF_MAGENTA                     "35;"
+#define LFF_CYAN                        "36;"
+#define LFF_WHITE                       "37;"
 /* output log background color */
-#define B_NULL
-#define B_BLACK                        "40;"
-#define B_RED                          "41;"
-#define B_GREEN                        "42;"
-#define B_YELLOW                       "43;"
-#define B_BLUE                         "44;"
-#define B_MAGENTA                      "45;"
-#define B_CYAN                         "46;"
-#define B_WHITE                        "47;"
+#define LFB_NULL
+#define LFB_BLACK                       "40;"
+#define LFB_RED                         "41;"
+#define LFB_GREEN                       "42;"
+#define LFB_YELLOW                      "43;"
+#define LFB_BLUE                        "44;"
+#define LFB_MAGENTA                     "45;"
+#define LFB_CYAN                        "46;"
+#define LFB_WHITE                       "47;"
 /* output log fonts style */
-#define S_BOLD                         "1m"
-#define S_UNDERLINE                    "4m"
-#define S_BLINK                        "5m"
-#define S_NORMAL                       "22m"
+#define LFS_BOLD                        "1m"
+#define LFS_UNDERLINE                   "4m"
+#define LFS_BLINK                       "5m"
+#define LFS_NORMAL                      "22m"
 /* output log default color definition: [front color] + [background color] + [show style] */
-#define LOG_COLOR_FATAL               (F_MAGENTA B_NULL S_NORMAL)
-#define LOG_COLOR_ERROR               (F_RED B_NULL S_NORMAL)
-#define LOG_COLOR_WARN                (F_YELLOW B_NULL S_NORMAL)
-#define LOG_COLOR_INFO                (F_CYAN B_NULL S_NORMAL)
-#define LOG_COLOR_DEBUG               (F_GREEN B_NULL S_NORMAL)
-#define LOG_COLOR_TRACE               (F_BLUE B_NULL S_NORMAL)
+#define LOG_COLOR_FATAL                 (LFF_MAGENTA LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_ERROR                 (LFF_RED     LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_WARN                  (LFF_YELLOW  LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_INFO                  (LFF_CYAN    LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_DEBUG                 (LFF_GREEN   LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_TRACE                 (LFF_BLUE    LFB_NULL LFS_NORMAL)
 
 enum log_level {
     LOG_LEVEL_NONE,

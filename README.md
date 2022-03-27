@@ -29,17 +29,32 @@ Activision, or Microsoft.
 Build Requirements
 ------------------
 
-**Linux**
-- `gcc` 
-- `make` 
-- `cmake`
+This project has been tested and successfully built on the following
+platforms:
+
+- Linux
+    - Debian 11
+    - Ubuntu 20.04
+    - CentOS 8
+    - Arch
+- Windows 10
+
+For best results, it is recommended to use the latest version of whatever 
+Linux distribution you prefer.
+
+#### Linux Requirements
+- gcc 5.0 or greater
+- cmake 3.13 or greater
 - _(optional)_ cURL
     - Debian/Unbuntu: `apt install libcurl4 libcurl4-openssl-dev`
     - CentOS: `yum install libcurl libcurl-devel`
+    - Arch: `pacman -Ss curl`
 
-**Windows**
-- Visual Studio 2019/2022.
-- _(optional)_ use [vcpkg](https://vcpkg.io/en/index.html) to install cURL libraries
+#### Windows Requirements
+- Visual Studio 2019 or greater
+- MSVC 16.8 or greater
+- _(optional)_ use [vcpkg](https://vcpkg.io/en/index.html) to install 
+  cURL libraries
 
 _Note:_ You can force-disable any cURL support via the build flag: `
 -DDISABLE_CURL=ON`
@@ -49,7 +64,7 @@ _Note:_ You can force-disable any cURL support via the build flag: `
 If you are running a 64-bit system and would like to compile 32-bit binaries,
 you will need to do a couple special things. 
 
-**Debian/Ubuntu**
+**Debian & Ubuntu**
 ```
 dpkg --add-architecture i386
 apt update

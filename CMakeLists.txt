@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.13)
 project("iocod" C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
+
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-builtin-macro-redefined -D'__FILE__=\"$(subst $(realpath ${CMAKE_SOURCE_DIR})/,,$(abspath $<))\"'")
 
 message(STATUS "CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
 if(NOT CMAKE_BUILD_TYPE)
@@ -92,10 +94,12 @@ if (NOT COMPILE_32_BIT)
     endif()
 endif()
 
+#
+# checks for various headers and functions
+#
 include(CheckIncludeFiles)
 include(CheckSymbolExists)
 
-check_include_files(dlfcn.h HAVE_DLFCN_H)
 check_include_files(stddef.h HAVE_STDDEF_H)
 check_include_files(stdint.h HAVE_STDINT_H)
 check_include_files(stdlib.h HAVE_STDLIB_H)
@@ -112,9 +116,14 @@ if (HAVE_STRINGS_H)
     check_symbol_exists(strncasecmp "strings.h" HAVE_STRNCASECMP)
 endif()
 
-check_include_files(sys/stat.h HAVE_SYS_STAT_H)
-check_include_files(sys/types.h HAVE_SYS_TYPES_H)
-check_include_files(unistd.h HAVE_UNISTD_H)
+if (WIN32)
+    check_include_files(direct.h HAVE_DIRECT_H)
+else()
+    check_include_files(dlfcn.h HAVE_DLFCN_H)
+    check_include_files(sys/stat.h HAVE_SYS_STAT_H)
+    check_include_files(sys/types.h HAVE_SYS_TYPES_H)
+    check_include_files(unistd.h HAVE_UNISTD_H)
+endif()
 
 #
 # if we're building from a git clone, then we can use git versioning
@@ -219,12 +228,20 @@ include_directories("src")
 # build options from q3
 # -O3 -ffast-math -fomit-frame-pointer -fno-strict-aliasing
 if (WIN32)
-    add_compile_options(/W3)
+    # add_compile_options(/W3) # set by default
+    add_compile_options(/FI config.h)
+
+    # silence some warnings
+    add_compile_options(/wd4244) # conversion from 'double' to 'float'
+    add_compile_options(/wd4305) # truncation from 'double' to 'float'
+    add_compile_options(/wd4996) # unsafe functions strcpy etc
+
+    # winbase.h(9531): warning C5105: macro expansion producing 'defined' has undefined behavior
+    add_compile_options(/wd5105)
 else()
     add_compile_options(-Wall -Wextra -Wformat=2 -Wformat-overflow=2)
+    add_compile_options(-include config.h)
 endif()
-
-add_compile_options(-include config.h)
 
 #
 # main dedicated server
@@ -296,6 +313,6 @@ if (UNIX)
     target_link_libraries(iocod ${CMAKE_DL_LIBS} ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} m)
     target_link_libraries(game ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} m)
 else()
-    target_link_libraries(iocod ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} )
-    target_link_libraries(game ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} m)
+    target_link_libraries(iocod ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK})
+    target_link_libraries(game ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK})
 endif()

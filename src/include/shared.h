@@ -480,7 +480,7 @@ char *info_value_for_key(const char *s, const char *key);
 void info_next_pair(const char **head, char *key, char *value);
 void info_remove_key(char *s, const char *key);
 void info_remove_key_big(char *s, const char *key);
-boolean info_validate(const char *s);
+bool info_validate(const char *s);
 void info_set_value_for_key(char *s, const char *key, const char *value);
 void info_set_value_for_key_big(char *s, const char *key, const char *value);
 void info_print(const char *s);

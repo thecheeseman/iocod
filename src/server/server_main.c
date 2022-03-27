@@ -20,7 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "commands/cbuf.h"
+#include "common/cbuf.h"
 #include "common/hunk.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
