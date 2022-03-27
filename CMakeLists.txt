@@ -239,7 +239,12 @@ if (WIN32)
     # winbase.h(9531): warning C5105: macro expansion producing 'defined' has undefined behavior
     add_compile_options(/wd5105)
 else()
-    add_compile_options(-Wall -Wextra -Wformat=2 -Wformat-overflow=2)
+    add_compile_options(-Wall -Wextra -Wformat=2)
+
+    if (NOT APPLE)
+        add_compile_options(-Wformat-overflow=2)
+    endif()
+
     add_compile_options(-include config.h)
 endif()
 
