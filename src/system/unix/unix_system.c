@@ -28,10 +28,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <unistd.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#include <fpu_control.h>
 #include <errno.h>
 #include <signal.h>
 #include <dlfcn.h>
+
+#if defined(__linux__)
+#include <fpu_control.h>
+#endif
 
 #include "shared.h"
 #include "common.h"
@@ -110,6 +113,7 @@ void sys_check_for_version(int argc, char *argv[])
 
 void sys_configure_fpu(void)
 {
+    #ifdef __linux__
     #ifdef DEBUG
     static int fpu_word = _FPU_DEFAULT & ~(_FPU_MASK_ZM | _FPU_MASK_IM);
     int current = 0;
@@ -125,6 +129,7 @@ void sys_configure_fpu(void)
     static int fpu_word = _FPU_DEFAULT;
     _FPU_SETCW(fpu_word);
     #endif
+    #endif /* __linux__ */
 }
 
 /**
