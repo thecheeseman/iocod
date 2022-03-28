@@ -30,6 +30,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/hunk.h"
 #include "common/print.h"
 
+bool weapon_info_allocated = false;
+void *weapon_info_memory;
+
+intptr_t get_weapon_info_memory(int size, bool *already_allocated, bool val)
+{
+    if (size < 0)
+        return 0;
+
+    if (weapon_info_memory == NULL) {
+        weapon_info_memory = hunk_alloc_low(size);
+        weapon_info_allocated = val;
+
+        *already_allocated = false;
+    } else {
+        *already_allocated = weapon_info_allocated;
+
+        if (!weapon_info_allocated)
+            weapon_info_allocated = val;
+    }
+
+    return (intptr_t) weapon_info_memory;
+}
+
+void free_weapon_info_memory(bool allocated, bool keep_memory)
+{
+    if (weapon_info_allocated == allocated) {
+        if (!keep_memory)
+            weapon_info_memory = NULL;
+
+        weapon_info_allocated = false;
+    }
+}
+
 struct shared_entity *sv_gentity_num(int num)
 {
 	struct shared_entity *ent;
@@ -187,7 +220,10 @@ intptr_t INCOMPLETE sv_game_systemcalls(intptr_t *args)
 		case G_XANIM_GET_ANIM_TREE_SIZE:
 		case G_XMODEL_DEBUG_BOXES:
 		case G_GET_WEAPON_INFO_MEMORY:
+            return get_weapon_info_memory(args[1], (bool *) args[2], true);
 		case G_FREE_WEAPON_INFO_MEMORY:
+            free_weapon_info_memory(true, args[1]);
+            break;
 		case G_FREE_CLIENT_SCRIPT_PERS:
 		case G_RESET_ENTITY_PARSE_POINT:
 			break;
