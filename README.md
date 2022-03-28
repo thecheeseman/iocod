@@ -38,6 +38,7 @@ platforms:
     - CentOS 8
     - Arch
 - Windows 10
+- MacOS 10.15.7
 
 For best results, it is recommended to use the latest version of whatever 
 Linux distribution you prefer.

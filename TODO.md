@@ -18,6 +18,13 @@ TODO
     - common stuff
     - system stuff
 
+macos specific
+- fix: 'syscall' is deprecated
+- fix: format string is not a string literal printf stuff
+
+- <stddef.h> contains NULL & size_t
+- <stdint.h> contains intX_t, uintX_t, intptr_t, uintptr_t etc
+
 Incomplete Functions
 --------------------
 
