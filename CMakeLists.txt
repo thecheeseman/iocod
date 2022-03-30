@@ -137,7 +137,7 @@ if (Git_FOUND)
         OUTPUT_VARIABLE DESCRIBE_BUILD OUTPUT_STRIP_TRAILING_WHITESPACE
         RESULT_VARIABLE DESCRIBE_RESULT)
 
-    if (RESULT_VARIABLE EQUAL 0)
+    if (DESCRIBE_RESULT EQUAL 0)
         string(REGEX MATCH "[0-9.]+" BUILD_NUMBER ${DESCRIBE_BUILD})
         string(REGEX MATCH "([a-zA-Z0-9]+)$" BUILD_HASH ${DESCRIBE_BUILD})
 
@@ -279,9 +279,9 @@ if (BUILD_PROTOTYPEGEN)
     add_subdirectory("prototypegen") # prototype generators for scripts
 endif()
 
-if (BUILD_TESTS)
-    add_subdirectory("tests") # test suites
-endif()
+#if (BUILD_TESTS)
+#    add_subdirectory("tests") # test suites
+#endif()
 
 #
 #
