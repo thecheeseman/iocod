@@ -33,15 +33,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define HUNK_FREE_MAGIC 0x89537893
 
 struct hunkheader {
-	int magic;
-	int size;
+    int magic;
+    int size;
 };
 
 struct hunkused {
-	int mark;
-	int temphighwater;
-	int permanent;
-	int temp;
+    int mark;
+    int temphighwater;
+    int permanent;
+    int temp;
 };
 
 static struct hunkused hunk_low, hunk_high;
@@ -68,31 +68,31 @@ void com_init_zone_memory(void)
 */
 void com_meminfo_f(void)
 {
-	com_printf("%8.4f MB total hunk\n", BYTESTOMB(s_hunktotal));
-	// removed zone
+    com_printf("%8.4f MB total hunk\n", BYTESTOMB(s_hunktotal));
+    // removed zone
 
-	com_printf("%8.4f MB low permanent\n", BYTESTOMB(hunk_low.permanent));
+    com_printf("%8.4f MB low permanent\n", BYTESTOMB(hunk_low.permanent));
 
-	if (hunk_low.temp != hunk_low.permanent)
-		com_printf("%8.4f MB low temp\n", BYTESTOMB(hunk_low.temp));
+    if (hunk_low.temp != hunk_low.permanent)
+        com_printf("%8.4f MB low temp\n", BYTESTOMB(hunk_low.temp));
 
-	com_printf("%8.4f MB high permanent\n", BYTESTOMB(hunk_high.permanent));
+    com_printf("%8.4f MB high permanent\n", BYTESTOMB(hunk_high.permanent));
 
-	if (hunk_high.temp != hunk_high.permanent)
-		com_printf("%8.4f MB high temp\n", BYTESTOMB(hunk_high.temp));
+    if (hunk_high.temp != hunk_high.permanent)
+        com_printf("%8.4f MB high temp\n", BYTESTOMB(hunk_high.temp));
 
-	com_printf("%8.4f MB total hunk in use\n", 
-			   BYTESTOMB(hunk_low.permanent + hunk_high.permanent));
+    com_printf("%8.4f MB total hunk in use\n", 
+               BYTESTOMB(hunk_low.permanent + hunk_high.permanent));
 }
 
 void INCOMPLETE fun_080c27ec(void *a, void *b)
 {
-	(void) a; (void) b; //-Werror=unusued-parameter
+    (void) a; (void) b; //-Werror=unusued-parameter
 }
 
 void INCOMPLETE fun_08061888(void *a, void *b)
 {
-	(void) a; (void) b; //-Werror=unusued-parameter
+    (void) a; (void) b; //-Werror=unusued-parameter
 }
 
 void INCOMPLETE fun_08061980(void)
@@ -106,26 +106,26 @@ void INCOMPLETE fun_08061980(void)
 */
 void hunk_clear(void)
 {
-	void *a, *b;
+    void *a, *b;
 
-	hunk_low.mark = 0;
-	hunk_low.temphighwater = 0;
-	hunk_low.permanent = 0;
-	hunk_low.temp = 0;
-	hunk_high.mark = 0;
-	hunk_high.temphighwater = 0;
-	hunk_high.permanent = 0;
-	hunk_high.temp = 0;
+    hunk_low.mark = 0;
+    hunk_low.temphighwater = 0;
+    hunk_low.permanent = 0;
+    hunk_low.temp = 0;
+    hunk_high.mark = 0;
+    hunk_high.temphighwater = 0;
+    hunk_high.permanent = 0;
+    hunk_high.temp = 0;
 
-	s_hunkalloced = 0;
+    s_hunkalloced = 0;
 
-	com_printf("hunk_clear: reset the hunk OK\n");
+    com_printf("hunk_clear: reset the hunk OK\n");
 
-	a = s_hunkdata + hunk_low.permanent;
-	b = (s_hunkdata + s_hunktotal) - hunk_high.permanent;
-	fun_080c27ec(a, b);
-	fun_08061888(a, b);
-	fun_08061980();
+    a = s_hunkdata + hunk_low.permanent;
+    b = (s_hunkdata + s_hunktotal) - hunk_high.permanent;
+    fun_080c27ec(a, b);
+    fun_08061888(a, b);
+    fun_08061980();
 }
 
 // there are two versions of this function
@@ -133,23 +133,23 @@ void hunk_clear(void)
 // and one without
 void hunk_clear2(void)
 {
-	sv_shutdown_game_progs();
+    sv_shutdown_game_progs();
 
-	hunk_clear();
+    hunk_clear();
 
-	vm_clear();
+    vm_clear();
 }
 
 void hunk_clear_to_mark_low(void)
 {
-	void *a, *b;
+    void *a, *b;
 
-	hunk_low.temp = hunk_low.mark;
-	hunk_low.permanent = hunk_low.mark;
-	a = s_hunkdata + hunk_low.permanent;
-	b = (s_hunkdata + s_hunktotal) - hunk_high.permanent;
-	fun_080c27ec(a, b);
-	fun_08061888(a, b);
+    hunk_low.temp = hunk_low.mark;
+    hunk_low.permanent = hunk_low.mark;
+    a = s_hunkdata + hunk_low.permanent;
+    b = (s_hunkdata + s_hunktotal) - hunk_high.permanent;
+    fun_080c27ec(a, b);
+    fun_08061888(a, b);
 }
 
 /**
@@ -158,65 +158,65 @@ void hunk_clear_to_mark_low(void)
 */
 void com_init_hunk_memory(void)
 {
-	struct cvar *cv;
-	int min;
-	char *msg = NULL;
+    struct cvar *cv;
+    int min;
+    char *msg = NULL;
 
-	if (s_hunkdata != NULL) {
-		com_printf("Hunk memory already initialized, not reallocating\n");
-		return;
-	}
+    if (s_hunkdata != NULL) {
+        com_printf("Hunk memory already initialized, not reallocating\n");
+        return;
+    }
 
-	if (fs_loadstack() != 0)
-		com_error(ERR_FATAL, "file system loadstack not zero");
+    if (fs_loadstack() != 0)
+        com_error(ERR_FATAL, "file system loadstack not zero");
 
-	cv = cvar_get("com_hunkmegs", "128", CVAR_LATCH | CVAR_ARCHIVE);
+    cv = cvar_get("com_hunkmegs", "128", CVAR_LATCH | CVAR_ARCHIVE);
 
-	if (com_dedicated != NULL && com_dedicated->integer > 0) {
-		min = MIN_DEDICATED_COM_HUNKMEGS;
-		msg = "Minimum com_hunkmegs for a dedicated server is %i, allocating %i.\n";
-	} else {
-		min = MIN_COM_HUNKMEGS;
-		msg = "Minimum com_hunkmegs is %i, allocating %i.\n";
-	}
+    if (com_dedicated != NULL && com_dedicated->integer > 0) {
+        min = MIN_DEDICATED_COM_HUNKMEGS;
+        msg = "Minimum com_hunkmegs for a dedicated server is %i, allocating %i.\n";
+    } else {
+        min = MIN_COM_HUNKMEGS;
+        msg = "Minimum com_hunkmegs is %i, allocating %i.\n";
+    }
 
-	if (cv->integer < min) {
-		s_hunktotal = 1024 * 1024 * min;
-		com_printf(msg, min, s_hunktotal / (1024 * 1024));
-	} else {
-		s_hunktotal = cv->integer * 1024 * 1024;
-	}
+    if (cv->integer < min) {
+        s_hunktotal = 1024 * 1024 * min;
+        com_printf(msg, min, s_hunktotal / (1024 * 1024));
+    } else {
+        s_hunktotal = cv->integer * 1024 * 1024;
+    }
 
-	// cod2/ioquake3/rtcw use calloc(1, s_hunktotal);
-	// cod1/q3 use malloc(s_hunktotal + 31);
-	// probably safer to just use calloc?
-	s_hunkdata = z_malloc(s_hunktotal);
-	if (s_hunkdata == NULL) {
-		com_error(ERR_FATAL, "Hunk data failed to allocate %.4f MB",
-				  BYTESTOMB(s_hunktotal));
-	}
+    // cod2/ioquake3/rtcw use calloc(1, s_hunktotal);
+    // cod1/q3 use malloc(s_hunktotal + 31);
+    // probably safer to just use calloc?
+    s_hunkdata = z_malloc(s_hunktotal);
+    if (s_hunkdata == NULL) {
+        com_error(ERR_FATAL, "Hunk data failed to allocate %.4f MB",
+                  BYTESTOMB(s_hunktotal));
+    }
 
-	com_printf("hunk allocated %.4f MB\n", BYTESTOMB(s_hunktotal));
+    com_printf("hunk allocated %.4f MB\n", BYTESTOMB(s_hunktotal));
 
-	// not sure what this is used for yet?
-	// hunk_ptr = s_hunkdata;
+    // not sure what this is used for yet?
+    // hunk_ptr = s_hunkdata;
 
-	// some magic that i think only works on 32 bit systems (not present in cod2+)
-	// this causes segfaults when trying to allocate new temp memory
-	#if id386
-	s_hunkdata = (byte *)(((int) s_hunkdata + 31) & ~31);
-	#endif
+    // some magic that i think only works on 32 bit systems (not present in cod2+)
+    // this causes segfaults when trying to allocate new temp memory
+    #if id386
+    s_hunkdata = (byte *)(((int) s_hunkdata + 31) & ~31);
+    #endif
 
-	hunk_clear();
+    hunk_clear();
 
-	cmd_add_command("meminfo", com_meminfo_f);
+    cmd_add_command("meminfo", com_meminfo_f);
 }
 
 void com_hunk_shutdown(void)
 {
-	z_free(s_hunkdata);
+    z_free(s_hunkdata);
 
-	cmd_remove_command("meminfo");
+    cmd_remove_command("meminfo");
 }
 
 /**
@@ -226,47 +226,47 @@ void com_hunk_shutdown(void)
 */
 void *hunk_allocate_temp_memory(int size)
 {
-	void *buf;
-	struct hunkheader *hdr;
-	int low, z;
+    void *buf;
+    struct hunkheader *hdr;
+    int low, z;
 
-	low = hunk_low.temp;
+    low = hunk_low.temp;
 
-	if (s_hunkdata == NULL) {
-		buf = z_malloc(size);
-		if (buf == NULL)
-			com_error(ERR_FATAL, "couldn't allocate %i bytes of memory");
+    if (s_hunkdata == NULL) {
+        buf = z_malloc(size);
+        if (buf == NULL)
+            com_error(ERR_FATAL, "couldn't allocate %i bytes of memory");
 
-		com_memset(buf, 0, size);
-		return buf;
-	}
+        com_memset(buf, 0, size);
+        return buf;
+    }
 
-	// this is what cod1 is doing internally
-	z = (low + 15) & ~15;
-	hdr = (struct hunkheader *) (s_hunkdata + z);
-	hunk_low.temp = z + size + 0x10;
-	// all low hunk is aligned by 16 bytes
+    // this is what cod1 is doing internally
+    z = (low + 15) & ~15;
+    hdr = (struct hunkheader *) (s_hunkdata + z);
+    hunk_low.temp = z + size + 0x10;
+    // all low hunk is aligned by 16 bytes
 
-	if (s_hunktotal < hunk_low.temp + hunk_high.temp) {
-		com_meminfo_f();
+    if (s_hunktotal < hunk_low.temp + hunk_high.temp) {
+        com_meminfo_f();
 
-		// cod2 style error message
-		com_error(ERR_DROP,
-				  "failed on %i bytes " \
-				  "(total % .4f MB, low % .4f MB, high % .4f MB), " \
-				  "needs % i more hunk bytes", 
-				  size + 0x10, 
-				  BYTESTOMB(s_hunktotal), 
-				  BYTESTOMB(hunk_low.temp), 
-				  BYTESTOMB(hunk_high.temp), 
-				  (hunk_high.temp + hunk_low.temp) - s_hunktotal);
-	}
+        // cod2 style error message
+        com_error(ERR_DROP,
+                  "failed on %i bytes " \
+                  "(total % .4f MB, low % .4f MB, high % .4f MB), " \
+                  "needs % i more hunk bytes", 
+                  size + 0x10, 
+                  BYTESTOMB(s_hunktotal), 
+                  BYTESTOMB(hunk_low.temp), 
+                  BYTESTOMB(hunk_high.temp), 
+                  (hunk_high.temp + hunk_low.temp) - s_hunktotal);
+    }
 
-	buf = hdr + 4;
-	hdr->magic = HUNK_MAGIC;
-	hdr->size = hunk_low.temp - low;
+    buf = hdr + 4;
+    hdr->magic = HUNK_MAGIC;
+    hdr->size = hunk_low.temp - low;
 
-	return buf;
+    return buf;
 }
 
 /**
@@ -278,46 +278,46 @@ void *hunk_allocate_temp_memory(int size)
 */
 void *hunk_allocate_temp_memory_high(int size)
 {
-	hunk_high.temp += (size + 15) & ~15;
+    hunk_high.temp += (size + 15) & ~15;
 
-	if (s_hunktotal < hunk_high.temp + hunk_low.temp) {
-		com_meminfo_f();
+    if (s_hunktotal < hunk_high.temp + hunk_low.temp) {
+        com_meminfo_f();
 
-		// cod2 style error message
-		com_error(ERR_DROP,
-				  "failed on % i bytes " \
-				  "(total % .4f MB, low % .4f MB, high % .4f MB), " \
-				  "needs % i more hunk bytes", 
-				  size + 0x10, 
-				  BYTESTOMB(s_hunktotal), 
-				  BYTESTOMB(hunk_low.temp), 
-				  BYTESTOMB(hunk_high.temp), 
-				  (hunk_high.temp + hunk_low.temp) - s_hunktotal);
-	}
+        // cod2 style error message
+        com_error(ERR_DROP,
+                  "failed on % i bytes " \
+                  "(total % .4f MB, low % .4f MB, high % .4f MB), " \
+                  "needs % i more hunk bytes", 
+                  size + 0x10, 
+                  BYTESTOMB(s_hunktotal), 
+                  BYTESTOMB(hunk_low.temp), 
+                  BYTESTOMB(hunk_high.temp), 
+                  (hunk_high.temp + hunk_low.temp) - s_hunktotal);
+    }
 
-	return (s_hunktotal + s_hunkdata) - hunk_high.temp;
+    return (s_hunktotal + s_hunkdata) - hunk_high.temp;
 }
 
 void *hunk_reallocate_temp_memory(int size)
 {
-	hunk_low.temp = size + hunk_low.permanent;
+    hunk_low.temp = size + hunk_low.permanent;
 
-	if (s_hunktotal < hunk_high.temp + hunk_low.temp) {
-		com_meminfo_f();
+    if (s_hunktotal < hunk_high.temp + hunk_low.temp) {
+        com_meminfo_f();
 
-		// cod2 style error message
-		com_error(ERR_DROP, 
-				  "failed on %i bytes " \
-				  "(total % .4f MB, low % .4f MB, high % .4f MB), " \
-				  "needs % i more hunk bytes", 
-				  size + 0x10, 
-				  BYTESTOMB(s_hunktotal), 
-				  BYTESTOMB(hunk_low.temp), 
-				  BYTESTOMB(hunk_high.temp), 
-				  (hunk_high.temp + hunk_low.temp) - s_hunktotal);
-	}
+        // cod2 style error message
+        com_error(ERR_DROP, 
+                  "failed on %i bytes " \
+                  "(total % .4f MB, low % .4f MB, high % .4f MB), " \
+                  "needs % i more hunk bytes", 
+                  size + 0x10, 
+                  BYTESTOMB(s_hunktotal), 
+                  BYTESTOMB(hunk_low.temp), 
+                  BYTESTOMB(hunk_high.temp), 
+                  (hunk_high.temp + hunk_low.temp) - s_hunktotal);
+    }
 
-	return hunk_low.permanent + s_hunkdata;
+    return hunk_low.permanent + s_hunkdata;
 }
 
 /**
@@ -326,19 +326,19 @@ void *hunk_reallocate_temp_memory(int size)
 */
 void hunk_free_temp_memory(void *buf)
 {
-	struct hunkheader *hdr;
+    struct hunkheader *hdr;
 
-	if (s_hunkdata == NULL) {
-		z_free(buf);
-		return;
-	}
+    if (s_hunkdata == NULL) {
+        z_free(buf);
+        return;
+    }
 
-	hdr = ((struct hunkheader *) buf) - 4;
-	if (hdr->magic != (int) HUNK_MAGIC)
-		com_error(ERR_FATAL, "bad magic");
+    hdr = ((struct hunkheader *) buf) - 4;
+    if (hdr->magic != (int) HUNK_MAGIC)
+        com_error(ERR_FATAL, "bad magic");
 
-	hdr->magic = HUNK_FREE_MAGIC;
-	hunk_low.temp -= hdr->size;
+    hdr->magic = HUNK_FREE_MAGIC;
+    hunk_low.temp -= hdr->size;
 }
 
 /**
@@ -349,24 +349,24 @@ void hunk_free_temp_memory(void *buf)
 */
 void *hunk_alloc_align(int size, int align)
 {
-	void *buf;
+    void *buf;
 
-	if (s_hunkdata == NULL)
-		com_error(ERR_FATAL, "hunk memory system not initialized");
+    if (s_hunkdata == NULL)
+        com_error(ERR_FATAL, "hunk memory system not initialized");
 
-	hunk_high.permanent = (size + hunk_high.permanent + (align - 1)) & ~(align - 1);
-	buf = (void *) ((s_hunktotal + s_hunkdata) - hunk_high.permanent);
-	hunk_high.temp = hunk_high.permanent;
+    hunk_high.permanent = (size + hunk_high.permanent + (align - 1)) & ~(align - 1);
+    buf = (void *) ((s_hunktotal + s_hunkdata) - hunk_high.permanent);
+    hunk_high.temp = hunk_high.permanent;
 
-	if (s_hunktotal < hunk_high.permanent + hunk_low.temp) {
-		com_meminfo_f();
-		com_error(ERR_DROP, "failed on %i", size);
-	}
+    if (s_hunktotal < hunk_high.permanent + hunk_low.temp) {
+        com_meminfo_f();
+        com_error(ERR_DROP, "failed on %i", size);
+    }
 
-	s_hunkalloced = hunk_high.permanent + hunk_low.permanent;
+    s_hunkalloced = hunk_high.permanent + hunk_low.permanent;
 
     com_memset(buf, 0, size);
-	return buf;
+    return buf;
 }
 
 /**
@@ -376,7 +376,7 @@ void *hunk_alloc_align(int size, int align)
 */
 void *hunk_alloc(int size)
 {
-	return hunk_alloc_align(size, 32);
+    return hunk_alloc_align(size, 32);
 }
 
 /**
@@ -387,24 +387,24 @@ void *hunk_alloc(int size)
 */
 void *hunk_alloc_low_align(int size, int align)
 {
-	void *buf;
+    void *buf;
 
-	if (s_hunkdata == NULL)
-		com_error(ERR_FATAL, "hunk memory system not initialized");
+    if (s_hunkdata == NULL)
+        com_error(ERR_FATAL, "hunk memory system not initialized");
 
-	hunk_low.permanent = (size + (align - 1) + hunk_low.permanent) & ~(align - 1);
-	buf = (void *) (hunk_low.permanent + s_hunkdata);
-	hunk_low.temp = hunk_low.permanent;
+    hunk_low.permanent = (size + (align - 1) + hunk_low.permanent) & ~(align - 1);
+    buf = (void *) (hunk_low.permanent + s_hunkdata);
+    hunk_low.temp = hunk_low.permanent;
 
-	if (s_hunktotal < hunk_low.permanent + hunk_high.temp) {
-		com_meminfo_f();
-		com_error(ERR_DROP, "failed on %i", size);
-	}
+    if (s_hunktotal < hunk_low.permanent + hunk_high.temp) {
+        com_meminfo_f();
+        com_error(ERR_DROP, "failed on %i", size);
+    }
 
-	s_hunkalloced = hunk_high.permanent + hunk_low.permanent;
+    s_hunkalloced = hunk_high.permanent + hunk_low.permanent;
 
-	com_memset(buf, 0, size);
-	return buf;
+    com_memset(buf, 0, size);
+    return buf;
 }
 
 /**
@@ -414,67 +414,67 @@ void *hunk_alloc_low_align(int size, int align)
 */
 void *hunk_alloc_low(int size)
 {
-	return hunk_alloc_low_align(size, 32);
+    return hunk_alloc_low_align(size, 32);
 }
 
 void hunk_swap_temp(void)
 {
-	hunk_high.temp = hunk_high.permanent;
+    hunk_high.temp = hunk_high.permanent;
 }
 
 void hunk_swap_temp_low(void)
 {
-	if (s_hunkdata != NULL)
-		hunk_low.temp = hunk_low.permanent;
+    if (s_hunkdata != NULL)
+        hunk_low.temp = hunk_low.permanent;
 }
 
 void hunk_set_mark_low(void)
 {
-	hunk_low.mark = hunk_low.permanent;
+    hunk_low.mark = hunk_low.permanent;
 }
 
 /*
 void z_memory_dump(const char *name, const void *addr, const int len)
 {
-	int i;
-	unsigned char buf[17];
-	char path[64];
-	FILE *f;
-	const unsigned char *pc = (const unsigned char *) addr;
+    int i;
+    unsigned char buf[17];
+    char path[64];
+    FILE *f;
+    const unsigned char *pc = (const unsigned char *) addr;
 
-	if (len == 0 || len < 0)
-		return;
+    if (len == 0 || len < 0)
+        return;
 
-	snprintf(path, 63, "%s.dump", name);
-	f = fopen(path, "wb");
-	if (f) {
-		for (i = 0; i < len; i++) {
-			if ((i % 16) == 0) {
-				if (i != 0) {
-					fprintf(f, "  %s\n", buf);
-				}
+    snprintf(path, 63, "%s.dump", name);
+    f = fopen(path, "wb");
+    if (f) {
+        for (i = 0; i < len; i++) {
+            if ((i % 16) == 0) {
+                if (i != 0) {
+                    fprintf(f, "  %s\n", buf);
+                }
 
-				fprintf(f, "%12x ", addr + i);
-			}
+                fprintf(f, "%12x ", addr + i);
+            }
 
-			fprintf(f, " %02x", pc[i]);
+            fprintf(f, " %02x", pc[i]);
 
-			if ((pc[i] < 0x20) || (pc[i] > 0x7e)) {
-				buf[i % 16] = '.';
-			} else {
-				buf[i % 16] = pc[i];
-			}
-			buf[(i % 16) + 1] = '\0';
-		}
+            if ((pc[i] < 0x20) || (pc[i] > 0x7e)) {
+                buf[i % 16] = '.';
+            } else {
+                buf[i % 16] = pc[i];
+            }
+            buf[(i % 16) + 1] = '\0';
+        }
 
-		while ((i % 16) != 0) {
-			fprintf(f, "   ");
-			i++;
-		}
+        while ((i % 16) != 0) {
+            fprintf(f, "   ");
+            i++;
+        }
 
-		fprintf(f, "  %s\n", buf);
-		fclose(f);
-		printf("wrote dump file to %s\n", path);
-	}
+        fprintf(f, "  %s\n", buf);
+        fclose(f);
+        printf("wrote dump file to %s\n", path);
+    }
 }
 */

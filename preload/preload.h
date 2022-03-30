@@ -49,14 +49,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // backtrace options
 enum backtrace_options {
-	BT_NONE = 0x00, /**< no signals */
-	BT_INT = 0x01,	/**< terminal interrupt */
-	BT_ILL = 0x02,	/**< illegal instruction */
-	BT_ABRT = 0x04, /**< abort */
-	BT_FPE = 0x08,	/**< erroneous arithmetic operation */
-	BT_SEGV = 0x10, /**< segmentation fault */
-	BT_TERM = 0x20, /**< terminate */
-	BT_ALL = 0x7F	/**< catch all signals */
+    BT_NONE = 0x00, /**< no signals */
+    BT_INT = 0x01,	/**< terminal interrupt */
+    BT_ILL = 0x02,	/**< illegal instruction */
+    BT_ABRT = 0x04, /**< abort */
+    BT_FPE = 0x08,	/**< erroneous arithmetic operation */
+    BT_SEGV = 0x10, /**< segmentation fault */
+    BT_TERM = 0x20, /**< terminate */
+    BT_ALL = 0x7F	/**< catch all signals */
 };
 
 #define BT_STD  (BT_ILL | BT_ABRT | BT_FPE | BT_FPE | BT_SEGV | BT_TERM)

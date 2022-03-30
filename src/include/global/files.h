@@ -62,7 +62,7 @@ void fs_clear_loadstack(void);
 int fs_loadstack(void);
 void fs_force_flush(filehandle f);
 void fs_build_ospath(const char *base, const char *game, const char *qpath,
-					 char *buf);
+                     char *buf);
 void fs_init_filesystem(void);
 void fs_restart(int checksumfeed);
 void fs_shutdown(bool closemfp);
@@ -90,7 +90,7 @@ bool fs_file_exists(const char *file);
 void fs_rename(const char *from, const char *to);
 filehandle fs_fopen_file_append(const char *filename);
 int fs_fopen_file_read(const char *filename, filehandle *file, bool uniquefile,
-					   int a);
+                       int a);
 int fs_write(const void *buffer, int len, filehandle h);
 void fs_printf(filehandle h, const char *fmt, ...);
 int fs_read(void *buffer, int len, filehandle f);

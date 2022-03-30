@@ -33,32 +33,32 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define MAX_MSGLEN 16384
 
 enum system_event_type {
-	SE_NONE = 0,
-	SE_KEY,
-	SE_CHAR,
-	SE_MOUSE,
-	SE_JOYSTICK_AXIS,
-	SE_CONSOLE,
-	SE_PACKET,
-	SE_BAD_EVENT
+    SE_NONE = 0,
+    SE_KEY,
+    SE_CHAR,
+    SE_MOUSE,
+    SE_JOYSTICK_AXIS,
+    SE_CONSOLE,
+    SE_PACKET,
+    SE_BAD_EVENT
 };
 
 #define	MAX_EDIT_LINE	256
 struct field {
-	int		cursor;
-	int		scroll;
-	int		widthInChars;
-	char	buffer[MAX_EDIT_LINE];
+    int		cursor;
+    int		scroll;
+    int		widthInChars;
+    char	buffer[MAX_EDIT_LINE];
 };
 
 // ZONE NONSENSE
 enum {
-	TAG_FREE,
-	TAG_GENERAL,
-	TAG_BOTLIB,
-	TAG_RENDERER,
-	TAG_SMALL,
-	TAG_STATIC
+    TAG_FREE,
+    TAG_GENERAL,
+    TAG_BOTLIB,
+    TAG_RENDERER,
+    TAG_SMALL,
+    TAG_STATIC
 };
 // ZONE NONSENSE
 
@@ -123,15 +123,15 @@ bool net_get_loop_packet(int sock, struct netadr *from, struct msg *msg);
 //
 //
 struct vm {
-	intptr_t (*system_call)(intptr_t *parms);
+    intptr_t (*system_call)(intptr_t *parms);
 
-	char name[MAX_QPATH];
-	char full_qpath[MAX_QPATH + 1];
+    char name[MAX_QPATH];
+    char full_qpath[MAX_QPATH + 1];
 
-	char data[3];
+    char data[3];
 
-	void *dll_handle;
-	intptr_t (*entry_point)(intptr_t callnum, ...);
+    void *dll_handle;
+    intptr_t (*entry_point)(intptr_t callnum, ...);
 };
 
 void vm_init(void);

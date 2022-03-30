@@ -41,7 +41,7 @@ extern int randomseed;
 
 // TEMP
 struct gentity {
-	int a;
+    int a;
 };
 // TEMP
 
@@ -90,11 +90,11 @@ struct gentity {
 #define FL_NO_TARGET	0x02
 
 struct objective {
-	int state;
-	vec3_t origin;
-	int entity_number;
-	int team;
-	int shader_index;
+    int state;
+    vec3_t origin;
+    int entity_number;
+    int team;
+    int shader_index;
 };
 
 //
@@ -104,82 +104,82 @@ struct objective {
 #define MAX_SPAWN_VAR_CHARS		2048
 
 struct level {
-	void *clients;
-	void *gentities;
-	int gentity_size;
-	int num_entities;
-	void **last_entity;
-	void **next_entity;
+    void *clients;
+    void *gentities;
+    int gentity_size;
+    int num_entities;
+    void **last_entity;
+    void **next_entity;
 
-	filehandle logfile;
+    filehandle logfile;
 
-	bool initializing;
+    bool initializing;
 
-	struct objective objectives[MAX_OBJECTIVES];
+    struct objective objectives[MAX_OBJECTIVES];
 
-	int max_clients;
+    int max_clients;
 
-	int frame_num;
+    int frame_num;
 
-	int time;
-	int previous_time;
-	int frame_time;
-	int start_time;
+    int time;
+    int previous_time;
+    int frame_time;
+    int start_time;
 
-	int team_scores[4];
+    int team_scores[4];
 
-	int last_team_location_time;
-	int intermission_time;
+    int last_team_location_time;
+    int intermission_time;
 
-	int client_name_mode;
-	int num_connected_clients;
-	int sorted_clients[MAX_CLIENTS];
+    int client_name_mode;
+    int num_connected_clients;
+    int sorted_clients[MAX_CLIENTS];
 
-	char vote_string[MAX_STRING_CHARS];
-	char vote_display_string[MAX_STRING_CHARS];
-	int vote_time;
-	int vote_execute_time;
-	int vote_yes;
-	int vote_no;
-	int num_voting_clients;
+    char vote_string[MAX_STRING_CHARS];
+    char vote_display_string[MAX_STRING_CHARS];
+    int vote_time;
+    int vote_execute_time;
+    int vote_yes;
+    int vote_no;
+    int num_voting_clients;
 
-	
-	char team_vote_string[MAX_STRING_CHARS][2];
-	int team_vote_time[2];
-	int team_vote_yes[2];
-	int team_vote_no[2];
+    
+    char team_vote_string[MAX_STRING_CHARS][2];
+    int team_vote_time[2];
+    int team_vote_yes[2];
+    int team_vote_no[2];
 
-	bool spawning;
-	int num_spawn_vars;
-	char *spawn_vars[MAX_SPAWN_VARS][2];
-	int num_spawn_var_chars;
-	char spawn_var_chars[MAX_SPAWN_VAR_CHARS];
-	
-	bool keep_persistent;
-	
-	bool location_linked;
-	void *location_head;
-	
-	char data2[128];
+    bool spawning;
+    int num_spawn_vars;
+    char *spawn_vars[MAX_SPAWN_VARS][2];
+    int num_spawn_var_chars;
+    char spawn_var_chars[MAX_SPAWN_VAR_CHARS];
+    
+    bool keep_persistent;
+    
+    bool location_linked;
+    void *location_head;
+    
+    char data2[128];
 
-	float fog_density;
-	float fog_density_squared;
+    float fog_density;
+    float fog_density_squared;
 
-	int field_1de4;
+    int field_1de4;
 
-	int body_queue_index;
+    int body_queue_index;
 
-	char data3[3084];
+    char data3[3084];
 
-	int radius_damage_something;
-	bool ignore_radius_damage;
-	float bounds_width;
-	float bounds_height;
-	float viewheight_standing;
-	float viewheight_crouched;
-	float viewheight_proned;
+    int radius_damage_something;
+    bool ignore_radius_damage;
+    float bounds_width;
+    float bounds_height;
+    float viewheight_standing;
+    float viewheight_crouched;
+    float viewheight_proned;
 
-	int field_10768;
+    int field_10768;
 };
 
 extern struct level level;
@@ -188,27 +188,27 @@ extern struct level level;
 //
 //
 enum item_type {
-	IT_BAD,
-	IT_WEAPON,
-	IT_AMMO,
-	IT_HEALTH
+    IT_BAD,
+    IT_WEAPON,
+    IT_AMMO,
+    IT_HEALTH
 };
 
 struct gitem {
-	char *class_name;
-	char *pickup_sound;
-	char *world_model[2];
-	char *hud_icon;
-	char *ammo_icon;
-	char *display_name;
+    char *class_name;
+    char *pickup_sound;
+    char *world_model[2];
+    char *hud_icon;
+    char *ammo_icon;
+    char *display_name;
 
-	int quantity;
+    int quantity;
 
-	int type;
-	int tag;
+    int type;
+    int tag;
 
-	int ammo_name_index;
-	int clip_name_index;
+    int ammo_name_index;
+    int clip_name_index;
 };
 
 extern struct gitem bg_item_list[];
@@ -219,49 +219,49 @@ extern int bg_num_items;
 // hudelems
 //
 struct hudelem {
-	int type;
+    int type;
 
-	int x;
-	int y;
+    int x;
+    int y;
 
-	float fontscale; 
-	int font;
+    float fontscale; 
+    int font;
 
-	int align_x;
-	int align_y;
+    int align_x;
+    int align_y;
 
-	byte color[4];
+    byte color[4];
 
-	byte old_color[4];
-	int fade_over_time_start; 
-	int fade_over_time_length; 
+    byte old_color[4];
+    int fade_over_time_start; 
+    int fade_over_time_length; 
 
-	int label;
+    int label;
 
-	int shader_x;
-	int shader_y;
-	int shader;
+    int shader_x;
+    int shader_y;
+    int shader;
 
-	int old_shader_x;
-	int old_shader_y;
-	int scale_over_time_start;
-	int scale_over_time_length;
-	int old_start_x;
-	int old_start_y;
-	int move_over_time_start; 
-	int move_over_time_length;
+    int old_shader_x;
+    int old_shader_y;
+    int scale_over_time_start;
+    int scale_over_time_length;
+    int old_start_x;
+    int old_start_y;
+    int move_over_time_start; 
+    int move_over_time_length;
 
-	int clock_start;
-	int clock_division;
+    int clock_start;
+    int clock_division;
 
-	float value;
-	int string;
+    float value;
+    int string;
 
-	float sort;
+    float sort;
 
-	int entity_number;
-	int team;
-	bool archived;
+    int entity_number;
+    int team;
+    bool archived;
 };
 
 extern struct hudelem g_hudelems[];
@@ -269,26 +269,26 @@ extern struct hudelem g_hudelems[];
 #define MAX_GAMETYPES 32
 
 struct gametype {
-	char *name;
-	char *description;
-	bool team_based;	// unused really
+    char *name;
+    char *description;
+    bool team_based;	// unused really
 };
 
 struct game_script_data {
-	int map_main;
+    int map_main;
 
-	int field_4;
+    int field_4;
 
-	int gametype_main;
-	int start_gametype;
-	int player_connect;
-	int player_disconnect;
-	int player_damage;
-	int player_killed;
+    int gametype_main;
+    int start_gametype;
+    int player_connect;
+    int player_disconnect;
+    int player_damage;
+    int player_killed;
 
-	int num_gametypes;
+    int num_gametypes;
 
-	struct gametype gametypes[MAX_GAMETYPES];
+    struct gametype gametypes[MAX_GAMETYPES];
 };
 
 extern struct game_script_data g_scr_data;
@@ -503,13 +503,13 @@ void trap_error(const char *fmt);
 void trap_error_localized(const char *fmt);
 int trap_milliseconds(void);
 void trap_cvar_register(struct vmcvar *cvar, const char *var_name,
-						const char *value, int flags);
+                        const char *value, int flags);
 void trap_cvar_update(struct vmcvar *cvar);
 void trap_cvar_set(const char *var_name, const char *value);
 int trap_cvar_variable_integer_value(const char *var_name);
 float trap_cvar_variable_value(const char *var_name);
 void trap_cvar_variable_string_buffer(const char *var_name, char *buffer,
-									  int size);
+                                      int size);
 int trap_argc(void);
 void trap_argv(int n, char *buffer, int buffer_length);
 void *trap_hunk_alloc_internal(int size);
@@ -525,8 +525,8 @@ int trap_fs_rename(const char *from, const char *to);
 void trap_fs_fclose_file(filehandle file);
 void trap_send_console_command(int exec_when, const char *text);
 void trap_locate_game_data(struct gentity *gents, int num_gentities,
-						   int gentity_size, struct player_state *clients,
-						   int client_size);
+                           int gentity_size, struct player_state *clients,
+                           int client_size);
 void trap_drop_client(int client_num, const char *reason);
 void trap_send_server_command(int client, int a, const char *text);
 void trap_set_config_string(int num, const char *string);
@@ -534,7 +534,7 @@ void trap_get_config_string(int num, char *buffer, int size);
 const char *trap_get_config_string_const(int num);
 void trap_get_server_info(char *buffer, int size);
 int trap_fs_get_file_list(const char *path, const char *extension,
-						   char *buffer, int size);
+                           char *buffer, int size);
 struct weapon **trap_get_weapon_info_memory(int size, int *already_allocated);
 void trap_free_weapon_info_memory(int a);
 

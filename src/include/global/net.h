@@ -29,66 +29,66 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define __NET_H__
 
 struct msg {
-	bool allow_overflow;     // if false, do a Com_Error
-	bool overflowed;        // set to true if the buffer size failed (with allowoverflow set)
-	bool oob;               // set to true if the buffer size failed (with allowoverflow set)
-	byte *data;
-	int maxsize;
-	int cursize;
-	int uncompsize;             // NERVE - SMF - net debugging
-	int readcount;
-	int bit;                    // for bitwise reads and writes
+    bool allow_overflow;     // if false, do a Com_Error
+    bool overflowed;        // set to true if the buffer size failed (with allowoverflow set)
+    bool oob;               // set to true if the buffer size failed (with allowoverflow set)
+    byte *data;
+    int maxsize;
+    int cursize;
+    int uncompsize;             // NERVE - SMF - net debugging
+    int readcount;
+    int bit;                    // for bitwise reads and writes
 };
 
 enum netadr_type {
-	NA_BOT,
-	NA_BAD,                 // an address lookup failed
-	NA_LOOPBACK,
-	NA_BROADCAST,
-	NA_IP,
-	NA_IPX,
-	NA_BROADCAST_IPX
+    NA_BOT,
+    NA_BAD,                 // an address lookup failed
+    NA_LOOPBACK,
+    NA_BROADCAST,
+    NA_IP,
+    NA_IPX,
+    NA_BROADCAST_IPX
 };
 
 enum netsrc_type {
-	NS_CLIENT,
-	NS_SERVER
+    NS_CLIENT,
+    NS_SERVER
 };
 
 struct netadr {
-	enum netadr_type type;
+    enum netadr_type type;
 
-	byte ip[4];
-	byte ipx[10];
+    byte ip[4];
+    byte ipx[10];
 
-	unsigned short port;
+    unsigned short port;
 };
 
 // net profiling
 struct netprofile {
-	char data[1504];
+    char data[1504];
 };
 
 struct netchan {
-	int sock;
-	int dropped;
+    int sock;
+    int dropped;
 
-	struct netadr remote_address;
+    struct netadr remote_address;
 
-	int qport;
-	int incoming_sequence;
-	int outgoing_sequence;
+    int qport;
+    int incoming_sequence;
+    int outgoing_sequence;
 
-	int fragment_sequence;
-	int fragment_length;
-	char fragment_buffer[MAX_MSGLEN];
+    int fragment_sequence;
+    int fragment_length;
+    char fragment_buffer[MAX_MSGLEN];
 
-	int unsent_fragments;
-	int unsent_fragment_start;
-	int unsent_length;
-	char unsent_buffer[MAX_MSGLEN];
+    int unsent_fragments;
+    int unsent_fragment_start;
+    int unsent_length;
+    char unsent_buffer[MAX_MSGLEN];
 
-	struct netprofile *netprofile;
+    struct netprofile *netprofile;
 };
 
 //

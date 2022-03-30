@@ -42,28 +42,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define MASTER_SERVER_NAME "codmaster.activision.com"
 
 struct shared_entity {
-	struct entity_state s;
-	struct entity_shared r;
+    struct entity_state s;
+    struct entity_shared r;
 };
 
 /**
  * Not 100% sure if entity_state baseline or shared_entity
 */
 struct server_entity {
-	struct entity_state baseline;
+    struct entity_state baseline;
 
-	char data[36];
+    char data[36];
 };
 
 enum client_state {
-	CS_FREE,					/**< can be reused for a new connection */
-	CS_ZOMBIE,					/**< client has been disconnected, but don't
-									 reuse connection for a couple seconds */
-	CS_CONNECTED,				/**< has been assigned to a struct *client,
-									 but no gamestate yet */
-	CS_PRIMED,					/**< gamestate has been sent, but client hasn't
-									 sent a usercmd yet */
-	CS_ACTIVE					/**< client is fully in game */
+    CS_FREE,					/**< can be reused for a new connection */
+    CS_ZOMBIE,					/**< client has been disconnected, but don't
+                                     reuse connection for a couple seconds */
+    CS_CONNECTED,				/**< has been assigned to a struct *client,
+                                     but no gamestate yet */
+    CS_PRIMED,					/**< gamestate has been sent, but client hasn't
+                                     sent a usercmd yet */
+    CS_ACTIVE					/**< client is fully in game */
 };
 
 /**
@@ -72,18 +72,18 @@ enum client_state {
  * 8428 size
 */
 struct client_snapshot {
-	struct player_state ps;
+    struct player_state ps;
 
-	int portals[3];				/**< something to do with portals...
-									 could be byte areabits[MAX_MAP_AREA_BYTES] */
-	int num_entities;			
-	int first_entity;			/**< into the circular sv_packet_entities[]
-								     the entities MUST be in increasing state 
-								     number order, otherwise the delta 
-								     compression will fail */
-	int message_sent;			/**< time the message was transmitted */
-	int message_acknowledged;	/**< time the message was acknowledged */
-	int message_size;			/**< used to rate drop packets */
+    int portals[3];				/**< something to do with portals...
+                                     could be byte areabits[MAX_MAP_AREA_BYTES] */
+    int num_entities;			
+    int first_entity;			/**< into the circular sv_packet_entities[]
+                                     the entities MUST be in increasing state 
+                                     number order, otherwise the delta 
+                                     compression will fail */
+    int message_sent;			/**< time the message was transmitted */
+    int message_acknowledged;	/**< time the message was acknowledged */
+    int message_size;			/**< used to rate drop packets */
 };
 
 #define MAX_RELIABLE_COMMANDS 64
@@ -97,80 +97,80 @@ struct client_snapshot {
  * 1.5 size = 0x5a9b4
 */
 struct client {
-	enum client_state state;	/**< client state */
+    enum client_state state;	/**< client state */
 
-	int a;
-	int b;
+    int a;
+    int b;
 
-	char userinfo[MAX_STRING_CHARS];
+    char userinfo[MAX_STRING_CHARS];
 
-	char reliable_commands[MAX_RELIABLE_COMMANDS][1032];
-	int reliable_sequence;		/**< last added reliable message,
-								     not necessarily sent or acknowledged yet */
-	int reliable_acknowledge;	/**< last acknowledged reliable message */
-	int reliable_sent;			/**< last sent reliable message, 
-								     not necessarily sent or acknowledged yet */
-	int message_acknowledge;
-	int gamestate_message_num;	/**< netchan->outgoing_sequence of gamestate */
+    char reliable_commands[MAX_RELIABLE_COMMANDS][1032];
+    int reliable_sequence;		/**< last added reliable message,
+                                     not necessarily sent or acknowledged yet */
+    int reliable_acknowledge;	/**< last acknowledged reliable message */
+    int reliable_sent;			/**< last sent reliable message, 
+                                     not necessarily sent or acknowledged yet */
+    int message_acknowledge;
+    int gamestate_message_num;	/**< netchan->outgoing_sequence of gamestate */
 
-	int challenge;
+    int challenge;
 
-	struct usercmd last_usercmd;
-	int last_client_command;
-	int last_client_command_string[MAX_STRING_CHARS];
+    struct usercmd last_usercmd;
+    int last_client_command;
+    int last_client_command_string[MAX_STRING_CHARS];
 
-	struct shared_entity *gentity;
+    struct shared_entity *gentity;
 
-	char name[32];				/**< extracted from userinfo */
+    char name[32];				/**< extracted from userinfo */
 
-	char download_name[64];		/**< if not empty, we are downloading */
-	int download;				/**< file being downloaded */
-	int download_size;			/**< total bytes (can't use EOF because of paks) */
-	int download_count;			/**< bytes sent */
-	int download_client_block;	/**< last block we sent to the client that
-								     is awaiting ACK */
-	int download_current_block;	/**< current block number */
-	int download_transmit_block;/**< last block we transmitted */
+    char download_name[64];		/**< if not empty, we are downloading */
+    int download;				/**< file being downloaded */
+    int download_size;			/**< total bytes (can't use EOF because of paks) */
+    int download_count;			/**< bytes sent */
+    int download_client_block;	/**< last block we sent to the client that
+                                     is awaiting ACK */
+    int download_current_block;	/**< current block number */
+    int download_transmit_block;/**< last block we transmitted */
 
-	byte *download_blocks[MAX_DOWNLOAD_WINDOW];
-	int download_block_size[MAX_DOWNLOAD_WINDOW];
+    byte *download_blocks[MAX_DOWNLOAD_WINDOW];
+    int download_block_size[MAX_DOWNLOAD_WINDOW];
 
-	bool download_eof;			/**< we have send the EOF block */
-	int download_send_time;		/**< time we last got an ACK from the client */
-	int delta_message;			/**< from last client usercmd message */
-	int next_reliable_packet;	/**< svs.time when another reliable command
-								     will be allowed */
-	int last_packet_time;		/**< svs.time when packet was last received */
-	int last_connect_time;		/**< svs.time when connection started */
-	int next_snapshot_time;		/**< send another snapshot when 
-								     svs.time >= next_snapshot_time */
-	bool rate_delayed;			/**< true if next_snapshot_time was set based
-								     on rate instead of snapshot_msec */
-	int timeout_count;			/**< must timeout a few frames in a row
-								     so debugging doesn't break */
+    bool download_eof;			/**< we have send the EOF block */
+    int download_send_time;		/**< time we last got an ACK from the client */
+    int delta_message;			/**< from last client usercmd message */
+    int next_reliable_packet;	/**< svs.time when another reliable command
+                                     will be allowed */
+    int last_packet_time;		/**< svs.time when packet was last received */
+    int last_connect_time;		/**< svs.time when connection started */
+    int next_snapshot_time;		/**< send another snapshot when 
+                                     svs.time >= next_snapshot_time */
+    bool rate_delayed;			/**< true if next_snapshot_time was set based
+                                     on rate instead of snapshot_msec */
+    int timeout_count;			/**< must timeout a few frames in a row
+                                     so debugging doesn't break */
 
-	struct client_snapshot frames[PACKET_BACKUP];
+    struct client_snapshot frames[PACKET_BACKUP];
 
-	int ping;					/**< ping time */
-	int rate;					/**< bytes / second */
-	int snapshot_msec;			/**< requests a snapshot every snapshot_msec 
-								     unless rate choked */
-	int pure_authentic;
+    int ping;					/**< ping time */
+    int rate;					/**< bytes / second */
+    int snapshot_msec;			/**< requests a snapshot every snapshot_msec 
+                                     unless rate choked */
+    int pure_authentic;
 
-	struct netchan netchan;
+    struct netchan netchan;
 
-	uint16_t scriptvar;			/**< assigned script variable id */
-	uint16_t unreferenced;		
+    uint16_t scriptvar;			/**< assigned script variable id */
+    uint16_t unreferenced;		
 
-	int netchan_end_queue;
+    int netchan_end_queue;
 
-	int net_profiling;			/**< flag if net profiling is enabled */
+    int net_profiling;			/**< flag if net profiling is enabled */
 };
 
 enum server_state {
-	SS_DEAD,					/**< no map loaded */
-	SS_LOADING,					/**< spawning level entities */
-	SS_GAME						/**< actively running */
+    SS_DEAD,					/**< no map loaded */
+    SS_LOADING,					/**< spawning level entities */
+    SS_GAME						/**< actively running */
 };
 
 /**
@@ -180,46 +180,46 @@ enum server_state {
  * 1.5 size = 0x6152c
 */
 struct server {
-	enum server_state state;
+    enum server_state state;
 
-	bool restarting;			/**< if true, send configstring changes
-								     during SS_LOADING */
-	int server_id;				/**< changes each server start */
-	int checksum_feed;			/**< the feed key that we use to compute 
-								     the pure checksum strings */
-	int time_residual;			/**< <= 1000 / sv_frame->value */
-	
-	int a;
-	
-	int models[256];			
-	char *configstrings[MAX_CONFIG_STRINGS];
+    bool restarting;			/**< if true, send configstring changes
+                                     during SS_LOADING */
+    int server_id;				/**< changes each server start */
+    int checksum_feed;			/**< the feed key that we use to compute 
+                                     the pure checksum strings */
+    int time_residual;			/**< <= 1000 / sv_frame->value */
+    
+    int a;
+    
+    int models[256];			
+    char *configstrings[MAX_CONFIG_STRINGS];
 
-	int b;
-	int c;
+    int b;
+    int c;
 
-	struct server_entity sv_entities[MAX_GENTITIES];
+    struct server_entity sv_entities[MAX_GENTITIES];
 
-	int data[93];
+    int data[93];
 
-	char *entity_parse_point;	/**< used during game VM init */
-	
-	struct shared_entity *gentities;
-	int gentity_size;
-	int num_entities;			/**< current number, <= MAX_GENTITIES */
-	struct player_state *game_clients;
-	int game_client_size;		/**< will be > sizeof(playerState_t) due to 
-								     game private data */
+    char *entity_parse_point;	/**< used during game VM init */
+    
+    struct shared_entity *gentities;
+    int gentity_size;
+    int num_entities;			/**< current number, <= MAX_GENTITIES */
+    struct player_state *game_clients;
+    int game_client_size;		/**< will be > sizeof(playerState_t) due to 
+                                     game private data */
 
-	int d;
+    int d;
 
-	int data2[30];
+    int data2[30];
 
-	#ifdef CODVERSION1_5
-	int data3[16];
-	#endif
+    #ifdef CODVERSION1_5
+    int data3[16];
+    #endif
 
-	char gametype[64];			/**< saved gametype string used for handling
-								     persistence data */
+    char gametype[64];			/**< saved gametype string used for handling
+                                     persistence data */
 };
 
 extern struct server sv;
@@ -233,21 +233,21 @@ extern struct server sv;
  * @brief Challenge for authorize
 */
 struct challenge {
-	struct netadr adr;
+    struct netadr adr;
 
-	int challenge;
-	int time;					/**< time the last packet was sent to the
-								     authorize server */
-	int ping_time;				/**< time the challenge reponse was sent to the
-								     client */
-	int first_time;				/**< time the address was first used
-								     for authorize timeout checks */
-	int first_ping;
-	bool connected;
+    int challenge;
+    int time;					/**< time the last packet was sent to the
+                                     authorize server */
+    int ping_time;				/**< time the challenge reponse was sent to the
+                                     client */
+    int first_time;				/**< time the address was first used
+                                     for authorize timeout checks */
+    int first_ping;
+    bool connected;
 
-	#ifdef CODVERSION1_5
-	int data[10];
-	#endif
+    #ifdef CODVERSION1_5
+    int data[10];
+    #endif
 };
 
 /**
@@ -256,53 +256,53 @@ struct challenge {
  * 1.5 size = 1510c
 */
 struct server_static {
-	bool initialized;			/**< true once sv_init has completed */
+    bool initialized;			/**< true once sv_init has completed */
 
-	#ifdef CODVERSION1_5
-	int time2; // no idea what this is
-	#endif
-	
-	int time;					/**< will be strictly increasing across 
-								     level changes */
-	int snap_flag_server_bit;	/**< ^= SNAPFLAG_SERVERCOUNT every time
-								     sv_spawn_server() is called */
+    #ifdef CODVERSION1_5
+    int time2; // no idea what this is
+    #endif
+    
+    int time;					/**< will be strictly increasing across 
+                                     level changes */
+    int snap_flag_server_bit;	/**< ^= SNAPFLAG_SERVERCOUNT every time
+                                     sv_spawn_server() is called */
 
-	struct client *clients;
+    struct client *clients;
 
-	int num_snapshot_entities;
-	int num_snapshot_clients;
-	int next_snapshot_entities;
-	int next_snapshot_clients;
+    int num_snapshot_entities;
+    int num_snapshot_clients;
+    int next_snapshot_entities;
+    int next_snapshot_clients;
 
-	struct entitystate *snapshot_entities;
-	void *snapshot_clients;
+    struct entitystate *snapshot_entities;
+    void *snapshot_clients;
 
-	int field_0x28;
+    int field_0x28;
 
-	int next_archived_snapshot_frames;
+    int next_archived_snapshot_frames;
 
-	int field_0x30;
-	int field_0x34;
+    int field_0x30;
+    int field_0x34;
 
-	int next_archived_snapshot_buffer;
-	int next_cached_snapshot_entities;
-	int next_cached_snapshot_clients;
-	int next_cached_snapshot_frames;
+    int next_archived_snapshot_buffer;
+    int next_cached_snapshot_entities;
+    int next_cached_snapshot_clients;
+    int next_cached_snapshot_frames;
 
-	int field_0x48;
-	int field_0x4c;
-	int field_0x50;
+    int field_0x48;
+    int field_0x4c;
+    int field_0x50;
 
-	int next_heartbeat_time;
+    int next_heartbeat_time;
 
-	#ifdef CODVERSION1_5
-	int field_0x5c;
-	#endif
+    #ifdef CODVERSION1_5
+    int field_0x5c;
+    #endif
 
-	struct challenge challenges[MAX_CHALLENGES];
+    struct challenge challenges[MAX_CHALLENGES];
 
-	struct netadr redirect_address;
-	struct netadr authorize_address;
+    struct netadr redirect_address;
+    struct netadr authorize_address;
 };
 
 extern struct server_static svs;

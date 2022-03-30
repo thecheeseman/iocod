@@ -3,20 +3,20 @@
 
 char *get_gametype_name_for_script(const char *str)
 {
-	int i;
-	struct gametype *gt;
+    int i;
+    struct gametype *gt;
 
-	for (i = 0; i < g_scr_data.num_gametypes; i++) {
-		gt = &g_scr_data.gametypes[i];
+    for (i = 0; i < g_scr_data.num_gametypes; i++) {
+        gt = &g_scr_data.gametypes[i];
 
-		if (strcasecmp(gt->name, str) == 0)
-			return gt->description;
-	}
+        if (strcasecmp(gt->name, str) == 0)
+            return gt->description;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 bool is_valid_gametype(const char *gametype)
 {
-	return (get_gametype_name_for_script(gametype) != NULL);
+    return (get_gametype_name_for_script(gametype) != NULL);
 }

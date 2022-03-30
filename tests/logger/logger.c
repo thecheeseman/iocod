@@ -22,7 +22,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "logger.h"
 
+#ifndef _WIN32
 #include <sys/syscall.h>
+#endif
 
 /**
  * @author yksz (https://github.com/yksz/c-logger)

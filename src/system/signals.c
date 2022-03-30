@@ -35,29 +35,29 @@ static bool signalcaught = false;
 
 static void signal_handler(int sig)
 {
-	if (signalcaught) {
-		fprintf(stderr, "double signal fault: received signal %d, exiting...\n", 
-				sig);
-		sys_exit(1);
-	}
+    if (signalcaught) {
+        fprintf(stderr, "double signal fault: received signal %d, exiting...\n", 
+                sig);
+        sys_exit(1);
+    }
 
-	signalcaught = true;
-	fprintf(stderr, "received signal %d, exiting...\n", sig);
-	sys_exit(0);
+    signalcaught = true;
+    fprintf(stderr, "received signal %d, exiting...\n", sig);
+    sys_exit(0);
 }
 
 void init_signals(void)
 {
-	signal(SIGILL, signal_handler);
-	signal(SIGFPE, signal_handler);
-	signal(SIGSEGV, signal_handler);
-	signal(SIGTERM, signal_handler);
+    signal(SIGILL, signal_handler);
+    signal(SIGFPE, signal_handler);
+    signal(SIGSEGV, signal_handler);
+    signal(SIGTERM, signal_handler);
 
-	#ifdef __linux__
-	signal(SIGHUP, signal_handler);
-	signal(SIGQUIT, signal_handler);
-	signal(SIGTRAP, signal_handler);
-	signal(SIGIOT, signal_handler);
-	signal(SIGBUS, signal_handler);
-	#endif
+    #ifdef __linux__
+    signal(SIGHUP, signal_handler);
+    signal(SIGQUIT, signal_handler);
+    signal(SIGTRAP, signal_handler);
+    signal(SIGIOT, signal_handler);
+    signal(SIGBUS, signal_handler);
+    #endif
 }

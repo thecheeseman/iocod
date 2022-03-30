@@ -65,7 +65,7 @@ void com_dprintf(const char *fmt, ...);
  * @param args... Message to print
 */
 #define com_printf_dbginfo(...) \
-	com_printf_dbginfo_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
+    com_printf_dbginfo_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
 extern FILE *debuglogfile;
 extern filehandle logfile;

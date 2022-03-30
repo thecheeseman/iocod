@@ -26,8 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "types/vector.h"
 
 struct winding {
-	int num_points;
-	vec3_t p[4];
+    int num_points;
+    vec3_t p[4];
 };
 
 #define	MAX_POINTS_ON_WINDING	64
@@ -56,6 +56,6 @@ void winding_center(struct winding *w, vec3_t center);
 struct winding *base_winding_for_plane(vec3_t normal, vec_t dist);
 struct winding *copy_winding(struct winding *w);
 void chop_winding_in_place(struct winding **inout, vec3_t normal,
-						   vec_t dist, vec_t epsilon);
+                           vec_t dist, vec_t epsilon);
 
 #endif /* CLIPMAP_CM_POLYLIB_H */

@@ -2,7 +2,6 @@
 
 #include "testlib.h"
 #include "common/memory.h"
-#include <unistd.h>
 
 char *copy_string(const char *in)
 {

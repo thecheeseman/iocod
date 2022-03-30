@@ -40,7 +40,7 @@ DECLARE(_sys_console_input_shutdown,	0x80c6ad8)
 
 static void cmd_exit(void)
 {
-	_com_quit();
+    _com_quit();
 }
 
 /**
@@ -52,11 +52,11 @@ static void cmd_exit(void)
  */
 void __call(int off, int loc)
 {
-	int foffset;
+    int foffset;
 
-	mprotect((void *) off, 5, PROT_READ | PROT_WRITE | PROT_EXEC);
-	foffset = loc - (off + 5);
-	memcpy((void *) (off + 1), &foffset, 4);
+    mprotect((void *) off, 5, PROT_READ | PROT_WRITE | PROT_EXEC);
+    foffset = loc - (off + 5);
+    memcpy((void *) (off + 1), &foffset, 4);
 }
 
 /**
@@ -67,7 +67,7 @@ void __call(int off, int loc)
 */
 int preload_lib_main(int argc, char *argv[])
 {
-	return ((int(*)(int, char **)) 0x80c6870)(argc, argv); /* call original */
+    return ((int(*)(int, char **)) 0x80c6870)(argc, argv); /* call original */
 }
 
 /**
@@ -76,27 +76,27 @@ int preload_lib_main(int argc, char *argv[])
 */
 void __attribute__((constructor)) preload_lib_entry(void)
 {
-	static bool preload_lib_loaded = false;
-	if (preload_lib_loaded)
-		return;
-	preload_lib_loaded = true;
+    static bool preload_lib_loaded = false;
+    if (preload_lib_loaded)
+        return;
+    preload_lib_loaded = true;
 
-	printf("--------------------\n");
-	printf("devpreload.so loaded\n");
-	printf("--------------------\n");
+    printf("--------------------\n");
+    printf("devpreload.so loaded\n");
+    printf("--------------------\n");
 
-	unsetenv("LD_PRELOAD");
-	setbuf(stdout, NULL);
+    unsetenv("LD_PRELOAD");
+    setbuf(stdout, NULL);
 
-	backtrace_init(BT_STD);
+    backtrace_init(BT_STD);
 
-	mprotect((void *) 0x08048000, 0x135000, PROT_READ | PROT_WRITE | PROT_EXEC);
-	*(intptr_t *) 0x804a698 = (int) preload_lib_main;
+    mprotect((void *) 0x08048000, 0x135000, PROT_READ | PROT_WRITE | PROT_EXEC);
+    *(intptr_t *) 0x804a698 = (int) preload_lib_main;
 
-	__call(0x806b8ce, (int) preload_lib_exit);
-	*(intptr_t *) 0x806cb0d = (int) preload_lib_exit;
+    __call(0x806b8ce, (int) preload_lib_exit);
+    *(intptr_t *) 0x806cb0d = (int) preload_lib_exit;
 
-	_cmd_add_command("exit", cmd_exit);
+    _cmd_add_command("exit", cmd_exit);
 }
 
 /**
@@ -105,10 +105,10 @@ void __attribute__((constructor)) preload_lib_entry(void)
 */
 void __attribute__((destructor)) preload_lib_exit(void)
 {
-	static bool preload_lib_freed = false;
-	if (preload_lib_freed)
-		return;
-	preload_lib_freed = true;
+    static bool preload_lib_freed = false;
+    if (preload_lib_freed)
+        return;
+    preload_lib_freed = true;
 
-	_com_quit();
+    _com_quit();
 }

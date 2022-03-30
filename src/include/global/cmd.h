@@ -30,13 +30,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 typedef void (*xcommand)(void);
 struct cmd_function {
-	struct cmd_function *next;
-	char *name;
-	xcommand function;
+    struct cmd_function *next;
+    char *name;
+    xcommand function;
 
-	// added
-	int alias_count;
-	char **aliases;
+    // added
+    int alias_count;
+    char **aliases;
 };
 
 size_t cmd_argc(void);

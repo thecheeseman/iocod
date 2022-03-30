@@ -37,59 +37,59 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 struct fileinpack {
     char *name;
-	uint32_t pos;
-	int a;
-	struct fileinpack *next;
+    uint32_t pos;
+    int a;
+    struct fileinpack *next;
 };
 
 struct pack {
-	char pak_filename[MAX_OSPATH];
-	char pak_basename[MAX_OSPATH];
-	char pak_gamename[MAX_OSPATH];
-	unzFile handle;
-	int checksum;
-	int pure_checksum;
-	int numfiles;
-	int referenced;
-	uint32_t hashsize;
-	struct fileinpack **hashtable;
-	struct fileinpack *buildbuffer;
+    char pak_filename[MAX_OSPATH];
+    char pak_basename[MAX_OSPATH];
+    char pak_gamename[MAX_OSPATH];
+    unzFile handle;
+    int checksum;
+    int pure_checksum;
+    int numfiles;
+    int referenced;
+    uint32_t hashsize;
+    struct fileinpack **hashtable;
+    struct fileinpack *buildbuffer;
 };
 
 struct directory {
-	char path[MAX_OSPATH];
-	char gamedir[MAX_OSPATH];
+    char path[MAX_OSPATH];
+    char gamedir[MAX_OSPATH];
 };
 
 struct searchpath {
-	struct searchpath *next;
+    struct searchpath *next;
 
-	struct pack *pack;
-	struct directory *dir;
+    struct pack *pack;
+    struct directory *dir;
 
-	int localized;
-	int b;
+    int localized;
+    int b;
 };
 
 union qfile_gu {
-	FILE *o;
-	unzFile z;
+    FILE *o;
+    unzFile z;
 };
 
 struct qfile_u {
-	union qfile_gu file;
-	bool unique;
+    union qfile_gu file;
+    bool unique;
 };
 
 struct filehandledata {
-	struct qfile_u handlefiles;
-	bool handlesync;
-	int baseoffset;
-	int filesize;
-	int zipfilepos;
-	bool zipfile;
-	bool streamed;
-	char name[MAX_ZPATH];
+    struct qfile_u handlefiles;
+    bool handlesync;
+    int baseoffset;
+    int filesize;
+    int zipfilepos;
+    bool zipfile;
+    bool streamed;
+    char name[MAX_ZPATH];
 };
 
 extern char fs_gamedir[MAX_OSPATH];

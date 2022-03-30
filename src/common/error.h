@@ -42,7 +42,7 @@ void com_debug_warning_runner(const char *file, const char *func, int line,
  * @param args... Error message
 */
 #define com_error(code, ...) \
-	com_error_runner(code, __BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
+    com_error_runner(code, __BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
 /**
  * @brief Wrapper for sys_warn for better warning messages
@@ -50,7 +50,7 @@ void com_debug_warning_runner(const char *file, const char *func, int line,
  * @param ... varargs
 */
 #define com_warning(...) \
-	com_warning_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
+    com_warning_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
 /**
  * @brief Wrapper for sys_warn for better warning messages
@@ -58,7 +58,7 @@ void com_debug_warning_runner(const char *file, const char *func, int line,
  * @param ... varargs
 */
 #define com_debug_warning(...) \
-	com_debug_warning_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
+    com_debug_warning_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
 extern jmp_buf abortframe;
 void com_error_handler(void);
