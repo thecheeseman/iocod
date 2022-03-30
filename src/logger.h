@@ -27,6 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <time.h>
 #include "stringlib.h"
+#include "iocod.h"
 
 #if defined(_WIN32)
 #include <winsock.h>

@@ -27,10 +27,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "game_local.h"
 
-static intptr_t (QDECL *system_call)(intptr_t arg, ...) = 
-	(intptr_t (QDECL *)(intptr_t, ...)) -1;
+static intptr_t (DECL *system_call)(intptr_t arg, ...) = 
+	(intptr_t (DECL *)(intptr_t, ...)) -1;
 
-void DLLEXPORT dllEntry(intptr_t(QDECL *system_call_ptr)(intptr_t arg, ...))
+void EXPORT dllEntry(intptr_t(DECL *system_call_ptr)(intptr_t arg, ...))
 {
 	system_call = system_call_ptr;
 }

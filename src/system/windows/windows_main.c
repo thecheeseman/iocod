@@ -20,74 +20,86 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file windows_main.c
- * @date 2022-02-04
-*/
+#include <errno.h>
+#include <float.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <direct.h>
+#include <io.h>
+#include <conio.h>
 
 #include "shared.h"
 #include "common.h"
+#include "common/print.h"
+#include "cvar/cvar.h"
+#include "system/system.h"
 
-//uid_t saved_euid;
+#include "windows_local.h"
+
+struct cvar *tty_colors;
+
+struct winvars g_wv;
+static char sys_cmdline[MAX_STRING_CHARS];
 
 void init_signals(void); // signals.c
 
 void gpl_notice(void)
 {
-	fprintf(stderr, 
-			"iocod, copyright(C) 2021 - 2022 thecheeseman\n" \
-			"iocod comes with ABSOLUTELY NO WARRANTY; " \
-			"for details use the command 'gplinfo'.\n" \
-			"This is free software, andyou are welcome to " \
-			"redistribute it under certain conditions; use 'gplinfo' " \
-			"for details.\n");
+    fprintf(stderr, 
+            "iocod, copyright(C) 2021 - 2022 thecheeseman\n" \
+            "iocod comes with ABSOLUTELY NO WARRANTY; " \
+            "for details use the command 'gplinfo'.\n" \
+            "This is free software, andyou are welcome to " \
+            "redistribute it under certain conditions; use 'gplinfo' " \
+            "for details.\n");
 }
 
-int main(int argc, char* argv[])
+int total_msec, count_msec;
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine, int nCmdShow)
 {
-	int len, i;
-	char* cmdline;
-	/*
-	// go back to real user for config loads ??
-	saved_euid = geteuid();
-	seteuid(geteuid());
+    char cwd[MAX_OSPATH];
+    int start_time, end_time;
 
-	sys_set_default_cd_path(""); // no cd path
+    if (hPrevInstance != NULL)
+        return 0;
 
-	sys_check_for_version(argc, argv);
+    g_wv.hInstance = hInstance;
+    q_strncpyz(sys_cmdline, lpCmdLine, sizeof(sys_cmdline));
 
-	// merge the command line
-	for (len = i = 1; i < argc; i++)
-		len += strlen(argv[i]) + 1;
-	cmdline = z_malloc(len);
-	*cmdline = 0;
+    console_create();
 
-	for (i = 1; i < argc; i++) {
-		if (i > 1)
-			strcat(cmdline, " ");
-		strcat(cmdline, argv[i]);
-	}
+    SetErrorMode(SEM_FAILCRITICALERRORS);
 
-	//
-	gpl_notice();
-	//
+    sys_milliseconds();
 
-	sys_events_init();
-	com_init(cmdline);
-	z_free(cmdline); // no longer needed
-	net_init();
+    com_init(sys_cmdline);
+    net_init();
 
-	sys_console_input_init();
+    (void) _getcwd(cwd, sizeof(cwd));
+    com_printf("working directory: %s\n", cwd);
 
-	fcntl(0, F_SETFL, fcntl(0, F_GETFL, 0) | FNDELAY);
-	init_signals();
+    console_show(0, false);
 
-	while (1) {
-		sys_configure_fpu();
-		com_frame();
-	}
-	*/
+    SetFocus(g_wv.hWnd);
 
-	fprintf(stderr, "hello windows\n");
-	return 0;
+    while (true) {
+        if (g_wv.isMinimized || 
+            com_dedicated != NULL && com_dedicated->integer > 0)
+            Sleep(5);
+
+        start_time = sys_milliseconds();
+        
+        // in_frame();
+
+        com_frame();
+
+        end_time = sys_milliseconds();
+        total_msec += end_time - start_time;
+        count_msec++;
+    }
+
+    // never gets here
+    return 0;
 }

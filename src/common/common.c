@@ -33,6 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "system/system.h"
 #include "parse.h"
 
 #define MAX_NUM_ARGVS 50
@@ -621,10 +622,13 @@ void INCOMPLETE com_init(char *cmdline)
         sys_error("Error during initialization");
     }
 
-    //
+    #if defined PLATFORM_WINDOWS
+    tty_colors = cvar_get("tty_colors", "0", 0);
+    #else
     tty_colors = cvar_get("tty_colors", "1", 0);
+    #endif
+
     com_startup_variable("tty_colors");
-    //
 
     com_init_push_event();
     cvar_init();

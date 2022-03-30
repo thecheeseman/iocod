@@ -14,7 +14,9 @@ foreach (subdir
     files 
     network 
     script 
-    server 
+    server
+    server/syscalls
+    shared
     sound 
     system)
     file(GLOB sources "${subdir}/*.c")
@@ -47,7 +49,8 @@ foreach (subdir
     compat
     game
     game/bg
-    game/script)
+    game/script
+    shared)
     file(GLOB sources "${subdir}/*.c")
     list(APPEND GAME_SOURCES ${sources})
 endforeach()

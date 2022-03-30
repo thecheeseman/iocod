@@ -43,15 +43,6 @@ enum system_event_type {
 	SE_BAD_EVENT
 };
 
-struct system_event {
-	int time;
-	enum system_event_type type;
-	int	value;
-	int value2;
-	int	ptr_length; // bytes of data pointed to by ptr, for journaling
-	void *ptr;		// this must be manually freed if not NULL
-};
-
 #define	MAX_EDIT_LINE	256
 struct field {
 	int		cursor;
@@ -84,7 +75,6 @@ enum {
 #include "global/null_client.h"
 #include "global/server.h"
 #include "global/script.h"
-#include "global/system.h"
 
 //
 //
@@ -148,6 +138,6 @@ void vm_init(void);
 struct vm *vm_create(const char *module, intptr_t (*systemcalls)(intptr_t *));
 void vm_free(struct vm *vm);
 void vm_clear(void);
-intptr_t QDECL vm_call(struct vm *vm, intptr_t callnum, ...);
+intptr_t DECL vm_call(struct vm *vm, intptr_t callnum, ...);
 
 #endif // __COMMON_H__

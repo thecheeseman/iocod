@@ -33,6 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "system/system.h"
 
 #define MAX_PUSHED_EVENTS 256
 static int com_pushed_eventshead = 0;

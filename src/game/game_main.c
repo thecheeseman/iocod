@@ -241,8 +241,8 @@ void INCOMPLETE g_run_frame(int time)
 
 extern intptr_t scr_far_hook(intptr_t addr);
 
-intptr_t DLLEXPORT INCOMPLETE vmMain(enum game_exports command, int arg0, 
-                                     int arg1, int arg2, int arg3, int arg4)
+intptr_t EXPORT INCOMPLETE vmMain(enum game_exports command, int arg0, 
+                                  int arg1, int arg2, int arg3, int arg4)
 {
     UNUSED(arg4);
 

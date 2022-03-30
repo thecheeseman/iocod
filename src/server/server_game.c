@@ -29,39 +29,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/error.h"
 #include "common/hunk.h"
 #include "common/print.h"
+#include "files/file_list.h"
 
-bool weapon_info_allocated = false;
-void *weapon_info_memory;
-
-intptr_t get_weapon_info_memory(int size, bool *already_allocated, bool val)
-{
-    if (size < 0)
-        return 0;
-
-    if (weapon_info_memory == NULL) {
-        weapon_info_memory = hunk_alloc_low(size);
-        weapon_info_allocated = val;
-
-        *already_allocated = false;
-    } else {
-        *already_allocated = weapon_info_allocated;
-
-        if (!weapon_info_allocated)
-            weapon_info_allocated = val;
-    }
-
-    return (intptr_t) weapon_info_memory;
-}
-
-void free_weapon_info_memory(bool allocated, bool keep_memory)
-{
-    if (weapon_info_allocated == allocated) {
-        if (!keep_memory)
-            weapon_info_memory = NULL;
-
-        weapon_info_allocated = false;
-    }
-}
+#include "server/syscalls/weapon_info_memory.h"
 
 struct shared_entity *sv_gentity_num(int num)
 {
@@ -143,7 +113,10 @@ intptr_t INCOMPLETE sv_game_systemcalls(intptr_t *args)
 		case G_ENTITY_CONTACT:
 		case G_GET_USERCMD:
 		case G_GET_ENTITY_TOKEN:
+            break;
 		case G_FS_GET_FILE_LIST:
+            return get_file_list((char *) args[1], (char *) args[2], 
+                                 (char *) args[3], args[4]);
 		case G_REAL_TIME:
 		case G_SNAPVECTOR:
 		case G_ENTITY_CONTACTCAPSULE:

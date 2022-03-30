@@ -118,13 +118,13 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 
     var = &cvar_indexes[cvar_num_indexes];
     cvar_num_indexes++;
-    var->name = copy_string(var_name);
-    var->string = copy_string(var_value);
+    var->name = strdup(var_name);
+    var->string = strdup(var_value);
     var->modified = true;
     var->modification_count = 1;
     var->value = atof(var->string);
     var->integer = atoi(var->string);
-    var->reset_string = copy_string(var_value);
+    var->reset_string = strdup(var_value);
 
     // link the variable in
     var->next = cvar_vars;

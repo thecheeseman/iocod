@@ -36,9 +36,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar/cvar.h"
 
 struct fileinpack {
+    char *name;
 	uint32_t pos;
 	int a;
-	char *name;
 	struct fileinpack *next;
 };
 

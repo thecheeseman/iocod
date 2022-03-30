@@ -20,146 +20,128 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file platform.h
- * @date 2022-02-04
-*/
+#ifndef PLATFORM_H
+#define PLATFORM_H
 
-#ifndef __PLATFORM_H__
-#define __PLATFORM_H__
+/* C standard */
+#if defined __STDC__
+#define PLATFORM_STD_C89
 
-#include "build_number.h"
+#if defined __STDC_VERSION__
+#if __STDC_VERSION__ >= 201710L
+#define PLATFORM_STD_C18
+#endif /* __STDC_VERSION__ >= 201710L */
 
-//
-// Windows specific
-//
-#if defined(_WIN32)
+#if __STDC_VERSION__ >= 201112L
+#define PLATFORM_STD_C11
+#endif /* __STDC_VERSION__ >= 201112L */
 
-#pragma warning(disable : 4018)     // signed/unsigned mismatch
+#if __STDC_VERSION__ >= 199901L
+#define PLATFORM_STD_C99
+#endif /* __STDC_VERSION__ >= 199901L */
+#endif /* __STDC_VERSION__ */
+#endif /* __STDC__ */
 
-#if defined(_MSC_VER)
-#define OS_STRING "win_msvc"
-#elif defined(__MINGW32__) || defined(__MINGW64__)
-#define OS_STRING "win_mingw"
+/* compiler */
+#ifndef PLATFORM_COMPILER
+#if defined _MSC_VER 
+#define PLATFORM_MSVC
+#define PLATFORM_COMPILER "msvc"
+#elif defined __MINGW32__ || defined __MINGW64__
+#define PLATFORM_MINGW
+#define PLATFORM_COMPILER "mingw"
+#elif defined __GNUC__
+#define PLATFORM_GCC
+#define PLATFORM_COMPILER "gcc"
+#elif defined __clang__
+#define PLATFORM_CLANG
+#define PLATFORM_COMPILER "clang"
+#elif defined __llvm__
+#define PLATFORM_LLVM
+#define PLATFORM_COMPILER "llvm"
+#endif
+#endif /* PLATFORM_COMPILER */
+
+/* architecture */
+#if defined __i386__ 
+#define PLATFORM_ARCH "i386" /* 32-bit *nix */
+#elif defined _M_IX86
+#define PLATFORM_ARCH "x86" /* 32-bit windows */
+#elif defined __x86_64__ || defined _M_AMD64
+#define PLATFORM_ARCH "x86_64"
+#elif defined __arm__
+#if defined __arm64__ || defined __aarch64__
+#define PLATFORM_ARCH "arm64"
 #else
-#error Unknown or unsupported Windows OS
-#endif // _MSC_VER
+#define PLATFORM_ARCH "arm32"
+#endif /* __arm64__ || defined __aarch64__ */
+#endif /* __i386__ */
 
-#if defined(_WIN64)
-#define ARCH_STRING "x86_64"
-#else
-#define ARCH_STRING "x86"
-#endif // _WIN64
+/* OS: Windows */
+#if defined _WIN32
+#define PLATFORM_WINDOWS 1
+#define PLATFORM_OS "win"
+#define PLATFORM_DLL "dll"
 
-// windows common
-#define DLL_EXT "dll"
-
-#define QDECL __cdecl
-#define QCALL __stdcall
-
-#define DLLEXPORT __declspec(dllexport)
-#define DLLIMPORT __declspec(dllimport)
-
-#define Q3_LITTLE_ENDIAN
-
-#define IDINLINE __inline
+#define INLINE __inline
 #define PATH_SEP '\\'
-// windows common
+#define DECL __cdecl
+#define CALL __stdcall
+#define EXPORT __declspec(dllexport)
+#define IMPORT __declspec(dllimport)
+#define LOCAL 
 
 #ifndef __BASE_FILE__
 #define __BASE_FILE__ __FILE__
-#endif // __BASE_FILE__
+#endif /* __BASE_FILE__ */
 
-//
-// linux
-//
-#elif defined(__linux__) 
-
-#include <endian.h>
-
-#define OS_STRING "linux"
-
-#define DLL_EXT "so"
-
-#define IDINLINE inline
-#define PATH_SEP '/'
-
-#if defined(__i386__)
-#define ARCH_STRING "i386"
-#elif defined(__x86_64__)
-#define ARCH_STRING "x86_64"
-#endif
-
-#if __FLOAT_WORD_ORDER == __BIG_ENDIAN
-#define Q3_BIG_ENDIAN
+/* OS: non-windows */
 #else
-#define Q3_LITTLE_ENDIAN
-#endif
 
-#define QDECL 
-#define QCALL 
-
-#define DLLEXPORT
-#define DLLIMPORT
-
-//
-// macos
-//
-#elif defined(__APPLE__)
-
-#define OS_STRING "macos"
-#define DLL_EXT "dylib"
-
-#define IDINLINE inline
+#define INLINE inline
 #define PATH_SEP '/'
+#define DECL 
+#define CALL 
 
-#if defined(__i386__)
-#define ARCH_STRING "i386"
-#elif defined(__x86_64__)
-#define ARCH_STRING "x86_64"
-#elif defined(__arm64__) || defined(__aarch64__)
-#define ARCH_STRING "arm64"
+#if defined __GNUC__ && __GNUC__ >= 4
+#define EXPORT __attribute__((visibility("default")))
+#define IMPORT
+#define LOCAL __attribute__((visibility("hidden")))
+#else
+#define EXPORT
+#define IMPORT
+#define LOCAL
+#endif /* __GNUC__ && __GNUC__ >= 4*/
+
+/* linux */
+#if defined __linux__ 
+#define PLATFORM_LINUX 1
+#define PLATFORM_OS "linux"
+#define PLATFORM_DLL "so"
+/* macos */
+#elif defined __APPLE__
+#define PLATFORM_MACOS 1
+#define PLATFORM_OS "macos"
+#define PLATFORM_DLL "dylib"
 #endif
+#endif /* PLATFORM_WINDOWS */
 
-#define Q3_LITTLE_ENDIAN
+#ifndef PLATFORM_ARCH
+#define PLATFORM_ARCH "unsupported"
+#endif /* PLATFORM_ARCH */
 
-#define QDECL 
-#define QCALL 
+#ifndef PLATFORM_OS
+#define PLATFORM_OS "unsupported"
+#endif /* PLATFORM_OS */
 
-#define DLLEXPORT
-#define DLLIMPORT
-
-#endif
-
-//
-//
-//
-#ifndef OS_STRING
-#error "Operating system not supported"
-#endif
-
-#ifndef ARCH_STRING
-#error "Architecture not supported"
-#endif
-
-#ifndef IDINLINE
-#error "IDINLINE not defined"
-#endif
-
-#ifndef PATH_SEP
-#error "PATH_SEP not defined"
-#endif
-
-#ifndef DLL_EXT
-#error "DLL_EXT not defined"
-#endif
-
-// todo endianness
+#ifndef PLATFORM_DLL
+#define PLATFORM_DLL "lib"
+#endif /* PLATFORM_DLL */
 
 #ifdef NDEBUG
-#define PLATFORM_STRING OS_STRING "-" ARCH_STRING
+#define PLATFORM_STRING PLATFORM_OS "-" PLATFORM_ARCH
 #else
-#define PLATFORM_STRING OS_STRING "-" ARCH_STRING "-debug"
+#define PLATFORM_STRING PLATFORM_OS "-" PLATFORM_ARCH "-debug"
 #endif
 
-#endif // __PLATFORM_H__
+#endif /* PLATFORM_H */

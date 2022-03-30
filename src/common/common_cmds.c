@@ -36,7 +36,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @brief Quit the system
  * @author idsoftware
 */
-static void com_quit_f(void)
+void com_quit_f(void)
 {
     if (!com_error_entered) {
         sv_shutdown("Server quit\n");

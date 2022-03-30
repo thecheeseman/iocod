@@ -243,14 +243,13 @@ char **sys_list_files(const char *directory, const char *extension,
     bool dironly = wantsubs;
 
     if (filter) {
-        com_printf("filtered\n");
         nfiles = 0;
 
         sys_list_filtered_files(directory, "", filter, list, &nfiles);
-        list[nfiles] = 0;
+        list[nfiles] = NULL;
 
         *numfiles = nfiles;
-        if (!nfiles)
+        if (nfiles == 0)
             return NULL;
 
         listcopy = z_malloc((nfiles + 1) * sizeof(*listcopy));

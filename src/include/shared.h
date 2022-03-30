@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __SHARED_H__
 #define __SHARED_H__
 
+#include "iocod.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -35,19 +37,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <limits.h>
 #include <stdint.h>
 
-// from kernel.h
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-#define FIELD_SIZEOF(t, f) (sizeof(((t*)0)->f))
-//
-
-#define UNUSED(x) (void)(x)
-#define INCOMPLETE
-
 #define Q3_VERSION "iocod"
 #define BASEGAME "main"
 #define BASEDEMO "demomain" // not really necessary
-
-#include "platform.h"
 
 // typedefs
 #include "types/byte.h"

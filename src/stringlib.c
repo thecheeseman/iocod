@@ -18,7 +18,7 @@ char *strdup(const char *s)
 #if !defined(HAVE_STRNDUP)
 char *strndup(const char *s, size_t n)
 {
-    size_t len = strlen(s, n);
+    size_t len = strnlen(s, n);
     char *new = malloc(len + 1);
 
     if (new == NULL)

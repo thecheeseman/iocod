@@ -20,6 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#include "iocod.h"
+
 #include <ctype.h>
 
 #include "common/cbuf.h"
@@ -27,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "system/system.h"
 #include "files_local.h"
 #include "stringlib.h"
 
@@ -351,15 +354,90 @@ char *fs_shift_str(const char *string, int shift)
 */
 bool fs_search_localized(struct searchpath *search)
 {
-	if (search->localized || fs_ignorelocalized->integer == 0)
+	if (search->localized > 0 || fs_ignorelocalized->integer == 0)
 		return true;
 
 	return false;
 }
 
-void INCOMPLETE fun_08061070(char *a, char *b, const char *c, const char *d)
+struct folderdata {
+    char name[MAX_OSPATH];
+    int numfiles;
+    int hashsize;
+    struct fileinpack **hashtable;
+    struct fileinpack *buildbuffer;
+    struct folderdata *next;
+};
+
+struct folderdata *fs_folderdata;
+
+#define MAX_FOLDER_FILES 1024
+
+void INCOMPLETE NOT_WORKING fun_08061070(char *dir, char *gamedir, 
+                                         const char *folder, 
+                                         const char *extension)
 {
-	(void) a; (void) b; (void) c; (void) d; //-Werror=unusued-parameter
+    char path[MAX_OSPATH + 16];
+    char ospath[MAX_OSPATH];
+    int i, len, syslen, num_sysfiles;
+    char **sysfiles;
+    struct folderdata *fdr;
+    struct fileinpack *f;
+    int hash, fpsize;
+    intptr_t ptr;
+    char *lname;
+
+    snprintf(path, sizeof(path), "%s/%s", gamedir, folder);
+    fs_build_ospath(dir, path, "", ospath);
+
+    len = strlen(ospath);
+    ospath[len - 1] = '\0';
+
+    sysfiles = sys_list_files(ospath, extension, NULL, &num_sysfiles, false);
+    syslen = 0;
+    for (i = 0; i < num_sysfiles; i++) {
+        len = strlen(sysfiles[i]);
+        syslen += len + 1;
+    }
+
+    for (i = 1; (i <= MAX_FOLDER_FILES && i <= num_sysfiles); i <<= 1);
+
+    fdr = z_malloc(i * sizeof(char *) + sizeof(struct folderdata));
+    fdr->hashsize = i;
+    fdr->hashtable = (struct fileinpack **) (fdr + 1);
+    for (i = 0; i < fdr->hashsize; i++)
+        fdr->hashtable[i] = NULL;
+
+    q_strncpyz(fdr->name, folder, sizeof(fdr->name));
+    fdr->next = fs_folderdata;
+    fs_folderdata = fdr;
+
+    fdr->numfiles = num_sysfiles;
+
+    fpsize = sizeof(struct fileinpack);
+    f = z_malloc(num_sysfiles * fpsize + syslen);
+    ptr = num_sysfiles * fpsize + f;
+    #if 0
+    // hacky
+    for (i = 0; i < num_sysfiles; i++) {
+        lname = sysfiles[i];
+        q_strlwr(lname);
+        hash = fs_hash_filename(lname, fdr->hashsize);
+
+        *(int *) (f + i * fpsize) = ptr;
+        strcpy(*(char **) (f + i * fpsize), lname);
+        ptr += strlen(lname) + 1;
+
+        *(struct fileinpack **) (f + 0xc + i * fpsize) = fdr->hashtable[hash];
+        *(int *) (f + 4 + i * fpsize) = 0;
+        *(int *) (f + 8 + i * fpsize) = 0;
+        fdr->hashtable[hash] = (struct fileinpack *) (i * fpsize + f);
+    }
+    fdr->buildbuffer = f;
+
+    com_printf("%s : %d %d\n", fdr->name, fdr->hashsize, fdr->numfiles);
+    #endif
+    sys_free_file_list(sysfiles);
 }
 
 /**
@@ -369,11 +447,11 @@ void INCOMPLETE fun_08061070(char *a, char *b, const char *c, const char *d)
 */
 static void fs_load_folder_data(const char *folder, const char *ext)
 {
-	struct searchpath *p;
+	struct searchpath *search;
 
-	for (p = fs_searchpaths; p != NULL; p = p->next) {
-		if (p->pack == NULL)
-			fun_08061070(p->dir->path, p->dir->gamedir, folder, ext);
+	for (search = fs_searchpaths; search != NULL; search = search->next) {
+		if (search->pack == NULL)
+			fun_08061070(search->dir->path, search->dir->gamedir, folder, ext);
 	}
 }
 
@@ -390,8 +468,9 @@ static void fs_startup(const char *gamename)
 
 	fs_debug = cvar_get("fs_debug", "1", 0);
 	fs_copyfiles = cvar_get("fs_copyfiles", "0", CVAR_INIT);
-	fs_cdpath = cvar_get("fs_cdpath", sys_default_cd_path(), CVAR_INIT);
-	fs_basepath = cvar_get("fs_basepath", sys_default_install_path(), CVAR_INIT);
+
+    fs_cdpath = cvar_get("fs_cdpath", "", CVAR_INIT);
+    fs_basepath = cvar_get("fs_basepath", sys_default_install_path(), CVAR_INIT);
 	fs_basegame = cvar_get("fs_basegame", "", CVAR_INIT);
 	homepath = sys_default_home_path();
 	if (homepath == NULL || *homepath == '\0')

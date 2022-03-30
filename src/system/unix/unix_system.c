@@ -199,7 +199,8 @@ void *sys_load_dll(const char *name, char *fqpath,
 
     *fqpath = 0;
 
-    snprintf(fname, MAX_OSPATH, "%s.mp.%s.%s", name, ARCH_STRING, DLL_EXT);
+    snprintf(fname, MAX_OSPATH, "%s.mp.%s.%s", name, PLATFORM_ARCH, 
+             PLATFORM_DLL);
 
     //pwdpath = sys_cwd();
     homepath = cvar_variable_string("fs_homepath");

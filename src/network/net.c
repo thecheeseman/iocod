@@ -20,11 +20,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @file net.c
- * @date 2022-02-04
-*/
-
 #include "shared.h"
 #include "common.h"
 #include "common/error.h"
@@ -32,6 +27,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "stringlib.h"
+#include "iocod.h"
+
+#if defined PLATFORM_LINUX || defined PLATFORM_MACOS
 
 #include <unistd.h>
 #include <sys/socket.h>
@@ -43,6 +41,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <sys/param.h>
 #include <sys/ioctl.h>
 #include <sys/uio.h>
+
+#endif
+
 #include <errno.h>
 
 #define PORT_SERVER 28960
@@ -137,6 +138,7 @@ const char *net_address_to_string(struct netadr a)
     return s;
 }
 
+#if !defined PLATFORM_WINDOWS
 bool sys_string_to_sockaddr(const char *s, struct sockaddr *sadr)
 {
     struct hostent *h;
@@ -287,3 +289,4 @@ void net_open_ip(void)
 
     com_error(ERR_FATAL, "Couldn't allocate IP port");
 }
+#endif

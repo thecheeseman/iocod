@@ -251,7 +251,11 @@ endif()
 #
 # main dedicated server
 #
-add_executable(iocod "")
+if (WIN32)
+    add_executable(iocod WIN32 "")
+else()
+    add_executable(iocod "")
+endif()
 
 #
 # game library 
@@ -314,10 +318,10 @@ set(DLL_OUT_NAME "game${DLL_SPACER}mp${DLL_SPACER}${DLL_PLAT}")
 #
 # any linux specific library linkage
 #
-if (UNIX)
+if (WIN32)
+    target_link_libraries(iocod ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} winmm)
+    target_link_libraries(game ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} winmm)
+else()
     target_link_libraries(iocod ${CMAKE_DL_LIBS} ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} m)
     target_link_libraries(game ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK} m)
-else()
-    target_link_libraries(iocod ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK})
-    target_link_libraries(game ${CURL_LINK} ${LUA_LINK} ${THREADS_LINK})
 endif()
