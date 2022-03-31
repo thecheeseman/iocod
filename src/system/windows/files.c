@@ -1,5 +1,6 @@
+#include <stddef.h>
+#include "types/bool.h"
 #include "types/filehandle.h"
-#include "windows_local.h"
 
 void sys_mkdir(const char *path)
 {

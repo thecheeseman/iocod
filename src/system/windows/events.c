@@ -1,5 +1,5 @@
-#include "system/system.h"
-#include "windows_local.h"
+#include "system/shared.h"
+#include "system/windows/local.h"
 
 void sys_events_init(void)
 {

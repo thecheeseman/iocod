@@ -26,10 +26,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <signal.h>
-#include "shared.h"
-#include "common.h"
+#include <stdio.h>
+#include "types/bool.h"
 
-void sys_exit(int);
+extern void sys_exit(int);
 
 static bool signalcaught = false;
 

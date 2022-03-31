@@ -2,7 +2,8 @@
 #include <stdio.h>
 
 #include "iocod.h"
-#include "windows_local.h"
+#include "system/windows/console.h"
+#include "system/windows/local.h"
 
 extern void com_quit_f(void);
 

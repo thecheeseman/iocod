@@ -1,10 +1,21 @@
-#ifndef SYSTEM_SYSTEM_H
-#define SYSTEM_SYSTEM_H
+#ifndef SYSTEM_SHARED_H
+#define SYSTEM_SHARED_H
 
 #include "iocod.h"
 #include "types/bool.h"
 #include "types/filehandle.h"
 #include <stdint.h>
+
+enum system_event_type {
+    SE_NONE = 0,
+    SE_KEY,
+    SE_CHAR,
+    SE_MOUSE,
+    SE_JOYSTICK_AXIS,
+    SE_CONSOLE,
+    SE_PACKET,
+    SE_BAD_EVENT
+};
 
 struct system_event {
     int time;
@@ -14,6 +25,18 @@ struct system_event {
     int	ptr_length; // bytes of data pointed to by ptr, for journaling
     void *ptr;		// this must be manually freed if not NULL
 };
+
+// console.c
+void console_show(int level, bool quit_on_close);
+
+// dll.c
+void *sys_load_dll(const char *name, char *fqpath,
+                   intptr_t(**entrypoint)(intptr_t, ...),
+                   intptr_t(*systemcalls)(intptr_t, ...));
+void sys_unload_dll(void *dllhandle);
+
+// print.c
+void sys_print(const char *msg);
 
 // events
 void sys_events_init(void);
@@ -48,19 +71,16 @@ void sys_check_for_version(int argc, char *argv[]);
 void sys_configure_fpu(void);
 void sys_error(const char *error, ...);
 void sys_warn(char *warning, ...);
-void sys_show_console(int viewlog, int b);
-void *sys_load_dll(const char *name, char *fqpath,
-                   intptr_t (**entrypoint)(intptr_t, ...),
-                   intptr_t (*systemcalls)(intptr_t, ...));
-void sys_unload_dll(void *dllhandle);
 
+//
 extern bool ttycon_on;
 extern struct cvar *tty_colors;
-void sys_print(const char *msg);
-void sys_console_input_shutdown(void);
-void sys_console_input_init(void);
-char *sys_console_input(void);
-void tty_hide(void);
-void tty_show(void);
 
-#endif /* SYSTEM_SYSTEM_H */
+// only used for unix -- maybe move there?
+//void sys_console_input_shutdown(void);
+//void sys_console_input_init(void);
+//char *sys_console_input(void); 
+//void tty_hide(void);
+//void tty_show(void);
+
+#endif /* SYSTEM_SHARED_H */

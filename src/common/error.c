@@ -6,7 +6,7 @@
 #include "common/hunk.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
-#include "system/system.h"
+#include "system/shared.h"
 #include "parse.h"
 #include "stringlib.h"
 

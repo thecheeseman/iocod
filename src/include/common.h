@@ -32,17 +32,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #define MAX_MSGLEN 16384
 
-enum system_event_type {
-    SE_NONE = 0,
-    SE_KEY,
-    SE_CHAR,
-    SE_MOUSE,
-    SE_JOYSTICK_AXIS,
-    SE_CONSOLE,
-    SE_PACKET,
-    SE_BAD_EVENT
-};
-
 #define	MAX_EDIT_LINE	256
 struct field {
     int		cursor;
@@ -116,28 +105,5 @@ bool net_get_loop_packet(int sock, struct netadr *from, struct msg *msg);
 //void scr_init(int developer, int developer_script);
 //void scr_abort(void);
 //void scr_shutdown(void);
-
-//
-//
-// vm.c
-//
-//
-struct vm {
-    intptr_t (*system_call)(intptr_t *parms);
-
-    char name[MAX_QPATH];
-    char full_qpath[MAX_QPATH + 1];
-
-    char data[3];
-
-    void *dll_handle;
-    intptr_t (*entry_point)(intptr_t callnum, ...);
-};
-
-void vm_init(void);
-struct vm *vm_create(const char *module, intptr_t (*systemcalls)(intptr_t *));
-void vm_free(struct vm *vm);
-void vm_clear(void);
-intptr_t DECL vm_call(struct vm *vm, intptr_t callnum, ...);
 
 #endif // __COMMON_H__

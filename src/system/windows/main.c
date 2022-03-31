@@ -32,13 +32,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
-#include "system/system.h"
-
-#include "windows_local.h"
+#include "system/shared.h"
+#include "system/windows/console.h"
+#include "system/windows/local.h"
 
 struct cvar *tty_colors;
 
-struct winvars g_wv;
+struct window_vars window_vars;
 static char sys_cmdline[MAX_STRING_CHARS];
 
 void init_signals(void); // signals.c
@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     if (hPrevInstance != NULL)
         return 0;
 
-    g_wv.hInstance = hInstance;
+    window_vars.instance = hInstance;
     q_strncpyz(sys_cmdline, lpCmdLine, sizeof(sys_cmdline));
 
     console_create();
@@ -82,10 +82,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     console_show(0, false);
 
-    SetFocus(g_wv.hWnd);
+    SetFocus(window_vars.window);
 
     while (true) {
-        if (g_wv.isMinimized || 
+        if (window_vars.is_minimized ||
             com_dedicated != NULL && com_dedicated->integer > 0)
             Sleep(5);
 

@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __NET_H__
 #define __NET_H__
 
+#include "types/byte.h"
+
 struct msg {
     bool allow_overflow;     // if false, do a Com_Error
     bool overflowed;        // set to true if the buffer size failed (with allowoverflow set)

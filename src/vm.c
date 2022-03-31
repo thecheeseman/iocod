@@ -31,6 +31,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/error.h"
 #include "common/memory.h"
 #include "stringlib.h"
+#include "vm.h"
 
 #define MAX_VM 3
 struct vm vmtable[MAX_VM];

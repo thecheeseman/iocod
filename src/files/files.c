@@ -29,7 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
-#include "system/system.h"
+#include "system/shared.h"
 #include "files_local.h"
 #include "stringlib.h"
 
