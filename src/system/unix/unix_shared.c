@@ -160,8 +160,6 @@ bool sys_directory_has_files(const char *ospath)
     return 0;
 }
 
-#define MAX_FOUND_FILES 4096
-
 /**
  * @brief 
  * @param basedir 

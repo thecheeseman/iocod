@@ -47,6 +47,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "types/filehandle.h"
 #include "types/vector.h"
 
+// temp
+#define MAX_FOUND_FILES 4096
+
 // from ioquake
 #define PAD(base, alignment)	(((base)+(alignment)-1) & ~((alignment)-1))
 #define PADLEN(base, alignment)	(PAD((base), (alignment)) - (base))

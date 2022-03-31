@@ -13,6 +13,11 @@ char *sys_cwd(void)
     return cwd;
 }
 
+void sys_mkdir(const char *path)
+{
+    (void) _mkdir(path);
+}
+
 char *sys_default_base_path(void)
 {
     return sys_cwd();

@@ -1,11 +1,6 @@
 #include "system/windows/local.h"
 
-void sys_exit(int ex)
-{
-
-}
-
-void sys_quit(void)
+void sys_exit(void)
 {
 
 }

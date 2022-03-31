@@ -33,6 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "system/events.h"
 #include "system/shared.h"
 
 #define MAX_PUSHED_EVENTS 256
@@ -121,7 +122,7 @@ struct system_event com_get_real_event(void)
                 com_error(ERR_FATAL, "Error reading from journal file");
         }
     } else {
-        ev = sys_get_event();
+        ev = get_event();
 
         // write the journal value out if needed
         if (com_journal->integer == 1) {

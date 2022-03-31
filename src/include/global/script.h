@@ -28,6 +28,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __SCRIPT_H__
 #define __SCRIPT_H__
 
+#include <stdint.h>
+#include "types/bool.h"
+#include "types/vector.h"
+
 #define MAXSTACK 65536
 
 enum variable_type {

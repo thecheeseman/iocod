@@ -61,3 +61,4 @@ void init_signals(void)
     signal(SIGBUS, signal_handler);
     #endif
 }
+

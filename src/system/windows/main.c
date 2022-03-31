@@ -32,6 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "system/events.h"
 #include "system/shared.h"
 #include "system/windows/console.h"
 #include "system/windows/local.h"
@@ -72,15 +73,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     SetErrorMode(SEM_FAILCRITICALERRORS);
 
-    sys_milliseconds();
+    //
+    gpl_notice();
+    //
 
+    swap_init();
+
+    sys_milliseconds();
+    events_init();
     com_init(sys_cmdline);
     net_init();
 
     (void) _getcwd(cwd, sizeof(cwd));
     com_printf("working directory: %s\n", cwd);
 
-    console_show(0, false);
+    console_show(1, false);
 
     SetFocus(window_vars.window);
 

@@ -28,6 +28,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __COMMON_GLOBAL_H__
 #define __COMMON_GLOBAL_H__
 
+#include "types/bool.h"
+#include "system/events.h"
+
 //
 //
 // common/common.c

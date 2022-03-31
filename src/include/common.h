@@ -30,8 +30,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdarg.h>
 
-#define MAX_MSGLEN 16384
-
 #define	MAX_EDIT_LINE	256
 struct field {
     int		cursor;

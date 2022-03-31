@@ -14,3 +14,8 @@ void net_open_ip(void)
 {
 
 }
+
+bool get_packet(struct netadr *from, struct msg *msg)
+{
+    return false;
+}

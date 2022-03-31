@@ -3,8 +3,8 @@
  #ifndef __BUILD_NUMBER_H__
  #define __BUILD_NUMBER_H__
 
- #define BUILD_NUMBER "69"
- #define BUILD_HASH "g3340653"
+ #define BUILD_NUMBER "70"
+ #define BUILD_HASH "gca97517"
  #define VERSION_NUMBER "0.1.7"
  #define BUILD_INFO "v" VERSION_NUMBER "-" BUILD_NUMBER "-" BUILD_HASH ""
   

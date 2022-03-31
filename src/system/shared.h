@@ -6,26 +6,6 @@
 #include "types/filehandle.h"
 #include <stdint.h>
 
-enum system_event_type {
-    SE_NONE = 0,
-    SE_KEY,
-    SE_CHAR,
-    SE_MOUSE,
-    SE_JOYSTICK_AXIS,
-    SE_CONSOLE,
-    SE_PACKET,
-    SE_BAD_EVENT
-};
-
-struct system_event {
-    int time;
-    enum system_event_type type;
-    int	value;
-    int value2;
-    int	ptr_length; // bytes of data pointed to by ptr, for journaling
-    void *ptr;		// this must be manually freed if not NULL
-};
-
 // console.c
 void console_show(int level, bool quit_on_close);
 
@@ -35,14 +15,11 @@ void *sys_load_dll(const char *name, char *fqpath,
                    intptr_t(*systemcalls)(intptr_t, ...));
 void sys_unload_dll(void *dllhandle);
 
+// net
+bool get_packet(struct netadr *from, struct msg *msg);
+
 // print.c
 void sys_print(const char *msg);
-
-// events
-void sys_events_init(void);
-void sys_queue_event(int time, enum system_event_type type,
-                     int value, int value2, int ptrlength, void *ptr);
-struct system_event sys_get_event(void);
 
 // shared
 void sys_mkdir(const char *path);
@@ -65,12 +42,14 @@ void sys_free_file_list(char **list);
 //
 void sys_do_start_process(char *cmdline);
 void sys_exit(int ex);
-void sys_quit(void);
 void sys_init(void);
 void sys_check_for_version(int argc, char *argv[]);
 void sys_configure_fpu(void);
 void sys_error(const char *error, ...);
 void sys_warn(char *warning, ...);
+
+// quit.c
+void sys_quit(void);
 
 //
 extern bool ttycon_on;

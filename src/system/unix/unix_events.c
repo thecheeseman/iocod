@@ -24,53 +24,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "system/events.h"
 #include "stringlib.h"
 
-#define MAX_QUEUED_EVENTS   256
-#define MASK_QUEUED_EVENTS  (MAX_QUEUED_EVENTS - 1)
-
-struct system_event eventqueue[MAX_QUEUED_EVENTS];
-int eventhead = 0;
-int eventtail = 0;
-byte sys_packetreceived[MAX_MSGLEN];
-
-void sys_events_init(void)
-{
-    com_memset(&eventqueue[0], 0, MAX_QUEUED_EVENTS * 
-               sizeof(struct system_event));
-    com_memset(&sys_packetreceived[0], 0, MAX_MSGLEN * sizeof(byte));
-}
-
-void sys_queue_event(int time, enum system_event_type type, 
-                     int value, int value2, int ptr_length, void *ptr)
-{
-    struct system_event *ev;
-
-    ev = &eventqueue[eventhead & MASK_QUEUED_EVENTS];
-
-    if (eventhead - eventtail >= MASK_QUEUED_EVENTS) {
-        com_printf("sys_queue_event: overflow\n");
-
-        if (ev->ptr)
-            z_free(ev->ptr);
-
-        eventtail++;
-    }
-
-    eventhead++;
-
-    if (time == 0)
-        time = sys_milliseconds();
-
-    ev->time = time;
-    ev->type = type;
-    ev->value = value;
-    ev->value2 = value2;
-    ev->ptr_length = ptr_length;
-    ev->ptr = ptr;
-}
-
-struct system_event sys_get_event(void)
+struct system_event INCOMPLETE sys_get_event(void)
 {
     struct system_event ev;
     char *s = NULL;
@@ -78,9 +35,9 @@ struct system_event sys_get_event(void)
     //struct netadr adr;
 
     // return if we have event data
-    if (eventhead > eventtail) {
-        eventtail++;
-        return eventqueue[(eventtail - 1) & MASK_QUEUED_EVENTS];
+    if (event_head > event_tail) {
+        event_tail++;
+        return event_queue[(event_tail - 1) & MASK_QUEUED_EVENTS];
     }
 
     // sys_send_key_events();
@@ -94,7 +51,7 @@ struct system_event sys_get_event(void)
         len = strlen(s) + 1;
         b = z_malloc(len);
         strcpy(b, s);
-        sys_queue_event(0, SE_CONSOLE, 0, 0, len, b);
+        queue_event(0, SE_CONSOLE, 0, 0, len, b);
     }
 
     // in_frame();
@@ -102,9 +59,9 @@ struct system_event sys_get_event(void)
     // check for network packets
 
     // return if we have event data
-    if (eventhead > eventtail) {
-        eventtail++;
-        return eventqueue[(eventtail - 1) & MASK_QUEUED_EVENTS];
+    if (event_head > event_tail) {
+        event_tail++;
+        return event_queue[(eventtail - 1) & MASK_QUEUED_EVENTS];
     }
 
     // create an empty event to return

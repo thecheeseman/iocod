@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __FILES_H__
 #define __FILES_H__
 
+#include "types/filehandle.h"
+
 #define MAX_ZPATH           256
 #define MAX_SEARCH_PATHS    4096
 #define MAX_FILEHASH_SIZE   1024

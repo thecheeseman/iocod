@@ -1,8 +1,10 @@
 #include "color.h"
 #include "cvar/cvar.h"
+#include "system/events.h"
 #include "system/shared.h"
 #include "system/windows/console.h"
 #include "system/windows/local.h"
+#include "stringlib.h"
 
 extern struct cvar *com_viewlog;
 extern struct cvar *com_dedicated;
@@ -125,8 +127,8 @@ static LONG WINAPI console_window_handler(HWND window, UINT message,
     case WM_CLOSE:
         if ((com_dedicated != NULL && com_dedicated->integer > 0)) {
             cmdString = strdup("quit");
-            sys_queue_event(0, SE_CONSOLE, 0, 0, 
-                            strlen(cmdString) + 1, cmdString);
+            queue_event(0, SE_CONSOLE, 0, 0, 
+                        strlen(cmdString) + 1, cmdString);
         } else if (console.quit_on_close) {
             PostQuitMessage(0);
         } else {
@@ -160,8 +162,8 @@ static LONG WINAPI console_window_handler(HWND window, UINT message,
                 PostQuitMessage(0);
             } else {
                 cmdString = strdup("quit");
-                sys_queue_event(0, SE_CONSOLE, 0, 0, 
-                                strlen(cmdString) + 1, cmdString);
+                queue_event(0, SE_CONSOLE, 0, 0,
+                            strlen(cmdString) + 1, cmdString);
             }
         } else if (param1 == CLEAR_ID) {
             SendMessage(console.window_buffer, EM_SETSEL, 0, -1);
@@ -443,4 +445,16 @@ void set_error_text(const char *buf)
         DestroyWindow(console.input_line);
         console.input_line = NULL;
     }
+}
+
+char *console_input(void)
+{
+    if (*console.console_text == '\0')
+        return NULL;
+
+    strncpy(console.returned_text, console.console_text, 
+            sizeof(console.returned_text));
+    console.console_text[0] = '\0';
+
+    return console.returned_text;
 }

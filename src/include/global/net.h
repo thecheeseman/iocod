@@ -28,7 +28,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __NET_H__
 #define __NET_H__
 
+#include "types/bool.h"
 #include "types/byte.h"
+
+#ifndef MAX_MSGLEN
+#define MAX_MSGLEN 16384
+#endif
 
 struct msg {
     bool allow_overflow;     // if false, do a Com_Error

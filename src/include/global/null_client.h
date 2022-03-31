@@ -28,6 +28,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __NULL_CLIENT_H__
 #define __NULL_CLIENT_H__
 
+#include "types/bool.h"
+
 // empty client nonsense
 void cl_init(void);
 void cl_init_key_commands(void);
