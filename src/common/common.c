@@ -63,6 +63,8 @@ struct cvar *com_animcheck;
 struct cvar *com_journal;
 struct cvar *com_recommendedset;
 
+extern struct cvar *tty_colors;
+
 int com_frame_time;
 int com_frame_msec;
 int com_frame_number;

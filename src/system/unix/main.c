@@ -31,6 +31,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <curl/curl.h>
 #endif
 
+#include "system/shared.h"
+#include "system/unix/console.h"
 #include "stringlib.h"
 
 uid_t saved_euid;
@@ -92,12 +94,12 @@ int main(int argc, char* argv[])
     #endif
     //
 
-    sys_events_init();
+    events_init();
     com_init(cmdline);
     z_free(cmdline); // no longer needed
     net_init();
 
-    sys_console_input_init();
+    console_input_init();
 
     fcntl(0, F_SETFL, fcntl(0, F_GETFL, 0) | FNDELAY);
 

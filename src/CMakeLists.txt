@@ -4,7 +4,6 @@
 file(GLOB IOCOD_SOURCES "*.c")
 
 foreach (subdir
-    client
     clipmap
     commands
     common 
@@ -18,7 +17,8 @@ foreach (subdir
     server/syscalls
     shared
     sound 
-    system)
+    system
+    system/null)
     file(GLOB sources "${subdir}/*.c")
     list(APPEND IOCOD_SOURCES ${sources})
 endforeach()

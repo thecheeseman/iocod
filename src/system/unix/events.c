@@ -25,14 +25,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "system/events.h"
+#include "system/shared.h"
 #include "stringlib.h"
 
-struct system_event INCOMPLETE sys_get_event(void)
+struct system_event get_event(void)
 {
     struct system_event ev;
     char *s = NULL;
-    //struct msg netmsg;
-    //struct netadr adr;
+    struct msg netmsg;
+    struct netadr adr, *buf;
+    char *b;
+    int len;
 
     // return if we have event data
     if (event_head > event_tail) {
@@ -40,28 +43,33 @@ struct system_event INCOMPLETE sys_get_event(void)
         return event_queue[(event_tail - 1) & MASK_QUEUED_EVENTS];
     }
 
-    // sys_send_key_events();
+    send_key_events();
 
     // check for console commands
-    s = sys_console_input();
+    s = console_input();
     if (s) {
-        char *b;
-        int len;
-
         len = strlen(s) + 1;
         b = z_malloc(len);
         strcpy(b, s);
         queue_event(0, SE_CONSOLE, 0, 0, len, b);
     }
 
-    // in_frame();
+    in_frame();
 
     // check for network packets
+    msg_init(&netmsg, packet_received, sizeof(packet_received));
+    if (get_packet(&adr, &netmsg)) {
+        len = sizeof(struct netadr) + netmsg.cursize;
+        buf = z_malloc(len);
+        *buf = adr;
+        memcpy(buf + 1, netmsg.data, netmsg.cursize);
+        queue_event(0, SE_PACKET, 0, 0, len, buf);
+    }
 
     // return if we have event data
     if (event_head > event_tail) {
         event_tail++;
-        return event_queue[(eventtail - 1) & MASK_QUEUED_EVENTS];
+        return event_queue[(event_tail - 1) & MASK_QUEUED_EVENTS];
     }
 
     // create an empty event to return

@@ -35,6 +35,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <unistd.h>
 
+#include "system/shared.h"
+#include "system/unix/console.h"
 #include "stringlib.h"
 
 bool stdin_active = true;
@@ -56,15 +58,15 @@ struct cvar *tty_colors;
 static struct field tty_edit_lines[TTY_HISTORY];
 static int hist_current = -1, hist_count = 0;
 
-void sys_console_input_shutdown(void)
+void console_input_shutdown(void)
 {
-    if (ttycon_on) {
+    if (ttycon_on != NULL) {
         fprintf(stdout, "Shutdown tty console\n");
         tcsetattr(0, TCSADRAIN, &tty_tc);
     }
 }
 
-void sys_console_input_init(void)
+void console_input_init(void)
 {
     struct termios tc;
 
@@ -72,10 +74,10 @@ void sys_console_input_init(void)
     signal(SIGTTOU, SIG_IGN);
 
     ttycon = cvar_get("ttycon", "1", 0);
-    if (ttycon && ttycon->value) {
+    if (ttycon != NULL && ttycon->value != 0) {
         if (isatty(STDIN_FILENO) != 1) {
             printf("stdin is not a tty, tty console mode failed\n");
-            // cvar_set("ttycon", "0");
+            cvar_set("ttycon", "0");
             ttycon_on = false;
             return;
         }
@@ -232,7 +234,7 @@ struct field *hist_next(void) {
 /*
  * 
  */
-char *sys_console_input(void)
+char *console_input(void)
 {
     static char text[256];
     int i, avail;

@@ -6,8 +6,18 @@
 #include "types/filehandle.h"
 #include <stdint.h>
 
+// null
+void in_init(void);
+void in_frame(void);
+void in_shutdown(void);
+void send_key_events(void);
+void in_mouse_event(int state);
+void in_activate(bool active);
+void in_restart_f(void);
+
 // console.c
 void console_show(int level, bool quit_on_close);
+char *console_input(void);
 
 // dll.c
 void *sys_load_dll(const char *name, char *fqpath,
@@ -50,16 +60,5 @@ void sys_warn(char *warning, ...);
 
 // quit.c
 void sys_quit(void);
-
-//
-extern bool ttycon_on;
-extern struct cvar *tty_colors;
-
-// only used for unix -- maybe move there?
-//void sys_console_input_shutdown(void);
-//void sys_console_input_init(void);
-//char *sys_console_input(void); 
-//void tty_hide(void);
-//void tty_show(void);
 
 #endif /* SYSTEM_SHARED_H */

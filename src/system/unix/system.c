@@ -40,6 +40,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "system/shared.h"
+#include "system/unix/console.h"
 #include "stringlib.h"
 
 #define MAX_CMD 1024
@@ -65,7 +67,7 @@ void sys_do_start_process(char *cmdline)
 
 void sys_exit(int ex)
 {
-    sys_console_input_shutdown();
+    console_input_shutdown();
 
     if (exit_cmdline[0] != '\0') {
         sleep(1);
@@ -85,8 +87,12 @@ void sys_quit(void)
 
 void sys_init(void)
 {
+    cmd_add_command("in_restart", in_restart_f);
+
     cvar_set("arch", PLATFORM_STRING);
-    cvar_set("username", sys_get_current_user());
+    cvar_set("username", get_current_user());
+
+    in_init();
 }
 
 /**

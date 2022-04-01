@@ -17,6 +17,7 @@ static int com_error_code;
 jmp_buf abortframe;
 
 extern struct cvar *com_developer;
+extern struct cvar *tty_colors;
 
 /**
  * @brief
