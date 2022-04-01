@@ -46,19 +46,20 @@ void init_signals(void); // signals.c
 
 void gpl_notice(void)
 {
-    fprintf(stderr, 
-            "iocod, copyright(C) 2021 - 2022 thecheeseman\n" \
-            "iocod comes with ABSOLUTELY NO WARRANTY; " \
-            "for details use the command 'gplinfo'.\n" \
-            "This is free software, andyou are welcome to " \
-            "redistribute it under certain conditions; use 'gplinfo' " \
-            "for details.\n");
+    console_append("iocod, copyright(C) 2021 - 2022 thecheeseman\n" \
+                   "iocod comes with ABSOLUTELY NO WARRANTY; " \
+                   "for details use the command 'gplinfo'.\n" \
+                   "This is free software, andyou are welcome to " \
+                   "redistribute it under certain conditions; use 'gplinfo' " \
+                   "for details.\n");
 }
 
 int total_msec, count_msec;
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, 
+                   _In_opt_ HINSTANCE hPrevInstance,
+                   _In_ LPSTR lpCmdLine, 
+                   _In_ int nCmdShow)
 {
     char cwd[MAX_OSPATH];
     int start_time, end_time;
@@ -98,7 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
         start_time = sys_milliseconds();
         
-        // in_frame();
+        in_frame();
 
         com_frame();
 

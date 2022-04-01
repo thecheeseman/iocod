@@ -8,6 +8,5 @@ void console_destroy(void);
 void console_show(int vis_level, bool quit_on_close);
 void console_append(const char *message);
 void set_error_text(const char *buf);
-char *console_input(void);
 
 #endif /* SYSTEM_WINDOWS_CONSOLE_H */

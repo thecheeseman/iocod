@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "iocod.h"
+#include "system/shared.h"
 #include "system/windows/console.h"
 #include "system/windows/local.h"
 
@@ -25,7 +26,7 @@ void DECL sys_error(const char *error, ...)
 
     timeEndPeriod(1);
 
-    // in_shutdown();
+    in_shutdown();
 
     while (true) {
         if (!GetMessage(&msg, NULL, 0, 0))

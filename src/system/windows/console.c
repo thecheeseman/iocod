@@ -1,3 +1,5 @@
+#include "shared.h"
+
 #include "color.h"
 #include "cvar/cvar.h"
 #include "system/events.h"
@@ -318,9 +320,9 @@ void console_create(void)
                                          window_vars.instance, NULL);
     SendMessage(console.window_buffer, WM_SETFONT, (WPARAM) console.buffer_font, 0);
 
-    console.input_line_handler = (WNDPROC) SetWindowLong(console.input_line, 
-                                                         GWLP_WNDPROC, 
-                                                         (long) input_line_handler);
+    console.input_line_handler = (WNDPROC) SetWindowLongPtr(console.input_line, 
+                                                            GWLP_WNDPROC, 
+                                                            (intptr_t) input_line_handler);
     SendMessage(console.input_line, WM_SETFONT, (WPARAM) console.buffer_font, 0);
 
     ShowWindow(console.window, SW_SHOWDEFAULT);
