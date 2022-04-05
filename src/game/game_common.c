@@ -53,16 +53,20 @@ void g_dprintf(const char *fmt, ...)
 }
 
 // replacement for com_error
-void g_error(const char *fmt, ...)
+void g_error_runner(const char *file, const char *func, int line,
+                    const char *fmt, ...)
 {
     va_list argptr;
-    char err[1024];
+    char err[1024], finalmsg[1536];
 
     va_start(argptr, fmt);
     vsnprintf(err, sizeof(err), fmt, argptr);
     va_end(argptr);
 
-    trap_error(err);
+    snprintf(finalmsg, sizeof(finalmsg), "%s(%s:%d): %s",
+             func, file, line, err);
+
+    trap_error(finalmsg);
 }
 
 void com_printf_runner(UNUSED enum print_level level, const char *fmt, ...)

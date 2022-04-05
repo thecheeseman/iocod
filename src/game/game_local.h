@@ -458,8 +458,12 @@ char *concat_args(int start);
 //
 void g_printf(const char *fmt, ...);
 void g_dprintf(const char *fmt, ...);
-void g_error(const char *fmt, ...);
+void g_error_runner(const char *file, const char *func, int line, 
+                    const char *fmt, ...);
 void g_log_printf(const char *fmt, ...);
+
+#define g_error(...) \
+    g_error_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
 //
 //

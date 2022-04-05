@@ -54,7 +54,7 @@ intptr_t INCOMPLETE sv_game_systemcalls(intptr_t *args)
             com_printf("%s", (char *) args[1]);
             break;
         case G_ERROR:
-            com_error(ERR_DROP, "%s", (char *) args[1]);
+            com_error_no_debug(ERR_DROP, "%s", (char *) args[1]);
             break;
         case G_ERROR_LOCALIZED:
             break;

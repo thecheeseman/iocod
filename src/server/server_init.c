@@ -481,7 +481,7 @@ void INCOMPLETE sv_shutdown(UNUSED char *finalmsg)
 
     com_print_header("server shutdown", 40, '-');
 
-    // if (svs.clients && !com_error_entered)
+    // if (svs.clients && !com_error_entered())
     //	sv_final_message(finalmsg);
 
     // this needs to be called _only_ when com_shutdown happens

@@ -5,7 +5,8 @@
 #include <stdarg.h>
 
 #include "types/bool.h"
-extern bool com_error_entered;
+
+extern jmp_buf abortframe;
 
 enum error_code {
     ERR_FATAL,                  // exit the entire game with a popup window
@@ -17,6 +18,8 @@ enum error_code {
     ERR_6,
     ERR_7
 };
+
+bool com_error_entered(void);
 
 /**
  * @brief Wrapper for com_error() - allow debug info to be printed
@@ -31,6 +34,8 @@ enum error_code {
 void com_error_runner(enum error_code code, const char *file, const char *func,
                       int line, const char *fmt, ...);
 
+void com_error_msg_only(enum error_code code, const char *fmt, ...);
+
 void com_warning_runner(const char *file, const char *func, int line,
                         const char *fmt, ...);
 void com_debug_warning_runner(const char *file, const char *func, int line,
@@ -43,6 +48,10 @@ void com_debug_warning_runner(const char *file, const char *func, int line,
 */
 #define com_error(code, ...) \
     com_error_runner(code, __BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
+
+
+#define com_error_no_debug(code, ...) \
+    com_error_msg_only(code, __VA_ARGS__)
 
 /**
  * @brief Wrapper for sys_warn for better warning messages
@@ -60,7 +69,6 @@ void com_debug_warning_runner(const char *file, const char *func, int line,
 #define com_debug_warning(...) \
     com_debug_warning_runner(__BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
-extern jmp_buf abortframe;
 void com_error_handler(void);
 
 #endif /* COMMON_ERROR_H */

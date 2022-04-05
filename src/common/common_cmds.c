@@ -39,7 +39,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 void com_quit_f(void)
 {
-    if (!com_error_entered) {
+    if (!com_error_entered()) {
         sv_shutdown("Server quit\n");
         sv_remove_operator_commands();
         cl_shutdown();

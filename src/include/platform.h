@@ -42,10 +42,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* __STDC_VERSION__ */
 #endif /* __STDC__ */
 
-#if defined STDC_HEADERS
-
-#endif
-
 /* compiler */
 #ifndef PLATFORM_COMPILER
 #if defined _MSC_VER 
