@@ -7,6 +7,7 @@
 #include "cvar/cvar.h"
 #include "system/shared.h"
 #include "system/windows/local.h"
+#include "va.h"
 
 void sys_exit(void)
 {
@@ -73,11 +74,6 @@ void sys_init(void)
 }
 
 void sys_warn(char *warning, ...)
-{
-
-}
-
-void sys_show_console(int viewlog, int b)
 {
 
 }

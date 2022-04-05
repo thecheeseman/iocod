@@ -60,7 +60,7 @@ static int hist_current = -1, hist_count = 0;
 
 void console_input_shutdown(void)
 {
-    if (ttycon_on != NULL) {
+    if (ttycon_on) {
         fprintf(stdout, "Shutdown tty console\n");
         tcsetattr(0, TCSADRAIN, &tty_tc);
     }
@@ -229,6 +229,11 @@ struct field *hist_next(void) {
         return NULL;
 
     return &(tty_edit_lines[hist_current]);
+}
+
+void console_show(UNUSED int viewlog, UNUSED bool b)
+{
+
 }
 
 /*

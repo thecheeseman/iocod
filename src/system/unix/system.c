@@ -90,7 +90,7 @@ void sys_init(void)
     cmd_add_command("in_restart", in_restart_f);
 
     cvar_set("arch", PLATFORM_STRING);
-    cvar_set("username", get_current_user());
+    cvar_set("username", sys_get_current_user());
 
     in_init();
 }
@@ -185,12 +185,6 @@ void sys_warn(char *warning, ...)
 
     if (ttycon_on)
         tty_show();
-}
-
-void sys_show_console(int viewlog, int b)
-{
-    UNUSED(viewlog);
-    UNUSED(b);
 }
 
 void *sys_load_dll(const char *name, char *fqpath, 

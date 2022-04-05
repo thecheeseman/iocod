@@ -383,7 +383,7 @@ void INCOMPLETE NOT_WORKING fun_08061070(char *dir, char *gamedir,
     char **sysfiles;
     struct folderdata *fdr;
     struct fileinpack *f;
-    int hash, fpsize;
+    int hash UNUSED, fpsize;
     intptr_t ptr;
     char *lname;
 

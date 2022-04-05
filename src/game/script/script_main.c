@@ -2,48 +2,39 @@
 #include "common/memory.h"
 #include "script_local.h"
 #include "stringlib.h"
+#include "va.h"
 
 struct game_script_data g_scr_data;
 
 // temp
-void scr_set_entity_field(int a, int b)
+void scr_set_entity_field(UNUSED int a, UNUSED int b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
-void scr_get_entity_field(int a, int b)
+void scr_get_entity_field(UNUSED int a, UNUSED int b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
-void scr_set_hud_elem_field(int a, int b)
+void scr_set_hud_elem_field(UNUSED int a, UNUSED int b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
-void scr_get_hud_elem_field(int a, int b)
+void scr_get_hud_elem_field(UNUSED int a, UNUSED int b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 // temp
 
-struct gsc_function *scr_get_function(const char **name, int *developer)
+struct gsc_function *scr_get_function(UNUSED const char **name, UNUSED int *developer)
 {
-    UNUSED(name);
-    UNUSED(developer);
-
     return NULL;
 }
 
-struct gsc_function *scr_get_method(const char **name, int *developer)
+struct gsc_function *scr_get_method(UNUSED const char **name, UNUSED int *developer)
 {
-    UNUSED(name);
-    UNUSED(developer);
-
     return NULL;
 }
 
@@ -63,10 +54,8 @@ void scr_get_object_field(int a, int b, int c)
         scr_get_hud_elem_field(b, c);
 }
 
-int scr_load_read(int a)
+int scr_load_read(UNUSED int a)
 {
-    UNUSED(a);
-
     return 0;
 }
 

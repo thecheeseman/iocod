@@ -129,8 +129,6 @@ void q_strcat(char *dest, int size, const char *src);
 char *q_strlwr(char *s1);
 char *q_strupr(char *s1);
 
-char *va(char *format, ...);
-
 // TODO: maybe just make this something modern?
 typedef struct
 {

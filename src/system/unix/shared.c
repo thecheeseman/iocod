@@ -30,6 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "common/memory.h"
 #include "common/print.h"
+#include "system/shared.h"
 
 #include <unistd.h>
 #include <pwd.h>
@@ -52,9 +53,9 @@ void sys_mkdir(const char *path)
     mkdir(path, 0777);
 }
 
-void sys_end_streamed_file(filehandle f)
+void sys_end_streamed_file(UNUSED filehandle f)
 {
-    UNUSED(f);
+
 }
 
 int sys_milliseconds(void)

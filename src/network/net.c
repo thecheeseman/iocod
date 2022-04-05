@@ -28,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar/cvar.h"
 #include "stringlib.h"
 #include "iocod.h"
+#include "va.h"
 
 #if defined PLATFORM_LINUX || defined PLATFORM_MACOS
 

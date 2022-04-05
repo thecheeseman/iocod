@@ -24,6 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "stringlib.h"
+#include "vm.h"
 
 void sv_heartbeat_f(void)
 {

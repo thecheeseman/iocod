@@ -65,12 +65,10 @@ void g_error(const char *fmt, ...)
     trap_error(err);
 }
 
-void com_printf_runner(enum print_level level, const char *fmt, ...)
+void com_printf_runner(UNUSED enum print_level level, const char *fmt, ...)
 {
     va_list argptr;
     char msg[1024];
-
-    UNUSED(level);
 
     va_start(argptr, fmt);
     vsnprintf(msg, sizeof(msg), fmt, argptr);
@@ -79,16 +77,16 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
     g_printf("%s", msg);
 }
 
-void com_error_runner(enum error_code code, const char *file, const char *func,
-                      int line, const char *fmt, ...)
+void 
+com_error_runner(UNUSED enum error_code code, 
+                 UNUSED const char *file,
+                 UNUSED const char *func,
+                 UNUSED int line,
+                 const char *fmt,
+                 ...)
 {
     va_list argptr;
     char err[1024];
-
-    UNUSED(code);
-    UNUSED(file);
-    UNUSED(func);
-    UNUSED(line);
 
     va_start(argptr, fmt);
     vsnprintf(err, sizeof(err), fmt, argptr);

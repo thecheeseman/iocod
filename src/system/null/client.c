@@ -52,14 +52,14 @@ void cl_start_hunk_users(void)
 
 }
 
-void cl_console_print(const char *msg)
+void cl_console_print(UNUSED const char *msg)
 {
-    UNUSED(msg);
+
 }
 
-void cl_disconnect(bool showmainmenu)
+void cl_disconnect(UNUSED bool showmainmenu)
 {
-    UNUSED(showmainmenu);
+
 }
 
 void cl_flush_memory(void)
@@ -82,47 +82,39 @@ void s_clear_sound_buffer(void)
 
 }
 
-void cl_key_event(int value, int value2, int time)
+void cl_key_event(UNUSED int value, UNUSED int value2, UNUSED int time)
 {
-    UNUSED(value);
-    UNUSED(value2);
-    UNUSED(time);
+
 }
 
-void cl_char_event(int value)
+void cl_char_event(UNUSED int value)
 {
-    UNUSED(value);
+
 }
 
-void cl_mouse_event(int value, int value2, int time)
+void cl_mouse_event(UNUSED int value, UNUSED int value2, UNUSED int time)
 {
-    UNUSED(value);
-    UNUSED(value2);
-    UNUSED(time);
+
 }
 
-void cl_joystick_event(int value, int value2, int time)
+void cl_joystick_event(UNUSED int value, UNUSED int value2, UNUSED int time)
 {
-    UNUSED(value);
-    UNUSED(value2);
-    UNUSED(time);
+
 }
 
-void cl_packet_event(struct netadr evfrom, struct msg *buf)
+void cl_packet_event(UNUSED struct netadr evfrom, UNUSED struct msg *buf)
 {
-    UNUSED(evfrom);
-    UNUSED(buf);
+
 }
 
-void cl_frame(int msec, int timescale)
+void cl_frame(UNUSED int msec, UNUSED int timescale)
 {
-    UNUSED(msec);
-    UNUSED(timescale);
+
 }
 
-void key_write_bindings(filehandle f)
+void key_write_bindings(UNUSED filehandle f)
 {
-    UNUSED(f);
+
 }
 
 void cl_map_loading(void)
@@ -145,7 +137,7 @@ bool ui_game_command(void)
     return false;
 }
 
-void cl_forward_command_to_server(const char *text)
+void cl_forward_command_to_server(UNUSED const char *text)
 {
-    UNUSED(text);
+
 }

@@ -30,6 +30,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar/cvar.h"
 #include "server_local.h"
 #include "stringlib.h"
+#include "va.h"
+#include "vm.h"
 
 void sv_set_config_string(int index, const char *val)
 {
@@ -344,10 +346,8 @@ void INCOMPLETE sv_spawn_server(char *server)
 {
     int i, checksum;
     char system_info[16384];
-    struct cvar *xmodelcheck;
+    struct cvar *xmodelcheck UNUSED;
     bool keep_persistent;
-
-    UNUSED(xmodelcheck);
     
     xmodelcheck = cvar_get("cl_xmodelcheck", "0", CVAR_LATCH | CVAR_ARCHIVE);
     // fun_080cc4b0(xmodelcheck->integer);
@@ -474,10 +474,8 @@ void INCOMPLETE sv_spawn_server(char *server)
     com_print_header("", 40, '-');
 }
 
-void INCOMPLETE sv_shutdown(char *finalmsg)
+void INCOMPLETE sv_shutdown(UNUSED char *finalmsg)
 {
-    UNUSED(finalmsg);
-
     if (!com_sv_running || !com_sv_running->integer)
         return;
 

@@ -28,9 +28,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
-void INCOMPLETE msg_init(struct msg *buf, byte *data, int length)
+void 
+INCOMPLETE 
+msg_init(UNUSED struct msg *buf, 
+         UNUSED byte *data, 
+         UNUSED int length)
 {
-    (void) buf; (void) data; (void) length; //-Wunused-parameter
+
 }
 
 struct netfield {
@@ -213,21 +217,25 @@ struct netfield player_state_fields[] = {
 };
 
 // TEMP
-void INCOMPLETE huff_decompress(struct msg *msg, int a)
+void 
+INCOMPLETE 
+huff_decompress(UNUSED struct msg *msg, 
+                UNUSED int a)
 {
-    UNUSED(msg);
-    UNUSED(a);
+
 }
 
-void INCOMPLETE msg_begin_reading_oob(struct msg *msg)
+void 
+INCOMPLETE 
+msg_begin_reading_oob(UNUSED struct msg *msg)
 {
-    UNUSED(msg);
+
 }
 
-char * INCOMPLETE msg_read_string_line(struct msg *msg)
+char * 
+INCOMPLETE 
+msg_read_string_line(UNUSED struct msg *msg)
 {
-    UNUSED(msg);
-
     return "";
 }
 
@@ -236,7 +244,8 @@ char * INCOMPLETE msg_read_string_line(struct msg *msg)
  * @param msg 
  * @return 
 */
-int msg_read_long(struct msg *msg)
+int 
+msg_read_long(struct msg *msg)
 {
     int c, v;
 

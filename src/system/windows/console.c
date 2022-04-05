@@ -7,6 +7,7 @@
 #include "system/windows/console.h"
 #include "system/windows/local.h"
 #include "stringlib.h"
+#include "va.h"
 
 extern struct cvar *com_viewlog;
 extern struct cvar *com_dedicated;

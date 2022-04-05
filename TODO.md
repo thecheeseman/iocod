@@ -12,18 +12,57 @@ TODO
         - module support?
 - implement OOB / networking so server can at least send/receive packets
 - files_io:372 // TODO: whatever this is // fun_080612a2(*file);
-
 - modularize:
     - files
     - common stuff
     - system stuff
 
-macos specific
+### macos specific
 - fix: 'syscall' is deprecated
 - fix: format string is not a string literal printf stuff
 
 - <stddef.h> contains NULL & size_t
 - <stdint.h> contains intX_t, uintX_t, intptr_t, uintptr_t etc
+
+### other ideas
+- refactor everything
+    - really just try and eliminate reliance on `shared.h`
+    - only include shared.h when you need `va()` etc
+        - maybe even split out shared functions into their own modules
+        - like string stuff -> `stringlib.h`
+        - infostrings -> `infostrings.h`
+        - `va()` -> `va.h`
+        - etc.
+    - consider using `-` instead of `_` for filename separators
+    - also figure out how to eliminate as many globals as possible
+        - think about using structs instead of globals
+        - what data needs to be global?
+- style
+    - think about using windows / gnome style for function declarations
+        - e.g. 
+            ```
+            void
+            function(int arg1,
+                     int arg2)
+            ```
+        - instead of 
+            ```
+            void function(int arg1, int arg2);
+            ```
+    - windows suggestion to use one line per variable definition
+        - e.g.
+            ```
+            int a; 
+            int b; 
+            int c;
+            ```
+        - instead of 
+            ```
+            int a, b, c;
+            ```
+    - consider whether to use windows style `_In_` or `_In_Out_` for 
+    function parameters (or better styled) like `IN` or `OUT`
+ 
 
 Incomplete Functions
 --------------------

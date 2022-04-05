@@ -1,6 +1,7 @@
 #include "common/memory.h"
 #include "files/file_list.h"
 #include "files/files_local.h"
+#include "system/shared.h"
 #include "stringlib.h"
 
 int get_mod_list(char *list, int size)

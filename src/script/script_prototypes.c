@@ -30,111 +30,78 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "../game/script/script_redirects.h"
 
-bool scr_get_bool(int32_t index)
+bool scr_get_bool(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return false;
 }
 
-int32_t scr_get_int(int32_t index)
+int32_t scr_get_int(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return 0;
 }
 
-int32_t scr_get_anim(intptr_t a, int32_t b, int32_t c)
+int32_t scr_get_anim(UNUSED intptr_t a, UNUSED int32_t b, UNUSED int32_t c)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
-
     return 0;
 }
 
-int32_t scr_get_anim_tree(intptr_t a, int32_t b)
+int32_t scr_get_anim_tree(UNUSED intptr_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-float scr_get_float(int32_t index)
+float scr_get_float(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return 0.0;
 }
 
-char *scr_get_string(int32_t index)
+char *scr_get_string(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return NULL;
 }
 
-const char *scr_get_const_string(int32_t index)
+const char *scr_get_const_string(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return NULL;
 }
 
-const char *scr_get_debug_string(int32_t index)
+const char *scr_get_debug_string(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return NULL;
 }
 
-char *scr_get_istring(int32_t index)
+char *scr_get_istring(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return NULL;
 }
 
-const char *scr_get_const_istring(int32_t index)
+const char *scr_get_const_istring(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return NULL;
 }
 
-void scr_get_vector(int32_t index, vec3_t v)
+void scr_get_vector(UNUSED int32_t index, UNUSED vec3_t v)
 {
-    UNUSED(index);
-    UNUSED(v);
+
 }
 
-int32_t scr_get_func(int32_t index)
+int32_t scr_get_func(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return 0;
 }
 
-int32_t scr_get_type(int32_t index)
+int32_t scr_get_type(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return 0;
 }
 
-int32_t scr_get_pointer_type(int32_t index)
+int32_t scr_get_pointer_type(UNUSED int32_t index)
 {
-    UNUSED(index);
-
     return 0;
 }
 
-int32_t scr_get_entity_num(int32_t index, gentity_t *entity)
+int32_t scr_get_entity_num(UNUSED int32_t index, UNUSED gentity_t *entity)
 {
-    UNUSED(index);
-    UNUSED(entity);
-
     return 0;
 }
 
@@ -143,24 +110,24 @@ int32_t scr_get_num_param(void)
     return 0;
 }
 
-void scr_add_bool(bool value)
+void scr_add_bool(UNUSED bool value)
 {
-    UNUSED(value);
+
 }
 
-void scr_add_int(int32_t value)
+void scr_add_int(UNUSED int32_t value)
 {
-    UNUSED(value);
+
 }
 
-void scr_add_float(float value)
+void scr_add_float(UNUSED float value)
 {
-    UNUSED(value);
+
 }
 
-void scr_add_anim(int32_t value)
+void scr_add_anim(UNUSED int32_t value)
 {
-    UNUSED(value);
+
 }
 
 void scr_add_undefined(void)
@@ -168,40 +135,39 @@ void scr_add_undefined(void)
 
 }
 
-void scr_add_entity_num(int32_t num, int32_t b)
+void scr_add_entity_num(UNUSED int32_t num, UNUSED int32_t b)
 {
-    UNUSED(num);
-    UNUSED(b);
+
 }
 
-void scr_add_struct(int32_t value)
+void scr_add_struct(UNUSED int32_t value)
 {
-    UNUSED(value);
+
 }
 
-void scr_add_string(char *string)
+void scr_add_string(UNUSED char *string)
 {
-    UNUSED(string);
+
 }
 
-void scr_add_istring(char *string)
+void scr_add_istring(UNUSED char *string)
 {
-    UNUSED(string);
+
 }
 
-void scr_add_const_string(uint16_t string)
+void scr_add_const_string(UNUSED uint16_t string)
 {
-    UNUSED(string);
+
 }
 
-void scr_add_vector(vec3_t vector)
+void scr_add_vector(UNUSED vec3_t vector)
 {
-    UNUSED(vector);
+
 }
 
-void scr_add_object(uint16_t value)
+void scr_add_object(UNUSED uint16_t value)
 {
-    UNUSED(value);
+
 }
 
 void scr_add_array(void)
@@ -209,9 +175,9 @@ void scr_add_array(void)
 
 }
 
-void scr_add_array_string_indexed(uint16_t string)
+void scr_add_array_string_indexed(UNUSED uint16_t string)
 {
-    UNUSED(string);
+
 }
 
 void scr_make_array(void)
@@ -264,91 +230,79 @@ bool scr_is_system_active(void)
     return false;
 }
 
-void scr_add_exec_thread(int32_t a, int32_t b)
+void scr_add_exec_thread(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
-void scr_add_exec_thread_ent_num(int32_t a, int32_t b, int32_t c, int32_t d)
+void 
+scr_add_exec_thread_ent_num(UNUSED int32_t a, 
+                            UNUSED int32_t b, 
+                            UNUSED int32_t c, 
+                            UNUSED int32_t d)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
-    UNUSED(d);
+
 }
 
-uint16_t scr_exec_thread(int32_t a, int32_t b)
+uint16_t scr_exec_thread(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-uint16_t scr_exec_thread_ent_num(int32_t a, int32_t b, int32_t c, int32_t d)
+uint16_t 
+scr_exec_thread_ent_num(UNUSED int32_t a, 
+                        UNUSED int32_t b, 
+                        UNUSED int32_t c, 
+                        UNUSED int32_t d)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
-    UNUSED(d);
-
     return 0;
 }
 
-bool SCRIPT_UNUSED scr_is_thread_alive(uint16_t thread)
+bool SCRIPT_UNUSED scr_is_thread_alive(UNUSED uint16_t thread)
 {
-    UNUSED(thread);
-
     return false;
 }
 
-void scr_error(char *msg)
+void scr_error(UNUSED char *msg)
 {
-    UNUSED(msg);
+
 }
 
-void scr_error_with_dialog_message(char *msg)
+void scr_error_with_dialog_message(UNUSED char *msg)
 {
-    UNUSED(msg);
+
 }
 
-void scr_param_error(int32_t index, char *msg)
+void scr_param_error(UNUSED int32_t index, UNUSED char *msg)
 {
-    UNUSED(index);
-    UNUSED(msg);
+
 }
 
-void scr_object_error(int32_t a)
+void scr_object_error(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
-void scr_set_dynamic_entity_field(int32_t a, int32_t b, int32_t c)
+void scr_set_dynamic_entity_field(UNUSED int32_t a, 
+                                  UNUSED int32_t b, 
+                                  UNUSED int32_t c)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
+
 }
 
-void scr_free_entity_num(int32_t a, int32_t b)
+void scr_free_entity_num(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
-uint16_t scr_get_entity_id(int32_t a, int32_t b)
+uint16_t scr_get_entity_id(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-void scr_set_class_map(int32_t a, int32_t b)
+void scr_set_class_map(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
 void scr_remove_class_map(void)
@@ -366,46 +320,34 @@ void SCRIPT_UNUSED scr_spacer2(void)
 
 }
 
-void scr_add_class_field(uint16_t a, int32_t b, uint16_t c)
+void scr_add_class_field(UNUSED uint16_t a, UNUSED int32_t b, UNUSED uint16_t c)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
+
 }
 
-void scr_add_fields(int32_t a, int32_t b)
+void scr_add_fields(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
-uint16_t scr_find_field(int32_t a, int32_t b)
+uint16_t scr_find_field(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-int32_t scr_get_offset(uint16_t a, int32_t b)
+int32_t scr_get_offset(UNUSED uint16_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-void scr_copy_entity_num(int32_t a, int32_t b, int32_t c)
+void scr_copy_entity_num(UNUSED int32_t a, UNUSED int32_t b, UNUSED int32_t c)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
+
 }
 
-void scr_init(int32_t a, int32_t b)
+void scr_init(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
 void scr_shutdown(void)
@@ -418,15 +360,14 @@ void scr_abort(void)
 
 }
 
-void scr_set_loading(int32_t a)
+void scr_set_loading(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
-void scr_init_system(int32_t a, int32_t b)
+void scr_init_system(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
 void scr_alloc_game_variable(void)
@@ -434,9 +375,9 @@ void scr_alloc_game_variable(void)
 
 }
 
-void SCRIPT_UNUSED scr_get_checksum(int32_t a)
+void SCRIPT_UNUSED scr_get_checksum(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
 void SCRIPT_UNUSED scr_has_source_files(void)
@@ -444,29 +385,29 @@ void SCRIPT_UNUSED scr_has_source_files(void)
 
 }
 
-void SCRIPT_UNUSED scr_save_source(int32_t a)
+void SCRIPT_UNUSED scr_save_source(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
-void SCRIPT_UNUSED scr_load_source(int32_t a)
+void SCRIPT_UNUSED scr_load_source(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
-void SCRIPT_UNUSED scr_skip_source(int32_t a)
+void SCRIPT_UNUSED scr_skip_source(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
-void SCRIPT_UNUSED scr_save_pre(int32_t a)
+void SCRIPT_UNUSED scr_save_pre(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
-void SCRIPT_UNUSED scr_save_post(int32_t a)
+void SCRIPT_UNUSED scr_save_post(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
 void SCRIPT_UNUSED scr_save_shutdown(void)
@@ -479,10 +420,9 @@ void SCRIPT_UNUSED scr_spacer3(void)
 
 }
 
-void SCRIPT_UNUSED scr_load_pre(int32_t a, int32_t b)
+void SCRIPT_UNUSED scr_load_pre(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
 void SCRIPT_UNUSED scr_load_shutdown(void)
@@ -495,123 +435,89 @@ void SCRIPT_UNUSED scr_spacer4(void)
 
 }
 
-int32_t scr_load_script(char *script)
+int32_t scr_load_script(UNUSED char *script)
 {
-    UNUSED(script);
-
     return 0;
 }
 
-intptr_t scr_find_anim_tree(intptr_t a, int32_t b)
+intptr_t scr_find_anim_tree(UNUSED intptr_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-void scr_find_anim(char *animtree, char *name, intptr_t anim)
+void scr_find_anim(UNUSED char *animtree, UNUSED char *name, UNUSED intptr_t anim)
 {
-    UNUSED(animtree);
-    UNUSED(name);
-    UNUSED(anim);
+
 }
 
-int32_t scr_get_function_handle(char *script, char *function)
+int32_t scr_get_function_handle(UNUSED char *script, UNUSED char *function)
 {
-    UNUSED(script);
-    UNUSED(function);
-
     return 0;
 }
 
-void scr_free_thread(uint16_t thread)
+void scr_free_thread(UNUSED uint16_t thread)
 {
-    UNUSED(thread);
+
 }
 
-uint16_t SCRIPT_UNUSED scr_convert_thread_to_save(uint16_t thread)
+uint16_t SCRIPT_UNUSED scr_convert_thread_to_save(UNUSED uint16_t thread)
 {
-    UNUSED(thread);
-
     return 0;
 }
 
-uint16_t SCRIPT_UNUSED scr_convert_thread_from_load(uint16_t thread)
+uint16_t SCRIPT_UNUSED scr_convert_thread_from_load(UNUSED uint16_t thread)
 {
-    UNUSED(thread);
-
     return 0;
 }
 
-void scr_set_string(int32_t a, uint16_t string)
+void scr_set_string(UNUSED int32_t a, UNUSED uint16_t string)
 {
-    UNUSED(a);
-    UNUSED(string);
+
 }
 
-uint16_t scr_alloc_string(char *string, int32_t b)
+uint16_t scr_alloc_string(UNUSED char *string, UNUSED int32_t b)
 {
-    UNUSED(string);
-    UNUSED(b);
     return 0;
 }
 
-void scr_notify_num(int32_t a, int32_t b, uint16_t c, int32_t d)
+void scr_notify_num(UNUSED int32_t a, UNUSED int32_t b, UNUSED uint16_t c, UNUSED int32_t d)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
-    UNUSED(d);
+
 }
 
-void scr_notify_id(uint16_t a, uint16_t b, int32_t c)
+void scr_notify_id(UNUSED uint16_t a, UNUSED uint16_t b, UNUSED int32_t c)
 {
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(c);
+
 }
 
-char *sl_convert_to_string(uint16_t string)
+char *sl_convert_to_string(UNUSED uint16_t string)
 {
-    UNUSED(string);
-
     return NULL;
 }
 
-uint16_t sl_get_string(int32_t a, byte b)
+uint16_t sl_get_string(UNUSED int32_t a, UNUSED byte b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-uint16_t sl_get_lowercase_string(int32_t a, byte b)
+uint16_t sl_get_lowercase_string(UNUSED int32_t a, UNUSED byte b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return 0;
 }
 
-uint16_t sl_find_lowercase_string(int32_t a)
+uint16_t sl_find_lowercase_string(UNUSED int32_t a)
 {
-    UNUSED(a);
-
     return 0;
 }
 
-uint16_t SCRIPT_UNUSED scr_create_canonical_filename(int32_t a)
+uint16_t SCRIPT_UNUSED scr_create_canonical_filename(UNUSED int32_t a)
 {
-    UNUSED(a);
-
     return 0;
 }
 
-void scr_set_time(int32_t time)
+void scr_set_time(UNUSED int32_t time)
 {
-    UNUSED(time);
+
 }
 
 void scr_run_current_threads(void)
@@ -624,30 +530,24 @@ void scr_reset_timeout(void)
 
 }
 
-int32_t scr_get_anims_index(int32_t a)
+int32_t scr_get_anims_index(UNUSED int32_t a)
 {
-    UNUSED(a);
-
     return 0;
 }
 
-void SCRIPT_UNUSED scr_get_anims(int32_t a)
+void SCRIPT_UNUSED scr_get_anims(UNUSED int32_t a)
 {
-    UNUSED(a);
+
 }
 
-void *mt_alloc(int32_t a, int32_t b)
+void *mt_alloc(UNUSED int32_t a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
-
     return NULL;
 }
 
-void mt_free(void *a, int32_t b)
+void mt_free(UNUSED void *a, UNUSED int32_t b)
 {
-    UNUSED(a);
-    UNUSED(b);
+
 }
 
 //

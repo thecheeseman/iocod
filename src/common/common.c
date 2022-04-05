@@ -35,6 +35,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar/cvar.h"
 #include "system/events.h"
 #include "system/shared.h"
+#include "va.h"
+#include "vm.h"
 #include "parse.h"
 
 #define MAX_NUM_ARGVS 50
@@ -495,7 +497,7 @@ void com_frame(void)
     // if "viewlog" has been modified, show or hide the log console
     if (com_viewlog->modified) {
         if (com_dedicated->integer == 0)
-            sys_show_console(com_viewlog->integer, 0);
+            console_show(com_viewlog->integer, 0);
 
         com_viewlog->modified = false;
     }
@@ -554,10 +556,10 @@ void com_frame(void)
 
         if (com_dedicated->integer == 0) {
             cl_init();
-            sys_show_console(com_viewlog->integer, false);
+            console_show(com_viewlog->integer, false);
         } else {
             cl_shutdown();
-            sys_show_console(1, true);
+            console_show(1, true);
         }
     }
     #endif
@@ -717,7 +719,7 @@ void INCOMPLETE com_init(char *cmdline)
     com_dedicated->modified = false;
     if (com_dedicated->integer == 0) {
         cl_init();
-        sys_show_console(com_viewlog->integer, 0);
+        console_show(com_viewlog->integer, 0);
     }
 
     com_frame_time = com_milliseconds();
@@ -729,7 +731,7 @@ void INCOMPLETE com_init(char *cmdline)
     cl_start_hunk_users();
 
     if (com_dedicated->integer == 0) 
-        sys_show_console(com_viewlog->integer, 0);
+        console_show(com_viewlog->integer, 0);
 
     if (com_dedicated->integer == 0 && com_introplayed->integer == 0) {
         cvar_set("com_introplayed", "1");
@@ -771,12 +773,10 @@ void INCOMPLETE com_shutdown(void)
     net_shutdown();
 }
 
-void INCOMPLETE com_read_cdkey(const char *filename)
+void INCOMPLETE com_read_cdkey(const char *filename UNUSED)
 {
-    UNUSED(filename);
 }
 
-void INCOMPLETE com_append_cdkey(const char *filename)
+void INCOMPLETE com_append_cdkey(const char *filename UNUSED)
 {
-    UNUSED(filename);
 }

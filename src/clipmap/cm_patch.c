@@ -48,7 +48,8 @@ static vec3_t debug_block_points[4];
  * @param normal 
  * @return 
 */
-static int cm_sign_bits_for_normal(vec3_t normal)
+static int 
+cm_sign_bits_for_normal(vec3_t normal)
 {
     int	bits, j;
 
@@ -71,7 +72,11 @@ static int cm_sign_bits_for_normal(vec3_t normal)
  * @param c 
  * @return 
 */
-static bool cm_plane_from_points(vec4_t plane, vec3_t a, vec3_t b, vec3_t c)
+static bool 
+cm_plane_from_points(vec4_t plane, 
+                     vec3_t a, 
+                     vec3_t b, 
+                     vec3_t c)
 {
     vec3_t d1, d2;
 
@@ -98,14 +103,17 @@ static bool cm_plane_from_points(vec4_t plane, vec3_t a, vec3_t b, vec3_t c)
  * 
  * @todo compare against executable & assign static once finished
 */
-bool cm_needs_subdivision(vec3_t a, vec3_t b, vec3_t c, int first_vert) {
+bool 
+cm_needs_subdivision(vec3_t a, 
+                     vec3_t b, 
+                     vec3_t c, 
+                     int first_vert UNUSED) 
+{
     vec3_t cmid;
     vec3_t lmid;
     vec3_t delta;
     float dist;
     int	i;
-
-    UNUSED(first_vert);
 
     // calculate the linear midpoint
     for (i = 0; i < 3; i++)
@@ -133,8 +141,13 @@ bool cm_needs_subdivision(vec3_t a, vec3_t b, vec3_t c, int first_vert) {
  * @param out2 
  * @param out3 
 */
-static void cm_subdivide(vec3_t a, vec3_t b, vec3_t c,
-                         vec3_t out1, vec3_t out2, vec3_t out3)
+static void 
+cm_subdivide(vec3_t a, 
+             vec3_t b, 
+             vec3_t c,
+             vec3_t out1, 
+             vec3_t out2, 
+             vec3_t out3)
 {
     int i;
 
@@ -150,7 +163,8 @@ static void cm_subdivide(vec3_t a, vec3_t b, vec3_t c,
  * 
  * @param grid 
 */
-static void cm_transpose_grid(struct grid *grid)
+static void 
+cm_transpose_grid(struct grid *grid)
 {
     int i, j, l;
     vec3_t temp;
@@ -201,7 +215,8 @@ static void cm_transpose_grid(struct grid *grid)
  * 
  * @param grid
 */
-static void cm_set_grid_wrap_width(struct grid *grid)
+static void 
+cm_set_grid_wrap_width(struct grid *grid)
 {
     int i, j;
     float d;
@@ -231,7 +246,9 @@ static void cm_set_grid_wrap_width(struct grid *grid)
  * @param grid
  * @param first_vert UNUSED
 */
-static void cm_subdivide_grid_columns(struct grid *grid, int first_vert)
+static void 
+cm_subdivide_grid_columns(struct grid *grid,
+                          int first_vert)
 {
     int i, j, k;
     vec3_t prev, mid, next;
@@ -299,7 +316,9 @@ static void cm_subdivide_grid_columns(struct grid *grid, int first_vert)
  * @param b 
  * @return 
 */
-static bool cm_compare_points(float *a, float *b) 
+static bool 
+cm_compare_points(float *a, 
+                  float *b) 
 {
     float d;
 
@@ -323,7 +342,8 @@ static bool cm_compare_points(float *a, float *b)
  * 
  * @param grid 
 */
-static void cm_remove_degenerate_columns(struct grid *grid)
+static void 
+cm_remove_degenerate_columns(struct grid *grid)
 {
     int i, j, k;
 
@@ -359,7 +379,10 @@ static void cm_remove_degenerate_columns(struct grid *grid)
  * @param flipped 
  * @return 
 */
-bool cm_plane_equal(struct patch_plane *p, float plane[4], bool *flipped) 
+bool 
+cm_plane_equal(struct patch_plane *p, 
+               float plane[4], 
+               bool *flipped) 
 {
     float invplane[4];
 
@@ -389,7 +412,8 @@ bool cm_plane_equal(struct patch_plane *p, float plane[4], bool *flipped)
  * @brief 
  * @param normal 
 */
-void cm_snap_vector(vec3_t normal) 
+void 
+cm_snap_vector(vec3_t normal) 
 {
     int	i;
 
@@ -414,7 +438,9 @@ void cm_snap_vector(vec3_t normal)
  * @param flipped 
  * @return 
 */
-int cm_find_plane2(float plane[4], bool *flipped) 
+int 
+cm_find_plane2(float plane[4], 
+               bool *flipped) 
 {
     int i;
 
@@ -445,7 +471,10 @@ int cm_find_plane2(float plane[4], bool *flipped)
  * @param p3 
  * @return 
 */
-static int cm_find_plane(float *p1, float *p2, float *p3)
+static int 
+cm_find_plane(float *p1, 
+              float *p2, 
+              float *p3)
 {
     vec4_t plane;
     int	i;
@@ -493,7 +522,9 @@ static int cm_find_plane(float *p1, float *p2, float *p3)
  * @param planeNum 
  * @return 
 */
-static int cm_point_on_plane_side(float *p, int plane_num) 
+static int 
+cm_point_on_plane_side(float *p, 
+                       int plane_num) 
 {
     float *plane;
     float	d;
@@ -522,8 +553,11 @@ static int cm_point_on_plane_side(float *p, int plane_num)
  * @param tri 
  * @return 
 */
-static int cm_grid_plane(int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2],
-                         int i, int j, int tri)
+static int 
+cm_grid_plane(int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2],
+              int i, 
+              int j, 
+              int tri)
 {
     int		p;
 
@@ -549,9 +583,12 @@ static int cm_grid_plane(int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2],
  * @param k 
  * @return 
 */
-static int cm_edge_plane_num(struct grid *grid,
-                             int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2],
-                             int i, int j, int k)
+static int 
+cm_edge_plane_num(struct grid *grid,
+                  int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2],
+                  int i, 
+                  int j, 
+                  int k)
 {
     float *p1, *p2;
     vec3_t up;
@@ -615,15 +652,18 @@ static int cm_edge_plane_num(struct grid *grid,
  * @param j 
  * @param which 
 */
-static void INCOMPLETE cm_set_border_inward(struct facet *facet, struct grid *grid,
-                                 int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2],
-                                 int i, int j, int which)
+static void 
+INCOMPLETE 
+cm_set_border_inward(struct facet *facet, 
+                     struct grid *grid,
+                     int grid_planes[MAX_GRID_SIZE][MAX_GRID_SIZE][2] UNUSED,
+                     int i, 
+                     int j, 
+                     int which)
 {
     int	k, l;
     float *points[4];
     int	numPoints;
-
-    UNUSED(grid_planes);
 
     switch (which) {
         case -1:
@@ -698,7 +738,8 @@ static void INCOMPLETE cm_set_border_inward(struct facet *facet, struct grid *gr
  * 
  * @todo finish function
 */
-bool cm_validate_facet(struct facet *facet)
+bool 
+cm_validate_facet(struct facet *facet)
 {
      float plane[4];
      int j;
@@ -751,7 +792,8 @@ bool cm_validate_facet(struct facet *facet)
  * 
  * @todo finish function
 */
-void cm_add_facet_bevels(struct facet *facet)
+void 
+cm_add_facet_bevels(struct facet *facet)
 {
 
     int i, j, k, l;
@@ -944,8 +986,9 @@ enum edgename {
  * @param grid 
  * @param pf 
 */
-static void cm_patch_collide_from_grid(struct grid *grid,
-                                       struct patch_collide *pf)
+static void 
+cm_patch_collide_from_grid(struct grid *grid,
+                           struct patch_collide *pf)
 {
     int i, j;
     float *p1, *p2, *p3;
@@ -1124,8 +1167,12 @@ static void cm_patch_collide_from_grid(struct grid *grid,
  * @param origin
  * @return 
 */
-struct patch_collide *cm_generate_patch_collide(int width, int height,
-    int first_vert, vec3_t *points, vec3_t *origin)
+struct patch_collide *
+cm_generate_patch_collide(int width, 
+                          int height,
+                          int first_vert, 
+                          vec3_t *points, 
+                          vec3_t *origin)
 {
     struct patch_collide *pf;
     struct grid grid;
@@ -1185,8 +1232,12 @@ struct patch_collide *cm_generate_patch_collide(int width, int height,
  * @param idx2 
  * @return 
 */
-int INCOMPLETE cm_terrain_func1(int count, uint16_t *arr, uint16_t idx1, 
-                                uint16_t idx2)
+int 
+INCOMPLETE 
+cm_terrain_func1(int count,
+                 uint16_t *arr, 
+                 uint16_t idx1,      
+                 uint16_t idx2)
 {
     int i;
 
@@ -1219,8 +1270,13 @@ int INCOMPLETE cm_terrain_func1(int count, uint16_t *arr, uint16_t idx1,
  * @todo finish decompiling / rewritting
 */
 #define MAX_TERRAIN_VAL 65536
-struct terrain_collide * INCOMPLETE cm_generate_terrain_collide(int num_indexes,
-    uint16_t *indexes, int num_verts, vec3_t *points, vec3_t *origin)
+struct terrain_collide * 
+INCOMPLETE
+cm_generate_terrain_collide(int num_indexes, 
+                            uint16_t *indexes UNUSED, 
+                            int num_verts, 
+                            vec3_t *points UNUSED, 
+                            vec3_t *origin UNUSED)
 {
     //int i, j, c, r1;
     //uint16_t idx1, idx2, idx3;
@@ -1228,10 +1284,6 @@ struct terrain_collide * INCOMPLETE cm_generate_terrain_collide(int num_indexes,
     //uint16_t arr1[MAX_TERRAIN_VAL][2];
     //vec3_t v1, v2, v3, v4;
     struct terrain_collide *pf;
-
-    UNUSED(indexes);
-    UNUSED(points);
-    UNUSED(origin);
 
     if (num_indexes % 3)
         com_error(ERR_DROP, "num_indexes % 3 != 0, corrupt bsp?");

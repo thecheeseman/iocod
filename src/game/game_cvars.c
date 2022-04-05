@@ -1,4 +1,5 @@
 #include "game_local.h"
+#include "va.h"
 
 struct vmcvar g_cheats;
 struct vmcvar g_gametype;

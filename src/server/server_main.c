@@ -24,8 +24,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/hunk.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "system/shared.h"
 #include "server_local.h"
 #include "stringlib.h"
+#include "va.h"
+#include "vm.h"
 
 struct server sv;
 struct vm *gvm = NULL;
@@ -70,10 +73,9 @@ struct cvar *sv_wwwbaseurl;
 struct cvar *sv_wwwdldisconnected;
 #endif
 
-void INCOMPLETE sv_packet_event(struct netadr from, struct msg *msg)
+void INCOMPLETE sv_packet_event(UNUSED struct netadr from, UNUSED struct msg *msg)
 {
-    UNUSED(from);
-    UNUSED(msg);
+
 }
 
 bool sv_check_paused(void)
@@ -105,11 +107,9 @@ bool sv_check_paused(void)
     return true;
 }
 
-void INCOMPLETE sv_set_cvar_config_string(int index, int count, int bit)
+void INCOMPLETE sv_set_cvar_config_string(UNUSED int index, UNUSED int count, UNUSED int bit)
 {
-    UNUSED(index);
-    UNUSED(count);
-    UNUSED(bit);
+
 }
 
 void INCOMPLETE sv_calculate_pings(void)
@@ -153,22 +153,21 @@ void INCOMPLETE sv_send_client_messages(void)
 
 }
 
-void INCOMPLETE sv_master_heartbeat(const char *heartbeat)
+void INCOMPLETE sv_master_heartbeat(UNUSED const char *heartbeat)
 {
-    UNUSED(heartbeat);
+
 }
 
-void INCOMPLETE sv_bot_frame(int time)
+void INCOMPLETE sv_bot_frame(UNUSED int time)
 {
-    UNUSED(time);
+
 }
 
 void INCOMPLETE sv_frame(int msec)
 {
-    int frame_msec, start_time;
+    int frame_msec;
+    int start_time UNUSED;
     char mapname[64];
-
-    UNUSED(start_time);
 
     if (sv_killserver->integer) {
         sv_shutdown_localized("EXE_SERVERKILLED");
@@ -327,10 +326,9 @@ char *sv_expand_new_lines(char *in) {
     return string;
 }
 
-void INCOMPLETE sv_add_server_command(struct client *cl, const char *cmd)
+void INCOMPLETE sv_add_server_command(UNUSED struct client *cl, UNUSED const char *cmd)
 {
-    UNUSED(cl);
-    UNUSED(cmd);
+
 }
 
 // 1.5 has 4 params
@@ -364,34 +362,34 @@ void sv_send_server_command(struct client *cl, const char *fmt, ...)
     }
 }
 
-void INCOMPLETE svc_get_status(struct netadr from)
+void INCOMPLETE svc_get_status(UNUSED struct netadr from)
 {
-    UNUSED(from);
+
 }
 
-void INCOMPLETE svc_get_info(struct netadr from)
+void INCOMPLETE svc_get_info(UNUSED struct netadr from)
 {
-    UNUSED(from);
+
 }
 
-void INCOMPLETE sv_get_challenge(struct netadr from)
+void INCOMPLETE sv_get_challenge(UNUSED struct netadr from)
 {
-    UNUSED(from);
+
 }
 
-void INCOMPLETE sv_direct_connect(struct netadr from)
+void INCOMPLETE sv_direct_connect(UNUSED struct netadr from)
 {
-    UNUSED(from);
+
 }
 
-void INCOMPLETE sv_authorize_ip_packet(struct netadr from)
+void INCOMPLETE sv_authorize_ip_packet(UNUSED struct netadr from)
 {
-    UNUSED(from);
+
 }
 
-void INCOMPLETE sv_remote_command(struct netadr from)
+void INCOMPLETE sv_remote_command(UNUSED struct netadr from)
 {
-    UNUSED(from);
+
 }
 
 void INCOMPLETE sv_connectionless_packet(struct netadr from, struct msg *msg)

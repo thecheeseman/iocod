@@ -6,6 +6,7 @@
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "system/shared.h"
 #include "cvar/cvar.h"
 #include "stringlib.h"
 

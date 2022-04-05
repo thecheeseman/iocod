@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include "unzip.h"
 
-#if !defined(DISABLE_CURL) && !defined(DISABLE_AUTO_UPDATE)
+#if defined USE_CURL && !defined DISABLE_AUTO_UPDATE
 #include <curl/curl.h>
 
 #define UPDATE_URL	"https://update.iocod.org"
@@ -52,12 +52,10 @@ static void update_printf(const char *fmt, ...)
 
 static char *remote_version;
 static size_t check_header_for_version_string(char *str, size_t size, 
-                                       size_t num_items, void *user_data)
+                                       size_t num_items, UNUSED void *user_data)
 {
     int len;
     size_t numbytes = size * num_items;
-
-    UNUSED(user_data);
 
     if (strstr(str, "location: ") != NULL) {
         len = strlen(str + 10) - 2;
@@ -72,12 +70,10 @@ static size_t check_header_for_version_string(char *str, size_t size,
 static bool download_failed = false;
 static char *download;
 static size_t check_for_failed_download(char *str, size_t size,
-                                        size_t num_items, void *user_data)
+                                        size_t num_items, UNUSED void *user_data)
 {
     int len;
     size_t numbytes = size * num_items;
-
-    UNUSED(user_data);
 
     if (strstr(str, "location: ") != NULL && !download_failed) {
         len = strlen(str + 10) - 2;
@@ -411,14 +407,12 @@ end:
     return ret;
 }
 
-int auto_update(int argc, char *argv[])
+int auto_update(UNUSED int argc, char *argv[])
 {
     CURL *handle;
     CURLcode res;
     int ret = AU_OK;
     char current_version[32] = {0};
-
-    UNUSED(argc);
 
     strcat(current_version, "v");
     strcat(current_version, VERSION_NUMBER);
@@ -491,8 +485,8 @@ end:
     return ret;
 }
 
-#else // DISABLE_CURL && DISABLE_AUTO_UPDATE
-int auto_update(int argc, char *argv[])
+#else /* defined USE_CURL && !defined DISABLE_AUTO_UPDATE */
+int auto_update(UNUSED int argc, UNUSED char *argv[])
 {
     return 0;
 }

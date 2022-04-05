@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "common/memory.h"
 
-#ifndef DISABLE_CURL
+#if defined USE_CURL
 #include <curl/curl.h>
 #endif
 
@@ -85,11 +85,11 @@ int main(int argc, char* argv[])
     swap_init();
 
     //
-    #if !defined(DISABLE_CURL)
+    #if defined USE_CURL
     curl_global_init(CURL_GLOBAL_ALL);
     #endif
 
-    #if !defined(DISABLE_AUTO_UPDATE)
+    #if !defined DISABLE_AUTO_UPDATE 
     auto_update(argc, argv);
     #endif
     //

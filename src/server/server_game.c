@@ -30,6 +30,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/hunk.h"
 #include "common/print.h"
 #include "files/file_list.h"
+#include "system/shared.h"
+#include "vm.h"
 
 #include "server/syscalls/weapon_info_memory.h"
 

@@ -7,6 +7,7 @@
 #include "common/print.h"
 #include "cvar/cvar_shared.h"
 #include "stringlib.h"
+#include "va.h"
 
 extern struct cvar *tty_colors;
 

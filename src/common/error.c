@@ -9,6 +9,7 @@
 #include "system/shared.h"
 #include "parse.h"
 #include "stringlib.h"
+#include "va.h"
 
 bool com_error_entered;
 static char com_error_message[MAX_PRINT_MSG];

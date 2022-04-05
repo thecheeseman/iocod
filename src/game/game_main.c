@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "logger.h"
 #include "game_local.h"
+#include "va.h"
 
 // TEMP
 struct bg {
@@ -242,10 +243,8 @@ void INCOMPLETE g_run_frame(int time)
 extern intptr_t scr_far_hook(intptr_t addr);
 
 intptr_t EXPORT INCOMPLETE vmMain(enum game_exports command, int arg0, 
-                                  int arg1, int arg2, int arg3, int arg4)
+                                  int arg1, int arg2, int arg3, UNUSED int arg4)
 {
-    UNUSED(arg4);
-
     switch (command) {
         case GAME_INIT:
             g_init_game(arg0, arg1, arg2, arg3);

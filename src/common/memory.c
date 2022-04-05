@@ -1,5 +1,10 @@
+#include "iocod.h"
+
 #include <stdio.h>
+
+#if defined HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 
 #include "common/memory.h"
 #include "stringlib.h"

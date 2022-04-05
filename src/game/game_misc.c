@@ -1,5 +1,6 @@
 #include "game_local.h"
 #include "stringlib.h"
+#include "va.h"
 
 bool get_hint_string_index(int *hint, char *string)
 {

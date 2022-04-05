@@ -58,7 +58,7 @@ Linux distribution you prefer.
   cURL libraries
 
 _Note:_ You can force-disable any cURL support via the build flag: `
--DDISABLE_CURL=ON`
+-DUSE_CURL=FALSE`
 
 ### 32-bit Compile Requirements
 
@@ -79,7 +79,7 @@ yum install glibc.i686 glibc-devel.i686
 
 Then you can compile with:
 ```
-cmake -DCOMPILE_32_BIT=ON . && cmake --build .
+cmake -DCOMPILE_32_BIT=TRUE . && cmake --build .
 ```
 
 ### Building
@@ -91,14 +91,14 @@ cmake . && cmake --build .
 
 Optionally, you can add the following build flags:
 
-- `-DCOMPILE_32_BIT-ON` force 32-bit compilation
-- `-DDISABLE_AUTO_UPDATE=ON` disable auto update feature 
-- `-DDISABLE_CURL=ON` disable cURL features (also disables auto update)
+- `-DCOMPILE_32_BIT-TRUE` force 32-bit compilation
+- `-DDISABLE_AUTO_UPDATE=TRUE` disable auto update feature 
+- `-DUSE_CURL=FALSE` disable cURL features (also disables auto update)
 
 For example, to build a 32-bit binary with no cURL, you can run:
 
 ```
-cmake -DCOMPILE_32_BIT=ON -DDISABLE_CURL=ON . && cmake --build .
+cmake -DCOMPILE_32_BIT=TRUE -DUSE_CURL=FALSE . && cmake --build .
 ```
 
 Install
