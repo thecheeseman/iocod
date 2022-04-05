@@ -103,7 +103,7 @@ static void com_writeconfig_f(void)
         return;
     }
 
-    q_strncpyz(filename, cmd_argv(1), sizeof(filename));
+    strncpyz(filename, cmd_argv(1), sizeof(filename));
     com_default_extension(filename, sizeof(filename), ".cfg");
     com_printf("Writing %s.\n", filename);
     com_write_config_to_file(filename);
@@ -118,7 +118,7 @@ static void com_writedefaults_f(void)
         return;
     }
 
-    q_strncpyz(filename, cmd_argv(1), sizeof(filename));
+    strncpyz(filename, cmd_argv(1), sizeof(filename));
     com_default_extension(filename, sizeof(filename), ".cfg");
     com_printf("Writing %s.\n", filename);
     com_write_defaults_to_file(filename);

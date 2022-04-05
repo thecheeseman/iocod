@@ -408,7 +408,7 @@ void INCOMPLETE NOT_WORKING fun_08061070(char *dir, char *gamedir,
     for (i = 0; i < fdr->hashsize; i++)
         fdr->hashtable[i] = NULL;
 
-    q_strncpyz(fdr->name, folder, sizeof(fdr->name));
+    strncpyz(fdr->name, folder, sizeof(fdr->name));
     fdr->next = fs_folderdata;
     fs_folderdata = fdr;
 
@@ -421,7 +421,7 @@ void INCOMPLETE NOT_WORKING fun_08061070(char *dir, char *gamedir,
     // hacky
     for (i = 0; i < num_sysfiles; i++) {
         lname = sysfiles[i];
-        q_strlwr(lname);
+        strlwr(lname);
         hash = fs_hash_filename(lname, fdr->hashsize);
 
         *(int *) (f + i * fpsize) = ptr;
@@ -747,13 +747,13 @@ static void fs_add_game_directory_real(const char *path, const char *dir,
     if (localized)
         com_sprintf(newdir, sizeof(newdir), "%s_%s", dir, "english");
     else
-        q_strncpyz(newdir, dir, sizeof(newdir));
+        strncpyz(newdir, dir, sizeof(newdir));
 
     sp = fs_searchpaths;
     do {
         if (sp == NULL) {
             if (!localized) {
-                q_strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+                strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
             } else {
                 fs_build_ospath(path, newdir, "", ospath);
                 ospath[strlen(ospath) - 1] = '\0';
@@ -765,8 +765,8 @@ static void fs_add_game_directory_real(const char *path, const char *dir,
             search = z_malloc(sizeof(struct searchpath));
             directory = z_malloc(sizeof(struct directory));
             search->dir = directory;
-            q_strncpyz(search->dir->path, path, sizeof(search->dir->path));
-            q_strncpyz(search->dir->gamedir, newdir, 
+            strncpyz(search->dir->path, path, sizeof(search->dir->path));
+            strncpyz(search->dir->gamedir, newdir, 
                        sizeof(search->dir->gamedir));
             search->localized = localized;
             search->b = d;
@@ -872,8 +872,8 @@ void fs_init_filesystem(void)
         com_error(ERR_FATAL, "Couldn't load default.cfg. " \
                   "Make sure iocod is run from the correct folder.");
 
-    q_strncpyz(lastvalidbase, fs_basepath->string, sizeof(lastvalidbase));
-    q_strncpyz(lastvalidgame, fs_gamedirvar->string, sizeof(lastvalidgame));
+    strncpyz(lastvalidbase, fs_basepath->string, sizeof(lastvalidbase));
+    strncpyz(lastvalidgame, fs_gamedirvar->string, sizeof(lastvalidgame));
 }
 
 void INCOMPLETE fs_pure_server_set_loaded_paks(const char *paksums, const char *paknames)
@@ -924,8 +924,8 @@ void fs_restart(int checksumfeed)
             cbuf_add_text("exec config_mp_server.cfg\n");
     }
 
-    q_strncpyz(lastvalidbase, fs_basepath->string, sizeof(lastvalidbase));
-    q_strncpyz(lastvalidgame, fs_gamedirvar->string, sizeof(lastvalidgame));
+    strncpyz(lastvalidbase, fs_basepath->string, sizeof(lastvalidbase));
+    strncpyz(lastvalidgame, fs_gamedirvar->string, sizeof(lastvalidgame));
 }
 
 static void fs_close_searchpaths(struct searchpath *s)

@@ -189,7 +189,7 @@ void INCOMPLETE sv_frame(int msec)
     if (frame_msec > sv.time_residual)
         return;
 
-    q_strncpyz(mapname, sv_mapname->string, sizeof(mapname));
+    strncpyz(mapname, sv_mapname->string, sizeof(mapname));
 
     // if time is about to hit the 32nd bit, kick all clients
     // and clear sv.time, rather

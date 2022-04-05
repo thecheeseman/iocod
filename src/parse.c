@@ -72,7 +72,7 @@ void com_begin_parse_session(const char *name)
     pi->field_0x408 = true;
     pi->field_0x40c = false;
 
-    q_strncpyz(pi->parse_file, name, sizeof(pi->parse_file));
+    strncpyz(pi->parse_file, name, sizeof(pi->parse_file));
 }
 
 void com_end_parse_session(void)
@@ -456,9 +456,9 @@ char *com_parse_rest_of_line(char **data_p)
             break;
 
         if (line[0])
-            q_strcat(line, sizeof(line), " ");
+            strncatz(line, sizeof(line), " ");
 
-        q_strcat(line, sizeof(line), token);
+        strncatz(line, sizeof(line), token);
     }
 
     return line;

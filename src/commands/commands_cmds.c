@@ -88,7 +88,7 @@ static void cmd_exec_f(void)
         return;
     }
 
-    q_strncpyz(filename, cmd_argv(1), sizeof(filename));
+    strncpyz(filename, cmd_argv(1), sizeof(filename));
     com_default_extension(filename, sizeof(filename), ".cfg");
     len = fs_read_file(filename, (void **) &f);
     if (f == 0 || len < 0) {

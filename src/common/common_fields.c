@@ -49,7 +49,7 @@ static void find_matches(const char *s)
 
     matchcount++;
     if (matchcount == 1) {
-        q_strncpyz(shortestmatch, s, sizeof(shortestmatch));
+        strncpyz(shortestmatch, s, sizeof(shortestmatch));
         return;
     }
 
@@ -72,12 +72,12 @@ static void key_concat_args(void)
     char *arg;
 
     for (i = 1; i < cmd_argc(); i++) {
-        q_strcat(completionfield->buffer, sizeof(completionfield->buffer), " ");
+        strncatz(completionfield->buffer, sizeof(completionfield->buffer), " ");
         arg = cmd_argv(i);
 
         while (*arg != '\0') {
             if (*arg == ' ') {
-                q_strcat(completionfield->buffer, 
+                strncatz(completionfield->buffer, 
                          sizeof(completionfield->buffer), "\"");
                 break;
             }
@@ -85,11 +85,11 @@ static void key_concat_args(void)
             arg++;
         }
 
-        q_strcat(completionfield->buffer, 
+        strncatz(completionfield->buffer, 
                  sizeof(completionfield->buffer), cmd_argv(i));
 
         if (*arg == ' ') {
-            q_strcat(completionfield->buffer,
+            strncatz(completionfield->buffer,
                      sizeof(completionfield->buffer), "\"");
         }
     }
@@ -105,7 +105,7 @@ static void concat_remaining(const char *src, const char *start)
     }
 
     str += strlen(start);
-    q_strcat(completionfield->buffer, sizeof(completionfield->buffer), str);
+    strncatz(completionfield->buffer, sizeof(completionfield->buffer), str);
 }
 
 void field_complete_command(struct field *field)
@@ -139,7 +139,7 @@ void field_complete_command(struct field *field)
                     sizeof(completionfield->buffer), "\\%s", shortestmatch);
 
         if (cmd_argc() == 1) {
-            q_strcat(completionfield->buffer,
+            strncatz(completionfield->buffer,
                      sizeof(completionfield->buffer), " ");
         } else {
             concat_remaining(temp.buffer, completionstring);

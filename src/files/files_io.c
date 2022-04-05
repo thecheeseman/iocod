@@ -184,7 +184,7 @@ filehandle fs_fopen_file_write(const char *filename)
 
     fsh[f].handlefiles.file.o = fopen(ospath, "wb");
 
-    q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
+    strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
 
     fsh[f].handlesync = false;
     if (fsh[f].handlefiles.file.o == NULL)
@@ -209,7 +209,7 @@ filehandle fs_fopen_file_append(const char *filename)
     f = fs_handle_for_file();
     fsh[f].zipfile = false;
 
-    q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
+    strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
 
     // don't let sound stutter -- useless on server?
     s_clear_sound_buffer();
@@ -222,7 +222,7 @@ filehandle fs_fopen_file_append(const char *filename)
 
     fsh[f].handlefiles.file.o = fopen(ospath, "ab");
 
-    q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
+    strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
 
     fsh[f].handlesync = false;
     if (fsh[f].handlefiles.file.o == NULL)
@@ -383,7 +383,7 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
                             fsh[*file].handlefiles.file.z = pak->handle;
                         }
 
-                        q_strncpyz(fsh[*file].name, filename,
+                        strncpyz(fsh[*file].name, filename,
                                    sizeof(fsh[*file].name));
                         fsh[*file].zipfile = true;
 
@@ -446,7 +446,7 @@ int fs_fopen_file_read(const char *filename, filehandle *file,
                 fs_fake_checksum = random();
             }
 
-            q_strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
+            strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
             fsh[*file].zipfile = false;
 
             FS_DEBUG_PRINT("%s (found in '%s/%s')\n", filename, dir->path, 
@@ -538,8 +538,8 @@ struct pack *fs_load_zip_file(char *zipfile, const char *basename)
     for (i = 0; i < pack->hashsize; i++)
         pack->hashtable[i] = NULL;
 
-    q_strncpyz(pack->pak_filename, zipfile, sizeof(pack->pak_filename));
-    q_strncpyz(pack->pak_basename, basename, sizeof(pack->pak_basename));
+    strncpyz(pack->pak_filename, zipfile, sizeof(pack->pak_filename));
+    strncpyz(pack->pak_basename, basename, sizeof(pack->pak_basename));
 
     // strip .pk3 if needed
     if (strlen(pack->pak_basename) > 4 &&
@@ -562,7 +562,7 @@ struct pack *fs_load_zip_file(char *zipfile, const char *basename)
         if (file_info.uncompressed_size > 0)
             fs_headerlongs[fs_numheaderlongs++] = littlelong(file_info.crc);
 
-        q_strlwr(filename_inzip);
+        strlwr(filename_inzip);
         //FS_DEBUG_PRINT("%s\n", filename_inzip);
 
         hash = fs_hash_filename(filename_inzip, pack->hashsize);

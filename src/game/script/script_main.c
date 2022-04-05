@@ -128,8 +128,8 @@ void scr_parse_gametype_list(void)
         // load name and lowercase it
         gtnamelen = strlen(file);
         gametype->name = trap_hunk_alloc_low_internal(gtnamelen);
-        q_strncpyz(gametype->name, file, gtnamelen + 1);
-        q_strlwr(gametype->name);
+        strncpyz(gametype->name, file, gtnamelen + 1);
+        strlwr(gametype->name);
 
         // description file
         filename = va("maps/mp/gametypes/%s.txt", file);
@@ -156,7 +156,7 @@ void scr_parse_gametype_list(void)
 
             tlen = strlen(token);
             gametype->description = trap_hunk_alloc_low_internal(tlen);
-            q_strncpyz(gametype->description, token, tlen + 1);
+            strncpyz(gametype->description, token, tlen + 1);
 
             token = com_parse(&data);
             if (token != NULL && strcasecmp(token, "team") == 0)

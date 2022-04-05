@@ -79,15 +79,15 @@ static void update_ip_bans(void)
         *ip = 0;
         for (j = 0; j < 4; j++) {
             if (m[j] != 255) 
-                q_strcat(ip, sizeof(ip), "*");
+                strncatz(ip, sizeof(ip), "*");
             else
-                q_strcat(ip, sizeof(ip), va("%i", b[j]));
+                strncatz(ip, sizeof(ip), va("%i", b[j]));
 
-            q_strcat(ip, sizeof(ip), (j < 3) ? "." : " ");
+            strncatz(ip, sizeof(ip), (j < 3) ? "." : " ");
         }
 
         if (strlen(iplist_final) + strlen(ip) < MAX_CVAR_VALUE_STRING) {
-            q_strcat(iplist_final, sizeof(iplist_final), ip);
+            strncatz(iplist_final, sizeof(iplist_final), ip);
         } else {
             g_printf("g_banIPs overflowed at MAX_CVAR_VALUE_STRING\n");
             break;
@@ -126,7 +126,7 @@ void process_ip_bans(void)
     char *s, *t;
     char str[MAX_CVAR_VALUE_STRING];
 
-    q_strncpyz(str, g_ban_ips.string, sizeof(str));
+    strncpyz(str, g_ban_ips.string, sizeof(str));
 
     for (t = s = g_ban_ips.string; *t; /* */) {
         s = strchr(s, ' ');

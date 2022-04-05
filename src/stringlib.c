@@ -66,3 +66,48 @@ int strncasecmp(const char *s1, const char *s2, size_t n)
     return result;
 }
 #endif /* !defined(HAVE_STRNCASECMP) */
+
+void strncpyz(char *dest, const char *src, int destsize)
+{
+    if (!src)
+        return; // com_error(ERR_FATAL, "strncpyz: NULL src");
+
+    if (destsize < 1)
+        return; // com_error(ERR_FATAL, "strncpyz: destsize < 1");
+
+    strncpy(dest, src, destsize - 1);
+    dest[destsize - 1] = 0;
+}
+
+void strncatz(char *dest, int size, const char *src)
+{
+    int l1 = strlen(dest);
+    if (l1 >= size)
+        return; // com_error(ERR_FATAL, "strncatz: already overflowed");
+
+    strncpyz(dest + l1, src, size - l1);
+}
+
+char *strlwr(char *s1)
+{
+    char *s;
+
+    s = s1;
+    while (*s) {
+        *s = tolower(*s);
+        s++;
+    }
+    return s1;
+}
+
+char *strupr(char *s1)
+{
+    char *s;
+
+    s = s1;
+    while (*s) {
+        *s = toupper(*s);
+        s++;
+    }
+    return s1;
+}

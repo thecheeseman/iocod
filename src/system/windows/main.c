@@ -68,7 +68,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
         return 0;
 
     window_vars.instance = hInstance;
-    q_strncpyz(sys_cmdline, lpCmdLine, sizeof(sys_cmdline));
+    strncpyz(sys_cmdline, lpCmdLine, sizeof(sys_cmdline));
 
     console_create();
 

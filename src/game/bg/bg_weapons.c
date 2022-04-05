@@ -700,7 +700,7 @@ static void setup_ammo_indexes(void)
     for (i = 1; i < bg_num_weapons; i++) {
         weapon = bg_weapons[i];
 
-        q_strlwr(weapon->ammo_name);
+        strlwr(weapon->ammo_name);
 
         for (j = 0; j < num_ammo_types; j++) {
             if (strcasecmp(ammo_types[j], weapon->ammo_name) == 0) {
@@ -755,7 +755,7 @@ static void setup_shared_ammo_indexes(void)
             continue;
         }
 
-        q_strlwr(weapon->shared_ammo_cap_name);
+        strlwr(weapon->shared_ammo_cap_name);
 
         for (j = 0; j < num_shared_ammo_caps; j++) {
             if (strcasecmp(shared_ammo_cap_names[j],
@@ -824,7 +824,7 @@ static void setup_clip_indexes(void)
     for (i = 1; i < bg_num_weapons; i++) {
         weapon = bg_weapons[i];
 
-        q_strlwr(weapon->clip_name);
+        strlwr(weapon->clip_name);
 
         for (j = 0; j < num_clip_types; j++) {
             if (strcasecmp(clip_types[j], weapon->clip_name) == 0) {

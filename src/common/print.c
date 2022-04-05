@@ -100,7 +100,7 @@ void com_printf_runner(enum print_level level, const char *fmt, ...)
                 *rd_buffer = 0;
             }
 
-            q_strcat(rd_buffer, rd_buffersize, msg);
+            strncatz(rd_buffer, rd_buffersize, msg);
         }
 
         return;

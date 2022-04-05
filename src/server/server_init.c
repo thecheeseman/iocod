@@ -77,7 +77,7 @@ void sv_set_config_string(int index, const char *val)
                     else
                         cmd = "y";
 
-                    q_strncpyz(buf, &val[sent], maxchunksize);
+                    strncpyz(buf, &val[sent], maxchunksize);
 
                     sv_send_server_command(cl, "%s %i %s", cmd, index, buf);
 
@@ -104,7 +104,7 @@ void sv_get_config_string(int index, char *buffer, int bufsize)
         return;
     }
 
-    q_strncpyz(buffer, sv.configstrings[index], bufsize);
+    strncpyz(buffer, sv.configstrings[index], bufsize);
 }
 
 void sv_init(void)
@@ -306,7 +306,7 @@ void sv_set_gametype(void)
     char *gt, *p;
 
     gt = cvar_variable_string("g_gametype");
-    q_strncpyz(sv.gametype, gt, sizeof(sv.gametype));
+    strncpyz(sv.gametype, gt, sizeof(sv.gametype));
 
     for (p = sv.gametype; *p != '\0'; p++)
         *p = (char) tolower((int) *p);
@@ -454,7 +454,7 @@ void INCOMPLETE sv_spawn_server(char *server)
     sv_create_baseline();
     // update clients here
 
-    q_strncpyz(system_info, cvar_info_string_big(CVAR_SYSTEM_INFO), 
+    strncpyz(system_info, cvar_info_string_big(CVAR_SYSTEM_INFO), 
                sizeof(system_info));
     cvar_modified_flags &= ~CVAR_SYSTEM_INFO;
     sv_set_config_string(CS_SYSTEM_INFO, system_info);

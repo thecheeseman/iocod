@@ -116,8 +116,8 @@ char *sys_default_home_path(void)
         return homepath;
 
     if ((p = getenv("HOME")) != NULL) {
-        q_strncpyz(homepath, p, sizeof(homepath));
-        q_strcat(homepath, sizeof(homepath), "/.callofduty");
+        strncpyz(homepath, p, sizeof(homepath));
+        strncatz(homepath, sizeof(homepath), "/.callofduty");
 
         if (mkdir(homepath, 0777)) {
             if (errno != EEXIST)
@@ -134,7 +134,7 @@ char *sys_default_home_path(void)
 
 void sys_set_default_cd_path(const char *path)
 {
-    q_strncpyz(cdpath, path, sizeof(cdpath));
+    strncpyz(cdpath, path, sizeof(cdpath));
 }
 
 char *sys_default_cd_path(void)

@@ -43,7 +43,7 @@ void cvar_variable_string_buffer(const char *var_name, char *buffer, int bufsize
     if (var == NULL)
         *buffer = 0;
     else
-        q_strncpyz(buffer, var->string, bufsize);
+        strncpyz(buffer, var->string, bufsize);
 }
 
 char *cvar_clean_foreign_characters(const char *value)

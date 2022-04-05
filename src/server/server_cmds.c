@@ -102,7 +102,7 @@ void INCOMPLETE sv_map_restart_f(void)
         if (strcasecmp(sv.gametype, sv_gametype->string)) {
             com_printf("g_gametype variable change -- restarting\n");
 
-            q_strncpyz(mapname, cvar_variable_string("mapname"), 
+            strncpyz(mapname, cvar_variable_string("mapname"), 
                        sizeof(mapname));
             sv_spawn_server(mapname);
             return;
@@ -111,7 +111,7 @@ void INCOMPLETE sv_map_restart_f(void)
         if (sv_maxclients->modified) {
             com_printf("sv_maxclients variable change -- restarting\n");
 
-            q_strncpyz(mapname, cvar_variable_string("mapname"),
+            strncpyz(mapname, cvar_variable_string("mapname"),
                        sizeof(mapname));
             sv_spawn_server(mapname);
             return;
@@ -155,7 +155,7 @@ void sv_map_f(void)
     if (strcasecmp(cmd, "devmap") == 0)
         cheat = true;
 
-    q_strncpyz(mapname, map, sizeof(mapname));
+    strncpyz(mapname, map, sizeof(mapname));
 
     if (com_sv_running->integer && com_timescale->value <= 0.0)
         cvar_set_value("timescale", 1.0);

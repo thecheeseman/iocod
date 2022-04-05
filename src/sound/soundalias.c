@@ -191,7 +191,7 @@ static int snd_parse_alias_load_spec(const char *mapname, const char *token)
         com_error(ERR_DROP, "Sound alias file %s: loadspec is > %i characters",
                   alias_file, TLEN - 1);
 
-    q_strlwr(t);
+    strlwr(t);
 
     // inverse
     p = t;

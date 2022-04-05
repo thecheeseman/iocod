@@ -36,7 +36,7 @@ struct system_event get_event(void)
     if (s != NULL) {
         len = strlen(s) + 1;
         b = z_malloc(len);
-        q_strncpyz(b, s, len - 1);
+        strncpyz(b, s, len - 1);
         queue_event(0, SE_CONSOLE, 0, 0, len, b);
     }
 

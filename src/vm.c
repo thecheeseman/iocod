@@ -91,7 +91,7 @@ struct vm *vm_create(const char *module, intptr_t (*system_calls)(intptr_t *))
 
     vm = &vmtable[i];
 
-    q_strncpyz(vm->name, module, sizeof(vm->name));
+    strncpyz(vm->name, module, sizeof(vm->name));
     vm->system_call = system_calls;
     vm->dll_handle = sys_load_dll(module, vm->full_qpath, &vm->entry_point, 
                                   vm_dll_syscall);

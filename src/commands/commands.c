@@ -108,7 +108,7 @@ char *cmd_args_from(size_t arg)
 */
 void cmd_argv_buffer(size_t arg, char *buffer, size_t bufsize)
 {
-    q_strncpyz(buffer, cmd_argv(arg), bufsize);
+    strncpyz(buffer, cmd_argv(arg), bufsize);
 }
 
 /**
@@ -125,7 +125,7 @@ void cmd_tokenize_string(const char *text_in)
     if (text_in == NULL)
         return;
 
-    q_strncpyz(cmd_cmd, text_in, sizeof(cmd_cmd));
+    strncpyz(cmd_cmd, text_in, sizeof(cmd_cmd));
 
     text = text_in;
     textout = cmd_tokenized;

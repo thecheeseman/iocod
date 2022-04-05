@@ -435,7 +435,7 @@ void console_append(const char *message)
 
 void set_error_text(const char *buf)
 {
-    q_strncpyz(console.error_string, buf, sizeof(console.error_string));
+    strncpyz(console.error_string, buf, sizeof(console.error_string));
 
     if (console.error_box == NULL) {
         console.error_box = CreateWindow("static", NULL, ERROR_STYLE,

@@ -77,7 +77,7 @@ filehandle fs_sv_fopen_file_write(const char *filename)
     com_dprintf("writing to: %s\n", ospath);
     fsh[f].handlefiles.file.o = fopen(ospath, "wb");
 
-    q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
+    strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
     fsh[f].handlesync = false;
 
     if (fsh[f].handlefiles.file.o == NULL)
@@ -103,7 +103,7 @@ int fs_sv_fopen_file_read(const char *filename, filehandle *fp)
     f = fs_handle_for_file();
     fsh[f].zipfile = false;
 
-    q_strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
+    strncpyz(fsh[f].name, filename, sizeof(fsh[f].name));
 
     // don't let sound stutter -- useless on server?
     s_clear_sound_buffer();

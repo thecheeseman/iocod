@@ -25,4 +25,9 @@ extern int strcasecmp(const char *s1, const char *s2);
 extern int strncasecmp(const char *s1, const char *s2, size_t n);
 #endif
 
+extern void strncpyz(char *dest, const char *src, int destsize);
+extern void strncatz(char *dest, int size, const char *src);
+extern char *strlwr(char *s1);
+extern char *strupr(char *s1);
+
 #endif /* STRINGLIB_H */

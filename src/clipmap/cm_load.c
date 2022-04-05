@@ -632,7 +632,7 @@ void INCOMPLETE cm_load_map(const char *name, bool clientload, int *checksum)
     if (name == NULL || *name == '\0')
         com_error(ERR_DROP, "null name");
 
-    q_strncpyz(mapname, name, sizeof(mapname));
+    strncpyz(mapname, name, sizeof(mapname));
 
     cm_nocurves = cvar_get("cm_nocurves", "0", CVAR_CHEAT);
     cm_playercurveclip = cvar_get("cm_playercurveclip", "1", 
@@ -689,7 +689,7 @@ void INCOMPLETE cm_load_map(const char *name, bool clientload, int *checksum)
         // fun_080515d4(); // static model loading
 
         if (!clientload)
-            q_strncpyz(cm.name, name, sizeof(cm.name));
+            strncpyz(cm.name, name, sizeof(cm.name));
     } else {
         *checksum = last_checksum;
     }
