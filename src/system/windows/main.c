@@ -36,6 +36,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "system/shared.h"
 #include "system/windows/console.h"
 #include "system/windows/local.h"
+#include "stringlib.h"
 
 struct cvar *tty_colors;
 
