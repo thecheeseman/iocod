@@ -20,10 +20,10 @@ cmake_minimum_required(VERSION 3.13)
 project("iocod" C)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS ON)
+set(CMAKE_C_STANDARD_REQUIRED TRUE)
+set(CMAKE_C_EXTENSIONS TRUE)
 
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-builtin-macro-redefined -D'__FILE__=\"$(subst $(realpath ${CMAKE_SOURCE_DIR})/,,$(abspath $<))\"'")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
 
 message(STATUS "CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
 if(NOT CMAKE_BUILD_TYPE)
@@ -55,10 +55,11 @@ set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
 #
 # main options
 #
-option(COMPILE_32_BIT "Compile 32-bit binaries and game dll" OFF)
-option(DISABLE_CURL "Disable cURL library support" OFF)
-option(DISABLE_AUTO_UPDATE "Disable auto-update feature" OFF)
-option(USE_LUA "Use Lua as scripting language instead of GSC" OFF)
+option(COMPILE_32_BIT "Compile 32-bit binaries and game dll" FALSE)
+option(USE_CURL "Use cURL library" FALSE)
+option(DISABLE_AUTO_UPDATE "Disable auto-update feature" FALSE)
+option(USE_LUA "Use Lua as scripting language instead of GSC" FALSE)
+option(USE_SQLITE3 "Use SQLite3" FALSE)
 
 #
 # testing-only options
@@ -70,56 +71,32 @@ if (DEBUG)
 endif()
 
 #
-# check whether we're building for 64-bit or 32-bit
-# if the toolchain isn't specified (i.e. COMPILE_32_BIT isn't defined)
-# then let's just make sure we're actually on a 64-bit system
+# check for system/compiler properties and header files
 #
-set(COMPILE_64_BIT FALSE)
-if (NOT COMPILE_32_BIT)
-    include(CheckCSourceCompiles)
-
-    check_c_source_compiles("
-    #include <stdlib.h>
-
-    int main(void)
-    {
-        if (sizeof(void *) == 8)
-            return 1;
-
-        return 0;
-    }" ON_64_BIT_SYSTEM)
-
-    if (ON_64_BIT_SYSTEM)
-        set(COMPILE_64_BIT TRUE)
-    endif()
-endif()
-
-#
-# checks for various headers and functions
-#
+include(CheckCSourceCompiles)
 include(CheckIncludeFiles)
 include(CheckSymbolExists)
 
-check_include_files(stddef.h HAVE_STDDEF_H)
-check_include_files(stdint.h HAVE_STDINT_H)
-check_include_files(stdlib.h HAVE_STDLIB_H)
+include(Check64Bit)
+check_64_bit()
 
-check_include_files(string.h HAVE_STRING_H)
-if (HAVE_STRING_H)
-    check_symbol_exists(strdup "string.h" HAVE_STRDUP)
-    check_symbol_exists(strndup "string.h" HAVE_STRNDUP)
-endif()
+include(CheckCompilerAttributes)
+check_compiler_attributes()
 
-check_include_files(strings.h HAVE_STRINGS_H)
-if (HAVE_STRINGS_H)
-    check_symbol_exists(strcasecmp "strings.h" HAVE_STRCASECMP)
-    check_symbol_exists(strncasecmp "strings.h" HAVE_STRNCASECMP)
-endif()
+include(CheckStdCHeaders)
+check_stdc_headers()
+
+include(CheckC99Headers)
+check_c99_headers()
+
+include(CheckStringHeaders)
+check_string_headers()
 
 if (WIN32)
     check_include_files(direct.h HAVE_DIRECT_H)
 else()
     check_include_files(dlfcn.h HAVE_DLFCN_H)
+    check_include_files(fcntl.h HAVE_FCNTL_H)
     check_include_files(sys/stat.h HAVE_SYS_STAT_H)
     check_include_files(sys/types.h HAVE_SYS_TYPES_H)
     check_include_files(unistd.h HAVE_UNISTD_H)
@@ -163,18 +140,16 @@ endif()
 # curl package stuff
 #
 set(CURL_LINK)
-if (NOT DISABLE_CURL)
-    find_package(CURL)
-    if (CURL_FOUND)
+find_package(CURL)
+if (CURL_FOUND)
+    SET(HAVE_CURL_H ON)
+
+    if (USE_CURL)
         include_directories(${CURL_INCLUDE_DIR})
         SET(CURL_LINK "-lcurl")
-        SET(HAVE_CURL_H ON)
-    else()
-        set(DISABLE_CURL ON)
-        add_compile_options(-DDISABLE_CURL)
     endif()
 else()
-    add_compile_options(-DDISABLE_CURL)
+
 endif()
 
 if (DISABLE_AUTO_UPDATE)
@@ -185,27 +160,32 @@ endif()
 # lua
 #
 set(LUA_LINK)
-if (USE_LUA)
-    find_package(Lua REQUIRED)
+find_package(Lua)
+if (LUA_FOUND)
+    set(HAVE_LUA_H TRUE)
 
-    if (LUA_FOUND)
-        set(LUA_LINK "-llua5.3")
-        set(HAVE_LUA_53 ON)
-        include_directories(${LUA_INCLUDE_DIR})
-        add_compile_options(-DUSE_LUA)
+    if (USE_LUA)
+        if (LUA_VERSION_MINOR LESS 3)
+            set(LUA_LINK "-llua5.${LUA_VERSION_MINOR}")
+
+            include_directories(${LUA_INCLUDE_DIR})
+            add_compile_options(-DUSE_LUA)
+        else()
+            message(WARNING "Requires at least Lua 5.3, found Lua version ${LUA_VERSION_STRING}")
+        endif()
     endif()
 endif()
 
 set(THREADS_LINK)
-set(CMAKE_THREAD_PREFER_PTHREAD ON)
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads)
 if (Threads_FOUND)
     set(THREADS_LINK ${CMAKE_THREAD_LIBS_INIT})
 
-    set(ENABLE_THREADING ON)
+    set(ENABLE_THREADING TRUE)
 
     if (CMAKE_USE_PTHREADS_INIT)
-        set(HAVE_PTHREAD_H ON)
+        set(HAVE_PTHREAD_H TRUE)
     endif()
 endif()
 

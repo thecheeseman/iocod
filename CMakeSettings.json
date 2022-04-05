@@ -48,6 +48,11 @@
           "name": "COMPILE_32_BIT",
           "value": "True",
           "type": "BOOL"
+        },
+        {
+          "name": "TARGET_WINXP",
+          "value": "True",
+          "type": "BOOL"
         }
       ]
     },
