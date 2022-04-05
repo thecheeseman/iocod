@@ -26,7 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
-#include "stringlib.h"
+#include "infostring.h"
+#include "strings/stringlib.h"
 
 static size_t _cmd_argc;
 static char *_cmd_argv[MAX_STRING_TOKENS];

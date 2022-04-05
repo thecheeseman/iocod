@@ -1,7 +1,8 @@
 #include "common/memory.h"
 #include "qmath.h"
 #include "../game_local.h"
-#include "stringlib.h"
+#include "infostring.h"
+#include "strings/stringlib.h"
 
 const char *weapon_type_str[] = {
     "bullet",

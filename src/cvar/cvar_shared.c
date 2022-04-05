@@ -2,9 +2,9 @@
 
 #include "shared.h"
 
-#include "stringlib.h"
 #include "common/error.h"
 #include "cvar/cvar_shared.h"
+#include "strings/stringlib.h"
 #include "types/null.h"
 
 struct cvar *hashtable[FILE_HASH_SIZE];

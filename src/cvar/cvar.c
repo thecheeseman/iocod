@@ -24,8 +24,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #endif
 
-#include "stringlib.h"
-
 #include "shared.h"
 #include "common.h"
 
@@ -34,6 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "strings/stringlib.h"
 
 struct cvar *cvar_vars;
 struct cvar *cvar_cheats;
@@ -251,9 +250,9 @@ void cvar_set_value(const char *var_name, float value)
     char val[32];
 
     if (value == (int) value)
-        com_sprintf(val, sizeof(val), "%i", (int) value);
+        snprintfz(val, sizeof(val), "%i", (int) value);
     else
-        com_sprintf(val, sizeof(val), "%f", value);
+        snprintfz(val, sizeof(val), "%f", value);
 
     cvar_set(var_name, val);
 }
@@ -294,7 +293,7 @@ void cvar_write_defaults(filehandle f)
 
         // what
         if (!(var->flags & 0x12c0U)) {
-            com_sprintf(buffer, sizeof(buffer), "set %s \"%s\"\n", 
+            snprintfz(buffer, sizeof(buffer), "set %s \"%s\"\n", 
                 var->name, var->reset_string);
 
             fs_printf(f, "%s", buffer);
@@ -315,10 +314,10 @@ void cvar_write_variables(filehandle f)
         if (var->flags & CVAR_ARCHIVE) {
             // write the latched value, even if it hasn't taken effect yet
             if (var->latched_string != NULL) {
-                com_sprintf(buffer, sizeof(buffer),
+                snprintfz(buffer, sizeof(buffer),
                     "seta %s \"%s\"\n", var->name, var->latched_string);
             } else {
-                com_sprintf(buffer, sizeof(buffer),
+                snprintfz(buffer, sizeof(buffer),
                     "seta %s \"%s\"\n", var->name, var->string);
             }
 

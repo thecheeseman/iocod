@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "logger.h"
 #include "game_local.h"
+#include "infostring.h"
 #include "va.h"
 
 // TEMP

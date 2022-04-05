@@ -7,7 +7,7 @@
 #endif
 
 #include "common/memory.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 int com_memcmp(const void *str1, const void *str2, size_t n)
 {

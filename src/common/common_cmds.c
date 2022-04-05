@@ -32,6 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "system/shared.h"
+#include "strings/stringlib.h"
 
 /**
  * @brief Quit the system

@@ -28,8 +28,27 @@
 #endif /* UNUSED */
 #endif
 
+/* based on above but for deprecated features */
+#ifndef DEPRECATED
+#if defined HAVE_ATTRIBUTE_DEPRECATED
+#define DEPRECATED __attribute__((deprecated))
+#else
+#if defined __has_attribute
+#if __has_attribute(deprecated)
+#define DEPRECATED __attribute__((deprecated))
+#endif /* __has_attribute(deprecated) */
+#endif /* defined __has_attribute */
+#endif /* HAVE_ATTRIBUTE_DEPRECATED */
+#ifndef DEPRECATED
+#define DEPRECATED
+#endif /* DEPRECATED */
+#endif
+
 /* unused parameters */
 #define UNUSED_PARAM(x) (void)(x)
+#define IN
+#define OUT
+#define OPTIONAL
 
 /* utilities for function marking */
 #define INCOMPLETE

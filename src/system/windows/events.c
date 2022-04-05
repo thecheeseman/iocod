@@ -1,6 +1,7 @@
 #include "shared.h"
 #include "common.h"
 #include "common/memory.h"
+#include "strings/stringlib.h"
 #include "system/events.h"
 #include "system/shared.h"
 #include "system/windows/console.h"

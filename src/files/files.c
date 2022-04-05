@@ -29,9 +29,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "strings/stringlib.h"
 #include "system/shared.h"
 #include "files_local.h"
-#include "stringlib.h"
 
 char fs_gamedir[MAX_OSPATH];
 
@@ -745,7 +745,7 @@ static void fs_add_game_directory_real(const char *path, const char *dir,
     char newdir[MAX_OSPATH], ospath[MAX_OSPATH];
 
     if (localized)
-        com_sprintf(newdir, sizeof(newdir), "%s_%s", dir, "english");
+        snprintfz(newdir, sizeof(newdir), "%s_%s", dir, "english");
     else
         strncpyz(newdir, dir, sizeof(newdir));
 

@@ -1,7 +1,7 @@
 #include "parse.h"
 #include "common/memory.h"
 #include "script_local.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 #include "va.h"
 
 struct game_script_data g_scr_data;

@@ -32,11 +32,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "strings/stringlib.h"
 #include "system/events.h"
 #include "system/shared.h"
 #include "system/windows/console.h"
 #include "system/windows/local.h"
-#include "stringlib.h"
 
 struct cvar *tty_colors;
 

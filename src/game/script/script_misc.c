@@ -1,5 +1,5 @@
 #include "script_local.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 char *get_gametype_name_for_script(const char *str)
 {

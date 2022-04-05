@@ -1,5 +1,5 @@
-#ifndef STRINGLIB_H
-#define STRINGLIB_H
+#ifndef STRINGS_STRINGLIB_H
+#define STRINGS_STRINGLIB_H
 
 #if defined HAVE_STRING_H
 #include <string.h>
@@ -29,5 +29,6 @@ extern void strncpyz(char *dest, const char *src, int destsize);
 extern void strncatz(char *dest, int size, const char *src);
 extern char *strlwr(char *s1);
 extern char *strupr(char *s1);
+extern void snprintfz(char *dest, size_t size, const char *fmt, ...);
 
-#endif /* STRINGLIB_H */
+#endif /* STRINGS_STRINGLIB_H */

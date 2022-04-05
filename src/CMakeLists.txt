@@ -17,6 +17,7 @@ foreach (subdir
     server/syscalls
     shared
     sound 
+    strings
     system
     system/null)
     file(GLOB sources "${subdir}/*.c")
@@ -50,7 +51,8 @@ foreach (subdir
     game
     game/bg
     game/script
-    shared)
+    shared
+    strings)
     file(GLOB sources "${subdir}/*.c")
     list(APPEND GAME_SOURCES ${sources})
 endforeach()

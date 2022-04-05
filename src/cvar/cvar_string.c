@@ -1,6 +1,7 @@
 #include "shared.h"
 #include "cvar/cvar_shared.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
+#include "infostring.h"
 
 /**
  * @brief Validate a cvar string

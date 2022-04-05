@@ -7,8 +7,8 @@
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "system/shared.h"
+#include "strings/stringlib.h"
 #include "parse.h"
-#include "stringlib.h"
 #include "va.h"
 
 jmp_buf abortframe;

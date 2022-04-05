@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 #include "iocod.h"
 #include "va.h"
 
@@ -121,15 +121,15 @@ const char *net_address_to_string(struct netadr a)
     static char s[64];
 
     if (a.type == NA_LOOPBACK) {
-        com_sprintf(s, sizeof(s), "loopback");
+        snprintfz(s, sizeof(s), "loopback");
     } else if (a.type == NA_BOT) {
-        com_sprintf(s, sizeof(s), "bot");
+        snprintfz(s, sizeof(s), "bot");
     } else if (a.type == NA_IP) {
-        com_sprintf(s, sizeof(s), 
+        snprintfz(s, sizeof(s), 
                     "%i.%i.%i.%i:%hu",
                     a.ip[0], a.ip[1], a.ip[2], a.ip[3], bigshort(a.port));
     } else {
-        com_sprintf(s, sizeof(s), 
+        snprintfz(s, sizeof(s), 
                     "%02x%02x%02x%02x.%02x%02x%02x%02x%02x%02x:%hu",
                     a.ipx[0], a.ipx[1], a.ipx[2], a.ipx[3], a.ipx[4],
                     a.ipx[5], a.ipx[6], a.ipx[7], a.ipx[8], a.ipx[9],

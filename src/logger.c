@@ -40,7 +40,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "compat/gettimeofday.h"
 #include "logger.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 static const char *level_output_str[] = {
     [LOG_LEVEL_NONE] = " ",

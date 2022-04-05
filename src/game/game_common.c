@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "game_local.h"
 #include "common/error.h"
 #include "common/print.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 // replacement for com_printf
 void g_printf(const char *fmt, ...)
@@ -112,7 +112,7 @@ void g_log_printf(const char *fmt, ...)
     tens = sec / 10;
     sec -= tens * 10;
 
-    com_sprintf(string, sizeof(string), "%3i:%i%i ", min, tens, sec);
+    snprintfz(string, sizeof(string), "%3i:%i%i ", min, tens, sec);
 
     va_start(argptr, fmt);
     vsprintf(string + 7, fmt, argptr);

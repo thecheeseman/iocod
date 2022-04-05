@@ -3,9 +3,9 @@
 #include "shared.h"
 #include "common.h"
 #include "common/memory.h"
+#include "strings/stringlib.h"
 #include "types/bool.h"
 #include "types/filehandle.h"
-#include "stringlib.h"
 
 void sys_end_streamed_file(filehandle f)
 {
@@ -29,9 +29,9 @@ void sys_list_filtered_files(const char *basedir, char *subdirs, char *filter,
         return;
 
     if (strlen(subdirs) > 0)
-        com_sprintf(search, sizeof(search), "%s\\%s\\*", basedir, subdirs);
+        snprintfz(search, sizeof(search), "%s\\%s\\*", basedir, subdirs);
     else
-        com_sprintf(search, sizeof(search), "%s\\*", basedir);
+        snprintfz(search, sizeof(search), "%s\\*", basedir);
 
     handle = _findfirst(search, &findinfo);
     if (handle == -1)
@@ -42,10 +42,10 @@ void sys_list_filtered_files(const char *basedir, char *subdirs, char *filter,
             if (strcasecmp(findinfo.name, ".") != 0 &&
                 strcasecmp(findinfo.name, "..") != 0) {
                 if (strlen(subdirs) > 0) {
-                    com_sprintf(newsubdirs, sizeof(newsubdirs), "%s\\%s",
+                    snprintfz(newsubdirs, sizeof(newsubdirs), "%s\\%s",
                                 subdirs, findinfo.name);
                 } else {
-                    com_sprintf(newsubdirs, sizeof(newsubdirs), "%s",
+                    snprintfz(newsubdirs, sizeof(newsubdirs), "%s",
                                 findinfo.name);
                 }
 
@@ -56,7 +56,7 @@ void sys_list_filtered_files(const char *basedir, char *subdirs, char *filter,
             if (*numfiles >= MAX_FOUND_FILES - 1)
                 break;
 
-            com_sprintf(filename, sizeof(filename), "%s\\%s", subdirs,
+            snprintfz(filename, sizeof(filename), "%s\\%s", subdirs,
                         findinfo.name);
             if (!com_filter_path(filter, filename, false))
                 continue;
@@ -132,7 +132,7 @@ char **sys_list_files(const char *directory, const char *extension,
         flag = _A_SUBDIR;
     }
 
-    com_sprintf(search, sizeof(search), "%s\\*%s", directory, extension);
+    snprintfz(search, sizeof(search), "%s\\*%s", directory, extension);
 
     // search
     nfiles = 0;

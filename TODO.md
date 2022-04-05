@@ -24,6 +24,9 @@ TODO
 - <stddef.h> contains NULL & size_t
 - <stdint.h> contains intX_t, uintX_t, intptr_t, uintptr_t etc
 
+- MACOS_BUNDLE cmake flag
+- MACOS_BUNDLE_INFO_PLIST stuff
+
 ### other ideas
 - refactor everything
     - really just try and eliminate reliance on `shared.h`
@@ -31,7 +34,6 @@ TODO
         - maybe even split out shared functions into their own modules
         - like string stuff -> `stringlib.h`
         - infostrings -> `infostrings.h`
-        - `va()` -> `va.h`
         - etc.
     - consider using `-` instead of `_` for filename separators
     - also figure out how to eliminate as many globals as possible

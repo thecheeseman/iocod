@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "server_local.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
+#include "infostring.h"
 #include "vm.h"
 
 void sv_heartbeat_f(void)
@@ -144,7 +145,7 @@ void sv_map_f(void)
     else
         fmt = "maps/mp/%s.bsp";
 
-    com_sprintf(expanded, sizeof(expanded), fmt, map);
+    snprintfz(expanded, sizeof(expanded), fmt, map);
     if (fs_read_file(expanded, NULL) == -1) {
         com_printf("can't find map %s\n", expanded);
         return;

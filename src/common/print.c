@@ -8,7 +8,7 @@
 #include "common/print.h"
 #include "system/shared.h"
 #include "cvar/cvar.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 extern struct cvar *com_dedicated;
 extern struct cvar *com_logfile;

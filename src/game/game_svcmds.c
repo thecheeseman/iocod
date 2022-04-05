@@ -1,5 +1,5 @@
 #include "game_local.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 #include "va.h"
 
 struct ip_filter {

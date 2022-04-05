@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar/cvar.h"
 #include "system/shared.h"
 #include "server_local.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 #include "va.h"
 #include "vm.h"
 

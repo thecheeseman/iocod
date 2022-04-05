@@ -25,14 +25,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "shared.h"
 #include "common.h"
 
-#include "stringlib.h"
-
 #include "common/cbuf.h"
 #include "common/error.h"
 #include "common/hunk.h"
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "strings/stringlib.h"
 #include "system/events.h"
 #include "system/shared.h"
 #include "va.h"

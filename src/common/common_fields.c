@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/memory.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 void field_clear(struct field *edit)
 {
@@ -135,7 +135,7 @@ void field_complete_command(struct field *field)
     com_memcpy(&temp, completionfield, sizeof(struct field));
 
     if (matchcount == 1) {
-        com_sprintf(completionfield->buffer, 
+        snprintfz(completionfield->buffer, 
                     sizeof(completionfield->buffer), "\\%s", shortestmatch);
 
         if (cmd_argc() == 1) {
@@ -150,7 +150,7 @@ void field_complete_command(struct field *field)
     }
 
     // multiple matches, complete to shortest
-    com_sprintf(completionfield->buffer, sizeof(completionfield->buffer), 
+    snprintfz(completionfield->buffer, sizeof(completionfield->buffer), 
                 "\\%s", shortestmatch);
     completionfield->cursor = strlen(completionfield->buffer);
     concat_remaining(temp.buffer, completionstring);

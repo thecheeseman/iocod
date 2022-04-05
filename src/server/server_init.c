@@ -29,7 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common/print.h"
 #include "cvar/cvar.h"
 #include "server_local.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 #include "va.h"
 #include "vm.h"
 

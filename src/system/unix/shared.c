@@ -181,25 +181,25 @@ void sys_list_filtered_files(const char *basedir, char *subdirs, char *filter,
         return;
 
     if (strlen(subdirs))
-        com_sprintf(search, sizeof(search), "%s/%s", basedir, subdirs);
+        snprintfz(search, sizeof(search), "%s/%s", basedir, subdirs);
     else
-        com_sprintf(search, sizeof(search), "%s", basedir);
+        snprintfz(search, sizeof(search), "%s", basedir);
 
     if ((fdir = opendir(search)) == NULL)
         return;
 
     while ((d = readdir(fdir)) != NULL) {
-        com_sprintf(filename, sizeof(filename), "%s/%s", search, d->d_name);
+        snprintfz(filename, sizeof(filename), "%s/%s", search, d->d_name);
         if (stat(filename, &st) == -1)
             continue;
 
         if (st.st_mode & S_IFDIR) {
             if (strcasecmp(d->d_name, ".") && strcasecmp(d->d_name, "..")) {
                 if (strlen(subdirs))
-                    com_sprintf(newsubdirs, sizeof(newsubdirs), "%s/%s", 
+                    snprintfz(newsubdirs, sizeof(newsubdirs), "%s/%s", 
                                 subdirs, d->d_name);
                 else
-                    com_sprintf(newsubdirs, sizeof(newsubdirs), "%s", 
+                    snprintfz(newsubdirs, sizeof(newsubdirs), "%s", 
                                 d->d_name);
 
                 // recurse
@@ -211,7 +211,7 @@ void sys_list_filtered_files(const char *basedir, char *subdirs, char *filter,
         if (*numfiles >= MAX_FOUND_FILES - 1)
             break;
 
-        com_sprintf(filename, sizeof(filename), "%s/%s", subdirs, d->d_name);
+        snprintfz(filename, sizeof(filename), "%s/%s", subdirs, d->d_name);
         if (!com_filter_path(filter, filename, false))
             continue;
 
@@ -277,7 +277,7 @@ char **sys_list_files(const char *directory, const char *extension,
     }
 
     while ((d = readdir(fdir)) != NULL) {
-        com_sprintf(search, sizeof(search), "%s/%s", directory, d->d_name);
+        snprintfz(search, sizeof(search), "%s/%s", directory, d->d_name);
         if (stat(search, &st) == -1)
             continue;
 
