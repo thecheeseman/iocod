@@ -59,7 +59,7 @@ macro(git_build_version)
 #define IOCOD_VERSION_DESCRIPTOR \"${VERSION_DESCRIPTOR}\"\n \
 #define IOCOD_VERSION ((IOCOD_VERSION_MAJOR * 1000000) + (IOCOD_VERSION_MINOR * 1000) + IOCOD_VERSION_PATCH)\n \
 #define IOCOD_BUILD_INFO \"v\" IOCOD_VERSION_STRING \"-\" IOCOD_BUILD_NUMBER \"-\" IOCOD_BUILD_HASH \"\"\n \ 
-#endif /* INCLUDE_BUILD_NUMBER_H */")
+#endif /* INCLUDE_BUILD_NUMBER_H */\n")
         endif()
     endif()
 endmacro()
