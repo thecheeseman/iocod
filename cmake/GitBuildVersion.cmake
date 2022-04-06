@@ -12,20 +12,38 @@ macro(git_build_version)
             RESULT_VARIABLE DESCRIBE_RESULT)
 
         if (DESCRIBE_RESULT EQUAL 0)
-            string(REGEX MATCH "[0-9.]+" BUILD_NUMBER ${DESCRIBE_BUILD})
-            string(REGEX MATCH "([a-zA-Z0-9]+)$" BUILD_HASH ${DESCRIBE_BUILD})
+            # match git describe (build-55-gd456da2)
+            string(REGEX MATCHALL "^build-([0-9]*)-([a-zA-Z0-9]*)" BUILDDATA ${DESCRIBE_BUILD})
+            if (CMAKE_MATCH_COUNT GREATER_EQUAL 2)
+                set(BUILD_NUMBER "${CMAKE_MATCH_1}")
+                set(BUILD_HASH "${CMAKE_MATCH_2}")
+            endif()
 
-            # grab the actual version number now
-            execute_process(COMMAND ${GIT_EXECUTABLE} describe --always --tags --dirty
+            # grab the latest tag
+            execute_process(COMMAND ${GIT_EXECUTABLE} describe --always --tags
                 OUTPUT_VARIABLE DESCRIBE_BUILD OUTPUT_STRIP_TRAILING_WHITESPACE)
-            string(REGEX MATCH "[0-9\.]+" VERSION_STRING ${DESCRIBE_BUILD})
+            string(REGEX MATCHALL "^v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)-?([a-zA-Z0-9]*)?-?([a-zA-Z0-9]*)?-?([a-zA-Z0-9]*)?" BUILDVERSION ${DESCRIBE_BUILD})
 
-            # split out into constituent parts
-            string(REGEX MATCHALL "[0-9]+" NUMBERS ${VERSION_STRING})
+            if (CMAKE_MATCH_COUNT GREATER_EQUAL 3)
+                # we will always have major.minor.patch
+                # but might have more info than that
+                set(VERSION_MAJOR "${CMAKE_MATCH_1}")
+                set(VERSION_MINOR "${CMAKE_MATCH_2}")
+                set(VERSION_PATCH "${CMAKE_MATCH_3}")
 
-            list(GET NUMBERS 0 VERSION_MAJOR)
-            list(GET NUMBERS 1 VERSION_MINOR)
-            list(GET NUMBERS 2 VERSION_PATCH)
+                # we might have more information here
+                if (CMAKE_MATCH_COUNT GREATER_EQUAL 4)
+                    string(COMPARE EQUAL ${CMAKE_MATCH_${CMAKE_MATCH_COUNT}} ${BUILD_HASH} HAS_HASH)
+
+                    if (NOT HAS_HASH OR (HAS_HASH AND CMAKE_MATCH_COUNT EQUAL 6))
+                        set(VERSION_DESCRIPTOR "${CMAKE_MATCH_4}")
+                    endif()
+                endif()
+            else()
+                message(WARNING "Malformed version tag")
+            endif()
+
+            set(VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
             # spit out to header
             file(WRITE "src/include/build_number.h" 
@@ -37,8 +55,9 @@ macro(git_build_version)
 #define IOCOD_VERSION_MAJOR ${VERSION_MAJOR}\n \
 #define IOCOD_VERSION_MINOR ${VERSION_MINOR}\n \
 #define IOCOD_VERSION_PATCH ${VERSION_PATCH}\n \
-#define IOCOD_VERSION ((IOCOD_VERSION_MAJOR * 1000000) + (IOCOD_VERSION_MINOR * 1000) + IOCOD_VERSION_PATCH)\n \
 #define IOCOD_VERSION_STRING \"${VERSION_STRING}\"\n \
+#define IOCOD_VERSION_DESCRIPTOR \"${VERSION_DESCRIPTOR}\"\n \
+#define IOCOD_VERSION ((IOCOD_VERSION_MAJOR * 1000000) + (IOCOD_VERSION_MINOR * 1000) + IOCOD_VERSION_PATCH)\n \
 #define IOCOD_BUILD_INFO \"v\" IOCOD_VERSION_STRING \"-\" IOCOD_BUILD_NUMBER \"-\" IOCOD_BUILD_HASH \"\"\n \ 
 #endif /* INCLUDE_BUILD_NUMBER_H */")
         endif()
