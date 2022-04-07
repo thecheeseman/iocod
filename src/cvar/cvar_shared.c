@@ -37,6 +37,9 @@ struct cvar *cvar_find_var(const char *var_name)
     hash = generate_hash_value(var_name);
 
     for (var = hashtable[hash]; var != NULL; var = var->hash_next) {
+        if (var->name == NULL)
+            continue; // edge case during cvar_restart
+
         if (strcasecmp(var_name, var->name) == 0)
             return var;
     }
