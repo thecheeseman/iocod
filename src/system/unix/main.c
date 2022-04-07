@@ -31,9 +31,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <curl/curl.h>
 #endif
 
+#include "strings/stringlib.h"
 #include "system/shared.h"
 #include "system/unix/console.h"
-#include "stringlib.h"
 
 uid_t saved_euid;
 

@@ -116,6 +116,7 @@ int msg_read_long(struct msg *msg);
 bool net_compare_base_address(struct netadr a, struct netadr b);
 bool net_compare_address(struct netadr a, struct netadr b);
 const char *net_address_to_string(struct netadr a);
+char *net_error_string(void);
 
 #endif // __NET_H__
 

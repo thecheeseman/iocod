@@ -3,7 +3,7 @@
 
 #include "common/memory.h"
 #include "common/print.h"
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 #include <errno.h>
 #include <sys/stat.h>

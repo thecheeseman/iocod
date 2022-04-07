@@ -39,7 +39,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <errno.h>
 #include <dirent.h>
 
-#include "stringlib.h"
+#include "strings/stringlib.h"
 
 static char cdpath[MAX_OSPATH];
 static char installpath[MAX_OSPATH];

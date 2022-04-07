@@ -113,7 +113,6 @@ struct usercmd {
     byte unknown;
 };
 
-void snprintfz(char *dest, int size, const char *fmt, ...);
 void com_default_extension(char *path, int maxsize, const char *extension);
 
 // TODO: maybe just make this something modern?

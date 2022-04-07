@@ -40,9 +40,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "common/print.h"
 #include "cvar/cvar.h"
+#include "strings/stringlib.h"
 #include "system/shared.h"
 #include "system/unix/console.h"
-#include "stringlib.h"
 
 #define MAX_CMD 1024
 static char exit_cmdline[MAX_CMD] = "";

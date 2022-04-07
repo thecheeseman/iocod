@@ -24,9 +24,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "common.h"
 #include "common/memory.h"
 #include "common/print.h"
+#include "strings/stringlib.h"
 #include "system/events.h"
 #include "system/shared.h"
-#include "stringlib.h"
 
 struct system_event get_event(void)
 {

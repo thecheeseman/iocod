@@ -35,9 +35,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <unistd.h>
 
+#include "strings/stringlib.h"
 #include "system/shared.h"
 #include "system/unix/console.h"
-#include "stringlib.h"
 
 bool stdin_active = true;
 
