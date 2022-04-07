@@ -165,30 +165,30 @@ struct cvar_table {
 static struct cvar_table cvar_table[] = {
     #define BLANK(n, d, f) \
         { \
-            NULL, \
-            n, \
-            d, \
-            f, \
-            0, \
-            false \
+            .vm_cvar = NULL, \
+            .cvar_name = n, \
+            .default_string = d, \
+            .cvar_flags = f, \
+            .modification_count = 0, \
+            .track_change = false \
         },
     #define ENTRY(c, n, d, f) \
         { \
-            &c, \
-            n, \
-            d, \
-            f, \
-            0, \
-            false \
+            .vm_cvar = &c, \
+            .cvar_name = n, \
+            .default_string = d, \
+            .cvar_flags = f, \
+            .modification_count = 0, \
+            .track_change = false \
         },
     #define TRACK(c, n, d, f) \
         { \
-            &c, \
-            n, \
-            d, \
-            f, \
-            0, \
-            true \
+            .vm_cvar = &c, \
+            .cvar_name = n, \
+            .default_string = d, \
+            .cvar_flags = f, \
+            .modification_count = 0, \
+            .track_change = true \
         },
 
     #define A	CVAR_ARCHIVE
