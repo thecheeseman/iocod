@@ -199,7 +199,7 @@ void *sys_load_dll(const char *name, char *fqpath,
 
     *fqpath = 0;
 
-    snprintf(fname, MAX_OSPATH, "%s.mp.%s.%s", name, PLATFORM_ARCH, 
+    snprintf(fname, sizeof(fname), "%s.mp.%s.%s", name, PLATFORM_ARCH,
              PLATFORM_DLL);
 
     //pwdpath = sys_cwd();

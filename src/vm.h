@@ -9,7 +9,7 @@ struct vm {
     intptr_t(*system_call)(intptr_t *parms);
 
     char name[MAX_QPATH];
-    char full_qpath[MAX_QPATH + 1];
+    char full_qpath[MAX_OSPATH + 1];
 
     char data[3];
 
