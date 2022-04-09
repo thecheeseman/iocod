@@ -1,8 +1,9 @@
 iocod
 =====
 
-![Unbutu Latest](https://github.com/thecheeseman/iocod/actions/workflows/cmake-ubuntu.yml/badge.svg)
-![Windows Latest](https://github.com/thecheeseman/iocod/actions/workflows/cmake-windows.yml/badge.svg)
+![Linux](https://github.com/thecheeseman/iocod/actions/workflows/linux.yml/badge.svg)
+![MacOS](https://github.com/thecheeseman/iocod/actions/workflows/macos.yml/badge.svg)
+![Windows](https://github.com/thecheeseman/iocod/actions/workflows/windows.yml/badge.svg)
 
 Table of Contents
 1. [Introduction](#introduction)
