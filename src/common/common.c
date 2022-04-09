@@ -669,10 +669,15 @@ void INCOMPLETE com_init(char *cmdline)
 
     // there's another function call here which just returns 0
     // fun_080c6b90();
+    // ^ this is windows autoconfigure for settings
 
     com_startup_variable(NULL);
 
     com_dedicated = cvar_get("dedicated", "2", CVAR_ROM);
+
+    #ifdef PLATFORM_WINDOWS
+    // show console here!
+    #endif
 
     com_init_hunk_memory();
 

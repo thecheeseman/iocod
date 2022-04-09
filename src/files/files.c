@@ -863,7 +863,12 @@ void fs_init_filesystem(void)
     com_startup_variable("fs_usewolf"); // ?
     com_startup_variable("cl_language"); // ?
 
+    // cl_init_language_cvars();
+
     fs_startup(BASEGAME); // BASEGAME
+
+    // FUN_004aaaa0(&DAT_01407450, 0);
+    // FUN_004a9b10(); // language load? localized assets
 
     // not needed really
     fs_set_restrictions();

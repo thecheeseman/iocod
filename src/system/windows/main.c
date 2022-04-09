@@ -72,6 +72,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
     strncpyz(sys_cmdline, lpCmdLine, sizeof(sys_cmdline));
 
     console_create();
+    // splash_create(); 
+    // if (splash != NULL) {
+    // ShowWindow(splash, 5);
+    // UpdateWindow(splash);
+    // }
 
     SetErrorMode(SEM_FAILCRITICALERRORS);
 
