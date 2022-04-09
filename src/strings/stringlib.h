@@ -2,7 +2,7 @@
 #define STRINGS_STRINGLIB_H
 
 #if defined HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #if defined HAVE_STRING_H
