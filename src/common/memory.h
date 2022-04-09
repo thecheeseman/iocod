@@ -1,6 +1,10 @@
 #ifndef COMMON_MEMORY_H
 #define COMMON_MEMORY_H
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #if defined HAVE_STDDEF_H
 #include <stddef.h>
 #else
