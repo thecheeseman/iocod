@@ -164,6 +164,7 @@ endif()
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" 
     "${PROJECT_BINARY_DIR}/config.h")
 include_directories(${PROJECT_BINARY_DIR})
+add_compile_options(-DHAVE_CONFIG_H)
 
 #
 # headers
@@ -179,10 +180,7 @@ include_directories("src")
 
 # build options from q3
 # -O3 -ffast-math -fomit-frame-pointer -fno-strict-aliasing
-if (WIN32)
-    # add_compile_options(/W3) # set by default
-    add_compile_options(/FI config.h)
-
+if (MSVC)
     # silence some warnings
     add_compile_options(/wd4244) # conversion from 'double' to 'float'
     add_compile_options(/wd4305) # truncation from 'double' to 'float'
@@ -196,8 +194,6 @@ else()
     if (NOT APPLE)
         add_compile_options(-Wformat-overflow=2)
     endif()
-
-    add_compile_options(-include config.h)
 endif()
 
 #

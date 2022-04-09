@@ -7,10 +7,6 @@
 #define INCLUDE_CONFIG_H
 
 /******************************************************************************/
-/* Temp */
-#define HAVE_CONFIG_H 1
-
-/******************************************************************************/
 /* COMPILER SPECIFICS */
 /* Define to 1 if you have __attribute__((unused)) */
 #cmakedefine HAVE_ATTRIBUTE_UNUSED 1
