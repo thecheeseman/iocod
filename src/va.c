@@ -2,12 +2,9 @@
 
 #include <stdio.h>
 
-#if defined HAVE_STRING_H
-#include <string.h>
-#endif /* HAVE_STRING_H */
-
 #include "common/error.h"
 #include "common/memory.h"
+#include "strings/stringlib.h"
 #include "va.h"
 
 char *va(char *format, ...)
