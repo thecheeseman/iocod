@@ -4,6 +4,7 @@ iocod
 ![Linux](https://github.com/thecheeseman/iocod/actions/workflows/linux.yml/badge.svg)
 ![MacOS](https://github.com/thecheeseman/iocod/actions/workflows/macos.yml/badge.svg)
 ![Windows](https://github.com/thecheeseman/iocod/actions/workflows/windows.yml/badge.svg)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f35c95a9a5a045f18a1e4b2dc7b4997d)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thecheeseman/iocod&amp;utm_campaign=Badge_Grade)
 
 Table of Contents
 1. [Introduction](#introduction)
