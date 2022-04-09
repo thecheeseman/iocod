@@ -72,6 +72,12 @@
 /* Define to 1 if you have strndup() */
 #cmakedefine HAVE_STRNDUP 1
 
+/* Define to 1 if you have strlwr() */
+#cmakedefine HAVE_STRLWR 1
+
+/* Define to 1 if you have strupr() */
+#cmakedefine HAVE_STRUPR 1
+
 /* Define to 1 if you have <strings.h> */
 #cmakedefine HAVE_STRINGS_H 1
 

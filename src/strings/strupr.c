@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include "strings/stringlib.h"
 
+#if !defined HAVE_STRUPR
 char *strupr(char *s1)
 {
     char *s;
@@ -12,3 +13,4 @@ char *strupr(char *s1)
     }
     return s1;
 }
+#endif /* HAVE_STRUPR */

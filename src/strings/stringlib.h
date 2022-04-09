@@ -13,6 +13,14 @@ extern char *strdup(const char *s);
 extern char *strndup(const char *s, size_t n);
 #endif
 
+#if !defined HAVE_STRLWR
+extern char *strlwr(char *s1);
+#endif
+
+#if !defined HAVE_STRUPR
+extern char *strupr(char *s1);
+#endif
+
 #if HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -27,8 +35,7 @@ extern int strncasecmp(const char *s1, const char *s2, size_t n);
 
 extern void strncpyz(char *dest, const char *src, int destsize);
 extern void strncatz(char *dest, int size, const char *src);
-extern char *strlwr(char *s1);
-extern char *strupr(char *s1);
+
 extern void snprintfz(char *dest, size_t size, const char *fmt, ...);
 
 #endif /* STRINGS_STRINGLIB_H */
