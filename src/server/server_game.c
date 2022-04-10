@@ -87,9 +87,18 @@ intptr_t INCOMPLETE sv_game_systemcalls(intptr_t *args)
             hunk_free_temp_memory((void *) args[1]);
             return 0;
         case G_FS_FOPEN_FILE:
+            return fs_fopen_file_by_mode((char *) args[1], 
+                                         (filehandle *) args[2], 
+                                         (enum fs_mode) args[3]);
+        case G_FS_READ:
+            fs_read((void *) args[1], (int) args[2], (filehandle) args[3]);
+            break;
         case G_FS_WRITE:
         case G_FS_RENAME:
+            break;
         case G_FS_FCLOSE_FILE:
+            fs_fclose_file(args[1]);
+            break;
         case G_SEND_CONSOLE_COMMAND:
         case G_LOCATE_GAME_DATA:
         case G_DROP_CLIENT:

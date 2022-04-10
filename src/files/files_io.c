@@ -849,3 +849,48 @@ void fs_free_file(void *buf)
     _fs_loadstack--;
     hunk_free_temp_memory(buf);
 }
+
+int fs_fopen_file_by_mode(const char *path, filehandle *f, enum fs_mode mode)
+{
+    int ret = 0;
+    bool sync = false;
+
+    switch (mode) {
+    case FS_READ:
+        ret = fs_fopen_file_read(path, f, true, 0);
+        break;
+    case FS_WRITE:
+        *f = fs_fopen_file_write(path);
+
+        if (*f == 0)
+            ret = -1;
+        break;
+    case FS_APPEND_SYNC:
+        sync = true;
+    case FS_APPEND:
+        *f = fs_fopen_file_append(path);
+
+        if (*f == 0)
+            ret = -1;
+        break;
+    default:
+        com_error(ERR_FATAL, "bad mode");
+        return -1;
+    }
+
+    if (f == NULL)
+        return ret;
+
+    if (*f != 0) {
+        if (fsh[*f].zipfile)
+            fsh[*f].baseoffset = unztell(fsh[*f].handlefiles.file.z);
+        else
+            fsh[*f].baseoffset = ftell(fsh[*f].handlefiles.file.o);
+
+        fsh[*f].filesize = ret;
+        fsh[*f].streamed = false;
+    }
+
+    fsh[*f].handlesync = sync;
+    return ret;
+}
