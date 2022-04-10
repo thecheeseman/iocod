@@ -33,6 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "system/shared.h"
 #include "vm.h"
 
+#include "server/syscalls/hunk.h"
 #include "server/syscalls/weapon_info_memory.h"
 
 struct shared_entity *sv_gentity_num(int num)
@@ -73,11 +74,18 @@ intptr_t INCOMPLETE sv_game_systemcalls(intptr_t *args)
             cmd_argv_buffer(args[1], (char *) args[2], args[3]);
             return 0;
         case G_HUNK_ALLOC_INTERNAL:
+            return (intptr_t) hunk_alloc_internal(args[1]);
         case G_HUNK_ALLOC_LOW_INTERNAL:
+            return (intptr_t) hunk_alloc_low_internal(args[1]);
         case G_HUNK_ALLOC_ALIGN_INTERNAL:
+            return (intptr_t) hunk_alloc_align_internal(args[1], args[2]);
         case G_HUNK_ALLOC_LOW_ALIGN_INTERNAL:
+            return (intptr_t) hunk_alloc_low_align_internal(args[1], args[2]);
         case G_HUNK_ALLOCATE_TEMP_MEMORY_INTERNAL:
+            return (intptr_t) hunk_allocate_temp_memory(args[1]);
         case G_HUNK_FREE_TEMP_MEMORY_INTERNAL:
+            hunk_free_temp_memory((void *) args[1]);
+            return 0;
         case G_FS_FOPEN_FILE:
         case G_FS_WRITE:
         case G_FS_RENAME:
