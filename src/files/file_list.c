@@ -11,26 +11,26 @@ int get_mod_list(char *list, int size)
 
 static int return_path(const char *zname, char *zpath, int *depth)
 {
-    int len, at, newdepth;
+    int new_depth = 0;
+    int len = 0;
+    int i;
 
-    newdepth = 0;
-    zpath[0] = '\0';
-    len = 0;
-    at = 0;
+    *zpath = '\0';
 
-    while (zname[at] != '\0') {
-        if (zname[at] == '/' || zname[at] == '\\') {
-            len = at;
-            newdepth++;
+    for (i = 0; zname[i] != '\0'; i++) {
+        if (zname[i] == '/' || zname[i] == '\\') {
+            len = i;
+            new_depth++;
         }
-
-        at++;
     }
 
     strcpy(zpath, zname);
     zpath[len] = '\0';
-    *depth = newdepth;
 
+    if (len + 1 == i)
+        new_depth--;
+
+    *depth = new_depth;
     return len;
 }
 
@@ -61,7 +61,7 @@ char **list_filtered_files(const char *path, const char *extension,
     char *list[MAX_FOUND_FILES];
     char *name;
     struct searchpath *search;
-    int i, pathlen, extlen, len, depth, temp;
+    int i, pathlen, extlen, len, depth, temp, zzz;
     struct pack *pak;
     struct fileinpack *build;
     char zpath[MAX_ZPATH], netpath[MAX_ZPATH];
@@ -119,7 +119,8 @@ char **list_filtered_files(const char *path, const char *extension,
 
                 zpathlen = return_path(name, zpath, &zdepth);
 
-                if ((zdepth - depth) > 2 || pathlen > zpathlen ||
+                if (zdepth != depth || pathlen > zpathlen ||
+                    name[pathlen] != '/' ||
                     strncasecmp(name, path, pathlen) != 0) {
                     continue;
                 }
@@ -132,7 +133,7 @@ char **list_filtered_files(const char *path, const char *extension,
                     continue;
 
                 temp = pathlen;
-                if (pathlen)
+                if (pathlen != 0)
                     temp++; // include the '/'
 
                 num_files = add_file_to_list(name + temp, list, num_files);

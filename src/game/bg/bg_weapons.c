@@ -611,8 +611,8 @@ static void parse_weapon_files(char **list, int num)
         weapon = allocate_weapon_strings(bg_num_weapons, config_strings,
                                          config_strings_size);
 
-        snprintf(filename, sizeof(filename), "%s/", BG_WEAPONS_FOLDER);
-        strcat(filename, list[i]);
+        snprintf(filename, sizeof(filename), "%s/%s", 
+                 BG_WEAPONS_FOLDER, list[i]);
 
         g_dprintf("parsing weapon file '%s'\n", filename);
 

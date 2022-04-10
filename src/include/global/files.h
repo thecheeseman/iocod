@@ -98,5 +98,6 @@ void fs_printf(filehandle h, const char *fmt, ...);
 int fs_read(void *buffer, int len, filehandle f);
 int fs_read_file(const char *qpath, void **buffer);
 void fs_free_file(void *buf);
+int fs_fopen_file_by_mode(const char *path, filehandle *f, enum fs_mode mode);
 
 #endif // __FILES_H__
