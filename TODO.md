@@ -17,6 +17,8 @@ TODO
     - common stuff
     - system stuff
 
+- make lengths size_t instead of int (e.g. in filesystem)
+
 ### macos specific
 - fix: 'syscall' is deprecated
 - fix: format string is not a string literal printf stuff
