@@ -127,7 +127,7 @@ void scr_parse_gametype_list(void)
 
         // load name and lowercase it
         gtnamelen = strlen(file);
-        gametype->name = trap_hunk_alloc_low_internal(gtnamelen);
+        gametype->name = trap_hunk_alloc_low_internal(gtnamelen + 1);
         strncpyz(gametype->name, file, gtnamelen + 1);
         strlwr(gametype->name);
 
