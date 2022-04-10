@@ -354,10 +354,10 @@ char *fs_shift_str(const char *string, int shift)
 */
 bool fs_search_localized(struct searchpath *search)
 {
-    if (search->localized > 0 || fs_ignorelocalized->integer == 0)
+    if (search->localized == 0 || fs_ignorelocalized->integer == 0)
         return true;
-
-    return false;
+    else
+        return false;
 }
 
 struct folderdata {

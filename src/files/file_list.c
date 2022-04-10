@@ -98,10 +98,7 @@ char **list_filtered_files(const char *path, const char *extension,
             continue;
 
         if (search->pack != NULL) {
-            if (search->localized == 0)
-                continue;
-
-            if (!fs_pak_is_pure(search->pack))
+            if (search->localized == 0 && !fs_pak_is_pure(search->pack))
                 continue;
 
             pak = search->pack;
