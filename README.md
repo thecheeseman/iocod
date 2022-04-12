@@ -1,5 +1,4 @@
-iocod
-=====
+# iocod
 
 ![Linux](https://github.com/thecheeseman/iocod/actions/workflows/linux.yml/badge.svg)
 ![MacOS](https://github.com/thecheeseman/iocod/actions/workflows/macos.yml/badge.svg)
@@ -9,13 +8,16 @@ iocod
 Table of Contents
 1. [Introduction](#introduction)
 2. [Build Requirements](#build-requirements)
-3. [Installation](#installation)
-4. [Sources](#sources)
-5. [License](#license)
-6. [Excluded Code](#excluded-code)
+    - [Linux Requirements](#linux-requirements)
+    - [Windows Requirements](#windows-requirements)
+    - [32-bit Compile Requirements](#bit-compile-requirements)
+3. [Building](#building)
+4. [Install](#install)
+5. [Sources](#sources)
+6. [License](#license)
+7. [Excluded Code](#excluded-code)
 
-Introduction
-------------
+## Introduction
 
 iocod is an open-source project aimed at providing a drop-in replacement 
 server binary and game library for the 2003 Infinity Ward title, Call of Duty, 
@@ -31,39 +33,24 @@ the official product media.
 This material is not made or supported in any way by Infinity Ward, 
 Activision, or Microsoft.
 
-Build Requirements
-------------------
+## Build Requirements
 
-This project has been tested and successfully built on the following
-platforms:
+### Linux Requirements
 
-- Linux
-    - Debian 11
-    - Ubuntu 20.04
-    - CentOS 8
-    - Arch
-- Windows 10
-- MacOS 10.15.7
-
-For best results, it is recommended to use the latest version of whatever 
-Linux distribution you prefer.
-
-#### Linux Requirements
-- gcc 5.0 or greater
-- cmake 3.13 or greater
+- `gcc` 5.0 or greater
+- `cmake` 3.13 or greater
 - _(optional)_ cURL
-    - Debian/Unbuntu: `apt install libcurl4 libcurl4-openssl-dev`
-    - CentOS: `yum install libcurl libcurl-devel`
-    - Arch: `pacman -Ss curl`
 
-#### Windows Requirements
+- Distro specific:
+  - Debian/Unbuntu: `apt install libcurl4 libcurl4-openssl-dev`
+  - CentOS: `yum install libcurl libcurl-devel`
+  - Arch: `pacman -Ss curl`
+
+### Windows Requirements
 - Visual Studio 2019 or greater
 - MSVC 16.8 or greater
 - _(optional)_ use [vcpkg](https://vcpkg.io/en/index.html) to install 
   cURL libraries
-
-_Note:_ You can force-disable any cURL support via the build flag: `
--DUSE_CURL=FALSE`
 
 ### 32-bit Compile Requirements
 
@@ -71,26 +58,26 @@ If you are running a 64-bit system and would like to compile 32-bit binaries,
 you will need to do a couple special things. 
 
 **Debian & Ubuntu**
-```
+```bash
 dpkg --add-architecture i386
 apt update
 apt install gcc-multilib
 ```
 
 **CentOS**
-```
+```bash
 yum install glibc.i686 glibc-devel.i686
 ```
 
 Then you can compile with:
-```
+```bash
 cmake -DCOMPILE_32_BIT=TRUE . && cmake --build .
 ```
 
-### Building
+## Building
 
 Compilation is super simple: 
-```
+```bash
 cmake . && cmake --build .
 ```
 
@@ -102,18 +89,16 @@ Optionally, you can add the following build flags:
 
 For example, to build a 32-bit binary with no cURL, you can run:
 
-```
+```bash
 cmake -DCOMPILE_32_BIT=TRUE -DUSE_CURL=FALSE . && cmake --build .
 ```
 
-Install
--------
+## Install
 
 Simply put the `iocod` binary into your Call of Duty server's root path, 
 and then place the `game.mp.arch` library in the `main` folder.
 
-Sources
--------
+## Sources
 
 This project makes use of [id-software][8]'s [Quake 3][1] & [RTCW][2] GPL 
 sources, as well as the excellent work done on [CoDExtended][3] by 
@@ -124,31 +109,20 @@ for posterity. Additionally, any other projects who inspired or influenced
 code decisions are listed below.
 
 id-software
-- [Quake III Team Arena GPL Source][1]
-- [RTCW MP GPL Source][2]
+  - [Quake III Team Arena GPL Source][1]
+  - [RTCW MP GPL Source][2]
 
 xtnded team
-- [CoDExtended][3]
+  - [CoDExtended][3]
 
 kungfooman
-- [libcod][6]
+  - [libcod][6]
 
 Minqi Pan et al.
-- [libautoupdate][9]
+  - [libautoupdate][9]
 
 Yuki Suzumoto
-- [c-logger][10]
-
-[1]: <https://github.com/id-Software/Quake-III-Arena>
-[2]: <https://github.com/id-Software/RTCW-MP>
-[3]: <https://github.com/xtnded/codextended>
-[4]: <https://github.com/riicchhaarrd>
-[5]: <https://github.com/dftd>
-[6]: <https://github.com/kungfooman/libcod>
-[7]: <https://github.com/kungfooman>
-[8]: <https://github.com/id-software>
-[9]: <https://github.com/pmq20/libautoupdate>
-[10]: <https://github.com/yksz/c-logger>
+  - [c-logger][10]
 
 License
 -------
@@ -233,3 +207,14 @@ license for such code and complying with the applicable license terms.
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
+
+[1]: <https://github.com/id-Software/Quake-III-Arena>
+[2]: <https://github.com/id-Software/RTCW-MP>
+[3]: <https://github.com/xtnded/codextended>
+[4]: <https://github.com/riicchhaarrd>
+[5]: <https://github.com/dftd>
+[6]: <https://github.com/kungfooman/libcod>
+[7]: <https://github.com/kungfooman>
+[8]: <https://github.com/id-software>
+[9]: <https://github.com/pmq20/libautoupdate>
+[10]: <https://github.com/yksz/c-logger>

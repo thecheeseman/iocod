@@ -142,8 +142,6 @@ void com_error_msg_only(enum error_code code, const char *fmt, ...)
 
 void INCOMPLETE com_error_handler(void)
 {
-    struct cvar *v;
-
     switch (error.code) {
     case ERR_SERVERDISCONNECT:
         sv_shutdown("Disconnected from own listen server");
@@ -172,7 +170,7 @@ void INCOMPLETE com_error_handler(void)
 
         if (error.code == ERR_DROP) {
             // not sure we need to implement this?
-            v = cvar_get("r_vc_compile", "0", 0);
+            struct cvar *v = cvar_get("r_vc_compile", "0", 0);
             //if (v->integer == 2)
             //    fun_0806d910();
 

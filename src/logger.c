@@ -244,8 +244,7 @@ void log_enable_stdout(struct logger *l)
 void log_print_log(struct logger *l, enum log_level level, const char *function,
                    const char *filename, int line, const char *fmt, ...)
 {
-    va_list farg, carg;
-    char msg[LOG_MAX_PRINT];
+    va_list farg;
     char timestamp[LOG_MAX_TIMESTAMP];
     long threadid;
     int size;
@@ -287,6 +286,9 @@ void log_print_log(struct logger *l, enum log_level level, const char *function,
 
     // optional stdout
     if (l->options & LOG_OPT_ECHO_STDOUT) {
+        va_list carg;
+        char msg[LOG_MAX_PRINT];
+
         va_start(carg, fmt);
         vsnprintf(msg, sizeof(msg), fmt, carg);
         va_end(carg);

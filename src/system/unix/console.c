@@ -244,7 +244,6 @@ char *console_input(void)
     static char text[256];
     int i, avail;
     char key;
-    struct field *history;
 
     if (ttycon && ttycon->value) {
         avail = read(0, &key, 1);
@@ -301,6 +300,8 @@ char *console_input(void)
                     if (key == '[' || key == 'O') {
                         avail = read(0, &key, 1);
                         if (avail != -1) {
+                            struct field *history;
+
                             switch (key) {
                                 case 'A':
                                     history = hist_prev();
@@ -376,7 +377,8 @@ char *console_input(void)
         if (len < -1)
             return NULL;
 
-        text[len - 1] = 0; // remove /n 
+        if (len > 1)
+            text[len - 1] = 0; // remove /n 
         return text;
     }
 }

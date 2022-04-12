@@ -31,13 +31,12 @@ bool get_hint_string_index(int *hint, char *string)
 int INCOMPLETE model_index(const char *model)
 {
     int i;
-    const char *str;
 
     if (model == NULL || *model == '\0')
         return 0;
 
     for (i = 1; i < MAX_MODELS; i++) {
-        str = trap_get_config_string_const(CS_MODELS + i);
+        const char *str = trap_get_config_string_const(CS_MODELS + i);
         if (str == NULL || *str == '\0')
             break;
 

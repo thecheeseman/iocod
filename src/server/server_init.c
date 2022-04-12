@@ -37,7 +37,6 @@ void sv_set_config_string(int index, const char *val)
 {
     int len, i;
     int maxchunksize = MAX_STRING_CHARS - 24;
-    struct client *cl;
 
     if (index < 0 || index >= MAX_CONFIG_STRINGS)
         com_error(ERR_DROP, "bad index %i", index);
@@ -54,6 +53,8 @@ void sv_set_config_string(int index, const char *val)
 
     // send it to all the clients if we aren't spawning a new server
     if (sv.state == SS_GAME || sv.restarting) {
+        struct client *cl;
+
         for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
             if (cl->state < CS_PRIMED)
                 continue;

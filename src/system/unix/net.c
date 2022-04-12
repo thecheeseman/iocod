@@ -79,7 +79,7 @@ void net_get_local_address(void)
 {
     char hostname[256], *p;
     struct hostent *hostinfo;
-    int ip, n;
+    int n;
 
     if (gethostname(hostname, 256) == -1)
         return;
@@ -98,7 +98,7 @@ void net_get_local_address(void)
 
     numip = 0;
     while ((p = hostinfo->h_addr_list[numip++]) != NULL && numip < MAX_IPS) {
-        ip = ntohl(*(int *) p);
+        int ip = ntohl(*(int *) p);
 
         localip[numip][0] = p[0];
         localip[numip][1] = p[1];

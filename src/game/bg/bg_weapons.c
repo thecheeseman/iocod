@@ -395,15 +395,12 @@ struct weapon *get_info_for_weapon(int id)
 static intptr_t *weapon_alloc_ptr;
 static void allocate_weapon_string(char **loc, char *str)
 {
-    int len;
-    char *out;
-
     if (*str == '\0') {
         *loc = (char *) weapon_alloc_ptr;
     } else {
-        len = strlen(str);
+        size_t len = strlen(str);
+        char *out = trap_hunk_alloc_low_align_internal(len + 1, 1);
 
-        out = trap_hunk_alloc_low_align_internal(len + 1, 1);
         strcpy(out, str);
         *loc = out;
     }
@@ -590,7 +587,7 @@ static bool parse_to_struct(struct weapon *weapon,
 
 static void parse_weapon_files(char **list, int num)
 {
-    int header_len, i, file_len;
+    int header_len;
     struct weapon *weapon;
     char filename[MAX_QPATH];
     filehandle f;
@@ -605,7 +602,7 @@ static void parse_weapon_files(char **list, int num)
     allocate_weapon_string(&weapon->name, "none");
 
     bg_num_weapons = 0;
-    for (i = 0; i < num; i++) {
+    for (int i = 0; i < num; i++) {
         bg_num_weapons++;
 
         weapon = allocate_weapon_strings(bg_num_weapons, config_strings,
@@ -616,7 +613,7 @@ static void parse_weapon_files(char **list, int num)
 
         g_dprintf("parsing weapon file '%s'\n", filename);
 
-        file_len = trap_fs_fopen_file(filename, &f, FS_READ);
+        int file_len = trap_fs_fopen_file(filename, &f, FS_READ);
         if (file_len < 1)
             g_error("Could not load weapon file '%s'", filename);
 
@@ -631,7 +628,6 @@ static void parse_weapon_files(char **list, int num)
 
         com_memset(data, 0, sizeof(data));
         trap_fs_read(data, file_len - header_len, f);
-        data[file_len - header_len] = '\0';
 
         trap_fs_fclose_file(f);
 
@@ -650,11 +646,8 @@ static void parse_weapon_files(char **list, int num)
 
 static void setup_ads_trans_times(void)
 {
-    int i;
-    struct weapon *weapon;
-    
-    for (i = 1; i <= bg_num_weapons; i++) {
-        weapon = bg_weapons[i];
+    for (int i = 1; i <= bg_num_weapons; i++) {
+        struct weapon *weapon = bg_weapons[i];
 
         if (weapon->ads_trans_in_time < 1)
             weapon->ads_trans_in_time_f = 0.00333333;
@@ -1000,7 +993,6 @@ void set_up_weapon_info(void)
     char *weapons[MAX_WEAPONS];
     char *weapon;
     char file_list[4096];
-    char config_string[BIG_INFO_STRING];
     bool already_allocated = false;
 
     bg_weapons = trap_get_weapon_info_memory(sizeof(*bg_weapons) * MAX_WEAPONS, 
@@ -1045,6 +1037,8 @@ void set_up_weapon_info(void)
         }
 
         qsort(weapons, num_weapons, sizeof(char *), compare_weapon_file_names);
+
+        char config_string[BIG_INFO_STRING];
         config_string[0] = '\0';
 
         for (i = 0; i < num_weapons; i++) {

@@ -1239,7 +1239,7 @@ cm_terrain_func1(int count,
                  uint16_t idx1,      
                  uint16_t idx2)
 {
-    int i;
+    int i = 0;
 
     while (true) {
         if (count <= i)

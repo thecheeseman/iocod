@@ -491,7 +491,7 @@ struct pack *fs_load_zip_file(char *zipfile, const char *basename)
     unz_file_info file_info;
     char filename_inzip[MAX_ZPATH], *nameptr;
     int len, err, fs_numheaderlongs, *fs_headerlongs;
-    uint32_t i, hash;
+    uint32_t i;
 
     fs_numheaderlongs = 0;
 
@@ -566,7 +566,7 @@ struct pack *fs_load_zip_file(char *zipfile, const char *basename)
         strlwr(filename_inzip);
         //FS_DEBUG_PRINT("%s\n", filename_inzip);
 
-        hash = fs_hash_filename(filename_inzip, pack->hashsize);
+        uint32_t hash = fs_hash_filename(filename_inzip, pack->hashsize);
 
         buildbuffer[i].name = nameptr;
         strcpy(buildbuffer[i].name, filename_inzip);

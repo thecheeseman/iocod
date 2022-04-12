@@ -91,11 +91,9 @@ int fs_loadstack(void)
  * @return True if pure, false otherwise
 */
 bool fs_pak_is_pure(struct pack *pack)
-{
-    int i;
-    
+{   
     if (fs_num_serverpaks > 0) {
-        for (i = 0; i < fs_num_serverpaks; i++) {
+        for (int i = 0; i < fs_num_serverpaks; i++) {
             if (pack->checksum == fs_serverpaks[i])
                 return true; // approved
         }
@@ -117,11 +115,10 @@ uint32_t fs_hash_filename(const char *fname, int hashsize)
 {
     int i;
     uint32_t hash; // changed from long to maintain 32bit compatibility
-    char letter;
 
     hash = 0, i = 0;
     while (fname[i] != '\0') {
-        letter = tolower(fname[i]);
+        char letter = tolower(fname[i]);
         if (letter == '.') // don't include extension
             break;
 
@@ -666,7 +663,6 @@ static void fs_find_pack_files(const char *path, const char *dir)
     char *sorted[MAX_PAKFILES];
     struct pack *pak;
     struct searchpath *search;
-    bool localized;
 
     fs_build_ospath(path, dir, "", ospath);
     ospath[strlen(ospath) - 1] = '\0';
@@ -692,7 +688,7 @@ static void fs_find_pack_files(const char *path, const char *dir)
     qsort(sorted, numfiles, sizeof(char *), paksort); 
 
     for (i = 0; i < numfiles; i++) {
-        localized = false;
+        bool localized = false;
 
         if (strncmp(sorted[i], "          ", 10) == 0) {
             com_memcpy(sorted[i], "localized_", 10);

@@ -91,7 +91,7 @@ intptr_t scr_far_hook(intptr_t addr)
 #define MAX_DESCRIPTION_LENGTH 1024
 void scr_parse_gametype_list(void)
 {
-    int nfiles, i, len, tlen, gtnamelen, num_gametypes, flen;
+    int nfiles, i, tlen, gtnamelen, num_gametypes, flen;
     char list[4096], description[MAX_DESCRIPTION_LENGTH];
     char *file, *filename, *token, *data;
     struct gametype *gametype;
@@ -104,7 +104,7 @@ void scr_parse_gametype_list(void)
     num_gametypes = 0;
     file = list;
     for (i = 0; i < nfiles; i++) {
-        len = strlen(file);
+        size_t len = strlen(file);
 
         // skip _gsc files as they're not gametypes
         if (file[0] == '_') {

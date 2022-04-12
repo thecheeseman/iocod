@@ -63,7 +63,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
                    _In_ int nCmdShow)
 {
     char cwd[MAX_OSPATH];
-    int start_time, end_time;
 
     if (hPrevInstance != NULL)
         return 0;
@@ -103,13 +102,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
             com_dedicated != NULL && com_dedicated->integer > 0)
             Sleep(5);
 
-        start_time = sys_milliseconds();
+        int start_time = sys_milliseconds();
         
         in_frame();
 
         com_frame();
 
-        end_time = sys_milliseconds();
+        int end_time = sys_milliseconds();
         total_msec += end_time - start_time;
         count_msec++;
     }

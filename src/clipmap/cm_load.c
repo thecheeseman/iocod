@@ -82,7 +82,7 @@ static void cmod_load_planes(struct header_lump *l)
 {
     struct bsp_plane *in;
     struct plane *out;
-    int i, j, count, bits;
+    int i, j, count;
 
     in = (struct bsp_plane *) (cmod_base + l->file_ofs);
     if (l->file_len % sizeof(*in))
@@ -97,7 +97,7 @@ static void cmod_load_planes(struct header_lump *l)
 
     out = cm.planes;
     for (i = 0; i < count; i++, in++, out++) {
-        bits = 0;
+        int bits = 0;
 
         for (j = 0; j < 3; j++) {
             out->normal[j] = in->normal[j];
@@ -625,7 +625,6 @@ void INCOMPLETE cm_load_map(const char *name, bool clientload, int *checksum)
 {
     char mapname[64];
     static unsigned last_checksum;
-    int length;
     intptr_t *buf;
 
     struct bsp_header header;
@@ -644,7 +643,7 @@ void INCOMPLETE cm_load_map(const char *name, bool clientload, int *checksum)
     if (!clientload || com_sv_running->integer == 0) {
         com_memset(&cm, 0, sizeof(cm));
 
-        length = fs_read_file(name, (void **) &buf);
+        int length = fs_read_file(name, (void **) &buf);
         if (buf == NULL)
             com_error(ERR_DROP, "couldn't load %s", name);
 

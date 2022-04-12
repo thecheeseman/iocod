@@ -14,7 +14,6 @@ void clear_registered_items(void)
 void register_item(int num, int other)
 {
     int i;
-    char *name;
     struct weapon *weapon;
     struct gitem *item;
 
@@ -24,7 +23,8 @@ void register_item(int num, int other)
     item = &bg_item_list[num];
 
     if (!level.initializing) {
-        name = item->display_name;
+        char *name = item->display_name;
+
         if (name == NULL || *name == '\0') {
             if (num <= get_num_weapons()) {
                 weapon = get_info_for_weapon(num);

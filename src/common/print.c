@@ -65,7 +65,7 @@ void com_end_redirect(void)
 void com_print_header(const char *text, size_t size, char sep)
 {
     char *header;
-    size_t i, j, len, lpad, rpad;
+    size_t i, len, lpad, rpad;
 
     if (size < strlen(text))
         com_error(ERR_FATAL, "tried to print header where size < strlen(text)");
@@ -86,7 +86,7 @@ void com_print_header(const char *text, size_t size, char sep)
     if (len) {
         header[lpad - 1] = ' ';
 
-        for (i = lpad, j = 0; i < (len + lpad); i++, j++)
+        for (size_t j = 0, i = lpad; i < (len + lpad); i++, j++)
             header[i] = text[j];
 
         header[i] = ' ';

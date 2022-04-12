@@ -88,9 +88,8 @@ void info_next_pair(const char **head, char *key, char *value)
 
 void info_remove_key(char *s, const char *key)
 {
-    char *start;
-    char	pkey[MAX_INFO_KEY];
-    char	value[MAX_INFO_VALUE];
+    char pkey[MAX_INFO_KEY];
+    char value[MAX_INFO_VALUE];
     char *o;
 
     if (strlen(s) >= MAX_INFO_STRING)
@@ -101,7 +100,7 @@ void info_remove_key(char *s, const char *key)
         return;
 
     while (1) {
-        start = s;
+        char *start = s;
         if (*s == '\\')
             s++;
 
@@ -136,7 +135,6 @@ void info_remove_key(char *s, const char *key)
 
 void info_remove_key_big(char *s, const char *key)
 {
-    char *start;
     char pkey[BIG_INFO_KEY];
     char value[BIG_INFO_VALUE];
     char *o;
@@ -148,7 +146,7 @@ void info_remove_key_big(char *s, const char *key)
         return;
 
     while (1) {
-        start = s;
+        char *start = s;
         if (*s == '\\')
             s++;
         o = pkey;
@@ -192,7 +190,7 @@ bool info_validate(const char *s)
 
 void info_set_value_for_key(char *s, const char *key, const char *value)
 {
-    char	newi[MAX_INFO_STRING];
+    char newi[MAX_INFO_STRING];
 
     if (strlen(s) >= MAX_INFO_STRING)
         com_error(ERR_DROP, "Info_SetValueForKey: oversize infostring");
@@ -266,20 +264,18 @@ void info_set_value_for_key_big(char *s, const char *key, const char *value)
 
 void info_print(const char *s)
 {
-    char	key[512];
-    char	value[512];
-    char *o;
-    int		l;
+    char key[512];
+    char value[512];
 
     if (*s == '\\')
         s++;
 
     while (*s) {
-        o = key;
+        char *o = key;
         while (*s && *s != '\\')
             *o++ = *s++;
 
-        l = o - key;
+        int l = o - key;
         if (l < 20) {
             memset(o, ' ', 20 - l);
             key[20] = 0;

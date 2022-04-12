@@ -275,7 +275,7 @@ struct winding *copy_winding(struct winding *w)
     struct winding *c;
 
     c = alloc_winding(w->num_points);
-    size = (intptr_t) ((struct winding *) 0)->p[w->num_points];
+    size = (size_t) ((struct winding *) 0)->p[w->num_points];
     com_memcpy(c, w, size);
     return c;
 }

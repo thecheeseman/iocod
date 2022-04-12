@@ -319,7 +319,6 @@ void cmd_command_completion(void (*callback)(const char *s))
 void cmd_execute_string(const char *text)
 {
     int i;
-    bool aliasfound;
     struct cmd_function *cmd, **prev;
 
     cmd_tokenize_string(text);
@@ -330,7 +329,7 @@ void cmd_execute_string(const char *text)
         cmd = *prev;
 
         // check for any aliases
-        aliasfound = false;
+        bool aliasfound = false;
         for (i = 0; i < cmd->alias_count; i++) {
             if (strcasecmp(_cmd_argv[0], cmd->aliases[i]) == 0) {
                 aliasfound = true;
