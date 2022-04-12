@@ -8,13 +8,7 @@ void snprintfz(char *dest, size_t size, const char *fmt, ...)
     va_list argptr;
 
     va_start(argptr, fmt);
-    len = vsnprintf(dest, size, fmt, argptr);
+    vsnprintf(dest, size, fmt, argptr);
     va_end(argptr);
     dest[size - 1] = '\0';
-
-    #if 0
-    if (len >= size)
-        com_printf("snprintfz: overflow of %i in %i ('%s')\n", len, size,
-                   dest);
-    #endif
 }

@@ -33,7 +33,7 @@ struct system_event get_event(void)
     struct system_event ev;
     char *s = NULL;
     struct msg netmsg;
-    struct netadr adr, *buf;
+    struct netadr adr;
     char *b;
     int len;
 
@@ -59,8 +59,9 @@ struct system_event get_event(void)
     // check for network packets
     msg_init(&netmsg, packet_received, sizeof(packet_received));
     if (get_packet(&adr, &netmsg)) {
+        struct netadr *buf = z_malloc(len);
+
         len = sizeof(struct netadr) + netmsg.cursize;
-        buf = z_malloc(len);
         *buf = adr;
         memcpy(buf + 1, netmsg.data, netmsg.cursize);
         queue_event(0, SE_PACKET, 0, 0, len, buf);

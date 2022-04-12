@@ -3,18 +3,18 @@
 
 char *concat_args(int start) 
 {
-    int	i, c, tlen;
+    int	c;
     static char	line[MAX_STRING_CHARS];
     int	len;
-    char arg[MAX_STRING_CHARS];
 
     len = 0;
     c = trap_argc();
 
-    for (i = start; i < c; i++) {
+    for (int i = start; i < c; i++) {
+        char arg[MAX_STRING_CHARS];
         trap_argv(i, arg, sizeof(arg));
 
-        tlen = strlen(arg);
+        size_t tlen = strlen(arg);
         if (len + tlen >= MAX_STRING_CHARS - 1)
             break;
 

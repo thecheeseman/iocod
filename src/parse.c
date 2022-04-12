@@ -411,12 +411,10 @@ void com_match_token(char **buf_p, char *match, bool warning)
 
 void com_skip_braced_section(char **program) 
 {
-    const char *token;
-    int depth;
+    int depth = 0;
 
-    depth = 0;
     do {
-        token = com_parse(program);
+        const char *token = com_parse(program);
 
         if (token[1] == 0) {
             if (token[0] == '{')

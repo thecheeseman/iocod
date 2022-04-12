@@ -68,12 +68,9 @@ static void print_matches(const char *s)
 
 static void key_concat_args(void)
 {
-    size_t i;
-    char *arg;
-
-    for (i = 1; i < cmd_argc(); i++) {
+    for (size_t i = 1; i < cmd_argc(); i++) {
         strncatz(completionfield->buffer, sizeof(completionfield->buffer), " ");
-        arg = cmd_argv(i);
+        char *arg = cmd_argv(i);
 
         while (*arg != '\0') {
             if (*arg == ' ') {

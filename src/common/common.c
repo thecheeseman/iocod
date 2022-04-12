@@ -70,6 +70,7 @@ int com_frame_time;
 int com_frame_msec;
 int com_frame_number;
 
+#if 0
 // ZONE NONSENSE
 #define ZONEID  0x1d4a11
 #define MINFRAGMENT 64
@@ -100,6 +101,7 @@ struct memzone {
 struct memzone *mainzone;
 struct memzone *smallzone;
 // ZONE NONSENSE
+#endif
 
 #define MAX_CONSOLE_LINES 32
 int com_num_consolelines;

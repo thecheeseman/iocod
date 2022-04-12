@@ -196,8 +196,6 @@ static LONG WINAPI console_window_handler(HWND window, UINT message,
 static LONG WINAPI input_line_handler(HWND window, UINT message, 
                                       WPARAM param1, LPARAM param2)
 {
-    char buf[1024];
-
     switch (message) {
     case WM_KILLFOCUS:
         if ((HWND) param1 == console.window ||
@@ -209,6 +207,8 @@ static LONG WINAPI input_line_handler(HWND window, UINT message,
 
     case WM_CHAR:
         if (param1 == 13) {
+            char buf[1024];
+
             GetWindowText(console.input_line, buf, sizeof(buf));
 
             strncat(console.console_text, buf, 

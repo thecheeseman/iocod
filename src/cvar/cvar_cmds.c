@@ -61,7 +61,7 @@ static void cvar_toggle_f(void)
 */
 static void cvar_set_f(void)
 {
-    int i, c, l, len;
+    int i, c, ln;
     char combined[MAX_STRING_TOKENS];
 
     c = cmd_argc();
@@ -71,9 +71,9 @@ static void cvar_set_f(void)
     }
 
     combined[0] = 0;
-    l = 0;
+    size_t l = 0;
     for (i = 2; i < c; i++) {
-        len = strlen(cmd_argv(i) + 1);
+        size_t len = strlen(cmd_argv(i) + 1);
         if (l + len >= MAX_STRING_TOKENS - 2)
             break;
 

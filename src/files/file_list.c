@@ -191,7 +191,7 @@ void free_file_list(char **list)
 int get_file_list(const char *path, const char *extension, char *list, 
                      int size)
 {
-    int num_files, i, total, len;
+    int num_files, i, total;
     char **files = NULL;
 
     *list = '\0';
@@ -204,7 +204,7 @@ int get_file_list(const char *path, const char *extension, char *list,
     files = list_files(path, extension, &num_files);
 
     for (i = 0; i < num_files; i++) {
-        len = strlen(files[i]) + 1;
+        size_t len = strlen(files[i]) + 1;
         if (total + len + 1 < size) {
             strcpy(list, files[i]);
             list += len;
