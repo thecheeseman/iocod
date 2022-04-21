@@ -1,4 +1,7 @@
+#ifndef CVAR_STANDALONE
 #include "shared.h"
+#endif
+
 #include "cvar/cvar_shared.h"
 #include "strings/stringlib.h"
 #include "infostring.h"
@@ -8,7 +11,7 @@
  * @param s String to validate
  * @return False if string contains '\' or '"' or ';' chars, true otherwise
 */
-bool cvar_validate_string(const char *s)
+EXPORT bool cvar_validate_string(const char *s)
 {
     if (s == NULL)
         return false;
@@ -25,7 +28,7 @@ bool cvar_validate_string(const char *s)
     return true;
 }
 
-char *cvar_variable_string(const char *var_name)
+EXPORT char *cvar_variable_string(const char *var_name)
 {
     struct cvar *var;
 
@@ -36,7 +39,7 @@ char *cvar_variable_string(const char *var_name)
     return var->string;
 }
 
-void cvar_variable_string_buffer(const char *var_name, char *buffer, int bufsize)
+EXPORT void cvar_variable_string_buffer(const char *var_name, char *buffer, int bufsize)
 {
     struct cvar *var;
 
@@ -47,7 +50,7 @@ void cvar_variable_string_buffer(const char *var_name, char *buffer, int bufsize
         strncpyz(buffer, var->string, bufsize);
 }
 
-char *cvar_clean_foreign_characters(const char *value)
+EXPORT char *cvar_clean_foreign_characters(const char *value)
 {
     static char clean[MAX_CVAR_VALUE_STRING];
     int i, j;
@@ -64,7 +67,7 @@ char *cvar_clean_foreign_characters(const char *value)
     return clean;
 }
 
-char *cvar_info_string(int bit)
+EXPORT char *cvar_info_string(int bit)
 {
     static char info[MAX_INFO_STRING];
     struct cvar *var;
@@ -79,7 +82,7 @@ char *cvar_info_string(int bit)
     return info;
 }
 
-char *cvar_info_string_big(int bit)
+EXPORT char *cvar_info_string_big(int bit)
 {
     static char info[BIG_INFO_STRING];
     struct cvar *var;

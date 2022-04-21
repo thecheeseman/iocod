@@ -17,7 +17,56 @@ TODO
     - common stuff
     - system stuff
 
+- prawy suggestions
+    - Ah for client also weapons file settings needs to be fixed. Like if you use smoke grenade slot weird stuff happens and clip only is bugged i believe
+    - "for unknown reasons if weapon has 0 ammo, model isn't appearing but if u use cliponly 1 it is" that's what I found out sometime ago
+    - Idea for making 1.1 like 1.51. with more weapons, more weapons settings, more weapons slots, vehicles just like original UO sounds very good
+    - make vsay command work like in CoD UO 1.5 example /bind "key vsay 1 1"  so output is Follow me! They fixed vsay on 1.51
+
+- fix pings on scoreboard
+
+- scripting additions
+    - preprocessor #define, #include, #ifdef, #ifndef, #else, #endif
+    - foreach() 
+    - do { ... } while()
+    - increase stack size > 65536 WE HAVE THE TECHNOLOGY
+    - 64 bit integers
+    - gsx format
+        - for maximum compatiblity we can create .gsx files
+        - interchangeable with .gsc
+        - game looks for .gsx files _first_ before falling back to .gsc
+        - allows compatibility with vanilla installs without breaking
+
+
+- max gametypes 32 -> 64 ?
+
 - make lengths size_t instead of int (e.g. in filesystem)
+
+- consider automagically converting base pk3s -> one pak zlib or something
+
+- server name more than 32 chars?
+- increase max models 256 -> 1024 
+
+- versioning stuff
+    - autodetect version at run time
+    - only load specific paks for 1.5 when needed, etc
+    - config file for "default" cod version
+
+- client
+    - replace pb field in server browser with version field?
+    - or add custom version field
+    - language var or something to force loading from localized_lang_pak
+      fix bug where codmp.exe won't load polish lang font
+
+- uo compat or at least features?
+    - vehicles
+    - sprinting
+    - maybe future just have a iocod project that can join
+      all cod1/uo servers ?
+
+- codextended compatibility
+    - script compat is most important
+
 
 ### macos specific
 - fix: 'syscall' is deprecated

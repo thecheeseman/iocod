@@ -23,8 +23,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef CVAR_CVAR_H
 #define CVAR_CVAR_H
 
+#include "iocod.h"
+
 #include "types/bool.h"
 #include "types/filehandle.h"
+
+#ifdef CVAR_STANDALONE
+#include "no_com.h"
+#endif
 
 #define MAX_CVARS             1024
 #define FILE_HASH_SIZE        256
@@ -92,14 +98,14 @@ extern int cvar_modified_flags;
  * @param s String to validate
  * @return False if string contains '\' or '"' or ';' chars, true otherwise
 */
-bool cvar_validate_string(const char *s);
+EXPORT bool cvar_validate_string(const char *s);
 
 /**
  * @brief Return a cvar's string value
  * @param var_name Name of the cvar to search for
  * @return A string containing the value
 */
-char *cvar_variable_string(const char *var_name);
+EXPORT char *cvar_variable_string(const char *var_name);
 
 /**
  * @brief Return a cvar's string value into the given string buffer
@@ -107,7 +113,7 @@ char *cvar_variable_string(const char *var_name);
  * @param buffer Pointer to string buffer
  * @param bufsize Size of the string buffer
 */
-void cvar_variable_string_buffer(const char *var_name, char *buffer, 
+EXPORT void cvar_variable_string_buffer(const char *var_name, char *buffer,
                                  int bufsize);
 
 /**
@@ -116,7 +122,7 @@ void cvar_variable_string_buffer(const char *var_name, char *buffer,
  * @param value Value to clean
  * @return A cleaned string
 */
-char *cvar_clean_foreign_characters(const char *value);
+EXPORT char *cvar_clean_foreign_characters(const char *value);
 
 //
 // cvar_value.c
@@ -126,46 +132,45 @@ char *cvar_clean_foreign_characters(const char *value);
  * @param var_name Name of the cvar to search for
  * @return A float containing the value
 */
-float cvar_variable_value(const char *var_name);
+EXPORT float cvar_variable_value(const char *var_name);
 
 /**
  * @brief Return a cvar's integer value
  * @param var_name Name of the cvar to search for
  * @return An integer containing the value
 */
-int cvar_variable_integer_value(const char *var_name);
+EXPORT int cvar_variable_integer_value(const char *var_name);
 
 //
-// cvar_shared
 //
+//
+#ifndef CVAR_STANDALONE
 void cvar_remove_commands(void);
-
-//
-// cvar.c
-//
+void cvar_add_commands(void);
 void cvar_command_completion(void (*callback)(const char *s));
+#endif
 
 /**
  * @brief Return a cvar, or create a new one if it doesn't exist
 */
-struct cvar *cvar_get(const char *var_name, const char *var_value, int flags);
+EXPORT struct cvar *cvar_get(const char *var_name, const char *var_value, int flags);
 
 /**
  * @brief Set a cvar value
 */
-struct cvar *cvar_set2(const char *var_name, const char *value, bool force);
+EXPORT struct cvar *cvar_set2(const char *var_name, const char *value, bool force);
 
-void cvar_set(const char *var_name, const char *value);
-void cvar_set_latched(const char *var_name, const char *value);
-void cvar_set_value(const char *var_name, float value);
-void cvar_reset(const char *var_name);
-void cvar_shutdown(void);
-void cvar_write_variables(filehandle f);
-void cvar_write_defaults(filehandle f);
-char *cvar_info_string(int bit);
-char *cvar_info_string_big(int bit);
-void cvar_update_flags(void);
-bool cvar_command(void);
-void cvar_init(void);
+EXPORT void cvar_set(const char *var_name, const char *value);
+EXPORT void cvar_set_latched(const char *var_name, const char *value);
+EXPORT void cvar_set_value(const char *var_name, float value);
+EXPORT void cvar_reset(const char *var_name);
+EXPORT void cvar_shutdown(void);
+EXPORT void cvar_write_variables(filehandle f);
+EXPORT void cvar_write_defaults(filehandle f);
+EXPORT char *cvar_info_string(int bit);
+EXPORT char *cvar_info_string_big(int bit);
+EXPORT void cvar_update_flags(void);
+EXPORT bool cvar_command(void);
+EXPORT void cvar_init(void);
 
 #endif /* CVAR_CVAR_H */

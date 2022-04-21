@@ -1,6 +1,10 @@
 #ifndef INFOSTRING_H
 #define INFOSTRING_H
 
+#ifdef INFOSTRING_STANDALONE
+#include "no_com.h"
+#endif
+
 #define MAX_INFO_STRING     1024
 #define MAX_INFO_KEY        1024
 #define MAX_INFO_VALUE      1024

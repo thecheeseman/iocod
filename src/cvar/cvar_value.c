@@ -1,7 +1,7 @@
 #include "cvar/cvar_shared.h"
 #include "types/null.h"
 
-float cvar_variable_value(const char *var_name)
+EXPORT float cvar_variable_value(const char *var_name)
 {
     struct cvar *var;
 
@@ -12,7 +12,7 @@ float cvar_variable_value(const char *var_name)
     return var->value;
 }
 
-int cvar_variable_integer_value(const char *var_name)
+EXPORT int cvar_variable_integer_value(const char *var_name)
 {
     struct cvar *var;
 

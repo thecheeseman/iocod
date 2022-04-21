@@ -16,13 +16,11 @@ extern struct cvar cvar_indexes[MAX_CVARS];
 extern int cvar_num_indexes;
 extern struct cvar *hashtable[FILE_HASH_SIZE];
 
-void cvar_add_commands(void);
-
-int32_t generate_hash_value(const char *fname);
+EXPORT int32_t generate_hash_value(const char *fname);
 
 /**
  * @brief Internal hash table lookup
 */
-struct cvar *cvar_find_var(const char *var_name);
+EXPORT struct cvar *cvar_find_var(const char *var_name);
 
 #endif /* CVAR_CVAR_SHARED_H */
