@@ -1,0 +1,4 @@
+add_executable(test-snprintfz test-snprintfz.c)
+target_link_libraries(test-snprintfz test_ic)
+add_test(NAME test-snprintfz COMMAND test-snprintfz 
+    WORKING_DIRECTORY $<TARGET_FILE_DIR:test-snprintfz>)
