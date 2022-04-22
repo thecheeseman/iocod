@@ -202,6 +202,13 @@ target_compile_definitions(game PRIVATE GAME_DLL)
 add_subdirectory("src")
 
 #
+# external libraries
+#
+add_subdirectory("external")
+include_directories("external/dlfcn-win32")
+include_directories("external/dirent")
+
+#
 # infostring
 #
 add_library(ic_infostring STATIC "")

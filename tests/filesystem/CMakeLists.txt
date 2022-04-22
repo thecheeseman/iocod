@@ -17,3 +17,7 @@ endif()
 
 target_compile_options(test_filesystem PUBLIC -DFS_STANDALONE)
 target_link_libraries(test_filesystem ic_cvar ic_string ic_infostring)
+set_target_properties(test_filesystem PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/filesystem"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/filesystem"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/filesystem")
