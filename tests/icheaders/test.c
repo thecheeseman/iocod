@@ -12,6 +12,7 @@ int main(UNUSED int argc, UNUSED char *argv[])
 
     printf("%d\n", IC_VERSION);
     printf("%s\n", IC_VERSION_STRING);
+    printf("%s\n", IC_PLATFORM_COMPILER);
 
     IC_STATIC_ASSERT(1 == 1, "math doesn't work");
     IC_STATIC_ASSERT(true, "the world is ending");

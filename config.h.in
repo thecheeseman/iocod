@@ -7,7 +7,7 @@
 #define IC_CONFIG_H
 
 #define IC_VERSION_MAJOR 0
-#define IC_VERSION_MINOR 21
+#define IC_VERSION_MINOR 23
 #define IC_VERSION_PATCH 0
 
 /******************************************************************************/

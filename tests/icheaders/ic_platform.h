@@ -24,7 +24,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define IC_PLATFORM_H
 
 /*
- * Determine which C standard we have available
+================================================================================
+C standards
+
+If you need to check for a feature that is only present in a specific 
+C standard, you can check do an ifdef check, e.g.
+    #if defined IC_PLATFORM_STD_CXX 
+    do this
+    #else
+    do that
+    #endif
+================================================================================
  */
 #if defined __STDC_VERSION__
 #define IC_PLATFORM_STD_C89
@@ -54,14 +64,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* __STDC_VERSION__ */
 
 /*
- * source below borrowed/modified from hedley.h 
- * https://github.com/nemequ/hedley/
- */
+================================================================================
+GNUC versioning
 
-/*
- * GNUC versioning
- * This is not always the same as GCC, as some compilers masquerade as GNUC
- */
+IC_GNUC_VERSION is defined if we have any compiler that supports GNU C,
+but that also means compilers which are _not_ GCC, e.g. clang
+================================================================================
+*/
 #if defined __GNUC__ && defined __GNUC_PATCHLEVEL__
 #define IC_GNUC_VERSION \
     IC_VERSION_ENCODE(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
@@ -77,8 +86,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* defined IC_GNUC_VERSION  */
 
 /*
- * GCC versioning
- */
+================================================================================
+GCC versioning
+
+IC_GCC_VERSION is only defined if we are _really_ using GCC 
+================================================================================
+*/
 #if defined IC_GNUC_VERSION && !defined __clang__
 #define IC_GCC_VERSION IC_GNUC_VERSION
 #endif
@@ -91,8 +104,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* defined IC_GCC_VERSION */
 
 /*
- * MSVC versioning 
- */
+================================================================================
+MSVC versioning
+================================================================================
+*/
 #if defined _MSC_FULL_VER && (_MSC_FULL_VER >= 140000000)
 #define IC_MSVC_VERSION \
     IC_VERSION_ENCODE(_MSC_FULL_VER / 10000000, \
@@ -119,8 +134,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* !defined IC_MSVC_VERSION */
 
 /*
- * Attributes and feature checking
- */
+================================================================================
+Attributes and feature checking
+================================================================================
+*/
 #if defined __has_attribute
 #define IC_HAS_ATTRIBUTE(attr)                          __has_attribute(attr)
 #define IC_GNUC_HAS_ATTRIBUTE(attr, maj, min, patch)    __has_attribute(attr)
@@ -194,8 +211,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * Pragmas
- */
+================================================================================
+Pragmas
+================================================================================
+*/
 #if defined IC_PLATFORM_STD_C99 || defined __clang__ || \
     IC_GCC_VERSION_CHECK(3, 0, 0)
 #define IC_PRAGMA(val) _Pragma(#val)
@@ -206,8 +225,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * Diagnostic
- */
+================================================================================
+Diagnostics
+================================================================================
+*/
 #if defined __clang__
 #define IC_DIAGNOSTIC_PUSH  _Pragma("clang diagnostic push")
 #define IC_DIAGNOSTIC_POP   _Pragma("clang diagnostic pop")
@@ -236,8 +257,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * Deprecation
- */
+================================================================================
+Deprecation
+
+You can define a deprecated function in the following way:
+    IC_DEPRECATED("1.0")
+    void old_function(char *msg);
+
+If you deprecated a function in favour of another one, you can use
+    IC_DEPRECATED_FOR("1.0", "new_function")
+    void old_function(char *msg);
+================================================================================
+*/
 #if IC_MSVC_VERSION_CHECK(14, 0, 0)
 #define IC_DEPRECATED(since) \
     __declspec(deprecated("Since " # since))
@@ -263,8 +294,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * Unused result
- */
+================================================================================
+Unused result
+
+For a function defined as
+    IC_WARN_UNUSED_RESULT
+    void *some_function(void);
+
+On compatible compilers, the follow usage should warn that the result of the 
+function is unused:
+    some_function();
+================================================================================
+*/
 #if IC_HAS_ATTRIBUTE(warn_unused_result) || IC_GCC_VERSION_CHECK(3, 4, 0)
 #define IC_WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
 #elif defined _Check_return_
@@ -274,8 +315,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * No return
- */
+================================================================================
+No return
+
+On compatible compilers, tells the compiler a specific function will never
+return
+================================================================================
+*/
 #if defined IC_PLATFORM_STD_C11
 #define IC_NO_RETURN _Noreturn
 #elif IC_HAS_ATTRIBUTE(noreturn) || IC_GCC_VERSION_CHECK(3, 2, 0)
@@ -287,8 +333,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * Unreachable code 
- */
+================================================================================
+Unreachable code
+
+Tells compatible compilers that the code following will never be reached
+================================================================================
+*/
 #define IC_STATIC_CAST(T, expr) ((T) expr)
 
 #if IC_MSVC_VERSION_CHECK(13, 10, 0)
@@ -319,8 +369,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * Non-null for varargs (GNU/GCC only)
- */
+================================================================================
+Non-null for varargs (GNU/GCC only)
+
+Allows you to tell GNUC compilers that certain parameters should never be null,
+for example:
+    IC_NON_NULL(1, 3)
+    void do_something(char *str, size_t size, char *out);
+================================================================================
+*/
 IC_DIAGNOSTIC_PUSH
 #if IC_HAS_WARNING("-Wpedantic")
 #pragma clang diagnostic ignored "-Wpedantic"
@@ -342,8 +399,15 @@ IC_DIAGNOSTIC_PUSH
 IC_DIAGNOSTIC_POP
 
 /*
- * Printf format (GNU/GCC only)
- */
+================================================================================
+Printf format (GNU/GCC only)
+
+Allows you to tell GNUC compilers about vararg style format parameters in 
+a function, e.g.:
+    IC_PRINTF_FORMAT(2, 3)
+    void print_error(int code, const char *fmt, ...);
+================================================================================
+*/
 #if defined __MINGW32__ && IC_GCC_HAS_ATTRIBUTE(format, 4, 4, 0) && \
     !defined __USE_MINGW_ASNI_STDIO
 #define IC_PRINTF_FORMAT(idx, first) __attribute__((__format(ms_printf, idx, first)))
@@ -357,8 +421,15 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Malloc
- */
+================================================================================
+Malloc
+
+From GCC manual:
+    The malloc attribute is used to tell the compiler that a function may be 
+    treated as if any non-NULL pointer it returns cannot alias any other pointer 
+    valid when the function returns and that the memory has undefined content
+================================================================================
+*/
 #if IC_HAS_ATTRIBUTE(malloc) || IC_GCC_VERSION_CHECK(3, 1, 0)
 #define IC_MALLOC __attribute__((__malloc__))
 #elif IC_MSVC_VERSION_CHECK(14, 0, 0)
@@ -366,8 +437,12 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Inline
- */
+================================================================================
+Inline
+
+This shouldn't be strictly necessary since we will always be compiling for C99+
+================================================================================
+*/
 #if defined IC_PLATFORM_STD_C99
 #define IC_INLINE inline
 #elif defined IC_GCC_VERSION
@@ -379,8 +454,12 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Nothrow
- */
+================================================================================
+Nothrow
+
+Tells compilers that a function should not throw an exception
+================================================================================
+*/
 #if IC_HAS_ATTRIBUTE(nothrow) || IC_GCC_VERSION_CHECK(3, 3, 0)
 #define IC_NO_THROW __attribute__((__nothrow__))
 #elif IC_MSVC_VERSION_CHECK(13, 1, 0)
@@ -390,8 +469,12 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Fallthrough for switch statements
- */
+================================================================================
+Fallthrough for switch statements
+
+Tells the compiler that we explicitly intend to have a switch case fallthrough
+================================================================================
+*/
 #if IC_HAS_ATTRIBUTE(fallthrough) || IC_GCC_VERSION_CHECK(7, 0, 0)
 #define IC_FALL_THROUGH __attribute__((__fallthrough__))
 #elif defined __fallthrough
@@ -401,8 +484,12 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Non null returns 
- */
+================================================================================
+Non null returns 
+
+Allows compilers to optimise knowing that the function never returns NULL
+================================================================================
+*/
 #if IC_HAS_ATTRIBUTE(returns_nonnull) || IC_GCC_VERSION_CHECK(4, 9, 0)  
 #define IC_RETURNS_NON_NULL __attribute__((__returns_nonnull__))
 #elif defined _Ret_notnull_
@@ -412,8 +499,10 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Message / warning
- */
+================================================================================
+Message / warning
+================================================================================
+*/
 #if IC_HAS_WARNING("-Wunknown-pragmas")
 #define IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS _Pragma("clang diagnostic ignored \"-Wunknown-pragmas\"")
 #elif IC_GCC_VERSION_CHECK(4, 3, 0)
@@ -455,9 +544,10 @@ IC_DIAGNOSTIC_POP
 #define IC_WARNING(msg) IC_MESSAGE(msg)
 #endif
 
-/* end hedley.h */
-
 /*
+================================================================================
+Unused attributes
+================================================================================
 */
 #if IC_HAS_ATTRIBUTE(unused) || IC_GCC_VERSION_CHECK(4, 7, 2)
 #define IC_UNUSED __attribute__((unused))
@@ -466,8 +556,12 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Determine which compiler we are using
- */
+================================================================================
+Determine which compiler we are using
+
+Currently we only support MSVC + MinGW on Windows, GCC/clang everywhere else
+================================================================================
+*/
 #ifndef IC_PLATFORM_COMPILER
 #if defined _MSC_VER 
 #define IC_PLATFORM_MSVC
@@ -485,8 +579,19 @@ IC_DIAGNOSTIC_POP
 #endif /* IC_PLATFORM_COMPILER */
 
 /*
- * Determine which architecture we are on
- */
+================================================================================
+Determine which architecture we are on
+
+Currently these are defined to match the game dlls from the original game
+for testing compatibility purposes, e.g.:
+    game.mp.i386.so
+    game_mp_x86.dll
+
+In the future these should just be:
+    iocodgame-x64.so
+    iocodgame-x64.dll
+================================================================================
+*/
 #if defined __i386__ 
 #define IC_PLATFORM_ARCH "i386" /* 32-bit *nix */
 #elif defined _M_IX86
@@ -501,9 +606,11 @@ IC_DIAGNOSTIC_POP
 #endif /* __arm64__ || defined __aarch64__ */
 #endif /* __i386__ */
 
-/* 
- * Windows specific defines
- */ 
+/*
+================================================================================
+Windows platform defines
+================================================================================
+*/
 #if defined _WIN32
 #define IC_PLATFORM_WINDOWS 1
 #define IC_PLATFORM_OS      "win"
@@ -519,9 +626,11 @@ IC_DIAGNOSTIC_POP
 #define __BASE_FILE__ __FILE__
 #endif
 
- /* 
- * Non-Windows defines that are common to *nix/macos
- */
+/*
+================================================================================
+Non-Windows platform defines that are common to *nix/macos
+================================================================================
+*/
 #else
 
 #define PATH_SEP    '/'
@@ -552,9 +661,11 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Unsupported architectures / OS
- * Still should always compile but problems might occur
- */
+================================================================================
+Unsupported architectures / OS
+Still should try to compile but problems might occur
+================================================================================
+*/
 #ifndef IC_PLATFORM_ARCH
 #define IC_PLATFORM_ARCH "unsupported"
 #endif
@@ -568,8 +679,10 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /*
- * Debug flag 
- */
+================================================================================
+Platform string for versioning
+================================================================================
+*/
 #ifndef IC_DEBUG
 #define IC_PLATFORM_STRING IC_PLATFORM_OS "-" IC_PLATFORM_ARCH
 #else

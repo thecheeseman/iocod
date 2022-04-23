@@ -31,9 +31,7 @@ static inline void ic_out_of_memory_error(void)
     exit(0);
 }
 
-IC_MALLOC 
-IC_PUBLIC
-void *ic_malloc(size_t size)
+IC_MALLOC IC_PUBLIC void *ic_malloc(size_t size)
 {
     void *ptr = malloc(size);
     if (ptr == NULL)
@@ -42,16 +40,13 @@ void *ic_malloc(size_t size)
     return ptr;
 }
 
-IC_PUBLIC
-void ic_free(void *ptr)
+IC_PUBLIC void ic_free(void *ptr)
 {
     if (ptr != NULL)
         free(ptr);
 }
 
-IC_MALLOC
-IC_PUBLIC
-void *ic_calloc(size_t count, size_t size)
+IC_MALLOC IC_PUBLIC void *ic_calloc(size_t count, size_t size)
 {
     void *ptr = calloc(count, size);
     if (ptr == NULL)
@@ -60,9 +55,7 @@ void *ic_calloc(size_t count, size_t size)
     return ptr;
 }
 
-IC_MALLOC
-IC_PUBLIC
-void *ic_realloc(void *oldptr, size_t size)
+IC_PUBLIC void *ic_realloc(void *oldptr, size_t size)
 {
     void *ptr = realloc(oldptr, size);
     if (ptr == NULL)
