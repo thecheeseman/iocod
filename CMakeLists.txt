@@ -205,8 +205,11 @@ add_subdirectory("src")
 # external libraries
 #
 add_subdirectory("external")
-include_directories("external/dlfcn-win32")
-include_directories("external/dirent")
+
+if (WIN32)
+    include_directories("external/dlfcn-win32")
+    include_directories("external/dirent")
+endif()
 
 #
 # infostring
