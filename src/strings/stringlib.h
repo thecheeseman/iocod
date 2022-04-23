@@ -5,9 +5,7 @@
 #include "config.h"
 #endif
 
-#if defined HAVE_STRING_H
 #include <string.h>
-#endif
 
 #if !defined HAVE_STRDUP 
 extern char *strdup(const char *s);
@@ -29,12 +27,17 @@ extern char *strupr(char *s1);
 #include <strings.h>
 #endif
 
+#ifdef PLATFORM_WINDOWS
+#define strcasecmp _stricmp
+#define strncasecmp _strnicmp
+#else
 #if !defined HAVE_STRCASECMP
 extern int strcasecmp(const char *s1, const char *s2);
 #endif
 
 #if !defined HAVE_STRNCASECMP
 extern int strncasecmp(const char *s1, const char *s2, size_t n);
+#endif
 #endif
 
 extern void strncpyz(char *dest, const char *src, int destsize);

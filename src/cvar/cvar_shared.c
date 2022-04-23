@@ -1,15 +1,17 @@
 #include <ctype.h>
 
+#ifndef CVAR_STANDALONE
 #include "shared.h"
-
 #include "common/error.h"
+#endif
+
 #include "cvar/cvar_shared.h"
 #include "strings/stringlib.h"
 #include "types/null.h"
 
 struct cvar *hashtable[FILE_HASH_SIZE];
 
-int32_t generate_hash_value(const char *fname)
+EXPORT int32_t generate_hash_value(const char *fname)
 {
     int i;
     int32_t hash;
@@ -29,7 +31,7 @@ int32_t generate_hash_value(const char *fname)
     return hash;
 }
 
-struct cvar *cvar_find_var(const char *var_name)
+EXPORT struct cvar *cvar_find_var(const char *var_name)
 {
     struct cvar *var;
     int32_t hash;

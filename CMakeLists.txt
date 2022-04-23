@@ -19,7 +19,7 @@
 cmake_minimum_required(VERSION 3.13)
 project("iocod" C)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_EXTENSIONS TRUE)
 
@@ -80,33 +80,18 @@ include(CheckSymbolExists)
 include(Check64Bit)
 check_64_bit()
 
-include(CheckCompilerAttributes)
-check_compiler_attributes()
-
-include(CheckStdCHeaders)
-check_stdc_headers()
-
-include(CheckC99Headers)
-check_c99_headers()
-
 include(CheckStringHeaders)
 check_string_headers()
 
-if (WIN32)
-    check_include_files(direct.h HAVE_DIRECT_H)
-else()
-    check_include_files(dlfcn.h HAVE_DLFCN_H)
+if (NOT WIN32)
     check_include_files(fcntl.h HAVE_FCNTL_H)
-    check_include_files(sys/stat.h HAVE_SYS_STAT_H)
-    check_include_files(sys/types.h HAVE_SYS_TYPES_H)
-    check_include_files(unistd.h HAVE_UNISTD_H)
 endif()
 
 #
-# git version building for build_number.h
+# check for zlib
 #
-include(GitBuildVersion)
-git_build_version()
+include(CheckAndGrabZLIB)
+check_and_grab_zlib()
 
 #
 # curl package stuff
@@ -148,18 +133,18 @@ if (LUA_FOUND)
     endif()
 endif()
 
-set(THREADS_LINK)
-set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
-find_package(Threads)
-if (Threads_FOUND)
-    set(THREADS_LINK ${CMAKE_THREAD_LIBS_INIT})
+#set(THREADS_LINK)
+#set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+#find_package(Threads)
+#if (Threads_FOUND)
+#    set(THREADS_LINK ${CMAKE_THREAD_LIBS_INIT})
 
-    set(ENABLE_THREADING TRUE)
+#    set(ENABLE_THREADING TRUE)
 
-    if (CMAKE_USE_PTHREADS_INIT)
-        set(HAVE_PTHREAD_H TRUE)
-    endif()
-endif()
+#    if (CMAKE_USE_PTHREADS_INIT)
+#        set(HAVE_PTHREAD_H TRUE)
+#    endif()
+#endif()
 
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in" 
     "${PROJECT_BINARY_DIR}/config.h")
@@ -217,6 +202,37 @@ target_compile_definitions(game PRIVATE GAME_DLL)
 add_subdirectory("src")
 
 #
+# external libraries
+#
+add_subdirectory("external")
+include_directories("external/dlfcn-win32")
+include_directories("external/dirent")
+
+#
+# infostring
+#
+add_library(ic_infostring STATIC "")
+target_sources(ic_infostring PRIVATE "src/infostring.c")
+target_compile_options(ic_infostring PRIVATE -DINFOSTRING_STANDALONE)
+
+#
+# string library
+#
+add_library(ic_string STATIC "")
+file(GLOB ic_string_sources "src/strings/*.c")
+target_sources(ic_string PRIVATE ${ic_string_sources})
+
+#
+# cvar library for testing
+#
+add_library(ic_cvar STATIC "")
+file(GLOB ic_cvar_sources "src/cvar/*.c")
+list(FILTER ic_cvar_sources EXCLUDE REGEX ".*cvar_cmds.c")
+target_sources(ic_cvar PRIVATE ${ic_cvar_sources})
+target_compile_options(ic_cvar PRIVATE -DCVAR_STANDALONE)
+target_link_libraries(ic_cvar ic_string ic_infostring)
+
+#
 # various options from above
 #
 if (BUILD_PRELOAD AND UNIX AND NOT COMPILE_64_BIT)
@@ -227,9 +243,10 @@ if (BUILD_PROTOTYPEGEN)
     add_subdirectory("prototypegen") # prototype generators for scripts
 endif()
 
-#if (BUILD_TESTS)
-#    add_subdirectory("tests") # test suites
-#endif()
+if (BUILD_TESTS)
+    enable_testing()
+    add_subdirectory("tests") # test suites
+endif()
 
 #
 #

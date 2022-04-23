@@ -24,14 +24,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #endif
 
-#include "shared.h"
-#include "common.h"
-
 #include "cvar/cvar.h"
 #include "cvar/cvar_shared.h"
+
+#ifndef CVAR_STANDALONE
+#include "shared.h"
+#include "common.h"
 #include "common/error.h"
 #include "common/memory.h"
 #include "common/print.h"
+#endif
+
 #include "strings/stringlib.h"
 
 struct cvar *cvar_vars;
@@ -41,6 +44,7 @@ int cvar_modified_flags;
 struct cvar cvar_indexes[MAX_CVARS];
 int cvar_num_indexes;
 
+#ifndef CVAR_STANDALONE
 void cvar_command_completion(void (*callback)(const char *s))
 {
     struct cvar *var;
@@ -48,8 +52,9 @@ void cvar_command_completion(void (*callback)(const char *s))
     for (var = cvar_vars; var != NULL; var = var->next)
         callback(var->name);
 }
+#endif
 
-struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
+EXPORT struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 {
     struct cvar *var;
     int32_t hash;
@@ -72,7 +77,7 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 
             var->flags &= ~CVAR_USER_CREATED;
             z_free(var->reset_string);
-            var->reset_string = copy_string(var_value);
+            var->reset_string = strdup(var_value);
 
             // ZOID--needs to be set so that cvars the game sets as
             // SERVERINFO get sent to clients
@@ -85,7 +90,7 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
         if (*var->reset_string != '\0') {
             // no reset string yet
             z_free(var->reset_string);
-            var->reset_string = copy_string(var_value);
+            var->reset_string = strdup(var_value);
         } else if (*var_value != '\0' && 
                    strcmp(var->reset_string, var_value) != 0) {
             com_dprintf("Warning: cvar \"%s\" given initial values: " \
@@ -140,7 +145,7 @@ struct cvar *cvar_get(const char *var_name, const char *var_value, int flags)
 
 #define FOREIGN_MSG "Foreign characters are not allowed in userinfo variables\n"
 
-struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
+EXPORT struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
 {
     struct cvar *var;
 
@@ -208,7 +213,7 @@ struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
             }
 
             com_printf("%s will be changed upon restarting.\n", var_name);
-            var->latched_string = copy_string(value);
+            var->latched_string = strdup(value);
             var->modified = true;
             var->modification_count++;
             return var;
@@ -228,24 +233,24 @@ struct cvar *cvar_set2(const char *var_name, const char *value, bool force)
 
     z_free(var->string);
 
-    var->string = copy_string(value);
+    var->string = strdup(value);
     var->value = atof(var->string);
     var->integer = atoi(var->string);
 
     return var;
 }
 
-void cvar_set(const char *var_name, const char *value)
+EXPORT void cvar_set(const char *var_name, const char *value)
 {
     cvar_set2(var_name, value, true);
 }
 
-void cvar_set_latched(const char *var_name, const char *value)
+EXPORT void cvar_set_latched(const char *var_name, const char *value)
 {
     cvar_set2(var_name, value, false);
 }
 
-void cvar_set_value(const char *var_name, float value)
+EXPORT void cvar_set_value(const char *var_name, float value)
 {
     char val[32];
 
@@ -257,12 +262,12 @@ void cvar_set_value(const char *var_name, float value)
     cvar_set(var_name, val);
 }
 
-void cvar_reset(const char *var_name)
+EXPORT void cvar_reset(const char *var_name)
 {
     cvar_set2(var_name, NULL, false);
 }
 
-void cvar_shutdown(void)
+EXPORT void cvar_shutdown(void)
 {
     struct cvar *cv;
 
@@ -281,7 +286,7 @@ void cvar_shutdown(void)
     }
 }
 
-void cvar_write_defaults(filehandle f)
+EXPORT void cvar_write_defaults(filehandle f)
 {
     struct cvar *var;
     char buffer[1024];
@@ -301,7 +306,7 @@ void cvar_write_defaults(filehandle f)
     }
 }
 
-void cvar_write_variables(filehandle f)
+EXPORT void cvar_write_variables(filehandle f)
 {
     struct cvar *var;
     char buffer[1024];
@@ -327,7 +332,7 @@ void cvar_write_variables(filehandle f)
 }
 
 // only called from sv_setgametype
-void cvar_update_flags(void)
+EXPORT void cvar_update_flags(void)
 {
     struct cvar *var;
 
@@ -335,9 +340,11 @@ void cvar_update_flags(void)
         var->flags &= ~CVAR_8193;
 }
 
-void cvar_init(void)
+EXPORT void cvar_init(void)
 {
     cvar_cheats = cvar_get("sv_cheats", "0", CVAR_ROM | CVAR_SYSTEM_INFO);
 
+    #ifndef CVAR_STANDALONE
     cvar_add_commands();
+    #endif
 }

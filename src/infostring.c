@@ -1,7 +1,12 @@
 #include "iocod.h"
+
+#ifndef INFOSTRING_STANDALONE
 #include "common/error.h"
 #include "common/print.h"
+#endif
+
 #include "strings/stringlib.h"
+#include "types/bool.h"
 #include "infostring.h"
 
 char *info_value_for_key(const char *s, const char *key)

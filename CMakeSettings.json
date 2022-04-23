@@ -31,7 +31,8 @@
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
-      "wslPath": "Debian"
+      "wslPath": "Debian",
+      "remoteCopyAdditionalIncludeDirectories": [ "/usr/include" ]
     },
     {
       "name": "windows-x86",
