@@ -1,8 +1,8 @@
 #include "../iocod.h"
 
-#if !defined HAVE_STRNDUP
 IC_PUBLIC
-char *strndup(const char *s, size_t n)
+IC_NON_NULL(1)
+char *_ic_strndup(const char *s, size_t n)
 {
     size_t len = strnlen(s, n);
     char *new = ic_malloc(len + 1);
@@ -13,4 +13,3 @@ char *strndup(const char *s, size_t n)
     new[len] = '\0';
     return (char *) memcpy(new, s, len);
 }
-#endif

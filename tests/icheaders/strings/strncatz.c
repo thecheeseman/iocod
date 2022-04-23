@@ -1,6 +1,7 @@
 #include "../iocod.h"
 
 IC_PUBLIC
+IC_NON_NULL(1, 3)
 void strncatz(char *dest, int size, const char *src)
 {
     int l1 = strlen(dest);

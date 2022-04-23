@@ -1,17 +1,19 @@
 #include <ctype.h>
 #include "../iocod.h"
 
-#if !defined HAVE_STRUPR
 IC_PUBLIC
-char *strupr(char *s1)
+IC_NON_NULL(1)
+char *_ic_strupr(char *s1)
 {
-    char *s;
+    #if !defined IC_GNUC_VERSION
+    if (s1 == NULL)
+        return NULL;
+    #endif
 
-    s = s1;
+    char *s = s1;
     while (*s) {
         *s = toupper(*s);
         s++;
     }
     return s1;
 }
-#endif /* HAVE_STRUPR */

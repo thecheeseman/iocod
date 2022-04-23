@@ -1,6 +1,7 @@
 #include "../iocod.h"
 
 IC_PUBLIC
+IC_NON_NULL(1, 2)
 void strncpyz(char *dest, const char *src, int destsize)
 {
     if (!src)

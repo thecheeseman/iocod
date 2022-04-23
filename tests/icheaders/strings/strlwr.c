@@ -1,17 +1,19 @@
 #include <ctype.h>
 #include "../iocod.h"
 
-#if !defined HAVE_STRLWR
 IC_PUBLIC
-char *strlwr(char *s1)
+IC_NON_NULL(1)
+char *_ic_strlwr(char *s1)
 {
-    char *s;
+    #if !defined IC_GNUC_VERSION
+    if (s1 == NULL)
+        return NULL;
+    #endif
 
-    s = s1;
+    char *s = s1;
     while (*s) {
         *s = tolower(*s);
         s++;
     }
     return s1;
 }
-#endif /* HAVE_STRLWR */

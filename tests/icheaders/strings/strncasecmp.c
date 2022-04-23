@@ -1,9 +1,9 @@
 #include <ctype.h>
 #include "../iocod.h"
 
-#if !defined HAVE_STRNCASECMP
 IC_PUBLIC
-int strncasecmp(const char *s1, const char *s2, size_t n)
+IC_NON_NULL(1, 2)
+int _ic_strncasecmp(const char *s1, const char *s2, size_t n)
 {
     const unsigned char *p1 = (const unsigned char *) s1;
     const unsigned char *p2 = (const unsigned char *) s2;
@@ -19,4 +19,3 @@ int strncasecmp(const char *s1, const char *s2, size_t n)
 
     return result;
 }
-#endif /* !defined HAVE_STRNCASECMP */

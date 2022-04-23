@@ -87,26 +87,49 @@ String replacements
 */
 #include <string.h>
 
+IC_PUBLIC
+IC_NON_NULL(1)
+char *_ic_strdup(const char *s);
+
 #if !defined HAVE_STRDUP 
-IC_PUBLIC char *strdup(const char *s);
+#define strdup _ic_strdup
 #endif
 
-/* some systems do not have this (e.g. windows) */
+IC_PUBLIC
+IC_NON_NULL(1)
+char *_ic_strndup(const char *s, size_t n);
+
 #if !defined HAVE_STRNDUP
-IC_PUBLIC char *strndup(const char *s, size_t n);
+#define strndup _ic_strndup
 #endif
+
+IC_PUBLIC 
+IC_NON_NULL(1)
+char *_ic_strlwr(char *s1);
 
 #if !defined HAVE_STRLWR
-IC_PUBLIC char *strlwr(char *s1);
+#define strlwr _ic_strlwr
 #endif
 
+IC_PUBLIC
+IC_NON_NULL(1)
+char *_ic_strupr(char *s1);
+
 #if !defined HAVE_STRUPR
-IC_PUBLIC char *strupr(char *s1);
+#define strupr _ic_strupr
 #endif
 
 #if defined HAVE_STRINGS_H
 #include <strings.h>
 #endif
+
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+int _ic_strcasecmp(const char *s1, const char *s2);
+
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+int _ic_strncasecmp(const char *s1, const char *s2, size_t n);
 
 #if defined IC_PLATFORM_WINDOWS
 #define HAVE_STRCASECMP  1
@@ -116,17 +139,21 @@ IC_PUBLIC char *strupr(char *s1);
 #define strncasecmp _strnicmp
 #else
 #if !defined HAVE_STRCASECMP 
-IC_PUBLIC int strcasecmp(const char *s1, const char *s2);
+#define strcasecmp _ic_strcasecmp
 #endif
 
 #if !defined HAVE_STRNCASECMP
-IC_PUBLIC int strncasecmp(const char *s1, const char *s2, size_t n);
+#define strncasecmp _ic_strncasecmp
 #endif
 #endif /* IC_PLATFORM_WINDOWS */
 
-IC_PUBLIC void strncpyz(char *dest, const char *src, int destsize);
+IC_PUBLIC 
+IC_NON_NULL(1, 2)
+void strncpyz(char *dest, const char *src, int destsize);
 
-IC_PUBLIC void strncatz(char *dest, int size, const char *src);
+IC_PUBLIC
+IC_NON_NULL(1, 3)
+void strncatz(char *dest, int size, const char *src);
 
 /**
  * @brief snprintf which always ensures there is a trailing '\0'.
