@@ -6,14 +6,17 @@ IC_PRINTF_FORMAT(3, 4)
 IC_NON_NULL(1)
 int snprintfz(char *dest, size_t size, const char *fmt, ...)
 {
-    size_t len;
-    va_list argptr;
+    #if !defined IC_GNUC_VERSION
+    if (dest == NULL || fmt == NULL)
+        return -1;
+    #endif
 
-    if (dest == NULL || size == 0 || fmt == NULL)
+    if (size == 0)
         return -1;
 
+    va_list argptr;
     va_start(argptr, fmt);
-    len = vsnprintf(dest, size, fmt, argptr);
+    size_t len = vsnprintf(dest, size, fmt, argptr);
     va_end(argptr);
     dest[size - 1] = '\0';
 

@@ -22,6 +22,8 @@ TODO
     - "for unknown reasons if weapon has 0 ammo, model isn't appearing but if u use cliponly 1 it is" that's what I found out sometime ago
     - Idea for making 1.1 like 1.51. with more weapons, more weapons settings, more weapons slots, vehicles just like original UO sounds very good
     - make vsay command work like in CoD UO 1.5 example /bind "key vsay 1 1"  so output is Follow me! They fixed vsay on 1.51
+    - idea: fix for silence footsteps while on 500 fps or higher 
+    - idea: fix connection interrupted while on high fps
 
 - fix pings on scoreboard
 

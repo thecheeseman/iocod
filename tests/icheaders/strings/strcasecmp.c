@@ -12,6 +12,13 @@ int _ic_strcasecmp(const char *s1, const char *s2)
     if (p1 == p2)
         return 0;
 
+    #if !defined IC_GNUC_VERSION
+    if (p1 == NULL && p2 != NULL)
+        return -1;
+    else if (p1 != NULL && p2 == NULL)
+        return 1;
+    #endif
+
     while ((result = tolower(*p1) - tolower(*p2++)) == 0) {
         if (*p1++ == '\0')
             break;

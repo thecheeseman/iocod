@@ -23,7 +23,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 static inline void ic_out_of_memory_error(void)
 {
@@ -31,33 +30,42 @@ static inline void ic_out_of_memory_error(void)
     exit(0);
 }
 
-IC_MALLOC IC_PUBLIC void *ic_malloc(size_t size)
+IC_MALLOC 
+IC_PUBLIC 
+void *ic_malloc(size_t size)
 {
-    void *ptr = malloc(size);
+    void *ptr = malloc(size > 0 ? size : 1);
     if (ptr == NULL)
         ic_out_of_memory_error();
 
     return ptr;
 }
 
-IC_PUBLIC void ic_free(void *ptr)
+IC_PUBLIC 
+void ic_free(void *ptr)
 {
     if (ptr != NULL)
         free(ptr);
 }
 
-IC_MALLOC IC_PUBLIC void *ic_calloc(size_t count, size_t size)
+IC_MALLOC 
+IC_PUBLIC 
+void *ic_calloc(size_t count, size_t size)
 {
-    void *ptr = calloc(count, size);
+    void *ptr = calloc(count > 0 ? count : 1, size > 0 ? size : 1);
     if (ptr == NULL)
         ic_out_of_memory_error();
 
     return ptr;
 }
 
-IC_PUBLIC void *ic_realloc(void *oldptr, size_t size)
+IC_PUBLIC 
+void *ic_realloc(void *oldptr, size_t size)
 {
-    void *ptr = realloc(oldptr, size);
+    if (oldptr == NULL)
+        return ic_malloc(size);
+
+    void *ptr = realloc(oldptr, size ? size : 1);
     if (ptr == NULL)
         ic_out_of_memory_error();
 

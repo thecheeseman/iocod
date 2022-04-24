@@ -1,4 +1,5 @@
 set(sources
+    "ic_io.c"
     "ic_memory.c" 
     "strings/snprintfz.c" 
     "strings/strcasecmp.c" 

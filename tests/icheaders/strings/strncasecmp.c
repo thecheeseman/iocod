@@ -12,6 +12,13 @@ int _ic_strncasecmp(const char *s1, const char *s2, size_t n)
     if (p1 == p2 || n == 0)
         return 0;
 
+    #if !defined IC_GNUC_VERSION
+    if (p1 == NULL && p2 != NULL)
+        return -1;
+    else if (p1 != NULL && p2 == NULL)
+        return 1;
+    #endif
+
     while ((result = tolower(*p1) - tolower(*p2++)) == 0) {
         if (*p1++ == '\0' || --n == 0)
             break;
