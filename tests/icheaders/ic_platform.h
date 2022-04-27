@@ -20,31 +20,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+/**
+ * @file   ic_platform.h
+ * @author thecheeseman
+ * @date   2022-04-26
+ * 
+ * Macros for platform and compiler detection, features, attributes, etc.
+ */
+
 #ifndef IC_PLATFORM_H
 #define IC_PLATFORM_H
 
 #if defined __STDC_VERSION__
 /**
  * @def IC_PLATFORM_STD_C89
- *
- * This is defined if the compiler supports ANSI C.
+ * @brief This is defined if the compiler supports ANSI C.
  */
 #define IC_PLATFORM_STD_C89
 
 /**
  * @def IC_PLATFORM_STD_95
- *
- * Defined if the compiler supports `__STDC_VERSION__` as first introduced
- * in C95.
+ * @brief Defined if the compiler supports `__STDC_VERSION__` as first 
+ * introduced in C95.
  */
 #define IC_PLATFORM_STD_C95
 
 /**
  * @def IC_PLATFORM_C99
- *
- * Defined if the compiler supports C99 mode.
+ * @brief Defined if the compiler supports C99 mode.
  * 
- * GCC ~3.0, MSVC 12.0
+ * @note First supported in GCC ~3.0, MSVC 12.0
  */
 #if __STDC_VERSION__ >= 199901L
 #define IC_PLATFORM_STD_C99
@@ -52,10 +57,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_PLATFORM_C11
+ * @brief Defined if the compiler supports C11 mode.
  *
- * Defined if the compiler supports C11 mode.
- *
- * GCC 4.6, Clang 3.1, MSVC 16.8
+ * @note First supported in GCC 4.6, Clang 3.1, MSVC 16.8
  */
 #if __STDC_VERSION__ >= 201112L
 #define IC_PLATFORM_STD_C11
@@ -63,10 +67,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_PLATFORM_STD_C17
- *
- * Defined if the compiler supports C17 mode.
+ * @brief Defined if the compiler supports C17 mode.
  * 
- * GCC 8.1, Clang 7.0, MSVC 16.8
+ * @note First supported in GCC 8.1, Clang 7.0, MSVC 16.8
  */
 #if __STDC_VERSION__ >= 201710L
 #define IC_PLATFORM_STD_C17
@@ -74,10 +77,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_PLATFORM_STD_C2X
+ * @brief Defined if the compiler supports future versions of the C standard.
  *
- * Defined if the compiler supports future versions of the C standard.
- *
- * Currently only supported by the latest GCC.
+ * @note This is currently only supported by the latest GCC versions.
  */
 #if __STDC_VERSION__ >= 202000L
 #define IC_PLATFORM_STD_C2X
@@ -89,9 +91,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_GNUC_VERSION
- * 
- * Defined if we are using a GNUC compatible compiler. This does not 
- * necessarily mean GCC, as some compilers masquerade as GNUC (e.g. clang).
+ * @brief Defined if we are using a GNUC compatible compiler. 
+ *
+ * @note This does not necessarily mean GCC, as some compilers 
+ * masquerade as GNUC (e.g. clang).
  */
 #if defined __GNUC__ && defined __GNUC_PATCHLEVEL__
 #define IC_GNUC_VERSION \
@@ -102,13 +105,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_GNUC_VERSION_CHECK
- * 
- * Checks if the current compiler is at least this version. This only has any
- * meaning on GNUC compatible compilers.
+ * @brief Checks if the current compiler is at least this version. 
  * 
  * @param maj major version
  * @param min minor version
  * @param patch patch version
+ * 
+ * @note This only has any meaning on GNUC compatible compilers.
  */
 #if defined IC_GNUC_VERSION 
 #define IC_GNUC_VERSION_CHECK(maj, min, patch) \
@@ -119,8 +122,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_GCC_VERSION
- * 
- * Defined if we are _really_ using GCC.
+ * @brief Defined if we are _really_ using GCC.
  */
 #if defined IC_GNUC_VERSION && !defined __clang__
 #define IC_GCC_VERSION IC_GNUC_VERSION
@@ -128,13 +130,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_GCC_VERSION_CHECK
- * 
- * Checks if GCC is at least this version. This only has any meaning if 
- * the current compiler is GCC.
+ * @brief Checks if GCC is at least this version. 
  * 
  * @param maj major version
  * @param min minor version
  * @param patch patch version
+ * 
+ * @note This only has any meaning if the current compiler is GCC.
  */
 #if defined IC_GCC_VERSION
 #define IC_GCC_VERSION_CHECK(maj, min, patch) \
@@ -145,8 +147,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_MSVC_VERSION
- * 
- * Defined if we are using MSVC.
+ * @brief Defined if we are using MSVC.
  */
 #if defined _MSC_FULL_VER && (_MSC_FULL_VER >= 140000000)
 #define IC_MSVC_VERSION \
@@ -162,13 +163,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_MSVC_VERSION_CHECK
- * 
- * Check if the version of MSVC is at least this version. This only has any
- * meaning if the compiler is MSVC.
+ * @brief Check if the version of MSVC is at least this version. 
  * 
  * @param maj major version
  * @param min minor version
  * @param patch patch version
+ * 
+ * @note This only has any meaning if the compiler is MSVC.
  */
 #if !defined IC_MSVC_VERSION
 #define IC_MSVC_VERSION_CHECK(maj, min, patch) (0)
@@ -185,9 +186,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_HAS_ATTRIBUTE
+ * @brief Checks if the current compiler has a particular attribute. 
+ *
+ * This will be defined as `__has_attribute` if the compiler has support for it.
  * 
- * Checks if the current compiler has a particular attribute. Will be defined
- * as `__has_attribute` if the compiler has support for it.
+ * @param attr attribute to check for
  */
 #if defined __has_attribute
 #define IC_HAS_ATTRIBUTE(attr)                          __has_attribute(attr)
@@ -203,9 +206,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_HAS_BUILTIN
+ * @brief Checks if the current compiler has a particular builtin. 
  *
- * Checks if the current compiler has a particular builtin. Will be defined
- * as `__has_builtin` if the compiler has support for it.
+ * This will be defined as `__has_builtin` if the compiler has support for it.
+ * 
+ * @param bt builtin option to check for
  */
 #if defined __has_builtin
 #define IC_HAS_BUILTIN(bt)                          __has_builtin(bt)
@@ -221,9 +226,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_HAS_FEATURE
+ * @brief Checks if the current compiler has a particular feature. 
  *
- * Checks if the current compiler has a particular feature. Will be defined
- * as `__has_feature` if the compiler has support for it.
+ * This will be defined as `__has_feature` if the compiler has support for it.
+ * 
+ * @param feat feature to check for
  */
 #if defined __has_feature
 #define IC_HAS_FEATURE(feat)                        __has_feature(feat)
@@ -239,9 +246,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_HAS_EXTENSION
+ * @brief Checks if the current compiler has a particular extension. 
  *
- * Checks if the current compiler has a particular extension. Will be defined
- * as `__has_extension` if the compiler has support for it.
+ * This will be defined as `__has_extension` if the compiler has support for it.
+ * 
+ * @param ext extension to check for
  */
 #if defined __has_extension
 #define IC_HAS_EXTENSION(ext)                       __has_extension(ext)
@@ -257,9 +266,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_HAS_DECLSPEC_ATTRIBUTE
+ * @brief Checks if the current compiler has a particular attribute. 
  *
- * Checks if the current compiler has a particular attribute. Will be defined
- * as `__has_declspec_attribute` if the compiler has support for it.
+ * This will be defined as `__has_declspec_attribute` if the compiler 
+ * has support for it.
+ * 
+ * @param attr declspec attribute to check for
  */
 #if defined __has_declspec_attribute
 #define IC_HAS_DECLSPEC_ATTRIBUTE(attr) __has_declspec_attribute(attr)
@@ -275,9 +287,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_HAS_WARNING
+ * @brief Checks if the current compiler has a particular warning. 
  *
- * Checks if the current compiler has a particular warning. Will be defined
- * as `__has_warning` if the compiler has support for it.
+ * This will be defined as `__has_warning` if the compiler has support for it.
+ * 
+ * @param warn warning to check for
  */
 #if defined __has_warning
 #define IC_HAS_WARNING(warn)                            __has_warning(warn)
@@ -293,11 +307,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def IC_PRAGMA
+ * @brief Wrapper for the various methods of using pragmas.
  * 
  * @param val pragma value
  *
- * On C99+ or GNU platforms, this is defined as `_Pragma(#val)`.
- * On non-C99 MSVC, this is defined as `__pragma(val)`.
+ * @note On all C99 platforms, this is defined as `_Pragma(#val)`.
+ * @note On non-C99 MSVC, this is defined as `__pragma(val)`.
  */
 #if defined IC_PLATFORM_STD_C99 || defined __clang__ || \
     IC_GCC_VERSION_CHECK(3, 0, 0)
@@ -308,21 +323,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define IC_PRAGMA(val)
 #endif
 
-/*
-================================================================================
-Diagnostics
-================================================================================
-*/
 /**
  * @def IC_DIAGNOSTIC_PUSH
- * 
- * Allows pushing a new diagnostic pragma to the diagnostic stack.
+ * @brief Allows pushing a new diagnostic pragma to the diagnostic stack.
  */
 
 /**
  * @def IC_DIAGNOSTIC_POP
- * 
- * Allows popping of the diagnostic pragma from the stack.
+ * @brief Allows popping of the diagnostic pragma from the stack.
  */
 #if defined __clang__
 #define IC_DIAGNOSTIC_PUSH  _Pragma("clang diagnostic push")
@@ -340,8 +348,7 @@ Diagnostics
 
 /**
  * @def IC_DIAGNOSTIC_DISABLE_UNUSED_FUNCTION
- * 
- * Will silence "unused function" warnings when used on a given function.
+ * @brief Will silence "unused function" warnings when used on a given function.
  * 
  * For example:
  * @code
@@ -364,9 +371,8 @@ Diagnostics
 
 /**
  * @def IC_DEPRECATED
- * 
- * This attribute tells the compiler that a particular function has become
- * deprecated and will cause compatible compilers to generate warnings.
+ * @brief This attribute tells the compiler that a particular function has 
+ * become deprecated and will cause compatible compilers to generate warnings.
  * 
  * @param since the version when this function first became deprecated
  * 
@@ -376,16 +382,14 @@ Diagnostics
  * void old_function(char *msg);
  * @endcode
  * 
- * On GNUC compatible compilers, this is defined as 
- * `__attribute__((__deprecated__))`.
- * On MSVC 13.10+ this is defined as `__declspec(deprecated)`.
+ * @note On GNUC this is defined as `__attribute__((__deprecated__))`.
+ * @note On MSVC 13.10+ this is defined as `__declspec(deprecated)`.
  */
 
 /**
  * @def IC_DEPRECATED_FOR
- * 
- * This attribute is the same as `IC_DEPRECATED`, but allows you to specify
- * a replacement function.
+ * @brief This attribute is the same as `IC_DEPRECATED`, but allows you 
+ * to specify a replacement function.
  * 
  * @param since the version when this function first became deprecated
  * @param replacement the function that should be used instead
@@ -396,9 +400,8 @@ Diagnostics
  * void old_function(char *msg);
  * @endcode
  * 
- * On GNUC compatible compilers, this is defined as 
- * `__attribute__((__deprecated__))`.
- * On MSVC 13.10+ this is defined as `__declspec(deprecated)`.
+ * @note On GNUC this is defined as `__attribute__((__deprecated__))`.
+ * @note On MSVC 13.10+ this is defined as `__declspec(deprecated)`.
  */
 #if IC_MSVC_VERSION_CHECK(14, 0, 0)
 #define IC_DEPRECATED(since) \
@@ -426,12 +429,11 @@ Diagnostics
 
 /**
  * @def IC_WARN_UNUSED_RESULT
+ * @brief This attribute allows compatible compilers to generate a warning 
+ * if the returned result of the function is ignored.
  * 
- * This attribute allows compatible compilers to generate a warning if the 
- * returned result of the function is ignored.
- * 
- * On GNUC compilers, this is defined as `__attribute__((__warn_unused_result__))`.
- * On MSVC, this is defined as the SAL annotation `_Check_return_`.
+ * @note On GNUC this is defined as `__attribute__((__warn_unused_result__))`.
+ * @note On MSVC this is defined as the SAL annotation `_Check_return_`.
  */
 #if IC_HAS_ATTRIBUTE(warn_unused_result) || IC_GCC_VERSION_CHECK(3, 4, 0)
 #define IC_WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
@@ -443,12 +445,11 @@ Diagnostics
 
 /**
  * @def IC_NO_RETURN
- * 
- * This attribute tells compatible compilers that the given function will 
+ * @brief This attribute tells compatible compilers that the given function will 
  * never return (i.e. _must_ exit) and allows them to optimise based on that.
  * 
- * On GNUC compilers, this is defined as `__attribute__((__noreturn__))`.
- * On MSVC 13.10+, this is `_declspec(noreturn)`.
+ * @note On GNUC this is defined as `__attribute__((__noreturn__))`.
+ * @note On MSVC 13.10+ this is defined as `_declspec(noreturn)`.
  */
 #if defined IC_PLATFORM_STD_C11
 #define IC_NO_RETURN _Noreturn
@@ -462,9 +463,9 @@ Diagnostics
 
 /**
  * @def IC_UNREACHABLE
- *
- * This attribute tells compilers that the code following will never be reached,
- * allowing them to generate optimised code (or simply ignore warnings).
+ * @brief This attribute tells compilers that the code following will never 
+ * be reached, allowing them to generate optimised code (or simply 
+ * ignore warnings).
  */
 #define IC_STATIC_CAST(T, expr) ((T) expr)
 
@@ -497,15 +498,16 @@ Diagnostics
 
 /**
  * @def IC_NON_NULL
- * 
- * This attribute tells GNUC compilers that certain parameters should never
- * be NULL, and will generate compile warnings if that is the case.
+ * @brief This attribute tells compilers that certain parameters should 
+ * never be NULL, and will generate compile warnings if that is the case.
  * 
  * Example usage:
  * @code
  * IC_NON_NULL(1, 3)
  * void do_something(char *str, size_t size, char *out);
  * @endcode
+ * 
+ * @note This only has effect on GNUC compilers.
  */
 IC_DIAGNOSTIC_PUSH
 #if IC_HAS_WARNING("-Wpedantic")
@@ -529,10 +531,8 @@ IC_DIAGNOSTIC_POP
 
 /**
  * @def IC_PRINTF_FORMAT
- * 
- * This attribute tells the compiler to check the arguments for consistency
- * with `printf`-style formatted strings. This feature is only available on
- * compatible GNUC compilers.
+ * @brief This attribute tells the compiler to check the arguments for 
+ consistency with `printf`-style formatted strings. 
  * 
  * @param idx starting index of the format specifier
  * @param first starting index of the varargs
@@ -543,8 +543,8 @@ IC_DIAGNOSTIC_POP
  *  void print_error(int code, const char *fmt, ...);
  * @endcode
  * 
- * On GNUC compatible compilers, this is defined as
- * `__attribute__((__format__printf__, idx, first)))`.
+ * @note This feature is only available on compatible GNUC compilers, where it
+ * is defined as `__attribute__((__format__printf__, idx, first)))`.
  */
 #if defined __MINGW32__ && IC_GCC_HAS_ATTRIBUTE(format, 4, 4, 0) && \
     !defined __USE_MINGW_ASNI_STDIO
@@ -560,14 +560,13 @@ IC_DIAGNOSTIC_POP
 
 /**
  * @def IC_MALLOC
+ * @brief The malloc attribute is used to tell the compiler that a function may 
+ * be treated as if any non-NULL pointer it returns cannot alias any other 
+ * pointer valid when the function returns and that the memory has undefined 
+ * content.
  * 
- * The malloc attribute is used to tell the compiler that a function may be 
- * treated as if any non-NULL pointer it returns cannot alias any other pointer 
- * valid when the function returns and that the memory has undefined content.
- * 
- * On GNUC compatible compilers, this is defined as 
- * `__attribute__((__malloc__))`.
- * On MSVC 14.0+, this is defined as `__declspec(restrict)`.
+ * @note On GNUC, this is defined as `__attribute__((__malloc__))`.
+ * @note On MSVC 14.0+, this is defined as `__declspec(restrict)`.
  */
 #if IC_HAS_ATTRIBUTE(malloc) || IC_GCC_VERSION_CHECK(3, 1, 0)
 #define IC_MALLOC __attribute__((__malloc__))
@@ -579,13 +578,13 @@ IC_DIAGNOSTIC_POP
 
 /**
  * @def IC_INLINE
- * 
+ * @deprecated 
  * This shouldn't be strictly necessary since we will always 
  * be compiling for C99+
  * 
- * On C99+ platforms, this is defined simply as the builtin `inline`.
- * On GCC platforms (non-C99), this is defined as `__inline__`.
- * On MSVC 12.0 and lower, this is `__inline`.
+ * @note On C99+ platforms this is defined simply as the builtin `inline`.
+ * @note On GCC platforms (non-C99) this is defined as `__inline__`.
+ * @note On MSVC 12.0 and lower this is defined as `__inline`.
  */
 #if defined IC_PLATFORM_STD_C99
 #define IC_INLINE inline
@@ -599,13 +598,11 @@ IC_DIAGNOSTIC_POP
 
 /**
  * @def IC_NO_THROW
+ * @brief The nothrow attribute is used to tell the compiler that this 
+ * function should never throw an exception.
  * 
- * The nothrow attribute is used to tell the compiler that this function should
- * never throw an exception.
- * 
- * On GNUC compilers with support for the attribute, this is defined as 
- * `__attribute__((__nothrow__))`.
- * ON MSVC 13.1+, this is defined as `__declspec(nothrow)`.
+ * @note On GNUC this is defined as `__attribute__((__nothrow__))`.
+ * @note On MSVC 13.1+ this is defined as `__declspec(nothrow)`.
  */
 #if IC_HAS_ATTRIBUTE(nothrow) || IC_GCC_VERSION_CHECK(3, 3, 0)
 #define IC_NO_THROW __attribute__((__nothrow__))
@@ -617,13 +614,11 @@ IC_DIAGNOSTIC_POP
 
 /**
  * @def IC_FALL_THROUGH
- * 
- * This attribute tells the compiler that we explictly intend to have
+ * @brief This attribute tells the compiler that we explictly intend to have
  * a fall through switch case.
  * 
- * On GNUC compatible compilers, this is defined as 
- * `__attribute__((__fallthrough__))`.
- * On MSVC this is defined as `__fallthrough`.
+ * @note On GNUC this is defined as `__attribute__((__fallthrough__))`.
+ * @note On MSVC this is defined as `__fallthrough`.
  */
 #if IC_HAS_ATTRIBUTE(fallthrough) || IC_GCC_VERSION_CHECK(7, 0, 0)
 #define IC_FALL_THROUGH __attribute__((__fallthrough__))
@@ -635,13 +630,11 @@ IC_DIAGNOSTIC_POP
 
 /**
  * @def IC_RETURNS_NON_NULL
- * 
- * This attribute allows compilers to better optimise functions knowing
+ * @brief This attribute allows compilers to better optimise functions knowing
  * that they will never return NULL.
  * 
- * On GNUC compatible compilers, this is defined as 
- * `__attribute__((__returns_nonnull__)`.
- * On MSVC, this is defined with the SAL annotation `_Ret_notnull_`.
+ * @note On GNUC this is defined as `__attribute__((__returns_nonnull__)`.
+ * @note On MSVC this is defined with the SAL annotation `_Ret_notnull_`.
  */
 #if IC_HAS_ATTRIBUTE(returns_nonnull) || IC_GCC_VERSION_CHECK(4, 9, 0)  
 #define IC_RETURNS_NON_NULL __attribute__((__returns_nonnull__))
@@ -651,11 +644,10 @@ IC_DIAGNOSTIC_POP
 #define IC_RETURNS_NON_NULL
 #endif
 
-/*
-================================================================================
-Message / warning
-================================================================================
-*/
+/**
+ * @def IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS
+ * @brief Disable unknown pragma warnings.
+ */
 #if IC_HAS_WARNING("-Wunknown-pragmas")
 #define IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS _Pragma("clang diagnostic ignored \"-Wunknown-pragmas\"")
 #elif IC_GCC_VERSION_CHECK(4, 3, 0)
@@ -666,6 +658,24 @@ Message / warning
 #define IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS
 #endif
 
+/**
+ * @def IC_MESSAGE
+ * @brief Push a message to the compiler at compile time.
+ * 
+ * @param msg message
+ *
+ * @note This is only supported on GNUC compilers
+ */
+
+/**
+ * @def IC_WARNING
+ * @brief Push a warning message to the compiler at compile time.
+ * 
+ * @param msg warning message
+ *
+ * @note On GCC 4.8+ this is defined as `IC_PRAGMA(GCC warning msg)`
+ * @note On MSVC 15+ this is defined as `IC_PRAGMA(message msg)`
+ */
 #if IC_HAS_WARNING("-Wunknown-pragmas")
 #define IC_MESSAGE(msg) \
     IC_DIAGNOSTIC_PUSH \
@@ -697,11 +707,12 @@ Message / warning
 #define IC_WARNING(msg) IC_MESSAGE(msg)
 #endif
 
-/*
-================================================================================
-Unused attributes
-================================================================================
-*/
+/**
+ * @def IC_UNUSED
+ * @brief Mark a particular function as unused to avoid compiler warnings.
+ * 
+ * @note This only has effect on GNUC compilers.
+ */
 #if IC_HAS_ATTRIBUTE(unused) || IC_GCC_VERSION_CHECK(4, 7, 2)
 #define IC_UNUSED __attribute__((unused))
 #else
@@ -710,29 +721,28 @@ Unused attributes
 
 /**
  * @def IC_PLATFORM_COMPILER
- * 
- * A string containing the name of the compiler used. Valid options are
- * "msvc", "mingw", "gcc", "clang" or "unknown".
+ * @brief A string containing the name of the compiler used. Valid options are
+ * `msvc`, `mingw`, `gcc`, `clang` or `unknown`.
  */
+
 /**
  * @def IC_PLATFORM_MSVC
- *
- * Defined if we are compiling with MSVC.
+ * @brief Defined if we are compiling with MSVC.
  */
+
 /**
  * @def IC_PLATFORM_MINGW
- *
- * Defined if we are compiling with MinGW.
+ * @brief Defined if we are compiling with MinGW.
  */
+
 /**
  * @def IC_PLATFORM_GCC
- *
- * Defined if we are compiling with GCC.
+ * @brief Defined if we are compiling with GCC.
  */
+
 /**
  * @def IC_PLATFORM_CLANG
- *
- * Defined if we are compiling with Clang.
+ * @brief Defined if we are compiling with Clang.
  */
 #ifndef IC_PLATFORM_COMPILER
 #if defined _MSC_VER 
@@ -762,10 +772,10 @@ Unused attributes
 
 /**
  * @def IC_PLATFORM_ARCH
- * 
- * A string containing the name of the architecture being compiled on. Valid
- * options are "i386" (linux/macos), "x86" (windows), "x86_64", "arm32", and
- * "arm32".
+ * @brief A string containing the name of the architecture being compiled on. 
+ *
+ * Valid options are `i386` (linux/macos), `x86` (windows), `x86_64`, `arm32`, 
+ * and `arm64`.
  * 
  * Currently these are defined to match the game dlls from the original game
  * for testing compatibility purposes, e.g. `game.mp.i386.so` and 
@@ -788,63 +798,65 @@ Unused attributes
 
 /**
  * @def IC_PLATFORM_OS
+ * @brief String containing the name of the operating system we were 
+ * compiled on.
  * 
- * String containing the name of the operating system we were compiled on.
- * Valid options are "win", "linux", "macos", or "unsupported".
+ * Valid options are `win`, `linux`, `macos`, or `unsupported`.
  */
+
 /**
  * @def IC_PLATFORM_DLL
+ * @brief String containing the extension of the shared library objects 
+ * on the system.
  * 
- * String containing the extension of the shared library objects on the system.
- * Valid options are "dll" for Windows, "so" for Linux, and "dylib" for MacOS.
+ * Valid options are `dll` for Windows, `so` for Linux, and `dylib` for MacOS.
  */
+
 /**
  * @def PATH_SEP
- * 
- * The character of the path separator on the system. For Windows this is `\\`,
- * other systems are `/`.
+ * @brief The character of the path separator on the system. 
+ *
+ * For Windows this is `\\`, other systems are `/`.
  */
+
 /**
  * @def IC_PLATFORM_WINDOWS
- *
- * Defined if we are on a Windows system.
+ * @brief Defined if we are on a Windows system.
  */
+
 /**
  * @def IC_PLATFORM_LINUX
- *
- * Defined if we are on a Linux system.
+ * @brief Defined if we are on a Linux system.
  */
+
 /**
  * @def IC_PLATFORM_MACOS
- *
- * Defined if we are compiling on a MacOS system.
+ * @brief Defined if we are compiling on a MacOS system.
  */
+
 /**
  * @def IC_PRIVATE
- * 
- * This attribute can be used for private functions which should not be
+ * @brief This attribute can be used for private functions which should not be
  * visible. 
  
- * On GNUC systems that support it, this is defined as 
- * `__attribute__((visibility("hidden")))`. 
- * This has no effect on MSVC.
+ * @note On GNUC this is defined as `__attribute__((visibility("hidden")))`. 
+ * @note On MSVC this has no effect
  */
+
 /**
  * @def IC_PUBLIC
+ * @brief This attribute can be used to declare functions for library exports.
  * 
- * This attribute can be used to declare functions for library exports.
- * 
- * On GNUC systems that support it, this is defined as 
- * `__attribute__((visibility("default")))`.
- * On MSVC, this is defined as `__declspec(dllexport)`.
+ * @note On GNUC this is defined as `__attribute__((visibility("default")))`
+ * @note On MSVC this is defined as `__declspec(dllexport)`
  */
+
 /**
  * @def IC_IMPORT
+ * @brief This attribute can be used to declare library import functions.
  * 
- * This attribute can be used to declare library import functions.
- * 
- * On GNUC systems, this has no effect.
- * On MSVC, this is defined as `__declspec(dllimport)`.
+ * @note On GNUC this has no effect
+ * @note On MSVC this is defined as `__declspec(dllimport)`.
  */
 #if defined _WIN32
 #define IC_PLATFORM_WINDOWS 1
@@ -899,9 +911,9 @@ Unused attributes
 #define IC_PLATFORM_ARCH "doxygen"
 #define IC_PLATFORM_OS "doxygen"
 
-#define IC_GNUC_VERSION (0)
-#define IC_GCC_VERSION  (0)
-#define IC_MSVC_VERSION (0)
+#define IC_GNUC_VERSION 0
+#define IC_GCC_VERSION  0
+#define IC_MSVC_VERSION 0
 
 #else
 #ifndef IC_PLATFORM_ARCH
@@ -915,8 +927,8 @@ Unused attributes
 
 /**
  * @def IC_PLATFORM_STRING
- * 
- * A string containing the platform information and optionally a debug flag.
+ * @brief A string containing the platform information and optionally 
+ * a debug flag.
  */
 #ifndef IC_DEBUG
 #define IC_PLATFORM_STRING IC_PLATFORM_OS "-" IC_PLATFORM_ARCH

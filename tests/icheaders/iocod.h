@@ -20,6 +20,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+/**
+ * @file   iocod.h
+ * @author thecheeseman
+ * @date   2022-04-26
+ * 
+ * Global header for iocod project. Contains useful macros for platform and
+ * compiler identification, features, etc., custom string library, memory
+ * allocation functions.
+ * 
+ * Automatically includes `<stdarg.h>`, `<stddef.h>`, `<stdint.h>`, and 
+ * `<stdio.h>`.
+ */
+
 #ifndef IOCOD_H
 #define IOCOD_H
 
@@ -40,7 +53,6 @@ General useful macros / utils
 */
 
 /* stringify */
-
 #define IC_STRINGIFY_EX(x)      #x
 #define IC_STRINGIFY(x)         IC_STRINGIFY_EX(x)
 
@@ -50,51 +62,88 @@ General useful macros / utils
 #define IC_CONCAT3_EX(a, b, c)  a ## b ## c
 #define IC_CONCAT3(a, b, c)     IC_CONCAT3_EX(a, b, c)
 
-/* some useful utilities from <kernel.h> */
+/**
+ * @def ARRAY_SIZE
+ * @brief Determine size of a given array at compile-time. From `<kernel.h>`
+ */
 #define ARRAY_SIZE(x)       (sizeof(x) / sizeof((x)[0]))
+
+/**
+ * @def FIELD_SIZEOF
+ * @brief Determine the size of a given field in a given struct. 
+ * 
+ * From `<kernel.h>`
+ * 
+ * Example:
+ * @code
+ * struct coolstruct {
+ *     size_t field1;
+ * };
+ * 
+ * int size = FIELD_SIZEOF(struct coolstruct, field1); // 4 on 32-bit, 8 on 64-bit
+ * @endcode
+ */
 #define FIELD_SIZEOF(t, f)  (sizeof(((t*)0)->f))
 
 /**
  * @def IC_VERSION_ENCODE
- * 
- * Encode separate version numbers into one large number.
+ * @brief Encode separate version numbers into one large number.
  */
 #define IC_VERSION_ENCODE(maj, min, rev) \
     (((maj) * 1000000) + ((min) * 1000) + (rev))
 
 /**
  * @def IC_VERSION_DECODE_MAJOR
- * 
- * Decode the major version from the full version value.
+ * @brief Decode the major version from the full version value.
  */
 #define IC_VERSION_DECODE_MAJOR(version)        ((version) / 1000000)
 
 /**
  * @def IC_VERSION_DECODE_MINOR
- * 
- * Decode the minor version from the full version value.
+ * @brief Decode the minor version from the full version value.
  */
 #define IC_VERSION_DECODE_MINOR(version)        ((version % 1000000) / 1000)
 
 /**
  * @def IC_VERSION_DECODE_REVISION
- * 
- * Decode the revision number from the full version value.
+ * @brief Decode the revision number from the full version value.
  */
 #define IC_VERSION_DECODE_REVISION(version)     ((version) % 1000)
 
 /**
+ * @def IC_VERSION_MAJOR
+ * @brief Major version number. Automatically filled out by CMake.
+ */
+#ifndef IC_VERSION_MAJOR
+#define IC_VERSION_MAJOR 0
+#endif
+
+/**
+ * @def IC_VERSION_MINOR
+ * @brief Minor version number. Automatically filled out by CMake.
+ */
+#ifndef IC_VERSION_MINOR
+#define IC_VERSION_MINOR 0
+#endif
+
+/**
+ * @def IC_VERSION_PATCH
+ * @brief Patch version number. Automatically filled out by CMake.
+ */
+#ifndef IC_VERSION_PATCH
+#define IC_VERSION_PATCH 0
+#endif
+
+/**
  * @def IC_VERSION
- * 
- * The numeric representation of the version.
+ * @brief The numeric representation of the version.
  */
 #define IC_VERSION \
     IC_VERSION_ENCODE(IC_VERSION_MAJOR, IC_VERSION_MINOR, IC_VERSION_PATCH)
 
 /**
  * @def IC_VERSION_STRING
- * 
- * Version string preprended with "v" and separated by ".".
+ * @brief Version string preprended with "v" and separated by ".".
  */
 #define IC_VERSION_STRING \
     "v" IC_STRINGIFY(IC_VERSION_MAJOR) \
@@ -110,51 +159,93 @@ Common types
 ================================================================================
 */
 
-/**
- * @def bool 
- * 
- * These must be the same size as int for backwards compatibility reasons
- * i.e. we cannot use <stdbool.h>
- */
 #ifndef _IC_DEFINED_BOOL
 #define _IC_DEFINED_BOOL
 #ifdef bool
 #undef bool
 #endif
 
+/**
+ * @brief boolean type
+ * 
+ * `bool` must always be the same size as `int` for compatibility (structure
+ * field sizes must match), therefore we _cannot_ use `<stdbool.h>`
+ * 
+ * @see bool
+*/
 typedef int _boolean;
+
+/**
+ * @brief boolean type
+ * 
+ * `bool` must always be the same size as `int` for compatibility (structure
+ * field sizes must match), therefore we _cannot_ use `<stdbool.h>`
+ * 
+ * @see _boolean
+ */
 #define bool _boolean
 
 #define false 0
 #define true  1
 #endif
 
-/* byte */
 #ifndef _IC_DEFINED_BYTE
 #define _IC_DEFINED_BYTE
+
+/**
+ * @brief Shorthand for `unsigned char`.
+*/
 typedef unsigned char byte;
 #endif
 
-/* filehandle */
 #ifndef _IC_DEFINED_FILEHANDLE
 #define _IC_DEFINED_FILEHANDLE
+
+/**
+ * @typedef size_t filehandle
+ * @brief File handle reference.
+ * 
+ * Strictly speaking, since we probably are never going to handle more than
+ * a couple thousand files at a time, `int` sound be fine here (as it was
+ * in the original source). In the future this may mean a hash of a given file,
+ * rather than just meaning 'nth open file' as it currently does.
+*/
 typedef size_t filehandle;
 #endif
 
-/* vectors */
 #ifndef _IC_DEFINED_VECTOR
 #define _IC_DEFINED_VECTOR
 
-/* optionally we can use float for compatibility or less precision */
+/**
+ * @typedef double vec_t
+ * @brief Basic vector unit for math.
+ *
+ * If `IC_VECTOR_FLOAT` is defined, this will instead be `float`. 
+ */
 #ifdef IC_VECTOR_FLOAT
 typedef float vec_t;
 #else
 typedef double vec_t;
 #endif
 
+/**
+ * @brief 2D array of vectors.
+ * @see vec_t
+*/
 typedef vec_t vec2_t[2];
+
+/**
+ * @brief 3D array of vectors.
+ * @see vec_t
+*/
 typedef vec_t vec3_t[3];
+
+/**
+ * @brief 4D array of vectors.
+ * @see vec_t
+*/
 typedef vec_t vec4_t[4];
+
 typedef vec_t vec5_t[5];
 #endif
 
@@ -167,25 +258,25 @@ Assert utilities
 
 /**
  * @def IC_ASSERT
- * 
- * Assert macro (essentially `assert()`). Defined for stylistic reasons.
+ * @brief Assert macro (essentially `assert()`). Defined for stylistic reasons.
  */
 #define IC_ASSERT(expr)             assert(expr)
 
 /**
  * @def IC_ASSERT_MSG
+ * @brief Allows defining a message along with the assert statement. 
  * 
- * Allows defining a message along with the assert statement. Strictly, there
- * isn't much of a better way of doing this, but at least you will can give
- * useful messages instead of vague asserts.
+ * Strictly, there isn't much of a better way of doing this, but at least 
+ * you can give useful messages instead of vague asserts.
  */
 #define IC_ASSERT_MSG(expr, msg)    assert(((void) msg, expr))
 
 /**
  * @def IC_STATIC_ASSERT
+ * @brief Compile time assertions. 
  * 
- * Compile time assertions. If we are running in C11 mode, this maps as
- * `_Static_assert`, otherwise for MSVC this is interpreted as `static_assert`.
+ * @note In C11, this is defined as `_Static_assert`.
+ * @note On MSVC this is defined as `static_assert`.
  */
 #if defined IC_PLATFORM_STD_C11 || IC_GCC_VERSION_CHECK(6, 0, 0) || \
     defined _Static_assert
@@ -203,44 +294,50 @@ Memory
 */
 
 /**
- * "Safer" library replacement for `malloc`. Always allocates at least 1 byte
- * of memory, and will fatally exit if unable to allocate the memory requested.
+ * @brief "Safer" library replacement for `malloc`. 
+ 
+ * Always allocates at least 1 byte of memory, and will fatally exit if 
+ * unable to allocate the memory requested.
  * 
- * @param size size in bytes to allocate
+ * @param[in] size size in bytes to allocate
 */
 IC_MALLOC 
 IC_PUBLIC 
 void *ic_malloc(size_t size);
 
 /**
- * "Safer" library replacement for `free`. Always checks that the passed
- * pointer is not NULL before freeing. 
+ * @brief "Safer" library replacement for `free`. 
  * 
- * @param ptr memory to free
+ * Always checks that the passed pointer is not NULL before freeing. 
+ * 
+ * @param[in] ptr memory to free
 */
 IC_PUBLIC 
 void ic_free(void *ptr);
 
 /**
- * "Safer" library replacement for `calloc`. Always checks that we allocate at
- * least 1 element of size 1. Will fatally exit if unable to allocate the 
- * memory requested.
+ * @brief "Safer" library replacement for `calloc`. 
+ *
+ * Always checks that we allocate at least 1 element of size 1. Will fatally 
+ * exit if unable to allocate the memory requested.
  * 
- * @param count number of elements to allocate
- * @param size size of each element
+ * @param[in] count number of elements to allocate
+ * @param[in] size size of each element
 */
 IC_MALLOC 
 IC_PUBLIC 
 void *ic_calloc(size_t count, size_t size);
 
 /**
- * "Safer" library replacement for `realloc`. Always checks that we have a 
- * valid pointer passed, and if the pointer is NULL, will automatically
- * allocate new memory instead of reallocating. Always makes sure to allocate
- * memory of at least 1 byte. Will fatally exit if it cannot reallocate memory.
+ * @brief "Safer" library replacement for `realloc`. 
+ *
+ * Always checks that we have a valid pointer passed, and if the pointer 
+ * is NULL, will automatically allocate new memory instead of reallocating. 
+ * Always makes sure to allocate memory of at least 1 byte. Will fatally exit 
+ * if it cannot reallocate memory.
  * 
- * @param oldptr old memory to reallocate
- * @param size new size of memory
+ * @param[in] oldptr old memory to reallocate
+ * @param[in] size new size of memory
 */
 IC_PUBLIC 
 void *ic_realloc(void *oldptr, size_t size);
@@ -252,15 +349,17 @@ Common IO functions
 */
 
 /**
- * Print wrapper. Allows direct output to `stderr`. If `SYS_PRINT` or `SYS_WARN`
- * macros are defined, will call either of those instead.
+ * @brief Printf wrapper that allows direct output to `stderr`. 
+ *
+ * If `SYS_PRINT` or `SYS_WARN` macros are defined, will call either 
+ * of those instead.
  * 
- * It is recommended to access this function via the macros `ic_printf()` and
- * `ic_warning()` instead of calling this directly.
+ * @note It is recommended to access this function via the macros 
+ * `ic_printf()` and `ic_warning()` instead of calling this directly.
  * 
- * @param warning true if this is warning, false otherwise
- * @param fmt format specifier
- * @param ... 
+ * @param[in] warning true if this is warning, false otherwise
+ * @param[in] fmt     format specifier
+ * @param[in] ... 
  * 
  * @see ic_printf
  * @see ic_warning
@@ -271,35 +370,32 @@ void _ic_print(bool warning, const char *fmt, ...);
 
 /**
  * @def ic_printf
- *
- * Wrapper for `_ic_print`.
- * 
+ * @brief Wrapper for `_ic_print`.
  * @see _ic_print
  */
 #define ic_printf(...) _ic_print(false, __VA_ARGS__)
 
 /**
  * @def ic_warning
- *
- * Wrapper for `_ic_print`, prepending the message passed with "WARNING".
- * 
+ * @brief Wrapper for `_ic_print`, prepending the message passed with "WARNING".
  * @see _ic_print
  */
 #define ic_warning(...) _ic_print(true, __VA_ARGS__)
 
 /**
- * Error wrapper. Allows direct output to `stderr`, or if macro `COM_ERROR` is
- * defined, will call that instead.
+ * @brief Error wrapper that allows direct output to `stderr`.
  * 
- * It is recommended to access this function via the macros `ic_error()` and
- * `ic_error_fatal()` instead of calling this directly.
+ * If `COM_ERROR` is defined, will call that instead.
+ * 
+ * @note It is recommended to access this function via the macros 
+ * `ic_error()` and `ic_error_fatal()` instead of calling this directly.
  *
- * @param fatal true if this is a fatal error and we should exit
- * @param filename name of file this was called from
- * @param function name of function this was called from
- * @param line line number
- * @param fmt format specifier
- * @param ...
+ * @param[in] fatal    true if this is a fatal error and we should exit
+ * @param[in] filename name of file this was called from
+ * @param[in] function name of function this was called from
+ * @param[in] line     line number
+ * @param[in] fmt      format specifier
+ * @param[in] ...
  * 
  * @see ic_error
  * @see ic_error_fatal
@@ -311,9 +407,10 @@ void _ic_error(bool fatal, const char *filename, const char *function,
 
 /**
  * @def ic_error
- * 
- * Wrapper for _ic_error. Automatically inputs current filename, function name,
- * line number for better error messages.
+ * @brief Wrapper for _ic_error. 
+ *
+ * Automatically inputs current filename, function name, line number for 
+ * better error messages.
  * 
  * @see _ic_error
  */
@@ -322,9 +419,10 @@ void _ic_error(bool fatal, const char *filename, const char *function,
 
 /**
  * @def ic_error_fatal
+ * @brief Wrapper for _ic_error. 
  *
- * Wrapper for _ic_error. Automatically inputs current filename, function name,
- * line number for better error messages. Causes program to exit.
+ * Automatically inputs current filename, function name, line number for 
+ * better error messages. Causes program to exit.
  *
  * @see _ic_error
  */
@@ -339,10 +437,12 @@ String replacements
 #include <string.h>
 
 /**
- * Duplicate a string. This is a library replacement for `strdup` if it 
- * (somehow) does not exist on the target platform. 
+ * @brief Duplicate a string. 
  * 
- * @param s string to duplicate
+ * This is a library replacement for `strdup` if it (somehow) does not 
+ * already exist on the target platform. 
+ * 
+ * @param[in] s string to duplicate
  */
 IC_PUBLIC
 IC_NON_NULL(1)
@@ -350,22 +450,23 @@ char *_ic_strdup(const char *s);
 
 /**
  * @def strdup
- * 
- * Redirect to `_ic_strdup()`. Only defined if the platform does not have 
- * a builtin `strdup` available.
- * 
- * This should exist on all modern POSIX/Windows systems.
+ * @brief Redirect to `_ic_strdup()`. 
+ *
+ * This is only defined if the platform does not have a builtin `strdup` 
+ * available -- i.e. this should exist on all modern POSIX/Windows systems.
  */
 #if !defined HAVE_STRDUP
 #define strdup _ic_strdup
 #endif
 
 /**
- * Duplicate a string of at most `n` bytes. This is a library replacement for 
- * `strndup` if it does not exist on the target platform. 
+ * @brief Duplicate a string of at most `n` bytes. 
+ *
+ * This is a library replacement for `strndup` if it does not exist on 
+ * the target platform. 
  * 
- * @param s string to duplicate
- * @param n number of bytes to duplicate
+ * @param[in] s string to duplicate
+ * @param[in] n number of bytes to duplicate
  */
 IC_PUBLIC
 IC_NON_NULL(1)
@@ -373,22 +474,24 @@ char *_ic_strndup(const char *s, size_t n);
 
 /**
  * @def strndup
+ * @brief Redirect to `_ic_strndup()`. 
  * 
- * Redirect to `_ic_strndup()`. Only defined if the platform does not have
- * a builtin `strdup` available.
+ * Only defined if the platform does not have a builtin `strdup` available.
  * 
- * On POSIX systems this is undefined.
- * On Windows this is defined.
+ * @note On POSIX systems this is not defined.
+ * @note On Windows this is defined.
  */
 #if !defined HAVE_STRNDUP
 #define strndup _ic_strndup
 #endif
 
 /**
- * Convert string to lowercase. This is a library replacement for `strlwr` if 
- * it does not exist on the target platform.
+ * @brief Convert string to lowercase. 
+ *
+ * This is a library replacement for `strlwr` if it does not exist on the 
+ * target platform, e.g. POSIX.
  * 
- * @param s string to convert to lowercase
+ * @param[in,out] s string to convert to lowercase
  */
 IC_PUBLIC 
 IC_NON_NULL(1)
@@ -396,22 +499,24 @@ char *_ic_strlwr(char *s);
 
 /**
  * @def strlwr
+ * @brief Redirect to `_ic_strlwr()`. 
+ *
+ * Only defined if the platform does not have a built in `strlwr` available.
  * 
- * Redirect to `_ic_strlwr()`. Only defined if the platform does not have
- * a built in `strlwr` available.
- * 
- * POSIX does not have a builtin `strlwr`.
- * Windows has a built `strlwr`.
+ * @note POSIX does not have a builtin `strlwr`.
+ * @note Windows has a built `strlwr`.
  */
 #if !defined HAVE_STRLWR
 #define strlwr _ic_strlwr
 #endif
 
 /**
- * Convert string to uppercase. This is a library replacement for `strupr` if
- * it does not exist on the target platform.
+ * @brief Convert string to uppercase. 
  *
- * @param s string to convert to uppercase
+ * This is a library replacement for `strupr` if it does not exist on 
+ * the target platform.
+ *
+ * @param[in,out] s string to convert to uppercase
  */
 IC_PUBLIC
 IC_NON_NULL(1)
@@ -419,12 +524,12 @@ char *_ic_strupr(char *s);
 
 /**
  * @def strupr
+ * @brief Redirect to `_ic_strupr()`. 
+ 
+ * Only defined if the platform does not have a built in `strupr` available.
  *
- * Redirect to `_ic_strupr()`. Only defined if the platform does not have
- * a built in `strupr` available.
- *
- * POSIX systems do not have a builtin `strupr`.
- * Windows has a built `strupr`.
+ * @note POSIX systems do not have a builtin `strupr`.
+ * @note Windows has a built `strupr`.
  */
 #if !defined HAVE_STRUPR
 #define strupr _ic_strupr
@@ -435,23 +540,27 @@ char *_ic_strupr(char *s);
 #endif
 
 /**
- * Case-insensitive string comparison. This is a library replacement for
- * `strcasecmp` in the systems that do not have this.
+ * @brief Case-insensitive string comparison. 
+ *
+ * This is a library replacement for `strcasecmp` in the systems 
+ * that do not have this.
  * 
- * @param s1 first string to compare
- * @param s2 second string to compare
+ * @param[in] s1 first string to compare
+ * @param[in] s2 second string to compare
  */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
 int _ic_strcasecmp(const char *s1, const char *s2);
 
 /**
- * Case-insensitive string comparison of at least `n` bytes. This is a library 
- * replacement for `strncasecmp` in the systems that do not have this.
+ * @brief Case-insensitive string comparison of at least `n` bytes. 
  *
- * @param s1 first string to compare
- * @param s2 second string to compare
- * @param n number of bytes 
+ * This is a library  replacement for `strncasecmp` in the systems 
+ * that do not have this.
+ *
+ * @param[in] s1 first string to compare
+ * @param[in] s2 second string to compare
+ * @param[in] n  number of bytes 
  */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
@@ -459,16 +568,19 @@ int _ic_strncasecmp(const char *s1, const char *s2, size_t n);
 
 /**
  * @def strcasecmp
- * 
- * Redirect to `_ic_strcasecmp()`. Only defined if the platform does not have
- * a builtin `strcasecmp`. Note on Windows this is defined as `_stricmp`.
+ * @brief Redirect to `_ic_strcasecmp()`. 
+ *
+ * Only defined if the platform does not have a builtin `strcasecmp`. 
+ * @note On Windows this is defined as `_stricmp`.
  */
 
 /**
  * @def strncasecmp
+ * @brief Redirect to `_ic_strncasecmp()`. 
  *
- * Redirect to `_ic_strncasecmp()`. Only defined if the platform does not have
- * a builtin `strncasecmp`. Note on Windows this is defined as `_stricmpn`.
+ * Only defined if the platform does not have a builtin `strncasecmp`. 
+ *
+ * @note On Windows this is defined as `_stricmpn`.
  */
 #if defined IC_PLATFORM_WINDOWS
 #define HAVE_STRCASECMP  1
@@ -486,16 +598,30 @@ int _ic_strncasecmp(const char *s1, const char *s2, size_t n);
 #endif
 #endif /* IC_PLATFORM_WINDOWS */
 
+/**
+ * @brief `strncpy` replacement which always ensures a trailing '\0'.
+ * 
+ * @param[out] dest     destination to copy the string
+ * @param[in]  src      source string to copy
+ * @param[in]  destsize size of the destination
+*/
 IC_PUBLIC 
 IC_NON_NULL(1, 2)
 void strncpyz(char *dest, const char *src, int destsize);
 
+/**
+ * @brief `strcat` replacement which always ensures there is a trailing '\0'.
+ * 
+ * @param[out] dest destination string
+ * @param[in]  size size of destination string
+ * @param[in]  src  source string to copy
+*/
 IC_PUBLIC
 IC_NON_NULL(1, 3)
 void strncatz(char *dest, int size, const char *src);
 
 /**
- * @brief snprintf which always ensures there is a trailing '\0'.
+ * @brief `snprintf` replacement which always ensures there is a trailing '\0'.
  *
  * This function will always return either -1 if an error occured,
  * or a non-negative number if no error. It is possible that the
@@ -504,9 +630,9 @@ void strncatz(char *dest, int size, const char *src);
  * that _would_ have been written. If return value is non-negative
  * and less than size, success
  *
- * @param dest destination char array to write to
- * @param size size of array, should always be sizeof(arr)
- * @param fmt printf format specifier
+ * @param[out] dest destination char array to write to
+ * @param[in]  size size of array, should always be sizeof(arr)
+ * @param[in]  fmt  printf format specifier
  * @return -1 if error, non-negative number otherwise
 */
 IC_PUBLIC 
