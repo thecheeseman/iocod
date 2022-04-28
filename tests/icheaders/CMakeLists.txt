@@ -20,10 +20,10 @@ set_target_properties(test_icheaders PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/icheaders")
 
 add_library(test_ic ${sources})
-set_target_properties(test_ic PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/icheaders"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/icheaders"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/icheaders")
+#set_target_properties(test_ic PROPERTIES
+#    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/icheaders"
+#    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/icheaders"
+#    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/icheaders")
 
 enable_testing()
 add_subdirectory(tests)
