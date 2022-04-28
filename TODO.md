@@ -1,7 +1,48 @@
-TODO
-----
-- update MAX_QPATH to something modern (like 256)
+# TODO
+
+## Current
+
+### Module system
+
+- allow dynamic libraries to be loaded at runtime which can extend the 
+  functionality of the program
+- modules should have `callbacks` or `hooks` into the real code, e.g.
+    - `sv_frame`
+    - `com_frame`
+    - `com_init`
+    - etc.
+- modules should be able to be linked against a modules library, which only
+  provides module-related functionality (e.g. _not_ the same as ic_test)
+    - custom hooks here like `m_printf` `m_error` etc. which redirect
+      back to the main code without requiring rebuilding
+- FUTURE: module hooks for scripts + adding script functionality
+
+### File system
+
+- files_io:372 // TODO: whatever this is // fun_080612a2(*file);
+- consider automagically converting base pk3s -> one pak zlib or something
+
+### BSP
+
 - figure out how to parse terrain data
+
+### Networking
+
+- implement OOB / networking so server can at least send/receive packets
+
+### Script system
+- preprocessor #define, #include, #ifdef, #ifndef, #else, #endif
+- foreach() 
+- do { ... } while()
+- increase stack size > 65536 WE HAVE THE TECHNOLOGY
+- 64 bit integers
+- gsx format
+    - for maximum compatiblity we can create .gsx files
+    - interchangeable with .gsc
+    - game looks for .gsx files _first_ before falling back to .gsc
+    - allows compatibility with vanilla installs without breaking
+
+## Other ideas / suggestions
 - general naming conventions for folders and files
     - remove any prefixes e.g. `common_` or `server_`
     - just simplify naming so that each file is named what it needs to be
@@ -10,77 +51,43 @@ TODO
     - as above, separate into more folders to make it cleaner
     - scripts
         - module support?
-- implement OOB / networking so server can at least send/receive packets
-- files_io:372 // TODO: whatever this is // fun_080612a2(*file);
 - modularize:
     - files
     - common stuff
     - system stuff
-
 - prawy suggestions
-    - Ah for client also weapons file settings needs to be fixed. Like if you use smoke grenade slot weird stuff happens and clip only is bugged i believe
-    - "for unknown reasons if weapon has 0 ammo, model isn't appearing but if u use cliponly 1 it is" that's what I found out sometime ago
-    - Idea for making 1.1 like 1.51. with more weapons, more weapons settings, more weapons slots, vehicles just like original UO sounds very good
-    - make vsay command work like in CoD UO 1.5 example /bind "key vsay 1 1"  so output is Follow me! They fixed vsay on 1.51
+    - Ah for client also weapons file settings needs to be fixed. 
+      Like if you use smoke grenade slot weird stuff happens and clip only 
+      is bugged i believe
+    - for unknown reasons if weapon has 0 ammo, model isn't appearing but 
+      if u use cliponly 1 it is" that's what I found out sometime ago
+    - Idea for making 1.1 like 1.51. with more weapons, more weapons 
+      settings, more weapons slots, vehicles just like original UO sounds 
+      very good
+    - make vsay command work like in CoD UO 1.5 example /bind "key vsay 1 1" 
+      so output is Follow me! They fixed vsay on 1.51
     - idea: fix for silence footsteps while on 500 fps or higher 
     - idea: fix connection interrupted while on high fps
-
 - fix pings on scoreboard
-
-- scripting additions
-    - preprocessor #define, #include, #ifdef, #ifndef, #else, #endif
-    - foreach() 
-    - do { ... } while()
-    - increase stack size > 65536 WE HAVE THE TECHNOLOGY
-    - 64 bit integers
-    - gsx format
-        - for maximum compatiblity we can create .gsx files
-        - interchangeable with .gsc
-        - game looks for .gsx files _first_ before falling back to .gsc
-        - allows compatibility with vanilla installs without breaking
-
-
 - max gametypes 32 -> 64 ?
-
-- make lengths size_t instead of int (e.g. in filesystem)
-
-- consider automagically converting base pk3s -> one pak zlib or something
-
 - server name more than 32 chars?
 - increase max models 256 -> 1024 
-
 - versioning stuff
     - autodetect version at run time
     - only load specific paks for 1.5 when needed, etc
     - config file for "default" cod version
-
 - client
     - replace pb field in server browser with version field?
     - or add custom version field
     - language var or something to force loading from localized_lang_pak
       fix bug where codmp.exe won't load polish lang font
-
 - uo compat or at least features?
     - vehicles
     - sprinting
     - maybe future just have a iocod project that can join
       all cod1/uo servers ?
-
 - codextended compatibility
     - script compat is most important
-
-
-### macos specific
-- fix: 'syscall' is deprecated
-- fix: format string is not a string literal printf stuff
-
-- <stddef.h> contains NULL & size_t
-- <stdint.h> contains intX_t, uintX_t, intptr_t, uintptr_t etc
-
-- MACOS_BUNDLE cmake flag
-- MACOS_BUNDLE_INFO_PLIST stuff
-
-### other ideas
 - refactor everything
     - really just try and eliminate reliance on `shared.h`
     - only include shared.h when you need `va()` etc
@@ -92,35 +99,20 @@ TODO
     - also figure out how to eliminate as many globals as possible
         - think about using structs instead of globals
         - what data needs to be global?
-- style
-    - think about using windows / gnome style for function declarations
-        - e.g. 
-            ```
-            void
-            function(int arg1,
-                     int arg2)
-            ```
-        - instead of 
-            ```
-            void function(int arg1, int arg2);
-            ```
-    - windows suggestion to use one line per variable definition
-        - e.g.
-            ```
-            int a; 
-            int b; 
-            int c;
-            ```
-        - instead of 
-            ```
-            int a, b, c;
-            ```
-    - consider whether to use windows style `_In_` or `_In_Out_` for 
-    function parameters (or better styled) like `IN` or `OUT`
- 
 
-Incomplete Functions
---------------------
+## Fixes
+
+### macos
+- fix: 'syscall' is deprecated
+- fix: format string is not a string literal printf stuff
+
+- <stddef.h> contains NULL & size_t
+- <stdint.h> contains intX_t, uintX_t, intptr_t, uintptr_t etc
+
+- MACOS_BUNDLE cmake flag
+- MACOS_BUNDLE_INFO_PLIST stuff
+
+## Incomplete Functions
 
 List of functions which are in varying degrees of completion
 
