@@ -209,6 +209,8 @@ add_subdirectory("external")
 if (WIN32)
     include_directories("external/dlfcn-win32")
     include_directories("external/dirent")
+    include_directories("external/getopt")
+    include_directories("external/unistd")
 endif()
 
 #
