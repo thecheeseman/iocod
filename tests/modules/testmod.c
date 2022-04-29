@@ -1,10 +1,12 @@
 #include "ic_modules.h"
 
-MODULE_EXPORT
-void module_free(void)
-{
-    
-}
+M_INFO_START()
+M_INFO_NAME("test module")
+M_INFO_DESCRIPTION("this is a test module for testing modularity")
+M_INFO_AUTHOR("cheese")
+M_INFO_EMAIL("cheese@cheesebox.net")
+M_INFO_VERSION(1, 0, 0)
+M_INFO_END()
 
 static enum m_error test(struct m_module *m, struct m_callback *c)
 {
@@ -13,15 +15,16 @@ static enum m_error test(struct m_module *m, struct m_callback *c)
     return MERR_OK;
 }
 
-MODULE_EXPORT
+M_EXPORT
 enum ic_module_error module_main(struct m_module *m)
 {
-    m->long_name = "test module";
-    m->author = "cheese";
-    m->email = "cheese@cheesebox.net";
-    m->version = MODULE_VERSION_ENCODE(1, 0, 0);
-
     m->add_callback(m, "test", test);
 
     return MERR_OK;
+}
+
+M_EXPORT
+void module_free(void)
+{
+
 }

@@ -17,10 +17,9 @@
     - `com_frame`
     - `com_init`
     - etc.
-- modules should be able to be linked against a modules library, which only
-  provides module-related functionality (e.g. _not_ the same as ic_test)
-    - custom hooks here like `m_printf` `m_error` etc. which redirect
-      back to the main code without requiring rebuilding
+- modules should not have to be linked against anything
+    - we provide functionality via `extern'd` functions in the headers
+    - they will be satisfied on runtime
 - FUTURE: module hooks for scripts + adding script functionality
 
 ### File system
