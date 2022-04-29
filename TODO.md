@@ -4,6 +4,12 @@
 
 ### Module system
 
+- callbacks code:
+    - have `add_callback(struct m_module *m, struct m_callback *);`
+    - so users create a local copy and then that is copied over to the internal
+      array
+    - easier to do this way instead of having a huge function stack
+    - enums for callback types ??
 - allow dynamic libraries to be loaded at runtime which can extend the 
   functionality of the program
 - modules should have `callbacks` or `hooks` into the real code, e.g.

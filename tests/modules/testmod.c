@@ -1,21 +1,27 @@
 #include "ic_modules.h"
 
-static void module_free(void)
+MODULE_EXPORT
+void module_free(void)
 {
-    m_printf("called from testmod.c module_free");
+    
+}
+
+static enum m_error test(struct m_module *m, struct m_callback *c)
+{
+    m_printf("test callback from %s\n", m->short_name);
+
+    return MERR_OK;
 }
 
 MODULE_EXPORT
-enum ic_module_error module_main(struct ic_module *m)
+enum ic_module_error module_main(struct m_module *m)
 {
-    m->set_info(m, 
-                "test module",
-                "this is a test module for testing functionality",
-                "thecheeseman",
-                "cheese@cheesebox.net",
-                1, 0, 0);
+    m->long_name = "test module";
+    m->author = "cheese";
+    m->email = "cheese@cheesebox.net";
+    m->version = MODULE_VERSION_ENCODE(1, 0, 0);
 
-    m->free = module_free;
+    m->add_callback(m, "test", test);
 
     return MERR_OK;
 }
