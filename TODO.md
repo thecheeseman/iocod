@@ -31,12 +31,81 @@
 - implement OOB / networking so server can at least send/receive packets
 
 ### Script system
-- preprocessor #define, #include, #ifdef, #ifndef, #else, #endif
-- foreach() 
-- do { ... } while()
+
+In terms of importance, ideas are rated [1] low importance - [5] high importance
+- preprocessor stuff
+    - [4] `#include`
+        ```c
+        /* cod2+ style */
+        #include maps\mp\_utility;
+        ```
+    - [5] `#define` 
+        ```c
+        #define CONST_INT       1
+        #define CONST_FLOAT     3.14
+        #define CONST_STRING    "string"
+
+        /* e.g. this code */
+        val = 52 / CONST_FLOAT;
+        /* becomes this after processing */
+        val = 52 / 3.14;
+        ```
+    - [1] #if, #ifdef, #ifndef, #elif, #else, #endif
+        ```c
+        #ifndef SOME_VALUE
+        #define SOME_VALUE 55
+        #endif
+
+        /* allow comparison operators: == != >= <= > < */
+        #if ANOTHER_VALUE >= SOME_VALUE
+        /* ... */
+        #elif ANOTHER_VALUE <= SOME_VALUE && ANOTHER_VALUE > 0
+        /* ... */
+        #else
+        /* ... */
+        #endif
+        ```
+    - [1] support for operators
+        ```c
+        && || ! 
+        > < >= <= == !=
+        ```
+- [3] `foreach() `
+    ```c
+    players = getEntArray("player", "classname");
+    foreach (player in players) {
+        /* do something */
+    }
+    ```
+- consts?
+    - other option instead of implementing `#define` is to do
+      global consts like MW2+
+        ```c
+        C_VALUE = 45;
+
+        some_function() {
+            /* ... */
+            v = C_VALUE + 1;
+        }
+        ```
+    - another idea is to allow enums
+        ```c
+        const {
+            V_ONE = 1,
+            V_TWO,
+            V_THREE
+        };
+        ```
+- [2] `do { ... } while()`
 - increase stack size > 65536 WE HAVE THE TECHNOLOGY
 - 64 bit integers
-- gsx format
+- [3] string interpolation
+    ```c
+    print(player.name + " killed " + player2.name + " with a " + weapon);
+    // is equivalent to
+    print("${player.name} killed ${player2.name} with a ${weapon}");
+    ```
+- [4] gsx format
     - for maximum compatiblity we can create .gsx files
     - interchangeable with .gsc
     - game looks for .gsx files _first_ before falling back to .gsc
