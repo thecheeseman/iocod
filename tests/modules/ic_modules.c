@@ -51,37 +51,6 @@ static void init_module_data(struct m_module *m, void *handle,
     m->main = NULL;
 }
 
-static bool initialized_properly(struct m_module *m)
-{
-    if (m->info == NULL) {
-        m_warning("module '%s' did not provide any information\n", 
-                  m->short_name);
-        return false;
-    }
-
-    if (m->info->name == NULL) {
-        m_warning("module '%s' missing 'long_name' field\n", m->short_name);
-        return false;
-    }
-
-    if (m->info->author == NULL) {
-        m_warning("module '%s' missing 'author' field\n", m->short_name);
-        return false;
-    }
-        
-    if (m->info->email == NULL) {
-        m_warning("module '%s' missing 'email' field\n", m->short_name);
-        return false;
-    }
-        
-    if (m->info->version == -1) {
-        m_warning("module '%s' missing 'version' field\n", m->short_name);
-        return false;
-    }
-
-    return true;
-}
-
 static void add_module(struct m_module *m)
 {
     struct m_module **_modules =
@@ -185,31 +154,30 @@ void module_open(const char *name)
 
     /* check for module info */
     m.info = dlsym(handle, "module_info");
-    if (m.info == NULL) {
-        m_debug_warning("'%s' missing 'module_info' symbol, skipping...\n",
-                        module_name);
-        return;
-    }
+    if (m.info != NULL) {
+        /* check if if the API version of the module is supported */
+        int v = m.info->api_version;
 
-    /* check if if the API version of the module is supported */
-    int v = m.info->api_version;
+        if (M_VERSION_DECODE_MAJOR(v) != M_API_VERSION_MAJOR) {
+            /* major version = incompatible API changes */
+            m_warning("module has different API version (%d.%d.%d) " \
+                      "than the system API version (%s)",
+                      M_VERSION_DECODE_MAJOR(v),
+                      M_VERSION_DECODE_MINOR(v),
+                      M_VERSION_DECODE_PATCH(v),
+                      M_API_VERSION_STRING);
 
-    if (M_VERSION_DECODE_MAJOR(v) != M_API_VERSION_MAJOR) {
-        /* major version = incompatible API changes */
-        m_warning("module has different API version (%d.%d.%d) " \
-                  "than the system API version (%s)",
-                  M_VERSION_DECODE_MAJOR(v),
-                  M_VERSION_DECODE_MINOR(v),
-                  M_VERSION_DECODE_PATCH(v),
-                  M_API_VERSION_STRING);
+            if (!load_different_api_versions) {
+                m_printf("... aborting\n");
+                return;
+            }
 
-        if (!load_different_api_versions) {
-            m_printf("... aborting\n");
-            return;
+            /* dangerous but if that's what you want */
+            m_printf("... loading anyway\n");
         }
-
-        /* dangerous but if that's what you want */
-        m_printf("... loading anyway\n");
+    } else {
+        m_debug_warning("'%s' did not provide any module information\n",
+                        module_name);
     }
 
     /* check for main entry point */
@@ -224,12 +192,6 @@ void module_open(const char *name)
     enum m_error err = m.main(M_INIT);
     if (err != M_OK) {
         m_error("module '%s' main failed\n", module_name);
-        return;
-    }
-
-    if (!initialized_properly(&m)) {
-        m_debug_warning("module '%s' not initialized properly, ignoring\n", 
-                        module_name);
         return;
     }
 

@@ -28,6 +28,7 @@
  * can know what it's loading and the end-user can also see what modules
  * they have installed/loaded.
  */
+#if 0
 /* always start with M_INFO_BEGIN() */
 M_INFO_BEGIN()
 
@@ -44,6 +45,7 @@ M_INFO_VERSION(1, 0 ,0)
 
 /* always end with M_INFO_END() */
 M_INFO_END()
+#endif
 
 static void module_init(void)
 {
