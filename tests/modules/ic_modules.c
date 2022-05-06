@@ -38,29 +38,6 @@ void modules_init(void)
     }
 }
 
-static enum m_error add_callback(struct m_module *m,
-                                 const char *name, 
-                                 void (*func)(struct m_module *m, 
-                                              struct m_callback *c))
-{
-    struct m_callback **cbs = ic_realloc(m->callbacks,
-                                         sizeof(struct m_callback *) *
-                                         (m->num_callbacks + 1));
-    if (cbs == NULL) {
-        ic_error("failed to allocate callback memory\n");
-        return MERR_FAILED_MALLOC;
-    }
-
-    m->callbacks = cbs;
-    m->callbacks[m->num_callbacks] = ic_malloc(sizeof(struct m_callback));
-    m->callbacks[m->num_callbacks]->name = name;
-    m->callbacks[m->num_callbacks]->func = func;
-
-    m->num_callbacks++;
-
-    return MERR_OK;
-}
-
 static void init_module_data(struct m_module *m, void *handle, 
                              const char *module_name, const char *module_path)
 {
@@ -70,40 +47,34 @@ static void init_module_data(struct m_module *m, void *handle,
     m->handle = handle;
     snprintf(m->path, sizeof(m->path), "%s", module_path);
 
-    m->long_name = NULL;
-    m->description = NULL;
-    m->author = NULL;
-    m->email = NULL;
-    m->version = -1;
-    m->api_version = -1;
-    
-    m->num_callbacks = 0;
-    m->add_callback = add_callback;
-
-    m->callbacks = ic_malloc(sizeof(*m->callbacks));
-
+    m->info = NULL;
     m->main = NULL;
-    m->free = NULL;
 }
 
 static bool initialized_properly(struct m_module *m)
 {
-    if (m->long_name == NULL) {
+    if (m->info == NULL) {
+        m_warning("module '%s' did not provide any information\n", 
+                  m->short_name);
+        return false;
+    }
+
+    if (m->info->name == NULL) {
         m_warning("module '%s' missing 'long_name' field\n", m->short_name);
         return false;
     }
 
-    if (m->author == NULL) {
+    if (m->info->author == NULL) {
         m_warning("module '%s' missing 'author' field\n", m->short_name);
         return false;
     }
         
-    if (m->email == NULL) {
+    if (m->info->email == NULL) {
         m_warning("module '%s' missing 'email' field\n", m->short_name);
         return false;
     }
         
-    if (m->version == -1) {
+    if (m->info->version == -1) {
         m_warning("module '%s' missing 'version' field\n", m->short_name);
         return false;
     }
@@ -131,17 +102,24 @@ static void add_module(struct m_module *m)
 static void print_module_info(struct m_module *m)
 {
     m_debug_printf("module info: %s\n", m->short_name);
-    m_debug_printf("  long name:   %s\n", m->long_name);
+
+    if (m->info == NULL) {
+        m_debug_printf("  no information provided\n");
+        return;
+    }
+
+    m_debug_printf("  long name:   %s\n", m->info->name);
     m_debug_printf("  description: %s\n", 
-                   m->description != NULL ? m->description : 
+                   m->info->description != NULL ? m->info->description :
                    "no description provided");
-    m_debug_printf("  author:      %s\n", m->author);
-    m_debug_printf("  email:       %s\n", m->email);
+    m_debug_printf("  author:      %s\n", m->info->author);
+    m_debug_printf("  email:       %s\n", m->info->email);
+    int version = m->info->version;
     m_debug_printf("  version:     %d.%d.%d\n",
-                   M_VERSION_DECODE_MAJOR(m->version),
-                   M_VERSION_DECODE_MINOR(m->version),
-                   M_VERSION_DECODE_PATCH(m->version));
-    int api = m->api_version;
+                   M_VERSION_DECODE_MAJOR(version),
+                   M_VERSION_DECODE_MINOR(version),
+                   M_VERSION_DECODE_PATCH(version));
+    int api = m->info->api_version;
     m_debug_printf("  api version: %d.%d.%d",
                    M_VERSION_DECODE_MAJOR(api),
                    M_VERSION_DECODE_MINOR(api),
@@ -153,134 +131,6 @@ static void print_module_info(struct m_module *m)
     } else {
         m_debug_printf("\n");
     }
-
-    m_debug_printf("  callbacks:\n", m->num_callbacks);
-    for (int i = 0; i < m->num_callbacks; i++) {
-        m_debug_printf("    %-3d %s\n", i + 1, m->callbacks[i]->name);
-    }
-}
-
-enum symbol_type {
-    STYPE_FUNC,
-    STYPE_INT,
-    STYPE_CHAR
-};
-
-struct symbol_table {
-    const char *sym;
-    intptr_t offset;
-    enum symbol_type type;
-    bool optional;
-};
-
-static struct symbol_table symtable[] = {
-    {
-        .sym = "_m_api_version",
-        .offset = offsetof(struct m_module, api_version),
-        .type = STYPE_INT,
-        .optional = false
-    },
-    {
-        .sym = "_m_info_name",
-        .offset = offsetof(struct m_module, long_name),
-        .type = STYPE_CHAR,
-        .optional = false
-    },
-    {
-        .sym = "_m_info_description",
-        .offset = offsetof(struct m_module, description),
-        .type = STYPE_CHAR,
-        .optional = true
-    },
-    {
-        .sym = "_m_info_author",
-        .offset = offsetof(struct m_module, author),
-        .type = STYPE_CHAR,
-        .optional = false
-    },
-    {
-        .sym = "_m_info_email",
-        .offset = offsetof(struct m_module, email),
-        .type = STYPE_CHAR,
-        .optional = false
-    },
-    {
-        .sym = "_m_info_version",
-        .offset = offsetof(struct m_module, version),
-        .type = STYPE_INT,
-        .optional = false
-    },
-    {
-        .sym = "module_main",
-        .offset = offsetof(struct m_module, main),
-        .type = STYPE_FUNC,
-        .optional = false
-    },
-    {
-        .sym = "module_free",
-        .offset = offsetof(struct m_module, free),
-        .type = STYPE_FUNC,
-        .optional = false
-    },
-};
-
-static size_t symtable_size = ARRAY_SIZE(symtable);
-
-/**
- * @brief Load all the symbols from the given module
- * 
- * Goes through the symbol table and loads the necessary symbols into
- * the module struct automatically
- * 
- * @param m module
-*/
-static bool load_symbols(struct m_module *m)
-{
-    for (size_t i = 0; i < symtable_size; i++) {
-        struct symbol_table *s = &symtable[i];
-
-        void *sym = dlsym(m->handle, s->sym);
-        if (sym == NULL && !s->optional) {
-            m_debug_warning("error loading symbol '%s' in '%s':\n    %s\n", 
-                            s->sym,
-                            m->short_name,
-                            dlerror());
-            return false;
-        }
-
-        intptr_t *ptr = (intptr_t *) ((byte *) m + s->offset);
-        switch (s->type) {
-        case STYPE_FUNC:
-            *ptr = sym;
-            break;
-        case STYPE_INT:
-            *ptr = *(int *) sym;
-            break;
-        case STYPE_CHAR:
-            *ptr = *(const char **) sym;
-            break;
-        }
-    }
-
-    return true;
-}
-
-/**
- * @brief Check if the given handle is a valid module
- * 
- * All modules should have a publically exported `m_magic` integer which 
- * equals the magic value of 0x21730. This is an easy check to make sure
- * we have a legit module and aren't trying to load some other shared objects.
- * 
- * @param handle handle to check
-*/
-static bool valid_module(void *handle)
-{
-    void *magic = dlsym(handle, "_m_magic");
-    if (magic == NULL || *(int *) magic != 0x21730)
-        return false;
-
-    return true;
 }
 
 /**
@@ -329,21 +179,20 @@ void module_open(const char *name)
         return;
     }
 
-    if (!valid_module(handle)) {
-        m_debug_warning("'%s' is not a valid module file, skipping...\n",
-                        module_name);
-        return;
-    }
-
     /* initialize module data */
     struct m_module m;
     init_module_data(&m, handle, module_name, module_path);
 
-    if (!load_symbols(&m))
+    /* check for module info */
+    m.info = dlsym(handle, "module_info");
+    if (m.info == NULL) {
+        m_debug_warning("'%s' missing 'module_info' symbol, skipping...\n",
+                        module_name);
         return;
+    }
 
     /* check if if the API version of the module is supported */
-    int v = m.api_version;
+    int v = m.info->api_version;
 
     if (M_VERSION_DECODE_MAJOR(v) != M_API_VERSION_MAJOR) {
         /* major version = incompatible API changes */
@@ -363,9 +212,17 @@ void module_open(const char *name)
         m_printf("... loading anyway\n");
     }
 
+    /* check for main entry point */
+    m.main = dlsym(handle, "module_main");
+    if (m.main == NULL) {
+        m_debug_warning("'%s' missing 'module_main', skipping...\n",
+                        module_name);
+        return;
+    }
+
     /* load main */
-    enum ic_mod_error err = m.main(&m);
-    if (err != MERR_OK) {
+    enum m_error err = m.main(M_INIT);
+    if (err != M_OK) {
         m_error("module '%s' main failed\n", module_name);
         return;
     }
@@ -389,15 +246,7 @@ void module_open(const char *name)
 void modules_free(void)
 {
     for (size_t i = 0; i < num_modules; i++) {
-        if (modules[i]->free != NULL)
-            modules[i]->free();
-
-        if (modules[i]->num_callbacks) {
-            for (int j = 0; j < modules[i]->num_callbacks; j++)
-                ic_free(modules[i]->callbacks[j]);
-        }
-
-        ic_free(modules[i]->callbacks);
+        modules[i]->main(M_FREE);
 
         dlclose(modules[i]->handle);
         ic_free(modules[i]);
@@ -428,16 +277,16 @@ void m_message_hook(enum message_hook_type type, const char *fmt, ...)
 
     switch (type) {
     case MHOOK_PRINTF:      
-        ic_printf(msg); 
+        ic_printf("%s", msg);
         break;
     case MHOOK_WARNING:     
-        ic_warning(msg); 
+        ic_warning("%s", msg);
         break;
     case MHOOK_ERROR:       
-        ic_error(msg); 
+        ic_error("%s", msg);
         break;
     case MHOOK_ERROR_FATAL: 
-        ic_error_fatal(msg); 
+        ic_error_fatal("%s", msg);
         break;
     default:
         break;

@@ -56,6 +56,8 @@
  */
 
 #include <stddef.h>
+#include <stdint.h>
+#include <stdarg.h>
 
 #define MODULE_DEBUG
 
@@ -63,7 +65,7 @@
 #define M_EXPORT __declspec(dllexport)
 __pragma(warning(disable:4047)) /* differs in levels of indirection */
 #else
-#define M_EXPORT extern
+#define M_EXPORT 
 #endif
 
 /* stringify */
@@ -77,7 +79,7 @@ __pragma(warning(disable:4047)) /* differs in levels of indirection */
 #define M_VERSION_DECODE_PATCH(version)        ((version) % 1000)
 
 #define M_API_VERSION_MAJOR 0
-#define M_API_VERSION_MINOR 9
+#define M_API_VERSION_MINOR 10
 #define M_API_VERSION_PATCH 0
 #define M_API_VERSION M_VERSION_ENCODE(M_API_VERSION_MAJOR, \
         M_API_VERSION_MINOR, M_API_VERSION_PATCH)
@@ -87,57 +89,116 @@ __pragma(warning(disable:4047)) /* differs in levels of indirection */
     "." STRINGIFY(M_API_VERSION_MINOR) \
     "." STRINGIFY(M_API_VERSION_PATCH)
 
-#define M_INFO_START() \
-    M_EXPORT const int _m_magic = 0x21730; \
-    M_EXPORT const int _m_api_version = M_API_VERSION;
-#define M_INFO_NAME(n) \
-    M_EXPORT const char *_m_info_name = n;
-#define M_INFO_DESCRIPTION(d) \
-    M_EXPORT const char *_m_info_description = d;
-#define M_INFO_AUTHOR(a) \
-    M_EXPORT const char *_m_info_author = a;
-#define M_INFO_EMAIL(e) \
-    M_EXPORT const char *_m_info_email = e;
-#define M_INFO_VERSION(maj, min, patch) \
-    M_EXPORT const int _m_info_version = M_VERSION_ENCODE(maj, min, patch);
-#define M_INFO_END()
+typedef intptr_t m_ptr;
 
 enum m_error {
-    MERR_OK,
-    MERR_ALREADY_INIT,
-    MERR_FAILED_MALLOC,
-    MERR_NEW_VERSION
+    M_OK,
+    M_ERR_ALREADY_INIT,
+    M_ERR_FAILED_MALLOC,
+    M_ERR_NEW_VERSION
 };
 
-struct m_callback {
-    const char *name;
-    void (*func)(struct m_module *m, struct m_callback *c);
+/**
+ * @def M_INFO_BEGIN
+ * @brief Begin module information section.
+ * 
+ * This must be called after including the module header, and before
+ * any code segment in your module's main source file. This information
+ * is used to provide the module system with knowledge of what it's
+ * actually loading, so please make sure to provide this.
+ */
+#define M_INFO_BEGIN() M_EXPORT struct m_module_info module_info = {
+
+/**
+ * @def M_INFO_NAME
+ * @brief Name of your module
+ * @param n name
+ */
+#define M_INFO_NAME(n)          .name = n,
+
+/**
+ * @def M_INFO_DESCRIPTION
+ * @brief Brief description of what your module does.
+ * @param d description
+ */
+#define M_INFO_DESCRIPTION(d)   .description = d,
+
+/**
+ * @def M_INFO_AUTHOR
+ * @brief Your name or username.
+ * @param a author name
+ */
+#define M_INFO_AUTHOR(a)        .author = a,
+
+/**
+ * @def M_INFO_EMAIL
+ * @brief An email address you can be reached at.
+ * @param e email address
+ */
+#define M_INFO_EMAIL(e)         .email = e,
+
+/**
+ * @def M_INFO_VERSION
+ * @brief Your module's version information.
+ * @param m major version
+ * @param n minor version
+ * @param p patch version
+ */
+#define M_INFO_VERSION(m, n, p) .version = M_VERSION_ENCODE(m, n, p),
+
+/**
+ * @def M_INFO_END
+ * @brief End module information section.
+ * 
+ * This must be called after all module information has been set. It will
+ * automatically append the current `M_API_VERSION` of the module API you
+ * have installed, so other systems can know if they are compatible with
+ * your module.
+ */
+#define M_INFO_END()            .api_version = M_API_VERSION };
+
+#define M_SETUP_ARG_COUNT 4
+/**
+ * @def M_SETUP_ARGS
+ * @brief Set up module variable arguments.
+ * 
+ * This is necessary for module_main communication to work with the module
+ * system.
+ */
+#define M_SETUP_ARGS() \
+    m_ptr args[M_SETUP_ARG_COUNT]; \
+    va_list ap; \
+    va_start(ap, command); \
+    for (m_ptr i = 0; i < M_SETUP_ARG_COUNT; i++) \
+        args[i] = va_arg(ap, m_ptr); \
+    va_end(ap);
+
+enum m_callbacks {
+    M_INIT,                     /// module init stage
+    M_FREE,                     /// module free stage
+    M_TEST_CALLBACK             
 };
 
-struct m_module {
+struct m_module_info {
     /* user modifiable fields */
-    const char *long_name;      /// name of module
+    const char *name;           /// name of module
     const char *description;    /// short description
     const char *author;         /// author name
     const char *email;          /// author email
     int version;                /// module version
+    int api_version;            /// api version module is built for
+};
 
-    /* internal fields that shouldn't be modified by users */
+struct m_module {
+    struct m_module_info *info; /// module info passed from module
+
     size_t id;                  /// internal id that matches dynamic array
     const char *short_name;     /// always equal to filename
-    int api_version;            /// api version module was built with
 
     char path[256];             /// exact path to module
     void *handle;               /// handle from dlsym
 
-    enum m_error (*main)(struct m_module *);    /// func ptr to `module_main`
-    void (*free)(void);                         /// func ptr to `module_free`
-
-    int num_callbacks;              /// number of registered callbacks
-    struct m_callback **callbacks;  /// list of callbacks
-    enum m_error (*add_callback)(struct m_module *,
-                                 const char *, void (*)(struct m_module *m,
-                                                        struct m_callback *c));
+    m_ptr (*main)(m_ptr command, ...); /// func ptr to `module_main`
 };
 
 enum message_hook_type {
