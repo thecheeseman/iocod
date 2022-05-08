@@ -8,7 +8,7 @@
 /*
  * HEADERS
  * 
- * You only need to include "ic_modules.h" to get access to the module system
+ * You only need to include "m_module.h" to get access to the module system
  * and anything iocod-related. You can import any other headers you want
  * to support functionality in your module.
  * 
@@ -18,7 +18,7 @@
  * cause stability problems, so it's best to use the built-in module supplied
  * functions instead of the standard library where possible.
  */
-#include "ic_modules.h"
+#include "m_module.h"
 
 /*
  * MODULE INFO
@@ -28,7 +28,6 @@
  * can know what it's loading and the end-user can also see what modules
  * they have installed/loaded.
  */
-#if 0
 /* always start with M_INFO_BEGIN() */
 M_INFO_BEGIN()
 
@@ -41,11 +40,10 @@ M_INFO_AUTHOR("cheese")
 /* your email */
 M_INFO_EMAIL("cheese@cheesebox.net")
 /* module version*/
-M_INFO_VERSION(1, 0 ,0)
+M_INFO_VERSION(1, 0, 0)
 
 /* always end with M_INFO_END() */
 M_INFO_END()
-#endif
 
 static void module_init(void)
 {
@@ -90,20 +88,42 @@ m_ptr module_main(m_ptr command, ...)
      * any of the variadic arguments passed to this function. You can
      * access the arguments via the local variable args[].
      * 
+     * M_SETUP_ARGS() takes one parameter: command
+     * 
      * You could manually set up varargs if you want but it's easier just
      * to use this macro :)
      */
-    M_SETUP_ARGS();
+    M_SETUP_ARGS(command);
 
     switch (command) {
+    /*
+     * M_INIT is always called by the system. Use this to initialize any data
+     * that you might need.
+     */
     case M_INIT:
         module_init();
         break;
+    /* 
+     * M_FREE is always called by the system on shutdown. Free any data you 
+     * allocated or do whatever you need to close your module.
+     */
     case M_FREE:
         module_free();
         break;
+
+    /*
+     * Here you can define any other callbacks you would like to use.
+     * See `m_module.h` for the full list
+     */
+
+    /*
+     * The system will always call the module with every callback that the 
+     * system has available. You can choose to leave a warning or simply 
+     * ignore any unsupported callbacks
+     */
     default:
-        m_debug_printf("unknown system call %d\n", command);
+        m_dwarning(va("%s: unsupported callback %s (%d)\n", module_info.name, 
+                      m_callback_name(command), command));
         break;
     }
 

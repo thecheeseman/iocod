@@ -1,7 +1,4 @@
-#include "../icheaders/iocod.h"
-#define MODULE_INTERNAL
 #include "ic_modules.h"
-
 #include "unistd.h"
 #include "dlfcn.h"
 #include "dirent.h"
@@ -11,10 +8,6 @@ static size_t num_modules;
 
 // TODO: config value
 static bool load_different_api_versions = true;
-
-void module_open(const char *name);
-
-#define MODULE_EXT "." IC_PLATFORM_DLL
 
 void modules_init(void)
 {
@@ -152,6 +145,15 @@ void module_open(const char *name)
     struct m_module m;
     init_module_data(&m, handle, module_name, module_path);
 
+    /* check for dll entry point */
+    m.entry = dlsym(handle, "module_entry");
+    if (m.entry == NULL) {
+        m_debug_warning("'%s' missing 'module_entry', skipping...\n",
+                        module_name);
+        return;
+    }
+    m.entry(m_syscall);
+
     /* check for module info */
     m.info = dlsym(handle, "module_info");
     if (m.info != NULL) {
@@ -189,7 +191,7 @@ void module_open(const char *name)
     }
 
     /* load main */
-    enum m_error err = m.main(M_INIT);
+    enum m_error err = m.main(M_INIT, &m);
     if (err != M_OK) {
         m_error("module '%s' main failed\n", module_name);
         return;
@@ -197,6 +199,67 @@ void module_open(const char *name)
 
     add_module(&m);
     print_module_info(&m);
+}
+
+/**
+ * @brief Run a callback on all modules
+ * 
+ * Will automatically call each module with the given callback. If the module
+ * does not have it, won't do anything.
+ * 
+ * @param callback specific callback to run
+ * @param ...
+*/
+void modules_callback(enum m_callback callback, ...)
+{
+    M_SETUP_ARGS(callback);
+
+    bool quit = false;
+    for (size_t i = 0; i < num_modules; i++) {
+        struct m_module *m = modules[i];
+
+        switch (callback) {
+        case M_INIT:
+        case M_FREE:
+            /* don't allow these two to be called again */
+            break;
+
+        case M_COM_INIT:
+        case M_SCRIPT_INIT:
+        case M_SV_INIT:
+        case M_COM_INIT_POST:
+            /* we pass along the `char *cmdline` to any callback */
+            m->main(callback, args[1]);
+            break;
+
+        case M_COM_SHUTDOWN:
+        case M_SCRIPT_SHUTDOWN:
+        case M_COM_SHUTDOWN_POST:
+            /* nothing to pass */
+            m->main(callback);
+            break;
+
+        case M_COM_FRAME:
+        case M_SV_FRAME:
+        case M_COM_FRAME_POST:
+            /* pass along msec */
+            m->main(callback, args[1]);
+            break;
+        case M_CL_FRAME:
+            /* pass along msec, timescale */
+            m->main(callback, args[1], args[2]);
+            break;
+            break;
+
+        default:
+            quit = true; /* don't spam warnings more than once */
+            m_debug_warning("Unknown callback %d\n", callback);
+            break;
+        }
+
+        if (quit)
+            break;
+    }
 }
 
 /**
@@ -217,40 +280,3 @@ void modules_free(void)
     ic_free(modules);
 }
 
-/**
- * @brief Hook for modules to print things to the console
- * 
- * @param type hook type
- * @param fmt format string
- * @param ...
- * 
- * @note It is recommended to use the macros `m_printf()`, `m_warning()`, 
- * `m_error()`, and `m_error_fatal()` instead of calling this directly
-*/
-M_EXPORT
-void m_message_hook(enum message_hook_type type, const char *fmt, ...)
-{
-    char msg[1024];
-
-    va_list argptr;
-    va_start(argptr, fmt);
-    vsnprintf(msg, sizeof(msg), fmt, argptr);
-    va_end(argptr);
-
-    switch (type) {
-    case MHOOK_PRINTF:      
-        ic_printf("%s", msg);
-        break;
-    case MHOOK_WARNING:     
-        ic_warning("%s", msg);
-        break;
-    case MHOOK_ERROR:       
-        ic_error("%s", msg);
-        break;
-    case MHOOK_ERROR_FATAL: 
-        ic_error_fatal("%s", msg);
-        break;
-    default:
-        break;
-    }
-}
