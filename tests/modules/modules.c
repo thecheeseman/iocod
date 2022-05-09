@@ -23,7 +23,7 @@ void modules_init(void)
                 continue;
             }
 
-            if (strstr(ent->d_name, MODULE_EXT) != 0)
+            if (strstr(ent->d_name, M_EXT) != 0)
                 module_open(ent->d_name);
         }
 
@@ -111,7 +111,7 @@ void module_open(const char *name)
 {
     char module_name[64];
     snprintf(module_name, sizeof(module_name), "%s%s", 
-             name, strstr(name, MODULE_EXT) ? "" : MODULE_EXT);
+             name, strstr(name, M_EXT) ? "" : M_EXT);
 
     char module_path[256];
     snprintf(module_path, sizeof(module_path), "%s", module_name);
@@ -212,7 +212,13 @@ void module_open(const char *name)
 */
 void modules_callback(enum m_callback callback, ...)
 {
-    M_SETUP_ARGS(callback);
+    m_ptr args[M_SETUP_ARG_COUNT] = {0};
+
+    va_list argptr;
+    va_start(argptr, callback);
+    for (size_t i = 1; i < M_SETUP_ARG_COUNT; i++)
+        args[i] = va_arg(argptr, m_ptr);
+    va_end(argptr);
 
     bool quit = false;
     for (size_t i = 0; i < num_modules; i++) {
@@ -222,6 +228,10 @@ void modules_callback(enum m_callback callback, ...)
         case M_INIT:
         case M_FREE:
             /* don't allow these two to be called again */
+            break;
+
+        case M_TEST_CALLBACK:
+            m->main(callback, args[1]);
             break;
 
         case M_COM_INIT:
@@ -248,7 +258,6 @@ void modules_callback(enum m_callback callback, ...)
         case M_CL_FRAME:
             /* pass along msec, timescale */
             m->main(callback, args[1], args[2]);
-            break;
             break;
 
         default:

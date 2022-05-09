@@ -7,7 +7,7 @@
 #include "m_module.h"
 
 struct m_module {
-    struct m_module_info *info; /// module info passed from module
+    struct m_info *info; /// module info passed from module
 
     size_t id;                  /// internal id that matches dynamic array
     const char *short_name;     /// always equal to filename
@@ -28,7 +28,7 @@ void m_message_hook(enum m_syscall type, const char *fmt, ...);
 #define m_debug_printf(...) m_message_hook(M_DPRINTF, __VA_ARGS__)
 #define m_debug_warning(...) m_message_hook(M_DWARNING, __VA_ARGS__)
 
-#define MODULE_EXT "." IC_PLATFORM_DLL
+#define M_EXT "." IC_PLATFORM_DLL
 
 void modules_init(void);
 void module_open(const char *name);

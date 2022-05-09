@@ -46,6 +46,8 @@ void ic_free(void *ptr)
 {
     if (ptr != NULL)
         free(ptr);
+
+    ptr = NULL; /* MEM01-C */
 }
 
 IC_MALLOC 

@@ -3,14 +3,6 @@
  */
 #include "m_module.h"
 
-M_INFO_BEGIN()
-M_INFO_NAME("test module #2")
-M_INFO_DESCRIPTION("more dscription")
-M_INFO_AUTHOR("cheese")
-M_INFO_EMAIL("cheese@cheesebox.net")
-M_INFO_VERSION(3, 0, 0)
-M_INFO_END()
-
 static void module_init(void)
 {
     

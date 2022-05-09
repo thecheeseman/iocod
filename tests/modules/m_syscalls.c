@@ -58,7 +58,7 @@ char *M_DECL va(const char *fmt, ...)
     vsnprintf(tmpbuf, sizeof(tmpbuf), fmt, argptr);
     va_end(argptr);
 
-    size_t len = strlen(tmpbuf);
+    size_t len = strnlen(tmpbuf, MAX_VA_STRING);
     if (len + index >= MAX_VA_STRING - 1)
         index = 0;
 

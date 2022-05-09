@@ -107,6 +107,7 @@ enum m_error {
 enum m_callback {
     M_INIT,                     /// module init stage
     M_FREE,                     /// module free stage
+    M_TEST_CALLBACK,
 
     M_COM_INIT = 0x10,          /// called before `M_SCRIPT_INIT`
     M_SCRIPT_INIT,
@@ -125,7 +126,7 @@ enum m_callback {
     M_MAX_CALLBACKS
 };
 
-struct m_module_info {
+struct m_info {
     const char *name;           /// name of module
     const char *description;    /// short description
     const char *author;         /// author name
@@ -144,71 +145,12 @@ struct m_module_info {
  */
 #define M_SETUP_ARGS(x) \
     m_ptr args[M_SETUP_ARG_COUNT]; \
-    args[0] = x; \
+    args[0] = (x); \
     va_list ap; \
-    va_start(ap, x); \
+    va_start(ap, (x)); \
     for (m_ptr i = 1; i < M_SETUP_ARG_COUNT; i++) \
         args[i] = va_arg(ap, m_ptr); \
     va_end(ap);
-
-/**
- * @def M_INFO_BEGIN
- * @brief Begin module information section.
- *
- * This must be called after including the module header, and before
- * any code segment in your module's main source file. This information
- * is used to provide the module system with knowledge of what it's
- * actually loading, so please make sure to provide this.
- */
-#define M_INFO_BEGIN() M_EXPORT struct m_module_info module_info = {
-
-/**
- * @def M_INFO_NAME
- * @brief Name of your module
- * @param n name
- */
-#define M_INFO_NAME(n)          .name = n,
-
-/**
- * @def M_INFO_DESCRIPTION
- * @brief Brief description of what your module does.
- * @param d description
- */
-#define M_INFO_DESCRIPTION(d)   .description = d,
-
-/**
- * @def M_INFO_AUTHOR
- * @brief Your name or username.
- * @param a author name
- */
-#define M_INFO_AUTHOR(a)        .author = a,
-
-/**
- * @def M_INFO_EMAIL
- * @brief An email address you can be reached at.
- * @param e email address
- */
-#define M_INFO_EMAIL(e)         .email = e,
-
-/**
- * @def M_INFO_VERSION
- * @brief Your module's version information.
- * @param m major version
- * @param n minor version
- * @param p patch version
- */
-#define M_INFO_VERSION(m, n, p) .version = M_VERSION_ENCODE(m, n, p),
-
-/**
- * @def M_INFO_END
- * @brief End module information section.
- *
- * This must be called after all module information has been set. It will
- * automatically append the current `M_API_VERSION` of the module API you
- * have installed, so other systems can know if they are compatible with
- * your module.
- */
-#define M_INFO_END()            .api_version = M_API_VERSION };
 
 /*
  * Syscalls available to the module system

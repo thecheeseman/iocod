@@ -22,28 +22,25 @@
 
 /*
  * MODULE INFO
- * 
+ *
  * While this is not strictly "required" -- it is highly recommended that you
  * provide some information about your module. This way, the module system
  * can know what it's loading and the end-user can also see what modules
  * they have installed/loaded.
+ * 
+ * Please note that the prototype provided here is required:
+ * @code
+ * M_EXPORT const struct m_info module_info
+ * @endcode
  */
-/* always start with M_INFO_BEGIN() */
-M_INFO_BEGIN()
-
-/* name of your module */
-M_INFO_NAME("test module")
-/* short description */
-M_INFO_DESCRIPTION("description goes here")
-/* your name or username */
-M_INFO_AUTHOR("cheese")
-/* your email */
-M_INFO_EMAIL("cheese@cheesebox.net")
-/* module version*/
-M_INFO_VERSION(1, 0, 0)
-
-/* always end with M_INFO_END() */
-M_INFO_END()
+M_EXPORT const struct m_info module_info = {
+    .name = "test module",
+    .description = "description goes here",
+    .author = "cheese",
+    .email = "cheese@cheesebox.net",
+    .version = M_VERSION_ENCODE(1, 0, 0),
+    .api_version = M_API_VERSION
+};
 
 static void module_init(void)
 {
@@ -90,8 +87,7 @@ m_ptr module_main(m_ptr command, ...)
      * 
      * M_SETUP_ARGS() takes one parameter: command
      * 
-     * You could manually set up varargs if you want but it's easier just
-     * to use this macro :)
+     * All arguments start at index 1 (args[0] = command)
      */
     M_SETUP_ARGS(command);
 
@@ -109,6 +105,10 @@ m_ptr module_main(m_ptr command, ...)
      */
     case M_FREE:
         module_free();
+        break;
+
+    case M_TEST_CALLBACK:
+        m_printf(va("test callback got %d %d %d\n", command, args[1], args[2]));
         break;
 
     /*
