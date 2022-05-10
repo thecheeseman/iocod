@@ -1,7 +1,7 @@
 ﻿{
   "configurations": [
     {
-      "name": "linux-i386",
+      "name": "linux32",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "name": "linux-x86_64",
+      "name": "linux64",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -35,7 +35,7 @@
       "remoteCopyAdditionalIncludeDirectories": [ "/usr/include" ]
     },
     {
-      "name": "windows-x86",
+      "name": "win32",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -58,7 +58,7 @@
       ]
     },
     {
-      "name": "windows-x64",
+      "name": "win64",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",

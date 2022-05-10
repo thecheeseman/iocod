@@ -2,6 +2,10 @@
 
 ## Current
 
+## General
+
+- setup macos build system (details [here](https://devblogs.microsoft.com/cppblog/visual-studio-for-remote-macos-c-development/))
+
 ### Module system
 
 - allow dynamic libraries to be loaded at runtime which can extend the 
