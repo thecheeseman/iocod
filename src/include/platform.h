@@ -63,12 +63,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* PLATFORM_COMPILER */
 
 /* architecture */
-#if defined __i386__ 
-#define PLATFORM_ARCH "i386" /* 32-bit *nix */
-#elif defined _M_IX86
-#define PLATFORM_ARCH "x86" /* 32-bit windows */
+#if defined __i386__ || defined _M_IX86
+#define PLATFORM_ARCH "32"
 #elif defined __x86_64__ || defined _M_AMD64
-#define PLATFORM_ARCH "x86_64"
+#define PLATFORM_ARCH "64"
 #elif defined __arm__
 #if defined __arm64__ || defined __aarch64__
 #define PLATFORM_ARCH "arm64"

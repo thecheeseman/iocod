@@ -21,7 +21,7 @@ void * DECL sys_load_dll(const char *name, char *fqpath,
 
     *fqpath = '\0';
 
-    snprintf(filename, sizeof(filename), "%s_mp_%s.%s", name, PLATFORM_ARCH,
+    snprintf(filename, sizeof(filename), "ic%s%s.%s", name, PLATFORM_ARCH,
              PLATFORM_DLL);
 
     basepath = cvar_variable_string("fs_basepath");

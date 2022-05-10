@@ -169,8 +169,8 @@ and testing. Check the [roadmap](#roadmap) for more details about the timeline.
 #### Instructions
 1. Download from source or git clone repo
 2. Run `cmake . && cmake --build .`
-3. Copy `out/iocod` to your `callofduty` installation
-4. Copy `out/game.mp.x86_64.so` to your `callofduty/main`
+3. Copy `bin/iocod` to your `callofduty` installation
+4. Copy `bin/main/icgame64.so` to your `callofduty/main`
 
 
 ### Windows
@@ -182,8 +182,8 @@ and testing. Check the [roadmap](#roadmap) for more details about the timeline.
 1. Open Visual Studio 2022 & import the CMake project
 2. Build from build menu
 3. Navigate to output directory
-4. Copy `out\iocod.exe` to your `Call of Duty` folder
-5. Copy `out\game_mp_x86_64.dll` to your `Call of Duty\main` folder
+4. Copy `bin\iocod.exe` to your `Call of Duty` folder
+5. Copy `bin\main\icgame64.dll` to your `Call of Duty\main` folder
 
 ## License
 
