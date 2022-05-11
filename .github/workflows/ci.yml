@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    name: build_test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: checkout
+      - uses: actions/checkout@v3
+
+      - name: configure
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
