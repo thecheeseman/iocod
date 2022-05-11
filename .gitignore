@@ -84,3 +84,7 @@ CPPLINT.cfg
 
 # old stuff 
 old/
+
+# force include curl libs for static linking
+!curl.lib
+!libcurl.a

@@ -10,14 +10,6 @@ env:
   BUILD_TYPE: Debug
 
 jobs:
-  install-deps-ubuntu:
-    name: install dependencies (Ubuntu)
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: install cURL
-        run: sudo apt-get install -y libcurl4-openssl-dev
-
   build:
     name: build
     strategy:
