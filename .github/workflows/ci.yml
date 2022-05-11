@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: configure
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
