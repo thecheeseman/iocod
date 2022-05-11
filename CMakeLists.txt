@@ -72,7 +72,7 @@ option(COMPILE_32_BIT "Compile 32-bit binaries and game dll" FALSE)
 option(BUILD_PRELOAD "Build preload library" OFF)
 option(BUILD_PROTOTYPEGEN "Build script prototype generator" OFF) 
 option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_RUNTIME_ZIP "Build .zip of runtime files" ON)
+option(BUILD_RUNTIME_ZIP "Build .zip of runtime files" OFF)
 
 #
 # check for system/compiler properties and header files
