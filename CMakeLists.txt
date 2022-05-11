@@ -106,6 +106,13 @@ include_directories("src/external")     # TODO: this needs to be moved to /exter
 include_directories("src/include")      # internal headers
 include_directories("src")
 
+if (WIN32)
+    include_directories("external/dlfcn-win32")
+    include_directories("external/dirent")
+endif()
+
+include_directories("external/miniz")
+
 #
 # link directory
 #
@@ -156,10 +163,6 @@ add_subdirectory("src")
 # external libraries
 #
 add_subdirectory("external")
-if (WIN32)
-    include_directories("external/dlfcn-win32")
-    include_directories("external/dirent")
-endif()
 
 #
 # various options
@@ -229,10 +232,10 @@ set_target_properties(iocod_game PROPERTIES
 # linker options
 #
 if (WIN32)
-    target_link_libraries(iocod dl getopt winmm curl)
+    target_link_libraries(iocod dl getopt winmm miniz curl)
     target_link_libraries(iocod_game)
 else()
-    target_link_libraries(iocod ${CMAKE_DL_LIBS} m curl)
+    target_link_libraries(iocod ${CMAKE_DL_LIBS} m miniz curl)
     target_link_libraries(iocod_game m)
 endif()
 

@@ -152,6 +152,7 @@ for posterity.
   - [dlfcn-win32][13] - Ramiro Polla
   - [getopt][14] - Hans Dietrich
   - [unistd.h][15] - AShelly
+  - [miniz][16] - richgel999
 
 ## Building & Installation
 
@@ -215,3 +216,4 @@ For more information or to read the full license agreement, see
 [13]: <https://github.com/dlfcn-win32/dlfcn-win32>
 [14]: <https://www.codeproject.com/Articles/1940/XGetopt-A-Unix-compatible-getopt-for-MFC-and-Win32>
 [15]: <https://stackoverflow.com/a/826027/1202830>
+[16]: <https://github.com/richgel999/miniz>
