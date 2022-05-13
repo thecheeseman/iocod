@@ -8,9 +8,12 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define IC_VERSION_MAJOR @iocod_VERSION_MAJOR@
-#define IC_VERSION_MINOR @iocod_VERSION_MINOR@
-#define IC_VERSION_PATCH @iocod_VERSION_PATCH@
+#define IC_VERSION_MAJOR    @iocod_VERSION_MAJOR@
+#define IC_VERSION_MINOR    @iocod_VERSION_MINOR@
+#define IC_VERSION_PATCH    @iocod_VERSION_PATCH@
+#define IC_CMAKE_OS         "@IC_OS@"
+#define IC_CMAKE_PLATFORM   "@IC_PLATFORM@"
+#cmakedefine01 IC_CMAKE_64BIT
 
 /* Defined to 1 if the system provides `strdup()` */
 #cmakedefine HAVE_STRDUP 1

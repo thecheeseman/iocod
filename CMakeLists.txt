@@ -66,13 +66,37 @@ set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
   STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 #
+# architecture checks
+#
+include(CheckArchitecture)
+
+#
 # main options
 #
-option(COMPILE_32_BIT "Compile 32-bit binaries and game dll" FALSE)
+
+# if we're building on a 64-bit system, allow the user to optionally
+# force build a 32-bit version
+if (IC_64BIT)
+    set(IC_CMAKE_64BIT TRUE)
+    option(BUILD_32_BIT "Build 32-bit binaries" FALSE)
+
+    if (BUILD_32_BIT)
+        set(IC_CMAKE_64BIT FALSE)
+
+        if (IC_PLATFORM STREQUAL "amd64")
+            set(IC_PLATFORM "i386")
+        endif()
+
+        if (IC_PLATFORM STREQUAL "arm64")
+            set(IC_PLATFORM "arm32")
+        endif()
+    endif()
+endif()
+
 option(BUILD_PRELOAD "Build preload library" OFF)
 option(BUILD_PROTOTYPEGEN "Build script prototype generator" OFF) 
 option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_RUNTIME_ZIP "Build .zip of runtime files" OFF)
+option(BUILD_RUNTIME_ZIP "Build .zip of runtime files" ON)
 
 #
 # check for system/compiler properties and header files
@@ -80,9 +104,6 @@ option(BUILD_RUNTIME_ZIP "Build .zip of runtime files" OFF)
 include(CheckCSourceCompiles)
 include(CheckIncludeFiles)
 include(CheckSymbolExists)
-
-include(Check64Bit)
-check_64_bit()
 
 include(CheckStringHeaders)
 check_string_headers()
@@ -167,7 +188,7 @@ add_subdirectory("external")
 #
 # various options
 #
-if (BUILD_PRELOAD AND UNIX AND NOT COMPILE_64_BIT)
+if (BUILD_PRELOAD AND UNIX AND NOT (IC_64BIT AND BUILD_32_BIT))
     add_subdirectory("preload") # preload library if we're on unix/32bit only
 endif()
 
@@ -183,10 +204,15 @@ endif()
 #
 #
 #
-set(32_BIT_OPTS "")
-set(PLAT_BITS "64")
+if (IC_64BIT)
+    set(PLAT_BITS "64")
+else()
+    set(PLAT_BITS "32")
+endif()
 
-if (NOT COMPILE_64_BIT)
+# if we want to build 32-bit binaries
+if (IC_64BIT AND BUILD_32_BIT)
+    set(32_BIT_OPTS "")
     set(PLAT_BITS "32")
     
     if (WIN32)
@@ -194,6 +220,11 @@ if (NOT COMPILE_64_BIT)
     else()
         set(32_BIT_OPTS "-m32")
     endif()
+
+    target_compile_options(iocod PRIVATE "${32_BIT_OPTS}")
+    target_link_options(iocod PRIVATE "${32_BIT_OPTS}")
+    target_compile_options(iocod_game PRIVATE "${32_BIT_OPTS}")
+    target_link_options(iocod_game PRIVATE "${32_BIT_OPTS}")
 endif()
 
 set(PLAT_EXE "")
@@ -208,11 +239,6 @@ else()
         set(PLAT_DLL ".so")
     endif()
 endif()
-
-target_compile_options(iocod PRIVATE "${32_BIT_OPTS}")
-target_link_options(iocod PRIVATE "${32_BIT_OPTS}")
-target_compile_options(iocod_game PRIVATE "${32_BIT_OPTS}")
-target_link_options(iocod_game PRIVATE "${32_BIT_OPTS}")
 
 set_target_properties(iocod PROPERTIES OUTPUT_NAME "iocod${PLAT_BITS}")
 
@@ -243,31 +269,25 @@ endif()
 # zip
 # 
 if (BUILD_RUNTIME_ZIP)
+    set(TAR_ARGS "cvfz")
+    set(TAR_EXT ".tgz")
+    set(TAR_FMT "")
+
     if (WIN32)
-        add_custom_target(create_zip ALL DEPENDS
-            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-            COMMAND ${CMAKE_COMMAND} -E tar "cfv" 
-            "../iocod-${iocod_VERSION}-win${PLAT_BITS}.zip"
-            --format=zip --
-            "iocod${PLAT_BITS}${PLAT_EXE}"
-            "main/icgame${PLAT_BITS}${PLAT_DLL}")
-        add_dependencies(create_zip iocod iocod_game)
-    else()
-        set(PLAT_NAME "")
-
-        if (APPLE)
-            set(PLAT_NAME "macos")
-        else()
-            set(PLAT_NAME "linux")
-        endif()
-
-        add_custom_target(create_tar_gzip ALL
-            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-            COMMAND ${CMAKE_COMMAND} -E tar "cfvz"
-            "../iocod-${iocod_VERSION}-${PLAT_NAME}${PLAT_BITS}.tar.gz"
-            --
-            "iocod${PLAT_BITS}${PLAT_EXE}"
-            "main/icgame${PLAT_BITS}${PLAT_DLL}")
-        add_dependencies(create_tar_gzip iocod iocod_game)
+        set(TAR_ARGS "cvf")
+        set(TAR_EXT ".zip")
+        set(TAR_FMT --format=zip)
     endif()
+
+    set(TAR_OUT "../iocod-${iocod_VERSION}-${IC_OS}-${IC_PLATFORM}${TAR_EXT}")
+
+    add_custom_target(create_zip ALL DEPENDS
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+        COMMAND ${CMAKE_COMMAND} -E tar "${TAR_ARGS}" "${TAR_OUT}"
+        ${TAR_FMT} --
+        "iocod${PLAT_BITS}${PLAT_EXE}"
+        "main/icgame${PLAT_BITS}${PLAT_DLL}"
+        "${CMAKE_SOURCE_DIR}/README.md"
+    )
+    add_dependencies(create_zip iocod iocod_game)
 endif()

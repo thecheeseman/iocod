@@ -4,7 +4,39 @@
 
 ## General
 
-- setup macos build system (details [here](https://devblogs.microsoft.com/cppblog/visual-studio-for-remote-macos-c-development/))
+- names for OS
+    - MacOS -> `Darwin`
+    - Linux -> `Linux`
+    - Windows -> `Windows`
+- names for various build architectures
+    - ARM
+        - `arm32`
+        - `arm64`
+    - x86_64
+        - `i386`
+        - `amd64`
+- filenames
+    - iocod binary
+        - `iocod32`
+        - `iocod64`
+    - library objects
+        - `icgame32`
+        - `icgame64`
+- build platform info examples
+    - `iocod-linux-i386`
+    - `iocod-windows-amd64`
+    - `iocod-macos-arm64`
+- release filenames
+    - Linux
+        - `iocod-0.30.0-linux-i386.tgz`
+        - `iocod-0.30.0-linux-amd64.tgz`
+        - `iocod-0.30.0-linux-arm32.tgz`
+    - MacOS
+        - `iocod-0.30.0-darwin-amd64.tgz`
+        - `iocod-0.30.0-darwin-arm64.tgz`
+    - Windows
+        - `iocod-0.30.0-win32.zip`
+        - `iocod-0.30.0-win64.zip`
 
 ### Module system
 

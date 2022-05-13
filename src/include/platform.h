@@ -64,9 +64,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /* architecture */
 #if defined __i386__ || defined _M_IX86
-#define PLATFORM_ARCH "32"
+#define PLATFORM_ARCH "x86"
 #elif defined __x86_64__ || defined _M_AMD64
-#define PLATFORM_ARCH "64"
+#define PLATFORM_ARCH "amd64"
 #elif defined __arm__
 #if defined __arm64__ || defined __aarch64__
 #define PLATFORM_ARCH "arm64"
