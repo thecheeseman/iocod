@@ -548,12 +548,12 @@ IC_DIAGNOSTIC_POP
  */
 #if defined __MINGW32__ && IC_GCC_HAS_ATTRIBUTE(format, 4, 4, 0) && \
     !defined __USE_MINGW_ASNI_STDIO
-#define IC_PRINTF_FORMAT(idx, first) __attribute__((__format(ms_printf, idx, first)))
+#define IC_PRINTF_FORMAT(idx, first) __attribute__((format(ms_printf, idx, first)))
 #elif defined __MINGW32__ && IC_GCC_HAS_ATTRIBUTE(format, 4, 4, 0) && \
     defined __USE_MINGW_ASNI_STDIO
-#define IC_PRINTF_FORMAT(idx, first) __attribute__((__format(gnu_printf, idx, first)))
+#define IC_PRINTF_FORMAT(idx, first) __attribute__((format(gnu_printf, idx, first)))
 #elif IC_HAS_ATTRIBUTE(format) || IC_GCC_VERSION_CHECK(3, 1, 0)
-#define IC_PRINTF_FORMAT(idx, first) __attribute__((__format__(__printf__, idx, first)))
+#define IC_PRINTF_FORMAT(idx, first) __attribute__((format(printf, idx, first)))
 #else
 #define IC_PRINTF_FORMAT(idx, first)
 #endif
