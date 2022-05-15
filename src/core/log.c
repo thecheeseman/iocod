@@ -163,12 +163,12 @@ static void unlock(void)
 /*
  * Return the current thread id.
  */
-static long current_thread_id(void)
+static intptr_t current_thread_id(void)
 {
     #ifdef IC_PLATFORM_WINDOWS
-    return GetCurrentThreadId();
+    return (intptr_t) GetCurrentThreadId();
     #else
-    return pthread_self();
+    return (intptr_t) pthread_self();
     #endif
 }
 
@@ -412,10 +412,10 @@ void log_lprintf(enum log_level level, const char *func, const char *file,
 
     /* echo to stdout */
     if (log.echo_stdout) {
-        //fprintf(stdout, "%s%s", CSI_START, color_prefix[level]);
+        fprintf(stdout, "%s%s", CSI_START, color_prefix[level]);
         fprintf(stdout, "%s:%s:%d: %s%s", file, func, line, 
                 stdout_prefix[level], msg);
-        //fprintf(stdout, "%s", CSI_END);
+        fprintf(stdout, "%s", CSI_END);
 
         if (msg[size - 1] != '\n' && log.auto_lf)
             fprintf(stdout, "\n");
