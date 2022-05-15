@@ -412,10 +412,22 @@ void log_lprintf(enum log_level level, const char *func, const char *file,
 
     /* echo to stdout */
     if (log.echo_stdout) {
+        /* 
+         * while windows does actually support CSI codes, most of the 
+         * terminals this is likely to show up in (whether VS/cmd.exe, etc)
+         * simply eat the CSI code and remove 1 character from the actual
+         * message we want to see. annoying
+        */
+        #ifndef IC_PLATFORM_WINDOWS
         fprintf(stdout, "%s%s", CSI_START, color_prefix[level]);
+        #endif
+
         fprintf(stdout, "%s:%s:%d: %s%s", file, func, line, 
                 stdout_prefix[level], msg);
+
+        #ifndef IC_PLATFORM_WINDOWS
         fprintf(stdout, "%s", CSI_END);
+        #endif
 
         if (msg[size - 1] != '\n' && log.auto_lf)
             fprintf(stdout, "\n");
