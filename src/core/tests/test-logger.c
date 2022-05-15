@@ -21,4 +21,6 @@ int main(void)
               "log_banner(); so yeah");
 
     log_shutdown();
+
+    return 0;
 }

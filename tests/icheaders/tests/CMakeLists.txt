@@ -1,5 +1,5 @@
 include (CTest)
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C ${CMAKE_CFG_INTDIR})
+add_custom_target(check_iccore COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C ${CMAKE_CFG_INTDIR})
 function(add_icheaders_test TEST_NAME)
     add_executable(${TEST_NAME} EXCLUDE_FROM_ALL ${ARGN})
     add_test(NAME ${TEST_NAME} 

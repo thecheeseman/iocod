@@ -132,6 +132,7 @@ endif()
 #
 # TARGETS
 #
+enable_testing()
 
 #
 # core library

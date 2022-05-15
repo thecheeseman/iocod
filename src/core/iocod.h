@@ -784,6 +784,98 @@ void log_lprintf(enum log_level level, const char *func, const char *file,
 
 /*
 ================================================================================
+Shared 
+================================================================================
+*/
+
+#define MAX_INFO_STRING 1024
+#define INFO_STRING_BIG 8192
+
+/**
+ * @brief Take a given path and append an extension (if one doesn't already
+ * exist).
+ *
+ * If the given path string already has an extension (regardless if it is
+ * the same as `ext`, will not append anything).
+ *
+ * @param path[in,out] string path
+ * @param size         max size of string
+ * @param ext          extension to append
+ */
+IC_PUBLIC
+IC_NON_NULL(1, 3)
+void default_extension(char *path, size_t size, const char *ext);
+
+/**
+ * @brief Remove a key/value pair from an info string.
+ *
+ * @param s[in,out] info string to modify
+ * @param key[in]   key to remove
+ * @return true if successful, false otherwise
+*/
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+bool if_remove_key(char *s, const char *key);
+
+/**
+ * @brief Remove a key/value pair from a big info string.
+ * 
+ * @param s[in,out] info string to modify
+ * @param key[in]   key to remove
+ * @return true if successful, false otherwise
+*/
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+bool ifbig_remove_key(char *s, const char *key);
+
+/**
+ * @brief Change or add a key/value pair to an info string.
+ *
+ * @param s[in,out] info string to modify
+ * @param key[in]   key to add
+ * @param value[in] value of key
+ * @return true if successful, false otherwise
+*/
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+bool if_set_value_for_key(char *s, const char *key, const char *value);
+
+/**
+ * @brief Change or add a key/value pair to a big info string.
+ * 
+ * @param s[in,out] info string to modify
+ * @param key[in]   key to add
+ * @param value[in] value of key
+ * @return true if successful, false otherwise
+*/
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+bool ifbig_set_value_for_key(char *s, const char *key, const char *value);
+
+IC_PUBLIC
+/**
+ * @brief Create temporary vectors. 
+ * 
+ * @param x[in] 
+ * @param y[in] 
+ * @param z[in]  
+ * @return temporary vector of (x, y, z)
+*/
+vec_t *tv(vec_t x, vec_t y, vec_t z);
+
+/**
+ * @brief Formatted string concatenation.
+ * 
+ * @param fmt[in] string format
+ * @param ...
+ * @return formatted string
+ */
+IC_PUBLIC
+IC_PRINTF_FORMAT(1, 2)
+char *va(const char *fmt, ...);
+
+/*
+================================================================================
 SAL stuff
 ================================================================================
 */
