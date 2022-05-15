@@ -66,7 +66,7 @@
 /* defined to 1 if the system provides `strndup()` */
 #cmakedefine HAVE_STRNDUP 1
 
-/* defined to 1 if the system provides `strlwr()` /
+/* defined to 1 if the system provides `strlwr()` */
 #cmakedefine HAVE_STRLWR 1
 
 /* defined to 1 if the system provides `strupr()` */
