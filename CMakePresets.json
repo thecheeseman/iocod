@@ -10,12 +10,6 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
-            "cacheVariables": {
-                "BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": true
-                }
-            },
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
@@ -80,7 +74,6 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
-
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
@@ -88,11 +81,7 @@
             },
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
-                "CMAKE_MAKE_PROGRAM": "/usr/local/bin/ninja",
-                "BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": true
-                }
+                "CMAKE_MAKE_PROGRAM": "/usr/local/bin/ninja"
             },
             "vendor": {
                 "microsoft.com/VisualStudioSettings/CMake/1.0": {
@@ -131,11 +120,7 @@
             "installDir": "${sourceDir}/out/install/${presetName}",
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe",
-                "BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": true
-                }
+                "CMAKE_CXX_COMPILER": "cl.exe"
             },
             "condition": {
                 "type": "equals",

@@ -24,6 +24,10 @@ project("iocod"
     HOMEPAGE_URL "https://iocod.org"
     LANGUAGES C)
 
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(SEND_ERROR "In-source builds are not allowed")
+endif()
+
 # at a minimum, we need C11
 # this is supported across the board already on 
 # GCC/GNUC systems since ~2013 in GCC 4.6, Clang 3.1
@@ -73,10 +77,14 @@ include(CheckArchitecture)
 #
 # main options
 #
+option(BUILD_CORE "Build core library" ON)
+option(BUILD_MAIN "Build main executables and game dll" OFF)
+option(BUILD_EXTERNAL "Build external libraries" OFF)
+option(BUILD_TESTS "Build tests" OFF)
+
 option(BUILD_PRELOAD "Build preload library" OFF)
 option(BUILD_PROTOTYPEGEN "Build script prototype generator" OFF) 
-option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_RUNTIME_ZIP "Build .zip of runtime files" ON)
+option(BUILD_RUNTIME_ZIP "Build .zip of runtime files" OFF)
 
 #
 # check for system/compiler properties and header files
@@ -98,26 +106,6 @@ endif()
 configure_file("config.h.in" "${PROJECT_BINARY_DIR}/config.h")
 include_directories(${PROJECT_BINARY_DIR})
 add_compile_options(-DHAVE_CONFIG_H)
-
-#
-# headers
-#
-#include_directories("${CMAKE_SOURCE_DIR}/include")          # API headers
-include_directories("src/external")     # TODO: this needs to be moved to /external/
-include_directories("src/include")      # internal headers
-include_directories("src")
-
-if (WIN32)
-    include_directories("external/dlfcn-win32")
-    include_directories("external/dirent")
-endif()
-
-include_directories("external/miniz")
-
-#
-# link directory
-#
-link_directories("${CMAKE_SOURCE_DIR}/lib")
 
 #
 # compile options
@@ -145,25 +133,26 @@ endif()
 # TARGETS
 #
 
-# 1. iocod -> main server exe
-if (WIN32)
-    add_executable(iocod WIN32 "")
-else()
-    add_executable(iocod "")
+#
+# core library
+# 
+if (BUILD_CORE)
+    add_subdirectory("src/core")
 endif()
-
-# 2. iocod_game -> game code
-add_library(iocod_game SHARED "")
 
 #
 # main source directory
 #
-add_subdirectory("src")
+if (BUILD_MAIN)
+    add_subdirectory("src")
+endif()
 
 #
 # external libraries
 #
-add_subdirectory("external")
+if (BUILD_EXTERNAL)
+    add_subdirectory("external")
+endif()
 
 #
 # various options
@@ -177,72 +166,9 @@ if (BUILD_PROTOTYPEGEN)
 endif()
 
 if (BUILD_TESTS)
+    message(STATUS "hello")
     enable_testing()
-    add_subdirectory("tests") # test suites
-endif()
-
-#
-#
-#
-if (iocod_64BIT)
-    set(PLAT_BITS "64")
-else()
-    set(PLAT_BITS "32")
-endif()
-
-# if we want to build 32-bit binaries
-if (iocod_64BIT AND BUILD_32_BIT)
-    set(32_BIT_OPTS "")
-    set(PLAT_BITS "32")
-    
-    if (WIN32)
-        set(32_BIT_OPTS "-DWIN32")
-    else()
-        set(32_BIT_OPTS "-m32")
-    endif()
-
-    target_compile_options(iocod PRIVATE "${32_BIT_OPTS}")
-    target_link_options(iocod PRIVATE "${32_BIT_OPTS}")
-    target_compile_options(iocod_game PRIVATE "${32_BIT_OPTS}")
-    target_link_options(iocod_game PRIVATE "${32_BIT_OPTS}")
-endif()
-
-set(PLAT_EXE "")
-set(PLAT_DLL "")
-if (WIN32)
-    set(PLAT_EXE ".exe")
-    set(PLAT_DLL ".dll")
-else()
-    if (APPLE)
-        set(PLAT_DLL ".dylib")
-    else()
-        set(PLAT_DLL ".so")
-    endif()
-endif()
-
-set_target_properties(iocod PROPERTIES OUTPUT_NAME "iocod${PLAT_BITS}")
-
-#
-# PREFIX disable "lib" prefix on Unix systems
-# LIBRARY_OUTPUT_DIRECTORY overrides the settings we set at the top
-# so that the static libraries get put in lib/ and this dll gets put
-# with the binaries
-#
-set_target_properties(iocod_game PROPERTIES
-    PREFIX ""
-    OUTPUT_NAME "icgame${PLAT_BITS}"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/main"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/main")
-
-#
-# linker options
-#
-if (WIN32)
-    target_link_libraries(iocod dl getopt winmm miniz curl)
-    target_link_libraries(iocod_game)
-else()
-    target_link_libraries(iocod ${CMAKE_DL_LIBS} m miniz curl)
-    target_link_libraries(iocod_game m)
+    add_subdirectory("tests" EXCLUDE_FROM_ALL) # test suites
 endif()
 
 # 
@@ -252,7 +178,7 @@ if (BUILD_RUNTIME_ZIP)
     set(TAR_ARGS "cvfz")
     set(TAR_EXT ".tar.gz")
     set(TAR_FMT "")
-    set(TAR_OS "${iocod_OS}${PLAT_BITS}")
+    set(TAR_OS "${iocod_OS}${IC_PLATFORM_BITS}")
 
     if (WIN32)
         set(TAR_ARGS "cvf")
@@ -266,8 +192,8 @@ if (BUILD_RUNTIME_ZIP)
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
         COMMAND ${CMAKE_COMMAND} -E tar "${TAR_ARGS}" "${TAR_OUT}"
         ${TAR_FMT} --
-        "iocod${PLAT_BITS}${PLAT_EXE}"
-        "main/icgame${PLAT_BITS}${PLAT_DLL}"
+        "iocod${IC_PLATFORM_BITS}${PLAT_EXE}"
+        "main/icgame${IC_PLATFORM_BITS}${PLAT_DLL}"
         "${CMAKE_SOURCE_DIR}/README.md"
     )
     add_dependencies(create_zip iocod iocod_game)

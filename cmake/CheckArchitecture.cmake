@@ -79,13 +79,17 @@ if (${IS_ARM} EQUAL 0)
     endif()
 endif()
 
+if (${iocod_ARCH} STREQUAL "amd64")
+    set(iocod_ARCH "x86_64")
+endif()
+
 # if we're building on a 64-bit system, allow the user to optionally
 # force build a 32-bit version
 if (iocod_64BIT)
     option(BUILD_32_BIT "Build 32-bit binaries" FALSE)
 
     if (BUILD_32_BIT)
-        if (${iocod_ARCH} STREQUAL "x86_64" OR ${iocod_ARCH} STREQUAL "amd64")
+        if (${iocod_ARCH} STREQUAL "x86_64")
             set(iocod_ARCH "x86")
         endif()
 
@@ -94,5 +98,39 @@ if (iocod_64BIT)
         endif()
     else()
         set(IC_CMAKE_PLATFORM_64BIT TRUE)
+    endif()
+endif()
+
+#
+#
+#
+if (iocod_64BIT)
+    set(IC_PLATFORM_BITS "64")
+else()
+    set(IC_PLATFORM_BITS "32")
+endif()
+
+# if we want to build 32-bit binaries
+if (iocod_64BIT AND BUILD_32_BIT)
+    set(IC_PLATFORM_BIT_OPS "")
+    set(IC_PLATFORM_BITS "32")
+    
+    if (WIN32)
+        set(IC_PLATFORM_BIT_OPS "-DWIN32")
+    else()
+        set(IC_PLATFORM_BIT_OPS "-m32")
+    endif()
+endif()
+
+set(IC_PLATFORM_EXE "")
+set(IC_PLATFORM_DLL "")
+if (WIN32)
+    set(IC_PLATFORM_EXE ".exe")
+    set(IC_PLATFORM_DLL ".dll")
+else()
+    if (APPLE)
+        set(IC_PLATFORM_DLL ".dylib")
+    else()
+        set(IC_PLATFORM_DLL ".so")
     endif()
 endif()
