@@ -240,7 +240,7 @@ void log_init(void)
     }
 
     /* get current file size */
-    size_t pos = ftell(log.fp);
+    long pos = ftell(log.fp);
     fseek(log.fp, 0, SEEK_END);
     size_t end = ftell(log.fp);
     fseek(log.fp, pos, SEEK_SET);
