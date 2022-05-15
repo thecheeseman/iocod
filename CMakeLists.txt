@@ -19,7 +19,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project("iocod"
-    VERSION 0.30.0
+    VERSION 0.35.0
     DESCRIPTION "open source CoD1.1-1.5 project"
     HOMEPAGE_URL "https://iocod.org"
     LANGUAGES C)
@@ -73,26 +73,6 @@ include(CheckArchitecture)
 #
 # main options
 #
-
-# if we're building on a 64-bit system, allow the user to optionally
-# force build a 32-bit version
-if (IC_64BIT)
-    set(IC_CMAKE_64BIT TRUE)
-    option(BUILD_32_BIT "Build 32-bit binaries" FALSE)
-
-    if (BUILD_32_BIT)
-        set(IC_CMAKE_64BIT FALSE)
-
-        if (IC_PLATFORM STREQUAL "amd64")
-            set(IC_PLATFORM "i386")
-        endif()
-
-        if (IC_PLATFORM STREQUAL "arm64")
-            set(IC_PLATFORM "arm32")
-        endif()
-    endif()
-endif()
-
 option(BUILD_PRELOAD "Build preload library" OFF)
 option(BUILD_PROTOTYPEGEN "Build script prototype generator" OFF) 
 option(BUILD_TESTS "Build tests" OFF)
@@ -115,7 +95,7 @@ endif()
 #
 # config.h
 #
-configure_file("config.h.in" "config.h")
+configure_file("config.h.in" "${PROJECT_BINARY_DIR}/config.h")
 include_directories(${PROJECT_BINARY_DIR})
 add_compile_options(-DHAVE_CONFIG_H)
 
@@ -204,14 +184,14 @@ endif()
 #
 #
 #
-if (IC_64BIT)
+if (iocod_64BIT)
     set(PLAT_BITS "64")
 else()
     set(PLAT_BITS "32")
 endif()
 
 # if we want to build 32-bit binaries
-if (IC_64BIT AND BUILD_32_BIT)
+if (iocod_64BIT AND BUILD_32_BIT)
     set(32_BIT_OPTS "")
     set(PLAT_BITS "32")
     
@@ -270,8 +250,9 @@ endif()
 # 
 if (BUILD_RUNTIME_ZIP)
     set(TAR_ARGS "cvfz")
-    set(TAR_EXT ".tgz")
+    set(TAR_EXT ".tar.gz")
     set(TAR_FMT "")
+    set(TAR_OS "${iocod_OS}${PLAT_BITS}")
 
     if (WIN32)
         set(TAR_ARGS "cvf")
@@ -279,7 +260,7 @@ if (BUILD_RUNTIME_ZIP)
         set(TAR_FMT --format=zip)
     endif()
 
-    set(TAR_OUT "../iocod-${iocod_VERSION}-${IC_OS}-${IC_PLATFORM}${TAR_EXT}")
+    set(TAR_OUT "../iocod-${iocod_VERSION}-${TAR_OS}${TAR_EXT}")
 
     add_custom_target(create_zip ALL DEPENDS
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"

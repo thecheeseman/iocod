@@ -5,10 +5,6 @@ static size_t fs_total_files = 0;
 
 struct pak *fs_load_zip_file(const char *filename, const char *basename)
 {
-    #ifdef FS_DEBUG
-    clock_t start = clock();
-    #endif
-
     mz_zip_archive *zip;
     zip = ic_calloc(1, sizeof(*zip));
     if (zip == NULL) {
@@ -24,7 +20,7 @@ struct pak *fs_load_zip_file(const char *filename, const char *basename)
     }
     
     uint32_t num_files = mz_zip_reader_get_num_files(zip);
-    fs_total_files += num_files;
+    fs.num_files += num_files;
 
     /* 
      * sum all filename strlens so we can allocate the names
@@ -110,12 +106,6 @@ struct pak *fs_load_zip_file(const char *filename, const char *basename)
         buf[i].next = pak->hash_table[hash];
         pak->hash_table[hash] = &buf[i];
     }
-
-    #ifdef FS_DEBUG
-    clock_t end = clock();
-    ic_printf("time elapsed: %f\n",
-              ((double) (end - start) / CLOCKS_PER_SEC));
-    #endif
 
     pak->buf = buf;
     return pak;

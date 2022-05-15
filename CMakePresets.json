@@ -53,7 +53,7 @@
             "inherits": "linux-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "COMPILE_32_BIT": {
+                "BUILD_32_BIT": {
                     "type": "BOOL",
                     "value": "true"
                 }
@@ -65,7 +65,7 @@
             "inherits": "linux-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "COMPILE_32_BIT": {
+                "BUILD_32_BIT": {
                     "type": "BOOL",
                     "value": "true"
                 }
@@ -167,13 +167,25 @@
                 "value": "x86",
                 "strategy": "external"
             },
-            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_32_BIT": {
+                    "type": "BOOL",
+                    "value": "true"
+                }
+            }
         },
         {
             "name": "win32",
             "displayName": "Release (32-bit)",
             "inherits": "win32-debug",
-            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_32_BIT": {
+                    "type": "BOOL",
+                    "value": "true"
+                }
+            }
         }
     ]
 }
