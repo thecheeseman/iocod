@@ -86,20 +86,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 /**
  * @brief Log structure.
 */
-struct logger {
-    char name[64];          /// name of log, currently unused
-    char path[256];         /// path to log file
+static struct logger {
+    char name[64];          /**< name of log, currently unused */
+    char path[256];         /**< path to log file */
 
-    enum log_level level;   /// log level
+    enum log_level level;   /**< log level */
     
-    bool echo_stdout;       /// echo messages to stdout
-    bool auto_lf;           /// automatically add lf to output
-    bool hide_next_source;  /// hide next message's source
+    bool echo_stdout;       /**< echo messages to stdout */
+    bool auto_lf;           /**< automatically add lf to output */
+    bool hide_next_source;  /**< hide next message's source */
 
-    FILE *fp;               /// file
-    size_t size;            /// size of bytes written
+    FILE *fp;               /**< file */
+    size_t size;            /**< size of bytes written */
 
-    struct timeval now;     /// current time
+    struct timeval now;     /**< current time */
 };
 
 static struct logger log = {
@@ -206,7 +206,7 @@ static intptr_t current_thread_id(void)
  * These cross-platform time utilities from https://github.com/yksz/c-logger
  */
 #ifdef IC_PLATFORM_WINDOWS
-struct timezone {
+static struct timezone {
     int tz_minuteswest;
     int tz_dsttime;
 };

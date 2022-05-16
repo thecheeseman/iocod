@@ -544,7 +544,7 @@ IC_DIAGNOSTIC_POP
  * @endcode
  * 
  * @note This feature is only available on compatible GNUC compilers, where it
- * is defined as `__attribute__((__format__printf__, idx, first)))`.
+ * is defined as `__attribute__((format(printf, idx, first)))`.
  */
 #if defined __MINGW32__ && IC_GCC_HAS_ATTRIBUTE(format, 4, 4, 0) && \
     !defined __USE_MINGW_ASNI_STDIO
@@ -578,9 +578,6 @@ IC_DIAGNOSTIC_POP
 
 /**
  * @def IC_INLINE
- * @deprecated 
- * This shouldn't be strictly necessary since we will always 
- * be compiling for C99+
  * 
  * @note On C99+ platforms this is defined simply as the builtin `inline`.
  * @note On GCC platforms (non-C99) this is defined as `__inline__`.
@@ -664,7 +661,7 @@ IC_DIAGNOSTIC_POP
  * 
  * @param msg message
  *
- * @note This is only supported on GNUC compilers
+ * @note This is only supported on GNUC compilers.
  */
 
 /**
@@ -673,8 +670,8 @@ IC_DIAGNOSTIC_POP
  * 
  * @param msg warning message
  *
- * @note On GCC 4.8+ this is defined as `IC_PRAGMA(GCC warning msg)`
- * @note On MSVC 15+ this is defined as `IC_PRAGMA(message msg)`
+ * @note On GCC 4.8+ this is defined as `IC_PRAGMA(GCC warning msg)`.
+ * @note On MSVC 15+ this is defined as `IC_PRAGMA(message msg)`.
  */
 #if IC_HAS_WARNING("-Wunknown-pragmas")
 #define IC_MESSAGE(msg) \
@@ -840,22 +837,22 @@ IC_DIAGNOSTIC_POP
  * visible. 
  
  * @note On GNUC this is defined as `__attribute__((visibility("hidden")))`. 
- * @note On MSVC this has no effect
+ * @note On MSVC this has no effect.
  */
 
 /**
  * @def IC_PUBLIC
  * @brief This attribute can be used to declare functions for library exports.
  * 
- * @note On GNUC this is defined as `__attribute__((visibility("default")))`
- * @note On MSVC this is defined as `__declspec(dllexport)`
+ * @note On GNUC this is defined as `__attribute__((visibility("default")))`.
+ * @note On MSVC this is defined as `__declspec(dllexport)`.
  */
 
 /**
  * @def IC_IMPORT
  * @brief This attribute can be used to declare library import functions.
  * 
- * @note On GNUC this has no effect
+ * @note On GNUC this has no effect.
  * @note On MSVC this is defined as `__declspec(dllimport)`.
  */
 #if defined _WIN32

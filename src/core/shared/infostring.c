@@ -2,11 +2,9 @@
 
 static const char illegal_chars[] = { '\\', ';', '\"', '\0'};
 
-/**
- * @brief Check if the given string contains illegal chars.
- * @param str[in] string to check
- * @return true if string contains illegal chars
-*/
+/*
+ * Check if the given string contains illegal chars.
+ */
 static bool contains_illegal_chars(const char *str)
 {
     for (int i = 0; illegal_chars[i] != '\0'; i++) {
@@ -20,11 +18,13 @@ static bool contains_illegal_chars(const char *str)
     return false;
 }
 
-/**
- * Dynamic version of `Info_RemoveKey` from RTCW
+/*
+ * Modified version of RTCW code to allow different size keys instead of
+ * copy/paste version for infostring/biginfostring
  */
-IC_NON_NULL(1, 2)
-static bool _if_remove_key(char *s, const char *key, size_t size)
+IC_NON_NULL(1, 2, 4, 5)
+static bool _if_remove_key(char *s, const char *key, size_t size, 
+                           char *pkey, char *value)
 {
     if (strlen(s) >= size) {
         ic_error("oversize infostring (>= %lu)\n", size);
@@ -34,19 +34,6 @@ static bool _if_remove_key(char *s, const char *key, size_t size)
     if (contains_illegal_chars(key))
         return false;
 
-    char *pkey = ic_calloc(sizeof(char), size);
-    if (pkey == NULL) {
-        ic_error("error allocating memory\n");
-        return false;
-    }
-
-    char *value = ic_calloc(sizeof(char), size);
-    if (value == NULL) {
-        ic_error("error allocating memory\n");
-        return false;
-    }
-
-    bool ret = false;
     while (true) {
         char *start = s;
         if (*s == '\\')
@@ -55,7 +42,7 @@ static bool _if_remove_key(char *s, const char *key, size_t size)
         char *o = pkey;
         while (*s != '\\') {
             if (*s == '\0')
-                goto out;
+                return false;
 
             *o++ = *s++;
         }
@@ -67,7 +54,7 @@ static bool _if_remove_key(char *s, const char *key, size_t size)
 
         while (*s != '\\' && *s != '\0') {
             if (*s == '\0')
-                goto out;
+                return false;
 
             *o++ = *s++;
         }
@@ -75,27 +62,23 @@ static bool _if_remove_key(char *s, const char *key, size_t size)
 
         if (strcmp(key, pkey) == 0) {
             strcpy(start, s); /* remove this part */
-            ret = true;
-            goto out;
+            return true;
         }
 
         if (*s == '\0')
             break;
     }
 
-out:
-    ic_free(pkey);
-    ic_free(value);
-
-    return ret;
+    return false;
 }
 
-/**
- * Dynamic version of `Info_SetValueForKey` from RTCW
+/*
+ * Modified version of RTCW code to allow different size keys instead of
+ * copy/paste version for infostring/biginfostring
  */
-IC_NON_NULL(1, 2)
+IC_NON_NULL(1, 2, 3, 5)
 static bool _if_set_value_for_key(char *s, const char *key, const char *value, 
-                                  size_t size)
+                                  size_t size, char *newif)
 {
     if (strlen(s) >= size) {
         ic_error("oversize infostring (>= %lu)\n", size);
@@ -105,55 +88,64 @@ static bool _if_set_value_for_key(char *s, const char *key, const char *value,
     if (contains_illegal_chars(key) || contains_illegal_chars(value))
         return false;
 
-    ifbig_remove_key(s, key);
+    if (size <= MAX_INFO_STRING)
+        if_remove_key(s, key);
+    else
+        ifbig_remove_key(s, key);
+
     if (value == NULL || strlen(value) == 0)
         return false;
 
-    char *newif = ic_calloc(sizeof(char), size);
-    if (newif == NULL) {
-        ic_error("error allocating memory\n");
-        return false;
-    }
     snprintf(newif, size, "\\%s\\%s", key, value);
 
-    bool ret = false;
     if (strlen(newif) + strlen(s) > size) {
         ic_warning("info string length exceeded (>= %lu)\n", size);
-        goto out;
+        return false;
     }
 
     strncat(s, newif, size);
-    ret = true;
-
-out:
-    ic_free(newif);
-    return ret;
+    return true;
 }
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
 bool if_remove_key(char *s, const char *key)
 {
-    return _if_remove_key(s, key, MAX_INFO_STRING);
-}
+    char pkey[MAX_INFO_STRING];
+    char value[MAX_INFO_STRING];
 
-IC_PUBLIC
-IC_NON_NULL(1, 2)
-bool if_set_value_for_key(char *s, const char *key, const char *value)
-{
-    return _if_set_value_for_key(s, key, value, MAX_INFO_STRING);
+    return _if_remove_key(s, key, MAX_INFO_STRING, pkey, value);
 }
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
 bool ifbig_remove_key(char *s, const char *key)
 {
-    return _if_remove_key(s, key, INFO_STRING_BIG);
+    char *pkey = ic_calloc(sizeof(char), INFO_STRING_BIG);
+    char *value = ic_calloc(sizeof(char), INFO_STRING_BIG);
+
+    bool ret = _if_remove_key(s, key, INFO_STRING_BIG, pkey, value);
+
+    ic_free(pkey);
+    ic_free(value);
+
+    return ret;
+}
+
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+bool if_set_value_for_key(char *s, const char *key, const char *value)
+{
+    char newif[MAX_INFO_STRING];
+
+    return _if_set_value_for_key(s, key, value, MAX_INFO_STRING, newif);
 }
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
 bool ifbig_set_value_for_key(char *s, const char *key, const char *value)
 {
-    return _if_set_value_for_key(s, key, value, INFO_STRING_BIG);
+    char newif[INFO_STRING_BIG];
+
+    return _if_set_value_for_key(s, key, value, INFO_STRING_BIG, newif);
 }

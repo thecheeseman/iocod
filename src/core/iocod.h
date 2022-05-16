@@ -703,7 +703,7 @@ void log_set_level(enum log_level new_level);
 /**
  * @brief Set if the log should echo to stdout.
  *
- * @param echo set to true if log should print to stdout
+ * @param[in] echo set to true if log should print to stdout
  */
 IC_PUBLIC
 void log_echo_stdout(bool echo);
@@ -711,7 +711,7 @@ void log_echo_stdout(bool echo);
 /**
  * @brief Change if the log should automatically add newlines to messages.
  *
- * @param lf set to true if log should add newlines automatically
+ * @param[in] lf set to true if log should add newlines automatically
 */
 IC_PUBLIC
 void log_auto_lf(bool lf);
@@ -724,7 +724,6 @@ void log_auto_lf(bool lf);
  * @param[in] file  file this call is located in
  * @param[in] line  line this call is on
  * @param[in] fmt   formatted string
- * @param[in] ...
  *
  * @note Recommended to use the log_ macros instead of calling this directly.
  */
@@ -784,6 +783,14 @@ void log_lprintf(enum log_level level, const char *func, const char *file,
 
 /*
 ================================================================================
+Cvars
+================================================================================
+*/
+
+#include "ic_cvar.h"
+
+/*
+================================================================================
 Shared 
 ================================================================================
 */
@@ -798,19 +805,19 @@ Shared
  * If the given path string already has an extension (regardless if it is
  * the same as `ext`, will not append anything).
  *
- * @param path[in,out] string path
- * @param size         max size of string
- * @param ext          extension to append
+ * @param[in,out] path string path
+ * @param[in]     size max size of string
+ * @param[in]     ext  extension to append
  */
 IC_PUBLIC
 IC_NON_NULL(1, 3)
-void default_extension(char *path, size_t size, const char *ext);
+void ic_default_extension(char *path, size_t size, const char *ext);
 
 /**
  * @brief Remove a key/value pair from an info string.
  *
- * @param s[in,out] info string to modify
- * @param key[in]   key to remove
+ * @param[in,out] s   info string to modify
+ * @param[in]     key key to remove
  * @return true if successful, false otherwise
 */
 IC_PUBLIC
@@ -820,8 +827,8 @@ bool if_remove_key(char *s, const char *key);
 /**
  * @brief Remove a key/value pair from a big info string.
  * 
- * @param s[in,out] info string to modify
- * @param key[in]   key to remove
+ * @param[in,out] s   info string to modify
+ * @param[in]     key key to remove
  * @return true if successful, false otherwise
 */
 IC_PUBLIC
@@ -831,9 +838,9 @@ bool ifbig_remove_key(char *s, const char *key);
 /**
  * @brief Change or add a key/value pair to an info string.
  *
- * @param s[in,out] info string to modify
- * @param key[in]   key to add
- * @param value[in] value of key
+ * @param[in,out] s     info string to modify
+ * @param[in]     key   key to add
+ * @param[in]     value value of key
  * @return true if successful, false otherwise
 */
 IC_PUBLIC
@@ -843,9 +850,9 @@ bool if_set_value_for_key(char *s, const char *key, const char *value);
 /**
  * @brief Change or add a key/value pair to a big info string.
  * 
- * @param s[in,out] info string to modify
- * @param key[in]   key to add
- * @param value[in] value of key
+ * @param[in,out] s     info string to modify
+ * @param[in]     key   key to add
+ * @param[in]     value value of key
  * @return true if successful, false otherwise
 */
 IC_PUBLIC
@@ -856,9 +863,9 @@ IC_PUBLIC
 /**
  * @brief Create temporary vectors. 
  * 
- * @param x[in] 
- * @param y[in] 
- * @param z[in]  
+ * @param[in] x 
+ * @param[in] y
+ * @param[in] z
  * @return temporary vector of (x, y, z)
 */
 vec_t *tv(vec_t x, vec_t y, vec_t z);
@@ -866,8 +873,7 @@ vec_t *tv(vec_t x, vec_t y, vec_t z);
 /**
  * @brief Formatted string concatenation.
  * 
- * @param fmt[in] string format
- * @param ...
+ * @param[in] fmt string format
  * @return formatted string
  */
 IC_PUBLIC
