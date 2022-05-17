@@ -21,11 +21,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /**
- * @file   ic_cvar.h
- * @author thecheeseman
- * @date   2022-05-16
- *
- * Global header for cvars.
+ * @defgroup cvar Cvars
+ * @brief C Variables.
+ * @{ 
  */
 
 #ifndef IC_CVAR_H
@@ -122,18 +120,17 @@ struct vmcvar {
 
 /**
  * @brief Validate a cvar string
- * @param[in] s String to validate
- * @return False if string contains '\' or '"' or ';' chars, true otherwise
+ * @param[in] s string to validate
+ * @return false if string contains '\' or '"' or ';' chars, true otherwise
 */
 IC_PUBLIC
 IC_NON_NULL(1)
 bool cvar_validate_string(const char *s);
 
-
 /**
  * @brief Return a cvar's string value
- * @param[in] var_name Name of the cvar to search for
- * @return A string containing the value
+ * @param[in] var_name name of the cvar to search for
+ * @return a string containing the value
 */
 IC_PUBLIC
 IC_NON_NULL(1)
@@ -141,9 +138,9 @@ char *cvar_variable_string(const char *var_name);
 
 /**
  * @brief Return a cvar's string value into the given string buffer
- * @param[in]  var_name Name of the cvar to search for
- * @param[out] buffer   Pointer to string buffer
- * @param[in]  bufsize  Size of the string buffer
+ * @param[in]  var_name name of the cvar to search for
+ * @param[out] buffer   pointer to string buffer
+ * @param[in]  bufsize  size of the string buffer
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
@@ -152,20 +149,17 @@ void cvar_variable_string_buffer(const char *var_name, char *buffer,
 
 /**
  * @brief Some cvar values need to be safe from foreign characters
- * @param[in] value Value to clean
- * @return A cleaned string
+ * @param[in] value value to clean
+ * @return a cleaned string
  */
 IC_PUBLIC
 IC_NON_NULL(1)
 char *cvar_clean_foreign_characters(const char *value);
 
-//
-// cvar_value.c
-//
 /**
  * @brief Return a cvar's floating point value
- * @param var_name Name of the cvar to search for
- * @return A float containing the value
+ * @param[in] var_name name of the cvar to search for
+ * @return a float containing the value
 */
 IC_PUBLIC
 IC_NON_NULL(1)
@@ -173,11 +167,13 @@ cvar_float cvar_variable_value(const char *var_name);
 
 /**
  * @brief Return a cvar's integer value
- * @param var_name Name of the cvar to search for
- * @return An integer containing the value
+ * @param[in]   var_name name of the cvar to search for
+ * @return an integer containing the value
 */
 IC_PUBLIC
 IC_NON_NULL(1)
 cvar_int cvar_variable_integer_value(const char *var_name);
+
+/** @} */
 
 #endif /* IC_CVAR_H */

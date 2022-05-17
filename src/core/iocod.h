@@ -52,16 +52,6 @@ General useful macros / utils
 ================================================================================
 */
 
-/* stringify */
-#define IC_STRINGIFY_EX(x)      #x
-#define IC_STRINGIFY(x)         IC_STRINGIFY_EX(x)
-
-/* concatenation */
-#define IC_CONCAT_EX(a, b)      a ## b
-#define IC_CONCAT(a, b)         IC_CONCAT_EX(a, b)
-#define IC_CONCAT3_EX(a, b, c)  a ## b ## c
-#define IC_CONCAT3(a, b, c)     IC_CONCAT3_EX(a, b, c)
-
 /**
  * @def ARRAY_SIZE
  * @brief Determine size of a given array at compile-time. From `<kernel.h>`
@@ -70,20 +60,54 @@ General useful macros / utils
 
 /**
  * @def FIELD_SIZEOF
- * @brief Determine the size of a given field in a given struct. 
- * 
+ * @brief Determine the size of a given field in a given struct.
+ *
  * From `<kernel.h>`
- * 
+ *
  * Example:
  * @code
  * struct coolstruct {
  *     size_t field1;
  * };
- * 
+ *
  * int size = FIELD_SIZEOF(struct coolstruct, field1); // 4 on 32-bit, 8 on 64-bit
  * @endcode
  */
 #define FIELD_SIZEOF(t, f)  (sizeof(((t*)0)->f))
+
+/** 
+ * @defgroup stringmacros String Macros 
+ * @brief Useful string macros for stringifying or concatenation.
+ * @{ 
+ */
+
+/**
+ * @def IC_STRINGIFY
+ * @brief Stringify.
+ */
+#define IC_STRINGIFY_EX(x)      #x
+#define IC_STRINGIFY(x)         IC_STRINGIFY_EX(x)
+
+/**
+ * @def IC_CONCAT
+ * @brief Concatenate two things.
+ */
+#define IC_CONCAT_EX(a, b)      a ## b
+#define IC_CONCAT(a, b)         IC_CONCAT_EX(a, b)
+
+/**
+ * @def IC_CONCAT3
+ * @brief Concatenate three things.
+ */
+#define IC_CONCAT3_EX(a, b, c)  a ## b ## c
+#define IC_CONCAT3(a, b, c)     IC_CONCAT3_EX(a, b, c)
+/** @} */
+
+/**
+ * @defgroup version_macros Version Macros
+ * @brief Macros for dealing with version data.
+ * @{ 
+ */
 
 /**
  * @def IC_VERSION_ENCODE
@@ -150,6 +174,8 @@ General useful macros / utils
     "." IC_STRINGIFY(IC_VERSION_MINOR) \
     "." IC_STRINGIFY(IC_VERSION_PATCH)
 
+/** @} */
+
 /* separate header since it's large */
 #include "ic_platform.h"
 
@@ -159,6 +185,11 @@ Common types
 ================================================================================
 */
 
+/**
+ * @defgroup common_types Common Types
+ * @brief Various common types used throughout the project.
+ * @{ 
+ */
 #ifndef _IC_DEFINED_BOOL
 #define _IC_DEFINED_BOOL
 #ifdef bool
@@ -170,20 +201,11 @@ Common types
  * 
  * `bool` must always be the same size as `int` for compatibility (structure
  * field sizes must match), therefore we _cannot_ use `<stdbool.h>`
- * 
- * @see bool
+ * @{
 */
 typedef int _boolean;
-
-/**
- * @brief boolean type
- * 
- * `bool` must always be the same size as `int` for compatibility (structure
- * field sizes must match), therefore we _cannot_ use `<stdbool.h>`
- * 
- * @see _boolean
- */
 #define bool _boolean
+/** @} */
 
 #define false 0
 #define true  1
@@ -229,25 +251,17 @@ typedef double vec_t;
 #endif
 
 /**
- * @brief 2D array of vectors.
- * @see vec_t
+ * @brief Array of vectors.
+ * @{
 */
 typedef vec_t vec2_t[2];
-
-/**
- * @brief 3D array of vectors.
- * @see vec_t
-*/
 typedef vec_t vec3_t[3];
-
-/**
- * @brief 4D array of vectors.
- * @see vec_t
-*/
 typedef vec_t vec4_t[4];
-
 typedef vec_t vec5_t[5];
+/** @} */
 #endif
+
+/** @} */
 
 /*
 ================================================================================
@@ -255,6 +269,12 @@ Assert utilities
 ================================================================================
 */
 #include <assert.h>
+
+/**
+ * @defgroup assert_utilities Assert Utilities 
+ * @brief Assert utilities for testing code.
+ * @{
+ */
 
 /**
  * @def IC_ASSERT
@@ -287,11 +307,19 @@ Assert utilities
 #define IC_STATIC_ASSERT(expr, msg)
 #endif
 
+/** @} */
+
 /*
 ================================================================================
 Memory
 ================================================================================
 */
+
+/**
+ * @defgroup memory Memory
+ * @brief Library replacement memory functions.
+ * @{
+ */
 
 /**
  * @brief "Safer" library replacement for `malloc`. 
@@ -341,6 +369,8 @@ void *ic_calloc(size_t count, size_t size);
 */
 IC_PUBLIC 
 void *ic_realloc(void *oldptr, size_t size);
+
+/** @} */
 
 /*
 ================================================================================
@@ -435,6 +465,12 @@ String replacements
 ================================================================================
 */
 #include <string.h>
+
+/**
+ * @defgroup string_lib String Library
+ * @brief Library replacements or additions for handling strings.
+ * @{ 
+ */
 
 /**
  * @brief Duplicate a string. 
@@ -640,146 +676,15 @@ IC_PRINTF_FORMAT(3, 4)
 IC_NON_NULL(1) 
 size_t snprintfz(char *dest, size_t size, const char *fmt, ...);
 
+/** @} */
+
 /*
 ================================================================================
 Logging
 ================================================================================
 */
 
-#ifdef IC_PLATFORM_WINDOWS
-#define __FILENAME__ \
-    (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
-#else
-#define __FILENAME__ \
-    (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-#endif 
-
-/**
- * @brief Log level.
-*/
-enum log_level {
-    LOG_LEVEL_NONE,     /// nothing, won't print anything
-    LOG_LEVEL_FATAL,    /// only print fatal errors
-    LOG_LEVEL_ERROR,    /// print all errors
-    LOG_LEVEL_WARN,     /// print warnings + errors
-    LOG_LEVEL_INFO,     /// print all standard messages
-    LOG_LEVEL_DEBUG,    /// print debug messages + everything else
-    LOG_LEVEL_TRACE,    /// print trace messages
-    LOG_LEVEL_ALL       /// print everything
-};
-
-/**
- * @brief Initialise log.
- */
-IC_PUBLIC
-void log_init(void);
-
-/**
- * @brief Shutdown log.
- */
-IC_PUBLIC
-void log_shutdown(void);
-
-/**
- * @brief Clear log.
- */
-IC_PUBLIC
-void log_clear(void);
-
-/**
- * @brief Print a banner in the log for separation purposes.
- */
-IC_PUBLIC
-void log_banner(void);
-
-/**
- * @brief Set the logging level.
- *
- * @param[in] new_level new log level
- */
-IC_PUBLIC
-void log_set_level(enum log_level new_level);
-
-/**
- * @brief Set if the log should echo to stdout.
- *
- * @param[in] echo set to true if log should print to stdout
- */
-IC_PUBLIC
-void log_echo_stdout(bool echo);
-
-/**
- * @brief Change if the log should automatically add newlines to messages.
- *
- * @param[in] lf set to true if log should add newlines automatically
-*/
-IC_PUBLIC
-void log_auto_lf(bool lf);
-
-/**
- * @brief Print to log.
- *
- * @param[in] level log level of message
- * @param[in] func  parent function that this is called from
- * @param[in] file  file this call is located in
- * @param[in] line  line this call is on
- * @param[in] fmt   formatted string
- *
- * @note Recommended to use the log_ macros instead of calling this directly.
- */
-IC_PUBLIC
-IC_PRINTF_FORMAT(5, 6)
-void log_lprintf(enum log_level level, const char *func, const char *file,
-                 int line, const char *fmt, ...);
-
-/**
- * @def log_trace
- * @brief Print a trace message to the log.
- */
-#define log_trace(...) \
-    log_lprintf(LOG_LEVEL_TRACE, __func__, __FILENAME__, __LINE__, __VA_ARGS__)
-
-/**
- * @def log_debug
- * @brief Print a debug message to the log.
- */
-#define log_debug(...) \
-    log_lprintf(LOG_LEVEL_DEBUG, __func__, __FILENAME__, __LINE__, __VA_ARGS__)
-
-/**
- * @def log_info
- * @brief Print an informational message to the log.
- */
-#define log_info(...) \
-    log_lprintf(LOG_LEVEL_INFO, __func__, __FILENAME__, __LINE__, __VA_ARGS__)
-
-/**
- * @def log_warn
- * @brief Print a warning message to the log.
- */
-#define log_warn(...) \
-    log_lprintf(LOG_LEVEL_WARN, __func__, __FILENAME__, __LINE__, __VA_ARGS__)
-
-/**
- * @def log_error
- * @brief Print an error message to the log.
- */
-#define log_error(...) \
-    log_lprintf(LOG_LEVEL_ERROR, __func__, __FILENAME__, __LINE__, __VA_ARGS__)
-
-/**
- * @def log_fatal
- * @brief Print a fatal error message to the log.
- */
-#define log_fatal(...) \
-    log_lprintf(LOG_LEVEL_FATAL, __func__, __FILENAME__, __LINE__, __VA_ARGS__)
-
-/**
- * @def log_print
- * @brief Print a message to the log. Shows regardless of log level setting.
- */
-#define log_print(...) \
-    log_lprintf(LOG_LEVEL_ALL, __func__, __FILENAME__, __LINE__, __VA_ARGS__)
+#include "ic_log.h"
 
 /*
 ================================================================================

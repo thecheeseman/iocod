@@ -21,11 +21,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /**
- * @file   ic_platform.h
- * @author thecheeseman
- * @date   2022-04-26
- * 
- * Macros for platform and compiler detection, features, attributes, etc.
+ * @defgroup platform Platform Macros
+ * @brief Macros for platform and compiler detection, features, attributes, etc.
+ * @{
  */
 
 #ifndef IC_PLATFORM_H
@@ -932,5 +930,7 @@ IC_DIAGNOSTIC_POP
 #else
 #define IC_PLATFORM_STRING IC_PLATFORM_OS "-" IC_PLATFORM_ARCH "-debug"
 #endif
+
+/** @} */
 
 #endif /* IC_PLATFORM_H */
