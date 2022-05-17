@@ -4,21 +4,16 @@ int main(void)
 {
     log_init();
     log_set_level(LOG_LEVEL_ALL);
+    log_enable_color(true);
 
-    log_print("this is a test");
-    log_print("this is another test with a new line\n");
-
-    log_info("this is an info message");
-
-    log_warn("here's a warning");
-
-    log_error("oh no");
-
-    log_fatal("FATAL ERROR");
-
-    log_trace("this is a really long line log_banner();log_banner();log_banner();"\
-              "log_banner(); log_banner(); log_banner(); log_banner(); log_banner();"\
-              "log_banner(); so yeah");
+    log_print("example log print messages:");
+    log_trace("example trace message");
+    log_debug("this is a debug message");
+    log_info("standard message");
+    log_warn("something isn't going right");
+    log_error("we encountered an error");
+    log_fatal("unrecoverable");
+    log_print("");
 
     log_shutdown();
 

@@ -61,7 +61,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define LFF_CYAN                        "36;"
 #define LFF_WHITE                       "37;"
 /* output log background color */
-#define LFB_NULL
+#define LFB_NULL                        ""
 #define LFB_BLACK                       "40;"
 #define LFB_RED                         "41;"
 #define LFB_GREEN                       "42;"
@@ -76,12 +76,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define LFS_BLINK                       "5m"
 #define LFS_NORMAL                      "22m"
 /* output log default color definition: [front color] + [background color] + [show style] */
-#define LOG_COLOR_FATAL                 (LFF_MAGENTA LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_FATAL                 (LFF_WHITE   LFB_RED  LFS_NORMAL)
 #define LOG_COLOR_ERROR                 (LFF_RED     LFB_NULL LFS_NORMAL)
 #define LOG_COLOR_WARN                  (LFF_YELLOW  LFB_NULL LFS_NORMAL)
-#define LOG_COLOR_INFO                  (LFF_CYAN    LFB_NULL LFS_NORMAL)
-#define LOG_COLOR_DEBUG                 (LFF_GREEN   LFB_NULL LFS_NORMAL)
-#define LOG_COLOR_TRACE                 (LFF_BLUE    LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_INFO                  (LFF_WHITE   LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_DEBUG                 (LFF_CYAN    LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_TRACE                 (LFF_MAGENTA LFB_NULL LFS_NORMAL)
+#define LOG_COLOR_PRINT                 (LFF_WHITE   LFB_NULL LFS_NORMAL)
 
 /**
  * @brief Log structure.
@@ -95,6 +96,7 @@ static struct logger {
     bool echo_stdout;       /**< echo messages to stdout */
     bool auto_lf;           /**< automatically add lf to output */
     bool hide_next_source;  /**< hide next message's source */
+    bool enable_color;      /**< enable CSI colors */
 
     FILE *fp;               /**< file */
     size_t size;            /**< size of bytes written */
@@ -109,6 +111,7 @@ static struct logger log = {
     .echo_stdout = true,
     .auto_lf = true,
     .hide_next_source = false,
+    .enable_color = false,
     .size = 0
 };
 
@@ -139,12 +142,12 @@ static const char *log_prefix[] = {
 /* stdout prefixes */
 static const char *stdout_prefix[] = {
     [LOG_LEVEL_NONE] = "",
-    [LOG_LEVEL_FATAL] = "******** FATAL ERROR ******** ",
-    [LOG_LEVEL_ERROR] = "**** ERROR **** ",
+    [LOG_LEVEL_FATAL] = "FATAL ERROR: ",
+    [LOG_LEVEL_ERROR] = "ERROR: ",
     [LOG_LEVEL_WARN] = "WARNING: ",
-    [LOG_LEVEL_INFO] = "info: ",
-    [LOG_LEVEL_DEBUG] = "",
-    [LOG_LEVEL_TRACE] = "",
+    [LOG_LEVEL_INFO] = "",
+    [LOG_LEVEL_DEBUG] = "debug: ",
+    [LOG_LEVEL_TRACE] = "trace: ",
     [LOG_LEVEL_ALL] = ""
 };
 
@@ -157,7 +160,7 @@ static const char *color_prefix[] = {
     [LOG_LEVEL_INFO] = LOG_COLOR_INFO,
     [LOG_LEVEL_DEBUG] = LOG_COLOR_DEBUG,
     [LOG_LEVEL_TRACE] = LOG_COLOR_TRACE,
-    [LOG_LEVEL_ALL] = ""
+    [LOG_LEVEL_ALL] = LOG_COLOR_PRINT
 };
 
 #ifdef IC_PLATFORM_WINDOWS
@@ -279,7 +282,7 @@ void log_init(void)
     /* TODO: file splitting once file gets too large? */
 
     log_banner();
-    log_print("log opened\n");
+    log_debug("log opened\n");
 }
 
 /*
@@ -288,7 +291,7 @@ void log_init(void)
 IC_PUBLIC
 void log_shutdown(void)
 {
-    log_print("log closed\n");
+    log_debug("log closed\n");
     log_banner();
 
     fclose(log.fp);
@@ -317,7 +320,7 @@ void log_clear(void)
     }
 
     log_banner();
-    log_print("log cleared\n");
+    log_debug("log cleared\n");
 }
 
 /*
@@ -341,10 +344,10 @@ void log_banner(void)
 IC_PUBLIC
 void log_set_level(enum log_level new_level)
 {
-    IC_ASSERT(new_level >= LOG_LEVEL_NONE && new_level <= LOG_LEVEL_ALL);
+    IC_ASSERT((new_level >= LOG_LEVEL_NONE) && (new_level <= LOG_LEVEL_ALL));
 
     if (log.level != new_level) {
-        log_print("log level changed from '%s' to '%s'\n", 
+        log_debug("log level changed from '%s' to '%s'\n",
                   level_str[log.level], level_str[new_level]);
 
         log.level = new_level;
@@ -357,8 +360,10 @@ void log_set_level(enum log_level new_level)
 IC_PUBLIC
 void log_echo_stdout(bool echo)
 {
+    IC_ASSERT((echo == true) || (echo == false));
+
     if (log.echo_stdout != echo) {
-        log_print("log option 'echo_stdout' changed to '%s'\n", 
+        log_debug("log option 'echo_stdout' changed to '%s'\n",
                   echo ? "true" : "false");
 
         log.echo_stdout = echo;
@@ -371,11 +376,29 @@ void log_echo_stdout(bool echo)
 IC_PUBLIC
 void log_auto_lf(bool lf)
 {
+    IC_ASSERT((lf == true) || (lf == false));
+
     if (log.auto_lf != lf) {
-        log_print("log option 'auto_lf' changed to '%s'\n", 
+        log_debug("log option 'auto_lf' changed to '%s'\n",
                   lf ? "true" : "false");
 
         log.auto_lf = lf;
+    }
+}
+
+/*
+ * Set color.
+ */
+IC_PUBLIC
+void log_enable_color(bool color)
+{
+    IC_ASSERT((color == true) || (color == false));
+
+    if (log.enable_color != color) {
+        log.enable_color = color;
+
+        log_debug("log option 'enable_color' changed to '%s'\n",
+                  color ? "true" : "false");
     }
 }
 
@@ -384,17 +407,17 @@ void log_auto_lf(bool lf)
  */
 IC_PUBLIC
 IC_PRINTF_FORMAT(5, 6)
-void log_lprintf(enum log_level level, const char *func, const char *file,
-                 int line, const char *fmt, ...)
+size_t log_lprintf(enum log_level level, const char *func, const char *file,
+                   int line, const char *fmt, ...)
 {
-    IC_ASSERT(level >= LOG_LEVEL_NONE && level <= LOG_LEVEL_ALL);
+    IC_ASSERT((level >= LOG_LEVEL_NONE) && (level <= LOG_LEVEL_ALL));
 
     if (log.fp == NULL)
-        return;
+        return 0;
 
     /* ignore message if it's not a high enough priority */
     if (level != LOG_LEVEL_ALL && level > log.level)
-        return;
+        return 0;
 
     gettimeofday(&log.now, NULL);
 
@@ -411,12 +434,14 @@ void log_lprintf(enum log_level level, const char *func, const char *file,
         F 2022-03-15 21:05:10.395830 1651 logger.c:main:262: this is a fatal message
     */
     size_t size;
+    size_t printed = 0;
 
     if (!log.hide_next_source) {
         if ((size = fprintf(log.fp, "%s %s %ld %s:%s:%d: ",
                             log_prefix[level], timestamp, threadid, file,
                             func, line)) > 0) {
             log.size += size;
+            printed += size;
         }
     } else {
         log.hide_next_source = false;
@@ -429,35 +454,30 @@ void log_lprintf(enum log_level level, const char *func, const char *file,
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
 
-    if ((size = fprintf(log.fp, "%s", msg)) > 0)
+    if ((size = fprintf(log.fp, "%s", msg)) > 0) {
         log.size += size;
+        printed += size;
+    }
 
     /* auto lf */
     if (msg[size - 1] != '\n' && log.auto_lf) {
-        if ((size = fprintf(log.fp, "\n")) > 0)
+        if ((size = fprintf(log.fp, "\n")) > 0) {
             log.size += size;
+            printed += size;
+        }
     }
 
     fflush(log.fp);
 
     /* echo to stdout */
     if (log.echo_stdout) {
-        /* 
-         * while windows does actually support CSI codes, most of the 
-         * terminals this is likely to show up in (whether VS/cmd.exe, etc)
-         * simply eat the CSI code and remove 1 character from the actual
-         * message we want to see. annoying
-        */
-        #ifndef IC_PLATFORM_WINDOWS
-        fprintf(stdout, "%s%s", CSI_START, color_prefix[level]);
-        #endif
+        if (log.enable_color)
+            fprintf(stdout, "%s%s", CSI_START, color_prefix[level]);
 
-        fprintf(stdout, "%s:%s:%d: %s%s", file, func, line, 
-                stdout_prefix[level], msg);
+        fprintf(stdout, "%s%s", stdout_prefix[level], msg);
 
-        #ifndef IC_PLATFORM_WINDOWS
-        fprintf(stdout, "%s", CSI_END);
-        #endif
+        if (log.enable_color)
+            fprintf(stdout, "%s", CSI_END);
 
         if (msg[size - 1] != '\n' && log.auto_lf)
             fprintf(stdout, "\n");
@@ -466,4 +486,6 @@ void log_lprintf(enum log_level level, const char *func, const char *file,
     }
 
     unlock();
+
+    return printed;
 }
