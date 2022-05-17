@@ -84,10 +84,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define LOG_COLOR_TRACE                 (LFF_MAGENTA LFB_NULL LFS_NORMAL)
 #define LOG_COLOR_PRINT                 (LFF_WHITE   LFB_NULL LFS_NORMAL)
 
-/**
- * @brief Log structure.
-*/
-static struct logger {
+/*
+ * Log structure.
+ */
+struct logger {
     char name[64];          /**< name of log, currently unused */
     char path[256];         /**< path to log file */
 
@@ -209,7 +209,7 @@ static intptr_t current_thread_id(void)
  * These cross-platform time utilities from https://github.com/yksz/c-logger
  */
 #ifdef IC_PLATFORM_WINDOWS
-static struct timezone {
+struct timezone {
     int tz_minuteswest;
     int tz_dsttime;
 };
