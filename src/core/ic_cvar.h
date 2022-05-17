@@ -29,6 +29,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_CVAR_H
 #define IC_CVAR_H
 
+#include "iocod.h"
+
 /**
  * @def MAX_CVARS
  * @brief Maximum number of cvars allowed by the system.
@@ -38,45 +40,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define MAX_CVARS 4096
 
 /**
- * @def MAX_CVAR_VALUE_STRING
- * @brief Maximum length for vmcvar strings.
- */
-#define MAX_CVAR_VALUE_STRING 256
-
-/**
  * @enum cvar_flags
 */
-enum cvar_flags {
-    CVAR_NONE           = 0,    /**< no flags */
-    CVAR_ARCHIVE        = 1,    /**< used for system variables, not for
+enum cv_flags {
+    CV_NONE         = 0,    /**< no flags */
+    CV_ARCHIVE      = 1,    /**< used for system variables, not for
                                      player-specific configurations */
-    CVAR_USER_INFO      = 2,    /**< sent to server on connect or change */
-    CVAR_SERVER_INFO    = 4,    /**< sent in response to packet requests */
-    CVAR_SYSTEM_INFO    = 8,    /**< duplicated on all clients */
-    CVAR_INIT           = 16,   /**< can only be changed from the command line */
-    CVAR_LATCH          = 32,   /**< only updated when `cvar_get()` is called */
-    CVAR_ROM            = 64,   /**< display only */
-    CVAR_USER_CREATED   = 128,  /**< created by the 'set' family of commands */
-    CVAR_TEMP           = 256,  /**< can be set even when cheats are disabled,
+    CV_USER_INFO    = 2,    /**< sent to server on connect or change */
+    CV_SERVER_INFO  = 4,    /**< sent in response to packet requests */
+    CV_SYSTEM_INFO  = 8,    /**< duplicated on all clients */
+    CV_INIT         = 16,   /**< can only be changed from the command line */
+    CV_LATCH        = 32,   /**< only updated when `cvar_get()` is called */
+    CV_ROM          = 64,   /**< display only */
+    CV_USER_CREATED = 128,  /**< created by the 'set' family of commands */
+    CV_TEMP         = 256,  /**< can be set even when cheats are disabled,
                                      but is not archived */
-    CVAR_CHEAT          = 512,  /**< cannot be changed if cheats are disabled */
-    CVAR_NO_RESTART     = 1024, /**< not cleared when `cvar_restart` is run */
-    CVAR_WOLF_INFO      = 2048, /**< added in RTCW */
-    CVAR_4096           = 4096, /**< unknown */
-    CVAR_8192           = 8192  /**< added in COD1 */
+    CV_CHEAT        = 512,  /**< cannot be changed if cheats are disabled */
+    CV_NO_RESTART   = 1024, /**< not cleared when `cvar_restart` is run */
+    CV_WOLF_INFO    = 2048, /**< added in RTCW */
+    CV_4096         = 4096, /**< unknown */
+    CV_8192         = 8192  /**< added in COD1 */
 };
 
 /**
  * @brief Cvar floating point type.
  * @note All Q3-based games use `float`.
 */
-typedef double  cvar_float;
+typedef double  cv_float;
 
 /**
  * @brief Cvar integer type.
  * @note All Q3-based games use `int`.
 */
-typedef long    cvar_int;
+typedef long    cv_int;
 
 /**
  * @brief Cvar structure.
@@ -91,17 +87,23 @@ struct cvar {
     char *reset_string;         /**< `cvar_restart` resets to this value */
     char *latched_string;       /**< used for `CVAR_LATCH` flagged cvars */
     
-    enum cvar_flags flags;      /**< flags */
+    enum cv_flags flags;        /**< flags */
     
     bool modified;              /**< set each time the cvar is changed */
     int modification_count;     /**< incremented each time the cvar is changed */
 
-    cvar_float value;           /**< floating point representation of string */
-    cvar_int integer;           /**< integer representation of string */
+    cv_float value;             /**< floating point representation of string */
+    cv_int integer;             /**< integer representation of string */
 
     struct cvar *next;          /**< next cvar */
     struct cvar *hash_next;     /**< next hashtable entry */
 };
+
+/**
+ * @def MAX_CVAR_STRING_LEN
+ * @brief Maximum length for vmcvar strings.
+ */
+#define MAX_VMCVAR_STRING_LEN 256
 
 /**
  * @brief Cvar structure for virtual machines. 
@@ -113,39 +115,25 @@ struct vmcvar {
     int handle;                 /**< cvar handle */
     int modification_count;     /**< incremented each time the cvar is changed */
 
-    cvar_float value;           /**< floating point representation of string */
-    cvar_int integer;           /**< integer representation of string */
-    char string[MAX_CVAR_VALUE_STRING]; /**< string value */
+    cv_float value;             /**< floating point representation of string */
+    cv_int integer;             /**< integer representation of string */
+    char string[MAX_VMCVAR_STRING_LEN]; /**< string value */
 };
 
 /**
- * @brief Validate a cvar string
- * @param[in] s string to validate
- * @return false if string contains '\' or '"' or ';' chars, true otherwise
+ * @brief Find a cvar by name.
+ * 
+ * @param[in] name name of the cvar to look for
+ * @return NULL if not found, otherwise a `struct cvar *`
 */
 IC_PUBLIC
-IC_NON_NULL(1)
-bool cvar_validate_string(const char *s);
+struct cvar *cv_find(const char *name);
 
-/**
- * @brief Return a cvar's string value
- * @param[in] var_name name of the cvar to search for
- * @return a string containing the value
-*/
 IC_PUBLIC
-IC_NON_NULL(1)
-char *cvar_variable_string(const char *var_name);
+struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags);
 
-/**
- * @brief Return a cvar's string value into the given string buffer
- * @param[in]  var_name name of the cvar to search for
- * @param[out] buffer   pointer to string buffer
- * @param[in]  bufsize  size of the string buffer
-*/
 IC_PUBLIC
-IC_NON_NULL(1, 2)
-void cvar_variable_string_buffer(const char *var_name, char *buffer,
-                                 int bufsize);
+struct cvar *cv_set2(const char *name, const char *value, bool force);
 
 /**
  * @brief Some cvar values need to be safe from foreign characters
@@ -153,8 +141,34 @@ void cvar_variable_string_buffer(const char *var_name, char *buffer,
  * @return a cleaned string
  */
 IC_PUBLIC
+char *cv_clear_foreign_chars(const char *value);
+
+/**
+ * @brief Return a cvar's string value
+ * @param[in] name name of the cvar to search for
+ * @return a string containing the value
+*/
+IC_PUBLIC
 IC_NON_NULL(1)
-char *cvar_clean_foreign_characters(const char *value);
+char *cv_string(const char *name);
+
+/**
+ * @brief Return a cvar's string value into the given string buffer
+ * @param[in]  name  name of the cvar to search for
+ * @param[out] buf   pointer to string buffer
+ * @param[in]  size  size of the string buffer
+*/
+IC_PUBLIC
+IC_NON_NULL(1, 2)
+void cv_string_buffer(const char *name, char *buf, size_t size);
+
+/**
+ * @brief Validate a cvar string
+ * @param[in] s string to validate
+ * @return false if string contains '\' or '"' or ';' chars, true otherwise
+*/
+IC_PUBLIC
+bool cv_validate_string(const char *s);
 
 /**
  * @brief Return a cvar's floating point value
@@ -163,7 +177,7 @@ char *cvar_clean_foreign_characters(const char *value);
 */
 IC_PUBLIC
 IC_NON_NULL(1)
-cvar_float cvar_variable_value(const char *var_name);
+cv_float cv_value(const char *name);
 
 /**
  * @brief Return a cvar's integer value
@@ -172,7 +186,7 @@ cvar_float cvar_variable_value(const char *var_name);
 */
 IC_PUBLIC
 IC_NON_NULL(1)
-cvar_int cvar_variable_integer_value(const char *var_name);
+cv_int cv_integer(const char *name);
 
 /** @} */
 

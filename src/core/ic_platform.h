@@ -524,6 +524,7 @@ IC_DIAGNOSTIC_PUSH
 #define IC_NON_NULL(...) __attribute__((__nonnull__(__VA_ARGS__)))
 #else
 #define IC_NON_NULL(...) 
+#define IC_NON_NULL_RET 
 #endif
 IC_DIAGNOSTIC_POP
 
