@@ -40,7 +40,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define MAX_CVARS 4096
 
 /**
- * @enum cvar_flags
+ * @enum cv_flags
 */
 enum cv_flags {
     CV_NONE         = 0,    /**< no flags */
@@ -85,7 +85,7 @@ struct cvar {
     
     char *string;               /**< string value */
     char *reset_string;         /**< `cvar_restart` resets to this value */
-    char *latched_string;       /**< used for `CVAR_LATCH` flagged cvars */
+    char *latched_string;       /**< used for #CV_LATCH flagged cvars */
     
     enum cv_flags flags;        /**< flags */
     
@@ -100,7 +100,7 @@ struct cvar {
 };
 
 /**
- * @def MAX_CVAR_STRING_LEN
+ * @def MAX_VMCVAR_STRING_LEN
  * @brief Maximum length for vmcvar strings.
  */
 #define MAX_VMCVAR_STRING_LEN 256
@@ -148,10 +148,10 @@ IC_PUBLIC
  * 
  * Despite it's name, this function does two things. First, it checks if the
  * given cvar exists, and if not it will create it automatically with the
- * default value and flags as specified. 
+ * default @p value and @p flags as specified. 
  
- * If it already exists, and it's flagged as `CV_USER_CREATED`, it will 
- * set the reset_string to the value passed and update the flags. If there
+ * If it already exists, and it's flagged as #CV_USER_CREATED, it will 
+ * set the `reset_string` to the value passed and update the flags. If there
  * is already a string latched, it will immediately take the latched value.
  * 
  * @param[in] name  cvar name
@@ -226,14 +226,14 @@ void cv_shutdown(void);
 /**
  * @brief Try to set a cvar with the given string value.
  * 
- * If the given cvar does not already exist and `force` is `false`, this will
- * create a new cvar with a `CV_USER_CREATED` flag. If `force` is `true`, this
+ * If the given cvar does not already exist and @p force is `false`, this will
+ * create a new cvar with a #CV_USER_CREATED flag. If @p force is `true`, this
  * will create it with no flags at all.
  * 
- * If the cvar already exists, and `force` is `false`, will set the cvar's
- * `latched_string` value. If `force` is `true`, then will always try to 
- * set the value (unless it is blocked by a `CV_ROM`, `CV_LATCH`, `CV_INIT`, or 
- * `CV_CHEAT` flag).
+ * If the cvar already exists, and @p force is `false`, will set the cvar's
+ * `latched_string` value. If @p force is `true`, then will always try to 
+ * set the value (unless it is blocked by a #CV_ROM, #CV_LATCH, #CV_INIT, or 
+ * #CV_CHEAT flag).
  * 
  * @param[in] name  name of the cvar
  * @param[in] value value to set the cvar to
@@ -393,8 +393,8 @@ cv_int cv_get_integer(const char *name);
 /**
  * @brief Write cvar defaults to a given file. 
  * 
- * This will actively ignore any cvar that has a `CV_ROM`, `CV_USER_CREATED`,
- * `CV_CHEAT`, or `CV_4096` flag set.
+ * This will actively ignore any cvar that has a #CV_ROM, #CV_USER_CREATED,
+ * #CV_CHEAT, or #CV_4096 flag set.
  *
  * @param f handle to output file
  * 
@@ -405,7 +405,7 @@ bool cv_write_defaults(filehandle f);
 
 /**
  * @brief Write archived cvar variables to a given file. Only cvars with the
- * `CV_ARCHIVE` flag are written.
+ * #CV_ARCHIVE flag are written.
  *
  * @param f handle to output file
  *
