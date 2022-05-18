@@ -19,7 +19,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project("iocod"
-    VERSION 0.102.0
+    VERSION 0.103.0
     DESCRIPTION "open source CoD1.1-1.5 project"
     HOMEPAGE_URL "https://iocod.org"
     LANGUAGES C)
