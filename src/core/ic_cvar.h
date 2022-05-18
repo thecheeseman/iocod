@@ -136,12 +136,30 @@ struct vmcvar {
  * @brief Find a cvar by name.
  * 
  * @param[in] name name of the cvar to look for
+ * 
  * @return NULL if not found, otherwise a `struct cvar *`
 */
 IC_PUBLIC
 struct cvar *cv_find(const char *name);
 
 IC_PUBLIC
+/**
+ * @brief Get or set a cvar.
+ * 
+ * Despite it's name, this function does two things. First, it checks if the
+ * given cvar exists, and if not it will create it automatically with the
+ * default value and flags as specified. 
+ 
+ * If it already exists, and it's flagged as `CV_USER_CREATED`, it will 
+ * set the reset_string to the value passed and update the flags. If there
+ * is already a string latched, it will immediately take the latched value.
+ * 
+ * @param[in] name  cvar name
+ * @param[in] value default value
+ * @param[in] flags cvar flags
+ * 
+ * @return NULL if failed, otherwise `struct cvar *`
+*/
 struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags);
 
 /*
@@ -150,15 +168,36 @@ struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags);
  *
  */
 
+/**
+ * @brief Return all cvars identified by given mask as a regular infostring.
+ * 
+ * @param[in] mask cvar flags mask
+ * 
+ * @return infostring containing all matched cvars.
+*/
 IC_PUBLIC
-char *cv_infostring(int bit);
+char *cv_infostring(enum cv_flags mask);
+
+/**
+ * @brief Return all cvars identified by given mask as a big infostring.
+ * 
+ * @param[in] mask cvar flags mask
+ * 
+ * @return infostring containing all matched cvars.
+*/
 IC_PUBLIC
+char *cv_big_infostring(enum cv_flags mask);
 
-char *cv_big_infostring(int bit);
-
+/**
+ * @brief Copy all cvars identified by given mask into a char[] buffer.
+ * 
+ * @param[in] mask cvar flags mask
+ * @param[out] buf string buffer
+ * @param[in] size size of string buffer
+*/
 IC_PUBLIC
 IC_NON_NULL(2)
-void cv_infostring_buffer(int bit, char *buf, size_t size);
+void cv_infostring_buffer(enum cv_flags mask, char *buf, size_t size);
 
 /*
  *
@@ -166,9 +205,15 @@ void cv_infostring_buffer(int bit, char *buf, size_t size);
  *
  */
 
+/**
+ * @brief Initialise cvar system.
+ */
 IC_PUBLIC
 void cv_init(void);
 
+/**
+ * @brief Shutdown cvar system.
+ */
 IC_PUBLIC
 void cv_shutdown(void);
 
@@ -178,21 +223,88 @@ void cv_shutdown(void);
  *
  */
 
+/**
+ * @brief Try to set a cvar with the given string value.
+ * 
+ * If the given cvar does not already exist and `force` is `false`, this will
+ * create a new cvar with a `CV_USER_CREATED` flag. If `force` is `true`, this
+ * will create it with no flags at all.
+ * 
+ * If the cvar already exists, and `force` is `false`, will set the cvar's
+ * `latched_string` value. If `force` is `true`, then will always try to 
+ * set the value (unless it is blocked by a `CV_ROM`, `CV_LATCH`, `CV_INIT`, or 
+ * `CV_CHEAT` flag).
+ * 
+ * @param[in] name  name of the cvar
+ * @param[in] value value to set the cvar to
+ * @param[in] force whether to force this cvar to be set
+ * 
+ * @return NULL if failed, or `struct cvar *` otherwise
+*/
 IC_PUBLIC
 struct cvar *cv_set2(const char *name, const char *value, bool force);
 
+/**
+ * @brief Set a cvar with the given string value, always forcing the value
+ * to be set if possible.
+ *
+ * @param[in] name  name of the cvar
+ * @param[in] value value to set the cvar to
+ * 
+ * @see cv_set2
+ *
+ * @return NULL if failed, or `struct cvar *` otherwise
+*/
 IC_PUBLIC
 struct cvar *cv_set_string(const char *name, const char *value);
 
+/**
+ * @brief Set a cvar's `latched_string` with the given value.
+ *
+ * @param[in] name  name of the cvar
+ * @param[in] value value to set the cvar to
+ *
+ * @see cv_set2
+ *
+ * @return NULL if failed, or `struct cvar *` otherwise
+*/
 IC_PUBLIC
 struct cvar *cv_set_string_latched(const char *name, const char *value);
 
+
+/**
+ * @brief Set a cvar with the given floating point value.
+ *
+ * @param[in] name  name of the cvar
+ * @param[in] value value to set the cvar to
+ *
+ * @see cv_set2
+ *
+ * @return NULL if failed, or `struct cvar *` otherwise
+*/
 IC_PUBLIC
 struct cvar *cv_set_value(const char *name, cv_float value);
 
+/**
+ * @brief Set a cvar with the given integer value.
+ *
+ * @param[in] name  name of the cvar
+ * @param[in] value value to set the cvar to
+ *
+ * @see cv_set2
+ *
+ * @return NULL if failed, or `struct cvar *` otherwise
+*/
 IC_PUBLIC
 struct cvar *cv_set_integer(const char *name, cv_int value);
 
+/**
+ * @brief Reset a cvar to its `reset_string` value.
+ *
+ * @param[in] name  name of the cvar
+ *
+ * @return NULL if failed, or `struct cvar *` otherwise
+*/
 IC_PUBLIC
 struct cvar *cv_reset(const char *name);
 
@@ -203,16 +315,20 @@ struct cvar *cv_reset(const char *name);
  */
 
 /**
- * @brief Some cvar values need to be safe from foreign characters
- * @param[in] value value to clean
+ * @brief Remove any extended ASCII characters from the given string.
+ * 
+ * @param[in] value string to clean
+ * 
  * @return a cleaned string
  */
 IC_PUBLIC
 char *cv_clear_foreign_chars(const char *value);
 
 /**
- * @brief Return a cvar's string value
+ * @brief Return a cvar's string value.
+ * 
  * @param[in] name name of the cvar to search for
+ * 
  * @return a string containing the value
 */
 IC_PUBLIC
@@ -220,7 +336,8 @@ IC_NON_NULL(1)
 char *cv_get_string(const char *name);
 
 /**
- * @brief Return a cvar's string value into the given string buffer
+ * @brief Return a cvar's string value into the given string buffer.
+ * 
  * @param[in]  name  name of the cvar to search for
  * @param[out] buf   pointer to string buffer
  * @param[in]  size  size of the string buffer
@@ -230,8 +347,10 @@ IC_NON_NULL(1, 2)
 void cv_get_string_buffer(const char *name, char *buf, size_t size);
 
 /**
- * @brief Validate a cvar string
+ * @brief Validate a cvar string.
+ * 
  * @param[in] s string to validate
+ * 
  * @return false if string contains '\' or '"' or ';' chars, true otherwise
 */
 IC_PUBLIC
@@ -244,8 +363,10 @@ bool cv_validate_string(const char *s);
  */
 
 /**
- * @brief Return a cvar's floating point value
- * @param[in] var_name name of the cvar to search for
+ * @brief Return a cvar's floating point value.
+ * 
+ * @param[in] name name of the cvar to search for
+ * 
  * @return a float containing the value
 */
 IC_PUBLIC
@@ -253,8 +374,10 @@ IC_NON_NULL(1)
 cv_float cv_get_value(const char *name);
 
 /**
- * @brief Return a cvar's integer value
- * @param[in]   var_name name of the cvar to search for
+ * @brief Return a cvar's integer value.
+ * 
+ * @param[in] name name of the cvar to search for
+ * 
  * @return an integer containing the value
 */
 IC_PUBLIC
@@ -267,9 +390,27 @@ cv_int cv_get_integer(const char *name);
  *
  */
 
+/**
+ * @brief Write cvar defaults to a given file. 
+ * 
+ * This will actively ignore any cvar that has a `CV_ROM`, `CV_USER_CREATED`,
+ * `CV_CHEAT`, or `CV_4096` flag set.
+ *
+ * @param f handle to output file
+ * 
+ * @return true if successful, false otherwise
+ */
 IC_PUBLIC
 bool cv_write_defaults(filehandle f);
 
+/**
+ * @brief Write archived cvar variables to a given file. Only cvars with the
+ * `CV_ARCHIVE` flag are written.
+ *
+ * @param f handle to output file
+ *
+ * @return true if successful, false otherwise
+ */
 IC_PUBLIC
 bool cv_write_variables(filehandle f);
 
