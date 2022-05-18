@@ -4,6 +4,7 @@ file(GLOB IC_CORE_SRCS "*.c")
 
 foreach (subdir
     cvar
+    parse
     shared
     strings)
     file(GLOB sources "${subdir}/*.c")
