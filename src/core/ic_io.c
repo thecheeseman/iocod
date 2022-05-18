@@ -58,6 +58,11 @@ void _ic_error(bool fatal, const char *filename, const char *function,
 {
     char msg[MAX_PRINT_LEN];
 
+    /* temp */
+    UNUSED_PARAM(filename);
+    UNUSED_PARAM(function);
+    UNUSED_PARAM(line);
+
     va_list argptr;
     va_start(argptr, fmt);
     vsnprintf(msg, sizeof(msg), fmt, argptr);

@@ -93,7 +93,7 @@ static bool _if_set_value_for_key(char *s, const char *key, const char *value,
     else
         ifbig_remove_key(s, key);
 
-    if (value == NULL || strlen(value) == 0)
+    if (strlen(value) == 0)
         return false;
 
     snprintf(newif, size, "\\%s\\%s", key, value);

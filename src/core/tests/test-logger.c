@@ -13,7 +13,7 @@ int main(void)
     log_warn("something isn't going right");
     log_error("we encountered an error");
     log_fatal("unrecoverable");
-    log_print("");
+    log_print("\n");
 
     log_shutdown();
 

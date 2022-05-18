@@ -823,8 +823,13 @@ SAL stuff
 #endif /* DEPRECATED */
 #endif
 
-/* unused parameters */
+/**
+ * @def UNUSED_PARAM
+ * @brief Mark a parameter as unused in function body. Effectively silences
+ * compiler warnings about unused parameters.
+ */
 #define UNUSED_PARAM(x) (void)(x)
+
 #define IN
 #define OUT
 #define OPTIONAL

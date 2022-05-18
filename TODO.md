@@ -1,211 +1,5 @@
 # TODO
 
-## NOTES
-
-### wolfsrc breakdown
-
-### renderer
-```c
-jpeg-6/
-    jcapimin.c 
-    jchuff.c 
-    jcinit.c 
-    jccoefct.c 
-    jccolor.c 
-    jfdctflt.c 
-    jcdctmgr.c 
-    jcphuff.c 
-    jcmainct.c 
-    jcmarker.c 
-    jcmaster.c 
-    jcomapi.c
-    jcparam.c
-    jcprepct.c
-    jcsample.c 
-    jdapimin.c 
-    jdapistd.c 
-    jdatasrc.c 
-    jdcoefct.c 
-    jdcolor.c 
-    jddctmgr.c 
-    jdhuff.c 
-    jdinput.c 
-    jdmainct.c 
-    jdmarker.c 
-    jdmaster.c 
-    jdpostct.c 
-    jdsample.c 
-    jdtrans.c 
-    jerror.c  
-    jidctflt.c 
-    jmemmgr.c 
-    jmemnobs.c   
-    jutils.c 
-renderer/
-    tr_animation.c   
-    tr_backend.c   
-    tr_bsp.c   
-    tr_cmds.c   
-    tr_cmesh.c
-    tr_curve.c   
-    tr_flares.c   
-    tr_font.c    
-    tr_image.c    
-    tr_init.c     
-    tr_light.c   
-    tr_main.c    
-    tr_marks.c    
-    tr_mesh.c    
-    tr_model.c    
-    tr_noise.c    
-    tr_scene.c    
-    tr_shade.c    
-    tr_shade_calc.c   
-    tr_shader.c    
-    tr_shadows.c    
-    tr_sky.c    
-    tr_surface.c   
-    tr_world.c
-unix/
-    linux_glimp.c
-    linux_qgl.c
-win32/
-    win_gamma.c
-    win_glimp.c
-    win_qgl.c
-```
-
-```c
-splines/
-    math_angles.cpp
-    math_matrix.cpp
-    math_quaternion.cpp
-    math_vector.cpp
-    q_parse.cpp
-    q_shared.cpp
-    splines.cpp
-    util_str.cpp
-```
-
-### botlib
-```c
-botlib/
-    be_aas_bspq3.c
-    be_aas_cluster.c
-    be_aas_debug.c
-    be_aas_entity.c
-    be_aas_file.c
-    be_aas_main.c
-    be_aas_move.c
-    be_aas_optimize.c
-    be_aas_reach.c
-    be_aas_route.c
-    be_aas_routealt.c
-    be_aas_routetable.c
-    be_aas_sample.c
-    be_ai_char.c
-    be_ai_chat.c
-    be_ai_gen.c
-    be_ai_goal.c
-    be_ai_move.c
-    be_ai_weap.c
-    be_ai_weight.c
-    be_ea.c
-    be_interface.c
-    l_crc.c
-    l_libvar.c
-    l_log.c
-    l_memory.c
-    l_precomp.c
-    l_script.c
-    l_struct.c
-```
-
-### common
-```c
-game/
-    q_math.c
-    q_shared.c
-qcommon/
-    cm_load.c
-    cm_patch.c
-    cm_polylib.c
-    cm_test.c
-    cm_trace.c
-    cmd.c
-    common.c
-    cvar.c
-    files.c
-    huffman.c
-    md4.c
-    msg.c
-    net_chan.c
-    unzip.c
-    vm.c
-    vm_interpreted.c
-    vm_x86.c
-server/
-    sv_bot.c
-    sv_ccmds.c
-    sv_client.c
-    sv_game.c
-    sv_init.c
-    sv_main.c
-    sv_net_chan.c
-    sv_snapshot.c
-    sv_world.c
-unix/
-    linux_common.c
-    unix_main.c
-    unix_net.c
-    unix_shared.c
-    linux_signals.c
-win32/
-    win_main.c
-    win_net.c
-    win_shared.c
-    win_syscon.c
-    win_wndproc.c
-```
-
-### client
-```c
-client/
-    cl_cgame.c
-    cl_cin.c
-    cl_console.c
-    cl_input.c
-    cl_keys.c
-    cl_main.c
-    cl_net_chan.c
-    cl_parse.c
-    cl_scrn.c
-    cl_ui.c
-    snd_adpcm.c
-    snd_dma.c
-    snd_mem.c
-    snd_mix.c
-    snd_wavelet.c
-
-unix/
-    linux_qgl.c   
-    linux_glimp.c   
-    linux_joystick.c  
-    linux_snd.c
-
-win32/
-    win_input.c
-    win_snd.c
-```
-
-### wolfded
-```c
-null/
-    null_client.c
-    null_input.c
-    null_sndma.c
-```
-
 ## Current
 
 ## General
@@ -427,6 +221,212 @@ In terms of importance, ideas are rated [1] low importance - [5] high importance
 
 - MACOS_BUNDLE cmake flag
 - MACOS_BUNDLE_INFO_PLIST stuff
+
+## NOTES
+
+### wolfsrc breakdown
+
+### renderer
+```c
+jpeg-6/
+    jcapimin.c 
+    jchuff.c 
+    jcinit.c 
+    jccoefct.c 
+    jccolor.c 
+    jfdctflt.c 
+    jcdctmgr.c 
+    jcphuff.c 
+    jcmainct.c 
+    jcmarker.c 
+    jcmaster.c 
+    jcomapi.c
+    jcparam.c
+    jcprepct.c
+    jcsample.c 
+    jdapimin.c 
+    jdapistd.c 
+    jdatasrc.c 
+    jdcoefct.c 
+    jdcolor.c 
+    jddctmgr.c 
+    jdhuff.c 
+    jdinput.c 
+    jdmainct.c 
+    jdmarker.c 
+    jdmaster.c 
+    jdpostct.c 
+    jdsample.c 
+    jdtrans.c 
+    jerror.c  
+    jidctflt.c 
+    jmemmgr.c 
+    jmemnobs.c   
+    jutils.c 
+renderer/
+    tr_animation.c   
+    tr_backend.c   
+    tr_bsp.c   
+    tr_cmds.c   
+    tr_cmesh.c
+    tr_curve.c   
+    tr_flares.c   
+    tr_font.c    
+    tr_image.c    
+    tr_init.c     
+    tr_light.c   
+    tr_main.c    
+    tr_marks.c    
+    tr_mesh.c    
+    tr_model.c    
+    tr_noise.c    
+    tr_scene.c    
+    tr_shade.c    
+    tr_shade_calc.c   
+    tr_shader.c    
+    tr_shadows.c    
+    tr_sky.c    
+    tr_surface.c   
+    tr_world.c
+unix/
+    linux_glimp.c
+    linux_qgl.c
+win32/
+    win_gamma.c
+    win_glimp.c
+    win_qgl.c
+```
+
+```c
+splines/
+    math_angles.cpp
+    math_matrix.cpp
+    math_quaternion.cpp
+    math_vector.cpp
+    q_parse.cpp
+    q_shared.cpp
+    splines.cpp
+    util_str.cpp
+```
+
+### botlib
+```c
+botlib/
+    be_aas_bspq3.c
+    be_aas_cluster.c
+    be_aas_debug.c
+    be_aas_entity.c
+    be_aas_file.c
+    be_aas_main.c
+    be_aas_move.c
+    be_aas_optimize.c
+    be_aas_reach.c
+    be_aas_route.c
+    be_aas_routealt.c
+    be_aas_routetable.c
+    be_aas_sample.c
+    be_ai_char.c
+    be_ai_chat.c
+    be_ai_gen.c
+    be_ai_goal.c
+    be_ai_move.c
+    be_ai_weap.c
+    be_ai_weight.c
+    be_ea.c
+    be_interface.c
+    l_crc.c
+    l_libvar.c
+    l_log.c
+    l_memory.c
+    l_precomp.c
+    l_script.c
+    l_struct.c
+```
+
+### common
+```c
+game/
+    q_math.c
+    q_shared.c
+qcommon/
+    cm_load.c
+    cm_patch.c
+    cm_polylib.c
+    cm_test.c
+    cm_trace.c
+    cmd.c
+    common.c
+    cvar.c
+    files.c
+    huffman.c
+    md4.c
+    msg.c
+    net_chan.c
+    unzip.c
+    vm.c
+    vm_interpreted.c
+    vm_x86.c
+server/
+    sv_bot.c
+    sv_ccmds.c
+    sv_client.c
+    sv_game.c
+    sv_init.c
+    sv_main.c
+    sv_net_chan.c
+    sv_snapshot.c
+    sv_world.c
+unix/
+    linux_common.c
+    unix_main.c
+    unix_net.c
+    unix_shared.c
+    linux_signals.c
+win32/
+    win_main.c
+    win_net.c
+    win_shared.c
+    win_syscon.c
+    win_wndproc.c
+```
+
+### client
+```c
+client/
+    cl_cgame.c
+    cl_cin.c
+    cl_console.c
+    cl_input.c
+    cl_keys.c
+    cl_main.c
+    cl_net_chan.c
+    cl_parse.c
+    cl_scrn.c
+    cl_ui.c
+    snd_adpcm.c
+    snd_dma.c
+    snd_mem.c
+    snd_mix.c
+    snd_wavelet.c
+
+unix/
+    linux_qgl.c   
+    linux_glimp.c   
+    linux_joystick.c  
+    linux_snd.c
+
+win32/
+    win_input.c
+    win_snd.c
+```
+
+### wolfded
+```c
+null/
+    null_client.c
+    null_input.c
+    null_sndma.c
+```
 
 ## Incomplete Functions
 
