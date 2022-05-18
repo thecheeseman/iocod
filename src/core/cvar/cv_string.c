@@ -38,7 +38,7 @@ static char *get_string(const char *name)
 
 IC_PUBLIC
 IC_NON_NULL(1)
-char *cv_string(const char *name)
+char *cv_get_string(const char *name)
 {
     char *str = get_string(name);
 
@@ -50,7 +50,7 @@ char *cv_string(const char *name)
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-void cv_string_buffer(const char *name, char *buf, size_t size)
+void cv_get_string_buffer(const char *name, char *buf, size_t size)
 {
     char *str = get_string(name);
 

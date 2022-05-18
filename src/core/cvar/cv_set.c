@@ -3,6 +3,8 @@
 #include "iocod.h"
 
 extern int modified_flags;
+extern struct cvar *sv_console_lockout;
+extern struct cvar *com_sv_running;
 
 static struct cvar *update_cvar(struct cvar *v, const char *name, 
                                 const char *value, bool force)
@@ -22,6 +24,12 @@ static struct cvar *update_cvar(struct cvar *v, const char *name,
 
         if (v->flags & CV_CHEAT) {
             ic_printf("cvar '%s' is cheated protected\n", name);
+            goto out;
+        }
+
+        /* added in 1.5 */
+        if (sv_console_lockout->integer != 0 && com_sv_running->integer != 0) {
+            ic_printf("console is locked out, can't change cvars\n");
             goto out;
         }
 
@@ -70,7 +78,7 @@ struct cvar *cv_set2(const char *name, const char *value, bool force)
     log_debug("        cvar set %s '%s'", name, value);
 
     if (!cv_validate_string(name)) {
-        log_debug("invalid cvar name '%s'", name);
+        ic_error("invalid cvar name '%s'", name);
         return NULL;
     }
 
@@ -93,4 +101,40 @@ struct cvar *cv_set2(const char *name, const char *value, bool force)
         return v; /* unchanged */
 
     return update_cvar(v, name, value, force);
+}
+
+IC_PUBLIC
+struct cvar *cv_set_string(const char *name, const char *value)
+{
+    return cv_set2(name, value, true);
+}
+
+IC_PUBLIC
+struct cvar *cv_set_string_latched(const char *name, const char *value)
+{
+    return cv_set2(name, value, false);
+}
+
+IC_PUBLIC
+struct cvar *cv_set_value(const char *name, cv_float value)
+{
+    char v[64];
+
+    snprintfz(v, sizeof(v), "%lf", value);
+    return cv_set_string(name, v);
+}
+
+IC_PUBLIC
+struct cvar *cv_set_integer(const char *name, cv_int value)
+{
+    char v[64];
+
+    snprintf(v, sizeof(v), "%ld", value);
+    return cv_set_string(name, v);
+}
+
+IC_PUBLIC
+struct cvar *cv_reset(const char *name)
+{
+    return cv_set2(name, NULL, false);
 }

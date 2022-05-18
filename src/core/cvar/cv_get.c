@@ -3,7 +3,8 @@
 
 #include "iocod.h"
 
-static struct cvar *cvars;
+struct cvar *cvars;
+extern struct cvar *cv_cheats;
 
 static struct cvar indexes[MAX_CVARS];
 static size_t num_indexes = 0;
@@ -18,7 +19,7 @@ int modified_flags = 0;
 static long cv_hash(const char *name)
 {
     if (name == NULL || *name == '\0') {
-        log_trace("got NULL name");
+        ic_error("got NULL name");
         return -1;
     }
 
@@ -30,7 +31,7 @@ static long cv_hash(const char *name)
         i++;
     }
 
-    hash &= (MAX_CVARS - 1);
+    hash &= (MAX_VMCVAR_STRING_LEN - 1);
     return hash;
 }
 
@@ -44,7 +45,7 @@ struct cvar *cv_find(const char *name)
 
     long hash = cv_hash(name);
     if (hash >= MAX_CVARS || hash <= 0) {
-        log_trace("bad hash %d for name '%s'\n", hash, name);
+        log_trace("bad hash %ld for name '%s'\n", hash, name);
         return NULL;
     }
 
@@ -69,10 +70,11 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
         if the C code is now specifying a variable that the user already
         set a value for, take the new value as the reset value 
     */
-    if ((v->flags & CV_USER_CREATED) && !(flags & CV_USER_CREATED) &&
-        *value != '\0') {
+    #define CV_MASK (CV_USER_CREATED | CV_4096)
+    if ((v->flags & CV_MASK) != 0 && (flags & CV_MASK) == 0 &&
+        ((*value != '\0') || (flags & CV_CHEAT) != 0)) {
 
-        v->flags &= ~CV_USER_CREATED;
+        v->flags &= ~CV_MASK;
 
         ic_free(v->reset_string);
         v->reset_string = strdup(value);
@@ -106,16 +108,9 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
         ic_free(s);
     }
 
-    /*
-        if CVAR_USERINFO was toggled on for an existing cvar, check
-        whether the value needs to be cleaned from foreign characters
-        (for instance, seta name "name-with-foreign-chars" in the
-        config file, and toggle to CVAR_USERINFO happens later in cl_init)
-    */
-    if (flags & CV_USER_INFO) {
-        char *cleaned = cv_clear_foreign_chars(v->string);
-        if (strcmp(v->string, cleaned) != 0)
-            cv_set2(v->name, v->string, false);
+    if ((v->flags & CV_CHEAT) != 0 && cv_cheats != NULL && 
+        cv_cheats->integer == 0) {
+        cv_set2(name, value, true);
     }
 }
 
@@ -154,14 +149,14 @@ static struct cvar *create_cvar(const char *name, const char *value,
 IC_PUBLIC
 struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags)
 {
-    if (value == NULL) {
+    if (name == NULL || value == NULL) {
         log_error("got NULL value");
         return NULL;
     }
 
     if (!cv_validate_string(name)) {
-        log_debug("invalid cvar name '%s'", name);
-        name = "BADNAME";
+        ic_error("invalid cvar name '%s'", name);
+        return NULL;
     }
 
     struct cvar *v = cv_find(name);
@@ -177,3 +172,4 @@ struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags)
 
     return create_cvar(name, value, flags);
 }
+

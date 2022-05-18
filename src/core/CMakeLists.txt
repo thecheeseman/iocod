@@ -11,7 +11,7 @@ foreach (subdir
 endforeach()
 
 include_directories(".")
-include_directories("${CMAKE_BINARY_DIR}")
+include_directories(${PROJECT_BINARY_DIR})
 
 add_library(iccore STATIC ${IC_CORE_SRCS})
 

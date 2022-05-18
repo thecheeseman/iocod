@@ -30,7 +30,7 @@ static union cv_value get_value(const char *name, bool f)
 
 IC_PUBLIC
 IC_NON_NULL(1)
-cv_float cv_value(const char *name)
+cv_float cv_get_value(const char *name)
 {
     union cv_value u = get_value(name, true);
     return u.f;
@@ -38,7 +38,7 @@ cv_float cv_value(const char *name)
 
 IC_PUBLIC
 IC_NON_NULL(1)
-cv_int cv_integer(const char *name)
+cv_int cv_get_integer(const char *name)
 {
     union cv_value u = get_value(name, false);
     return u.i;

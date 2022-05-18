@@ -35,7 +35,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @def MAX_CVARS
  * @brief Maximum number of cvars allowed by the system.
  * 
- * RTCW/COD have this set to 1024 by default.
+ * RTCW/COD have this set to 1024/2048 respectively.
  */
 #define MAX_CVARS 4096
 
@@ -120,6 +120,18 @@ struct vmcvar {
     char string[MAX_VMCVAR_STRING_LEN]; /**< string value */
 };
 
+/*
+ * 
+ * cv_commands.c
+ *
+ */
+
+/*
+ *
+ * cv_get.c 
+ * 
+ */
+
 /**
  * @brief Find a cvar by name.
  * 
@@ -132,8 +144,63 @@ struct cvar *cv_find(const char *name);
 IC_PUBLIC
 struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags);
 
+/*
+ *
+ * cv_infostring.c 
+ *
+ */
+
+IC_PUBLIC
+char *cv_infostring(int bit);
+IC_PUBLIC
+
+char *cv_big_infostring(int bit);
+
+IC_PUBLIC
+IC_NON_NULL(2)
+void cv_infostring_buffer(int bit, char *buf, size_t size);
+
+/*
+ *
+ * cv_init.c
+ *
+ */
+
+IC_PUBLIC
+void cv_init(void);
+
+IC_PUBLIC
+void cv_shutdown(void);
+
+/*
+ *
+ * cv_set.c 
+ *
+ */
+
 IC_PUBLIC
 struct cvar *cv_set2(const char *name, const char *value, bool force);
+
+IC_PUBLIC
+struct cvar *cv_set_string(const char *name, const char *value);
+
+IC_PUBLIC
+struct cvar *cv_set_string_latched(const char *name, const char *value);
+
+IC_PUBLIC
+struct cvar *cv_set_value(const char *name, cv_float value);
+
+IC_PUBLIC
+struct cvar *cv_set_integer(const char *name, cv_int value);
+
+IC_PUBLIC
+struct cvar *cv_reset(const char *name);
+
+/*
+ *
+ * cv_string.c 
+ *
+ */
 
 /**
  * @brief Some cvar values need to be safe from foreign characters
@@ -150,7 +217,7 @@ char *cv_clear_foreign_chars(const char *value);
 */
 IC_PUBLIC
 IC_NON_NULL(1)
-char *cv_string(const char *name);
+char *cv_get_string(const char *name);
 
 /**
  * @brief Return a cvar's string value into the given string buffer
@@ -160,7 +227,7 @@ char *cv_string(const char *name);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-void cv_string_buffer(const char *name, char *buf, size_t size);
+void cv_get_string_buffer(const char *name, char *buf, size_t size);
 
 /**
  * @brief Validate a cvar string
@@ -170,6 +237,12 @@ void cv_string_buffer(const char *name, char *buf, size_t size);
 IC_PUBLIC
 bool cv_validate_string(const char *s);
 
+/*
+ *
+ * cv_value.c 
+ *
+ */
+
 /**
  * @brief Return a cvar's floating point value
  * @param[in] var_name name of the cvar to search for
@@ -177,7 +250,7 @@ bool cv_validate_string(const char *s);
 */
 IC_PUBLIC
 IC_NON_NULL(1)
-cv_float cv_value(const char *name);
+cv_float cv_get_value(const char *name);
 
 /**
  * @brief Return a cvar's integer value
@@ -186,7 +259,19 @@ cv_float cv_value(const char *name);
 */
 IC_PUBLIC
 IC_NON_NULL(1)
-cv_int cv_integer(const char *name);
+cv_int cv_get_integer(const char *name);
+
+/*
+ *
+ * cv_write.c 
+ *
+ */
+
+IC_PUBLIC
+bool cv_write_defaults(filehandle f);
+
+IC_PUBLIC
+bool cv_write_variables(filehandle f);
 
 /** @} */
 

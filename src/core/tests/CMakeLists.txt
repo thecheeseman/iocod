@@ -16,6 +16,7 @@ function(add_core_test TEST_NAME)
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}")
 endfunction()
 
+add_core_test(test-cvar test-cvar.c)
 add_core_test(test-logger test-logger.c)
 add_core_test(test-default-ext test-default-ext.c)
 add_core_test(test-infostring test-infostring.c)
