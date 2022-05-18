@@ -92,10 +92,12 @@ and we'll see what we can do!
 | Timeline | &check; | System | Features |
 | --- | --- |  --- | --- |
 | **`2022/05`** |**--**| **`May`** |**---**|
-| | | file system | efficient & fast<br/>switch to `zlib` / `unzip` |
-| | | module system | support for dynamic modules<br/>module callbacks into real C code, <br/>API & documentation |
-| | | iocod API | internal common functions<br/>platform specific compilation/checks</br>string library</br>memory library |
-| | | platform | basic networking functionality |
+| |**25%** completed| file system | efficient & fast<br/>switch to `zlib` / `unzip` |
+| |**75%** completed| module system | support for dynamic modules<br/>module callbacks into real C code, <br/>API & documentation |
+| |:white_check_mark:| core API | string library |
+| |:white_check_mark:| core API | cvar, parse, infostring, logging |
+| |**50%** completed | core API | system interface, vm, cmd |
+| | | core API | net, msg, hunk mem |
 | **`2022/06`** |**--**| **`June`** |**---**|
 |  | | game engine | basic core functionality<br/>structures/data |
 | | | scripting engine | basic core functionality<br/> |
