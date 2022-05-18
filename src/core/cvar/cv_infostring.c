@@ -19,7 +19,7 @@ char *cv_infostring(enum cv_flags mask)
 IC_PUBLIC
 char *cv_big_infostring(enum cv_flags mask)
 {
-    static char info[BIG_INFO_STRING];
+    static char info[INFO_STRING_BIG];
     info[0] = -'\0';
 
     for (struct cvar *v = cvars; v != NULL; v = v->next) {
