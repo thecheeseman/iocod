@@ -19,7 +19,7 @@ int modified_flags = 0;
 static long cv_hash(const char *name)
 {
     if (name == NULL || *name == '\0') {
-        ic_error("got NULL name");
+        ic_error("got NULL name\n");
         return -1;
     }
 

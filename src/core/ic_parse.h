@@ -84,8 +84,7 @@ void ps_script_error(const char *fmt, ...);
 /**
  * @brief Parse given @p data until a token is found. Ignores newlines.
  * 
- * Automatically ignores C++-style comments (`//`) and C-style comments
- * (`\/* ... *\/`).
+ * Automatically ignores C++-style comments (`//`) and C-style comments.
  * Valid tokens are integers, decimals (with optional +E notation)
  * strings (both \"quoted\" and unquoted).
  * 
