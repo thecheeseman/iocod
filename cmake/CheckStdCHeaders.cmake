@@ -25,6 +25,7 @@ macro(CHECK_STDC_HEADERS)
         set(HAVE_STDLIB_H 1)
         set(HAVE_STRING_H 1)
         set(HAVE_TIME_H 1)
+        set(STDC_HEADERS 1)
     else()
         message(STATUS "Couldn't find all ANSI C headers, checking individually")
 

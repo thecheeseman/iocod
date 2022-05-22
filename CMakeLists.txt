@@ -138,6 +138,7 @@ enable_testing()
 # core library
 # 
 if (BUILD_CORE)
+    add_subdirectory("external")
     add_subdirectory("src/core")
 endif()
 
