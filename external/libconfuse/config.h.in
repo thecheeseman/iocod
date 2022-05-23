@@ -92,3 +92,6 @@
 
 /* Define to 1 if you have the `_putenv' function. */
 #cmakedefine HAVE__PUTENV 1
+
+/* Define to 1 if you have <windows.h> */
+#cmakedefine HAVE_WINDOWS_H 1

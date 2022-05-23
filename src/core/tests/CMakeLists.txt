@@ -1,4 +1,4 @@
-project(core_tests)
+project(core_tests C)
 
 include (CTest)
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C ${CMAKE_CFG_INTDIR})
@@ -8,7 +8,7 @@ function(add_core_test TEST_NAME)
         WORKING_DIRECTORY $<TARGET_FILE_DIR:${TEST_NAME}>
         COMMAND $<TARGET_FILE:${TEST_NAME}>)
     add_dependencies(check ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} iccore)
+    target_link_libraries(${TEST_NAME} $<TARGET_OBJECTS:confuse> iccore)
 
     set_target_properties(${TEST_NAME} PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"
@@ -16,6 +16,7 @@ function(add_core_test TEST_NAME)
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}")
 endfunction()
 
+add_core_test(test-config test-config.c)
 add_core_test(test-cvar test-cvar.c)
 add_core_test(test-logger test-logger.c)
 add_core_test(test-default-ext test-default-ext.c)

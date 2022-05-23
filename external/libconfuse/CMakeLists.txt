@@ -1,4 +1,4 @@
-project(libconfuse)
+project(libconfuse C)
 
 include(CheckStdCHeaders)
 include(CheckIncludeFiles)
@@ -52,4 +52,5 @@ if (NOT HAVE_REALLOCARRAY)
     list(APPEND CONFUSE_SRCS "src/reallocarray.c")
 endif()
 
-add_library(confuse STATIC "src/lexer.c" "src/confuse.c")
+add_library(confuse OBJECT ${CONFUSE_SRCS})
+set_property(TARGET confuse PROPERTY POSITION_INDEPENDENT_CODE 1)

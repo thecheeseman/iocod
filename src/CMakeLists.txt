@@ -1,4 +1,4 @@
-project(iocodmain)
+project(iocodmain C)
 
 #
 # headers
