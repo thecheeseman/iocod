@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    name: build
+    name: Build
     strategy:
       fail-fast: false
       matrix:
@@ -19,15 +19,23 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: install packages 
-        if: ${{ matrix.os == 'windows-latest' }} 
-        run: choco install flex
+      - name: Install Packages (Linux)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: apt install flex
 
-      - name: configure
+      - name: Install Packages (MacOS)
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: brew install flex
+
+      - name: Install packages (Windows)
+        if: ${{ matrix.os == 'windows-latest' }} 
+        run: choco install winflexbison
+
+      - name: Configure
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
-      - name: build
+      - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
