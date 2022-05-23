@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Packages (Linux)
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: apt install flex
+        run: sudo apt install flex
 
       - name: Install Packages (MacOS)
         if: ${{ matrix.os == 'macos-latest' }}
