@@ -219,10 +219,9 @@ static char *parse_ext(char **data_p, bool line_breaks)
 
     /* check for multi - character punctuation token */
     for (const char **punc = punctuation; *punc; punc++) {
-        int	l;
-        int	j;
+        size_t j;
 
-        l = strlen(*punc);
+        size_t l = strlen(*punc);
         for (j = 0; j < l; j++) {
             if (data[j] != (*punc)[j])
                 break;
