@@ -1,6 +1,6 @@
 project(core_tests C)
 
-include (CTest)
+include(CTest)
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C ${CMAKE_CFG_INTDIR})
 function(add_core_test TEST_NAME)
     add_executable(${TEST_NAME} ${ARGN})
@@ -10,16 +10,24 @@ function(add_core_test TEST_NAME)
     add_dependencies(check ${TEST_NAME})
     target_link_libraries(${TEST_NAME} $<TARGET_OBJECTS:confuse> iccore)
 
+    # ic_milliseconds() needs winmm.dll
+    if (${TEST_NAME} STREQUAL "test-milliseconds" AND WIN32)
+        target_link_libraries(${TEST_NAME} winmm)
+    endif()
+
     set_target_properties(${TEST_NAME} PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}")
+
+    message(STATUS "Added iccore test '${TEST_NAME}' (${ARGN})")
 endfunction()
 
-add_core_test(test-config test-config.c)
-add_core_test(test-cvar test-cvar.c)
-add_core_test(test-logger test-logger.c)
-add_core_test(test-default-ext test-default-ext.c)
-add_core_test(test-infostring test-infostring.c)
-add_core_test(test-parse test-parse.c)
-add_core_test(test-va test-va.c)
+file(GLOB TEST_SRCS "*.c")
+foreach (test IN LISTS TEST_SRCS)
+    # strip file path to get clean test name
+    get_filename_component(TEST_NAME ${test} NAME)
+    string(REPLACE ".c" "" TEST_NAME ${TEST_NAME})
+
+    add_core_test(${TEST_NAME} ${test})
+endforeach()

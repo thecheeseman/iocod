@@ -4,8 +4,8 @@ file(GLOB IC_CORE_SRCS "*.c")
 
 foreach (subdir
     config
-    console
     cvar
+    events
     parse
     shared
     strings)
