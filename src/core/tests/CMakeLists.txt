@@ -10,11 +10,6 @@ function(add_core_test TEST_NAME)
     add_dependencies(check ${TEST_NAME})
     target_link_libraries(${TEST_NAME} $<TARGET_OBJECTS:confuse> iccore)
 
-    # ic_milliseconds() needs winmm.dll
-    if (${TEST_NAME} STREQUAL "test-milliseconds" AND WIN32)
-        target_link_libraries(${TEST_NAME} winmm)
-    endif()
-
     set_target_properties(${TEST_NAME} PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"
