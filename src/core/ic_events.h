@@ -81,6 +81,9 @@ struct sys_event ev_get(void);
 IC_PUBLIC
 int ev_loop(void);
 
+IC_PUBLIC
+void ev_push(struct sys_event *event);
+
 /**
  * @brief Queue an event.
  * @param time

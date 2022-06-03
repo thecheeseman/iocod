@@ -22,9 +22,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "ev_local.h"
 
-// temp
-#define sys_milliseconds() 0
-
 IC_PUBLIC
 void ev_queue(int time, enum sys_event_type type, int value, int value2,
               int ptr_length, void *ptr)
@@ -41,7 +38,7 @@ void ev_queue(int time, enum sys_event_type type, int value, int value2,
     event_head++;
 
     if (time == 0)
-        time = sys_milliseconds();
+        time = ic_milliseconds();
 
     ev->time = time;
     ev->type = type;
