@@ -6,6 +6,7 @@ foreach (subdir
     config
     cvar
     events
+    network
     parse
     shared
     strings)

@@ -41,6 +41,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "config.h"
 #endif
 
+#include <errno.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -725,6 +726,14 @@ Shared
 */
 
 #include "ic_shared.h"
+
+/*
+================================================================================
+Network
+================================================================================
+*/
+
+#include "ic_network.h"
 
 /*
 ================================================================================
