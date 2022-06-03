@@ -30,17 +30,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define IC_EVENTS_H
 
 enum sys_event_type {
-    SE_NONE = 0,
+    SE_NONE = 0,        /**< marks the end of the queue */
 
-    // client
-    SE_KEY,
-    SE_CHAR,
-    SE_MOUSE,
-    SE_JOYSTICK_AXIS,
+    SE_KEY,             /**< key up/down event
+                             value = keycode
+                             value2 = down flag */
+    SE_CHAR,            /**< normal key chars (console, chatfields, etc) 
+                             value = keycode */
+    SE_MOUSE,           /**< mouse event 
+                             value = relative signed x move
+                             value2 = relative signed y move */
+    SE_JOYSTICK_AXIS,   /**< joystick event 
+                             value = axis number
+                             value2 = current state (-127 to 128) */
 
-    SE_CONSOLE,
-    SE_PACKET,
-    SE_BAD_EVENT
+    SE_CONSOLE,         /**< events from actual stdin/tty console 
+                             ptr = `char *` */
+    SE_PACKET,          /**< network packet events 
+                             ptr = `struct netadr` followed by data bytes
+                             ptr_length = total number of bytes */
+
+    SE_BAD_EVENT        /**< should never happen */
 };
 
 struct sys_event {
@@ -81,16 +91,20 @@ struct sys_event ev_get(void);
 IC_PUBLIC
 int ev_loop(void);
 
+/**
+ * @brief Push an event into the pushed events loop.
+ * @param event event to push
+*/
 IC_PUBLIC
 void ev_push(struct sys_event *event);
 
 /**
  * @brief Queue an event.
- * @param time
- * @param type
- * @param value
+ * @param time event time, or 0 for current system time
+ * @param type event type
+ * @param value 
  * @param value2
- * @param ptr_length
+ * @param ptr_length if ptr, length of ptr
  * @param ptr
 */
 IC_PUBLIC
