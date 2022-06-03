@@ -26,13 +26,13 @@ static struct cvar *update_cvar(struct cvar *v, const char *name,
             ic_printf("cvar '%s' is cheated protected\n", name);
             goto out;
         }
-
+        #if 0
         /* added in 1.5 */
         if (sv_console_lockout->integer != 0 && com_sv_running->integer != 0) {
             ic_printf("console is locked out, can't change cvars\n");
             goto out;
         }
-
+        #endif
         if (v->flags & CV_LATCH) {
             if (v->latched_string != NULL) {
                 if (strcmp(value, v->latched_string) == 0)
