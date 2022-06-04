@@ -1,6 +1,6 @@
-#include "iocod.h"
+#include "ic_test.h"
 
-int main(void)
+int TEST_MAIN()
 {
     log_init();
     log_set_level(LOG_LEVEL_ALL);

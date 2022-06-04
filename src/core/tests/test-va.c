@@ -1,6 +1,6 @@
-#include "iocod.h"
+#include "ic_test.h"
 
-int main(void)
+int TEST_MAIN()
 {
     char *t1 = va("this is a %s", "test");
     IC_ASSERT(strcmp(t1, "this is a test") == 0);

@@ -1,7 +1,6 @@
-#include "../iocod.h"
-#include <stdio.h>
+#include "ic_test.h"
 
-int main(void)
+int TEST_MAIN()
 {   
     int len;
     char test[64];

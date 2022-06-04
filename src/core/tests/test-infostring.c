@@ -1,6 +1,6 @@
-#include "iocod.h"
+#include "ic_test.h"
 
-int main(void)
+int TEST_MAIN()
 {
     char info[INFO_STRING_BIG] = {0};
 

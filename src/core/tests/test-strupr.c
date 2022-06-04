@@ -1,9 +1,8 @@
-#include "../iocod.h"
-#include <stdio.h>
+#include "ic_test.h"
 
 #define TEST _ic_strupr
 
-int main(void)
+int TEST_MAIN()
 {
     IC_ASSERT(TEST(NULL) == NULL);
     IC_ASSERT(TEST("") != NULL);

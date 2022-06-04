@@ -1,9 +1,8 @@
-#include "../iocod.h"
-#include <stdio.h>
+#include "ic_test.h"
 
 #define TEST _ic_strcasecmp
 
-int main(void)
+int TEST_MAIN()
 {
     // OK to compare NULL against NULL
     IC_ASSERT(TEST(NULL, NULL) == 0);

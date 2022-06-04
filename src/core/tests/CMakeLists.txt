@@ -4,13 +4,18 @@ include(CTest)
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C ${CMAKE_CFG_INTDIR})
 function(add_core_test TEST_NAME)
     add_executable(${TEST_NAME} ${ARGN})
+
     add_test(NAME ${TEST_NAME} 
         WORKING_DIRECTORY $<TARGET_FILE_DIR:${TEST_NAME}>
         COMMAND $<TARGET_FILE:${TEST_NAME}>)
     add_dependencies(check ${TEST_NAME})
     target_link_libraries(${TEST_NAME} $<TARGET_OBJECTS:confuse> iccore)
 
-    if (${TEST_NAME} STREQUAL "test-network" AND WIN32)
+    if (WIN32)
+        target_link_options(${TEST_NAME} BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
+    endif()
+
+    if ((${TEST_NAME} STREQUAL "test-network" OR ${TEST_NAME} STREQUAL "test-netadr") AND WIN32)
         target_link_libraries(${TEST_NAME} Ws2_32)
     endif()
 

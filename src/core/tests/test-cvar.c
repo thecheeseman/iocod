@@ -1,8 +1,8 @@
-#include "iocod.h"
+#include "ic_test.h"
 
 struct cvar *com_sv_running;
 
-int main(void)
+int TEST_MAIN()
 {
     cv_init();
     com_sv_running = cv_get("sv_running", "1", CV_ROM);

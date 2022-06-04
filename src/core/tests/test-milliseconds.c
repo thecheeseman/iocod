@@ -1,12 +1,6 @@
-#include "iocod.h"
+#include "ic_test.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
-int main(void)
+int TEST_MAIN()
 {
     IC_ASSERT(ic_milliseconds() == 0);
 

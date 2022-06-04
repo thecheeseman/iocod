@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "iocod.h"
+#include "ic_test.h"
 
 /* easy wrapper */
 #define FEQUAL(a, b) (fabs(a - b) < 0.00001)
@@ -59,7 +59,7 @@ unquoted_text
 true
 */
 
-int main(void)
+int TEST_MAIN()
 {
     char *data = test_data;
 
