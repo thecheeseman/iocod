@@ -44,7 +44,7 @@ int ev_loop(void)
         case SE_PACKET:
             break; // TODO: net
         case SE_BAD_EVENT:
-            ic_error("bad event type %i\n", ev.type);
+            log_error(_("Bad event type %i\n"), ev.type);
             break;
         default:
             // TODO: net loopback

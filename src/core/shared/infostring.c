@@ -9,7 +9,7 @@ static bool contains_illegal_chars(const char *str)
 {
     for (int i = 0; illegal_chars[i] != '\0'; i++) {
         if (strchr(str, illegal_chars[i]) != NULL) {
-            ic_warning("illegal character '%c' in key/value '%s'\n",
+            ic_warning(_("Illegal character '%1$c' in key/value '%2$s'\n"),
                        illegal_chars[i], str);
             return true;
         }
@@ -27,7 +27,7 @@ static bool _if_remove_key(char *s, const char *key, size_t size,
                            char *pkey, char *value)
 {
     if (strlen(s) >= size) {
-        ic_error("oversize infostring (>= %lu)\n", size);
+        ic_error(_("Oversize infostring (>= %lu)\n"), size);
         return false;
     }
 
@@ -81,7 +81,7 @@ static bool _if_set_value_for_key(char *s, const char *key, const char *value,
                                   size_t size, char *newif)
 {
     if (strlen(s) >= size) {
-        ic_error("oversize infostring (>= %lu)\n", size);
+        ic_error(_("Oversize infostring (>= %lu)\n"), size);
         return false;
     }
 
@@ -99,7 +99,7 @@ static bool _if_set_value_for_key(char *s, const char *key, const char *value,
     snprintf(newif, size, "\\%s\\%s", key, value);
 
     if (strlen(newif) + strlen(s) > size) {
-        ic_warning("info string length exceeded (>= %lu)\n", size);
+        ic_warning(_("Infostring length exceeded (>= %lu)\n"), size);
         return false;
     }
 

@@ -90,6 +90,6 @@ void net_get_local_address(void)
 
     freeaddrinfo(result);
 
-    log_print("Total IPV4 addresses: %d\n", num_ipv4);
-    log_print("Total IPV6 addresses: %d\n", num_ipv6);
+    log_print(_("Total IPV4 addresses: %d\n"), num_ipv4);
+    log_print(_("Total IPV6 addresses: %d\n"), num_ipv6);
 }

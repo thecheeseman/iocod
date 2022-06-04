@@ -10,13 +10,13 @@ static union cv_value get_value(const char *name, bool f)
     union cv_value u = { 0 };
 
     if (name == NULL || *name == '\0') {
-        log_trace("got NULL name");
+        log_trace(_("Got NULL value for parameter 'name'\n"));
         return u;
     }
 
     struct cvar *v = cv_find(name);
     if (v == NULL) {
-        log_trace("unable to find cvar '%s'", name);
+        log_trace(_("Unable to find cvar '%s'\n"), name);
         return u;
     }
 

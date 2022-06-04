@@ -23,13 +23,13 @@ char *cv_clear_foreign_chars(const char *value)
 static char *get_string(const char *name)
 {
     if (name == NULL || *name == '\0') {
-        log_trace("got NULL name");
+        log_trace(_("Got NULL value for parameter 'name'\n"));
         return NULL;
     }
 
     struct cvar *v = cv_find(name);
     if (v == NULL) {
-        log_trace("unable to find cvar '%s'", name);
+        log_trace(_("Unable to find cvar '%s'\n"), name);
         return NULL;
     }
 

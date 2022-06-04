@@ -13,23 +13,23 @@ static struct cvar *update_cvar(struct cvar *v, const char *name,
 
     if (!force) {
         if (v->flags & CV_ROM) {
-            ic_printf("cvar '%s' is read only\n", name);
+            log_print(_("Cvar '%s' is read only\n"), name);
             goto out;
         }
 
         if (v->flags & CV_INIT) {
-            ic_printf("cvar '%s' is write protected\n", name);
+            log_print(_("Cvar '%s' is write protected\n"), name);
             goto out;
         }
 
         if (v->flags & CV_CHEAT) {
-            ic_printf("cvar '%s' is cheated protected\n", name);
+            log_print(_("Cvar '%s' is cheated protected\n"), name);
             goto out;
         }
         #if 0
         /* added in 1.5 */
         if (sv_console_lockout->integer != 0 && com_sv_running->integer != 0) {
-            ic_printf("console is locked out, can't change cvars\n");
+            log_print(_("Console is locked out, can't change cvars\n"));
             goto out;
         }
         #endif
@@ -44,7 +44,7 @@ static struct cvar *update_cvar(struct cvar *v, const char *name,
                     goto out;
             }
 
-            ic_printf("cvar '%s' will be changed on restart\n", name);
+            log_print(_("Cvar '%s' will be changed on restart\n"), name);
 
             v->latched_string = strdup(value);
             v->modified = true;
@@ -75,10 +75,10 @@ out:
 IC_PUBLIC
 struct cvar *cv_set2(const char *name, const char *value, bool force)
 {
-    log_debug("        cvar set %s '%s'", name, value);
+    log_debug(_("\t\tCvar set %1$s '%2$s'"), name, value);
 
     if (!cv_validate_string(name)) {
-        ic_error("invalid cvar name '%s'", name);
+        log_error(_("Invalid cvar name '%s'"), name);
         return NULL;
     }
 

@@ -53,6 +53,10 @@ General useful macros / utils
 ================================================================================
 */
 
+/* gettext style strings for later */
+#define _(str) (str)
+#define N_(str) str
+
 /**
  * @def ARRAY_SIZE
  * @brief Determine size of a given array at compile-time. From `<kernel.h>`

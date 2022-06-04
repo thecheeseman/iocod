@@ -16,7 +16,7 @@ void net_init(void)
     }
 
     winsock_init = true;
-    log_print("Winsock initialized\n");
+    log_print(_("Winsock initialized\n"));
     #endif
 
     net_open_ip();

@@ -32,7 +32,7 @@ void ev_push(struct sys_event *event)
     if (pushed_events_head - pushed_events_tail >= MAX_PUSHED_EVENTS) {
         // avoid duplicate warnings
         if (!warned) {
-            log_warn("overflow\n");
+            log_warn(_("Pushed events overflow\n"));
             warned = true;
         }
 

@@ -19,7 +19,7 @@ int modified_flags = 0;
 static long cv_hash(const char *name)
 {
     if (name == NULL || *name == '\0') {
-        ic_error("got NULL name\n");
+        log_warn(_("Got NULL value for parameter 'name'\n"));
         return -1;
     }
 
@@ -39,13 +39,13 @@ IC_PUBLIC
 struct cvar *cv_find(const char *name)
 {
     if (name == NULL || *name == '\0') {
-        log_trace("got NULL name");
+        log_trace(_("Got NULL value for parameter 'name'\n"));
         return NULL;
     }
 
     long hash = cv_hash(name);
     if (hash >= MAX_CVARS || hash <= 0) {
-        log_trace("bad hash %ld for name '%s'\n", hash, name);
+        log_trace(_("Bad hash %ld for name '%s'\n"), hash, name);
         return NULL;
     }
 
@@ -95,8 +95,8 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
 
         v->reset_string = strdup(value);
     } else if (*value != '\0' && strcmp(v->reset_string, value) != 0) {
-        log_debug("cvar '%s' given initial values: '%s' and '%s'",
-                  name, v->reset_string, value);
+        log_warn(_("Cvar '%1$s' given initial values: '%2$s' and '%3$s'"),
+                 name, v->reset_string, value);
     }
 
     /* if we have a latched string, take that value now */
@@ -150,12 +150,12 @@ IC_PUBLIC
 struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags)
 {
     if (name == NULL || value == NULL) {
-        log_error("got NULL value");
+        log_error(_("Got NULL value for parameter 'value'"));
         return NULL;
     }
 
     if (!cv_validate_string(name)) {
-        ic_error("invalid cvar name '%s'", name);
+        log_error(_("Invalid cvar name '%s'"), name);
         return NULL;
     }
 
@@ -166,7 +166,7 @@ struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags)
     }
 
     if (num_indexes >= MAX_CVARS) {
-        ic_error("MAX_CVARS");
+        log_error(_("Reached maximum number of cvars"));
         return NULL;
     }
 

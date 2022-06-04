@@ -5,7 +5,7 @@ int ipv6_sock = 0;
 
 static int open_socket(char *netif, int port, int family)
 {
-    log_print("Opening IP socket: %s:%i\n", 
+    log_print(_("Opening IP socket: %s:%i\n"), 
               netif != NULL ? netif : "localhost", 
               port);
 
@@ -68,6 +68,6 @@ bool net_open_ip(void)
         }
     }
 
-    log_error("Couldn't allocate IP port\n");
+    log_error(_("Couldn't allocate IP port\n"));
     return false;
 }

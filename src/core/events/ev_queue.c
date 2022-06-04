@@ -29,7 +29,7 @@ void ev_queue(int time, enum sys_event_type type, int value, int value2,
     struct sys_event *ev = &event_queue[event_head & MASK_QUEUED_EVENTS];
 
     if (event_head - event_tail >= MASK_QUEUED_EVENTS) {
-        log_debug("overflow\n");
+        log_debug(_("Events overflow\n"));
 
         ic_free(ev->ptr);
         event_tail++;

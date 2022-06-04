@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 static inline void ic_out_of_memory_error(void)
 {
-    perror("OUT OF MEMORY ERROR");
+    perror(_("OUT OF MEMORY ERROR"));
     exit(0);
 }
 

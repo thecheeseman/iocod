@@ -40,7 +40,7 @@ bool net_get_packet(struct netadr *net_from, struct netmsg *msg)
                 continue;
             #endif
 
-            log_debug("recvfrom: '%s' from %s\n", net_error_string(),
+            log_debug("recvfrom: '%s' from '%s'\n", net_error_string(),
                       net_address_to_string(*net_from));
             continue;
         }
@@ -52,7 +52,7 @@ bool net_get_packet(struct netadr *net_from, struct netmsg *msg)
         msg->read_count = 0;
 
         if (ret == msg->max_size) {
-            log_debug("oversize packet from %s\n",
+            log_debug(_("Oversize packet from '%s'\n"),
                       net_address_to_string(*net_from));
             continue;
         }

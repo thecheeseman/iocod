@@ -261,14 +261,15 @@ void log_init(void)
     InitializeCriticalSection(&log_mutex);
     #else
     if (pthread_mutex_init(&log_mutex, NULL) != 0) {
-        ic_error("mutex init failed\n");
+        ic_error(_("Mutex init failed\n"));
         return;
     }
     #endif
 
     log.fp = fopen(log.path, "ab");
     if (log.fp == NULL) {
-        ic_error("couldn't open logfile %s: %s\n", log.path, strerror(errno));
+        ic_error(_("Couldn't open logfile '%1$s': %2$s\n"), 
+                 log.path, strerror(errno));
         return;
     }
 
@@ -282,7 +283,7 @@ void log_init(void)
     /* TODO: file splitting once file gets too large? */
 
     log_banner();
-    log_debug("log opened\n");
+    log_debug(_("Log file opened\n"));
 }
 
 /*
@@ -291,7 +292,7 @@ void log_init(void)
 IC_PUBLIC
 void log_shutdown(void)
 {
-    log_debug("log closed\n");
+    log_debug(_("Log file closed\n"));
     log_banner();
 
     fclose(log.fp);
@@ -315,12 +316,13 @@ void log_clear(void)
 
     log.fp = freopen(log.path, "wb", log.fp);
     if (log.fp == NULL) {
-        ic_error("couldn't open logfile %s: %s\n", log.path, strerror(errno));
+        ic_error(_("Couldn't open logfile '%1$s': %2$s\n"), 
+                 log.path, strerror(errno));
         return;
     }
 
     log_banner();
-    log_debug("log cleared\n");
+    log_debug(_("Log cleared\n"));
 }
 
 /*
@@ -347,7 +349,7 @@ void log_set_level(enum log_level new_level)
     IC_ASSERT((new_level >= LOG_LEVEL_NONE) && (new_level <= LOG_LEVEL_ALL));
 
     if (log.level != new_level) {
-        log_debug("log level changed from '%s' to '%s'\n",
+        log_debug(_("Log level changed from '%1$s' to '%2$s'\n"),
                   level_str[log.level], level_str[new_level]);
 
         log.level = new_level;
@@ -363,8 +365,8 @@ void log_echo_stdout(bool echo)
     IC_ASSERT((echo == true) || (echo == false));
 
     if (log.echo_stdout != echo) {
-        log_debug("log option 'echo_stdout' changed to '%s'\n",
-                  echo ? "true" : "false");
+        log_debug(_("log option 'echo_stdout' changed to '%s'\n"),
+                  echo ? _("true") : _("false"));
 
         log.echo_stdout = echo;
     }
@@ -379,8 +381,8 @@ void log_auto_lf(bool lf)
     IC_ASSERT((lf == true) || (lf == false));
 
     if (log.auto_lf != lf) {
-        log_debug("log option 'auto_lf' changed to '%s'\n",
-                  lf ? "true" : "false");
+        log_debug(_("log option 'auto_lf' changed to '%s'\n"),
+                  lf ? _("true") : _("false"));
 
         log.auto_lf = lf;
     }
@@ -397,8 +399,8 @@ void log_enable_color(bool color)
     if (log.enable_color != color) {
         log.enable_color = color;
 
-        log_debug("log option 'enable_color' changed to '%s'\n",
-                  color ? "true" : "false");
+        log_debug(_("log option 'enable_color' changed to '%s'\n"),
+                  color ? _("true") : _("false"));
     }
 }
 

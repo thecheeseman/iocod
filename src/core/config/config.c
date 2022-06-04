@@ -147,9 +147,9 @@ void config_init(void)
 
     int ret = cfg_parse(cfg, "iocod.conf");
     if (ret == CFG_FILE_ERROR)
-        ic_error("file error with 'iocod.conf'\n");
+        ic_error(_("File error with 'iocod.conf'\n"));
     else if (ret == CFG_PARSE_ERROR)
-        ic_error("error parsing 'iocod.conf'\n");
+        ic_error(_("Error parsing 'iocod.conf'\n"));
 
     validate_settings();
     print_values();
