@@ -136,13 +136,17 @@
                 "value": "x64",
                 "strategy": "external"
             },
+            "toolset": {
+                "value": "v141,host=x64",
+                "strategy": "external"
+            },
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
         },
         {
             "name": "win64",
             "displayName": "Release (64-bit)",
             "inherits": "win64-debug",
-            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
         },
         {
             "name": "win32-debug",
@@ -150,6 +154,10 @@
             "inherits": "windows-base",
             "architecture": {
                 "value": "x86",
+                "strategy": "external"
+            },
+            "toolset": {
+                "value": "v141,host=x86",
                 "strategy": "external"
             },
             "cacheVariables": {
@@ -165,7 +173,7 @@
             "displayName": "Release (32-bit)",
             "inherits": "win32-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "BUILD_32_BIT": {
                     "type": "BOOL",
                     "value": "true"

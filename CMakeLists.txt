@@ -32,7 +32,7 @@ endif()
 # this is supported across the board already on 
 # GCC/GNUC systems since ~2013 in GCC 4.6, Clang 3.1
 # and on Windows since ~2019 in VS2019 16.8 (MSVC 14.28)
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_EXTENSIONS TRUE)
 
