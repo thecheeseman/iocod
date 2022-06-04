@@ -5,6 +5,7 @@
 
 #ifdef IC_PLATFORM_WINDOWS
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #else
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -30,9 +31,6 @@
 extern WSADATA winsockdata;
 extern bool winsock_init;
 #endif
-
-extern int num_ipv4;
-extern byte local_ipv4[MAX_IPS][4];
 
 extern int ipv4_sock;
 extern int ipv6_sock;
