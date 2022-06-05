@@ -33,7 +33,7 @@ extern WSADATA winsockdata;
 extern bool winsock_init;
 
 typedef SOCKET socket_t;
-
+typedef unsigned short sa_family_t;
 #ifndef EAFNOSUPPORT
 #define EAFNOSUPPORT WSAEAFNOSUPPORT
 #endif
@@ -52,12 +52,6 @@ typedef int socket_t;
 
 #ifndef IF_NAMESIZE
 #define IF_NAMESIZE 16
-#endif
-
-#ifdef ADDRESS_FAMILY
-#define sa_family_t ADDRESS_FAMILY
-#else
-typedef unsigned short sa_family_t;
 #endif
 
 // 
