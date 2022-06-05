@@ -3,6 +3,7 @@
 int TEST_MAIN()
 {
     log_init();
+    cv_init(); // needed in network
     net_init();
 
     net_shutdown();
