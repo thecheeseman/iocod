@@ -1,10 +1,39 @@
 #include "net_local.h"
 
-size_t num_ipv4 = 0;
-byte local_ipv4[MAX_IPS][4];
+struct localaddr localip[MAX_IPS];
+int numip;
 
-size_t num_ipv6 = 0;
-byte local_ipv6[MAX_IPS][16];
+static void add_local_address(char *ifname, struct sockaddr *addr,
+                              struct sockaddr *netmask)
+{
+    if (ifname == NULL || addr == NULL || netmask == NULL)
+        return;
+
+    sa_family_t family = addr->sa_family;
+    int addrlen;
+
+    if (numip < MAX_IPS) {
+        struct localaddr *ip = &localip[numip];
+
+        if (family == AF_INET) {
+            addrlen = sizeof(struct sockaddr_in);
+            ip->type = NA_IP;
+        } else if (family == AF_INET6) {
+            addrlen = sizeof(struct sockaddr_in6);
+            ip->type = NA_IP6;
+        } else {
+            return; // bad trype
+        }
+
+        strncpyz(ip->ifname, ifname, sizeof(ip->ifname));
+        ip->family = family;
+
+        memcpy(&ip->addr, addr, addrlen);
+        memcpy(&ip->netmask, netmask, addrlen);
+
+        numip++;
+    }
+}
 
 void net_get_local_address(void)
 {
@@ -14,11 +43,12 @@ void net_get_local_address(void)
         return;
     }
 
+    log_print(_("Hostname: %s"), hostname);
+
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_DGRAM;
-    hints.ai_protocol = IPPROTO_UDP;
 
     struct addrinfo *result = NULL;
     if (getaddrinfo(hostname, "0", &hints, &result) != 0) {
@@ -27,69 +57,27 @@ void net_get_local_address(void)
         return;
     }
 
+    struct sockaddr_in mask4;
+    struct sockaddr_in6 mask6;
+
+    memset(&mask4, 0, sizeof(mask4));
+    memset(&mask4.sin_addr.s_addr, 0xFF, sizeof(mask4.sin_addr.s_addr));
+    memset(&mask6, 0, sizeof(mask6));
+    memset(&mask6.sin6_addr, 0xFF, sizeof(mask6.sin6_addr));
+
+    mask4.sin_family = AF_INET;
+    mask6.sin6_family = AF_INET6;
+
     struct addrinfo *ptr = NULL;
     int i = 0;
     for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
-       
-        switch (ptr->ai_family) {
-        case AF_INET:
-            {
-                struct sockaddr_in *sockaddr_ipv4 =
-                    (struct sockaddr_in *) ptr->ai_addr;
-                unsigned long ip = ntohl(sockaddr_ipv4->sin_addr.s_addr);
-
-                local_ipv4[num_ipv4][0] = (ip >> 24) & 0xff;
-                local_ipv4[num_ipv4][1] = (ip >> 16) & 0xff;
-                local_ipv4[num_ipv4][2] = (ip >> 8) & 0xff;
-                local_ipv4[num_ipv4][3] = ip & 0xff;
-                num_ipv4++;
-
-                log_print("IPV4: %i.%i.%i.%i\n",
-                          (ip >> 24) & 0xff,
-                          (ip >> 16) & 0xff,
-                          (ip >> 8) & 0xff,
-                          ip & 0xff);
-            }
-            break;
-        case AF_INET6:
-            {
-                struct sockaddr_in6 *sockaddr_ipv6 = 
-                    (struct sockaddr_in6 *) ptr->ai_addr;
-
-                char ipbuf[64];
-                memset(&ipbuf, 0, sizeof(ipbuf));
-
-                byte *p = sockaddr_ipv6->sin6_addr.s6_addr;
-                for (int i = 0; i < 16; i += 2) {
-                    char tmp[6];
-
-                    if (p[i] == 0 && p[i + 1] == 0)
-                        snprintf(tmp, sizeof(tmp), "0");
-                    else if (p[i] == 0)
-                        snprintf(tmp, sizeof(tmp), "%x", p[i + 1]);
-                    else if (p[i] < 16)
-                        snprintf(tmp, sizeof(tmp), "%x%2x", p[i], p[i + 1]);
-                    else
-                        snprintf(tmp, sizeof(tmp), "%02x%02x", p[i], p[i + 1]);
-
-                    strcat(ipbuf, tmp);
-                    if (i < 14)
-                        strcat(ipbuf, ":");
-                }
-
-                log_print("IPV6: %s\n", ipbuf);
-                
-                memcpy(&local_ipv6[num_ipv6], p, 16);
-                num_ipv6++;
-            }
-            break;
-        default:
-            break;
-        }
+        if (ptr->ai_family == AF_INET)
+            add_local_address("", ptr->ai_addr, (struct sockaddr *) &mask4);
+        else if (ptr->ai_family == AF_INET6)
+            add_local_address("", ptr->ai_addr, (struct sockaddr *) &mask6);
     }
 
-    freeaddrinfo(result);
+    net_show_ip();
 
-    log_print(_("Total IPV4 addresses: %d\n"), num_ipv4);
-    log_print(_("Total IPV6 addresses: %d\n"), num_ipv6);
+    freeaddrinfo(result);
 }

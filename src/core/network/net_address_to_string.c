@@ -3,8 +3,7 @@
 IC_PUBLIC
 char *net_address_to_string(struct netadr a)
 {
-    static char s[64];
-    char ip[64];
+    static char s[MAX_ADDR_STRING];
 
     switch (a.type) {
     case NA_LOOPBACK:
@@ -13,39 +12,40 @@ char *net_address_to_string(struct netadr a)
     case NA_BOT:
         snprintf(s, sizeof(s), "bot");
         break;
-    case NA_IPV4:
-        snprintf(s, sizeof(s), "%i.%i.%i.%i:%hu",
-                 a.ipv4[0], a.ipv4[1], a.ipv4[2], a.ipv4[3], a.port);
-        break;
-    case NA_IPV6:
+    case NA_IP:
+    case NA_IP6:
         {
-            char ipbuf[64];
-            memset(&ipbuf, 0, sizeof(ipbuf));
+            struct sockaddr_storage sadr;
 
-            byte *p = &a.ipv6;
-            for (int i = 0; i < 16; i += 2) {
-                char tmp[6];
+            memset(&sadr, 0, sizeof(sadr));
 
-                if (p[i] == 0 && p[i + 1] == 0)
-                    snprintf(tmp, sizeof(tmp), "0");
-                else if (p[i] == 0)
-                    snprintf(tmp, sizeof(tmp), "%x", p[i + 1]);
-                else if (p[i] < 16)
-                    snprintf(tmp, sizeof(tmp), "%x%2x", p[i], p[i + 1]);
-                else
-                    snprintf(tmp, sizeof(tmp), "%02x%02x", p[i], p[i + 1]);
-
-                strcat(ipbuf, tmp);
-                if (i < 14)
-                    strcat(ipbuf, ":");
-            }
-
-            snprintf(s, sizeof(s), "[%s]:%hu", ipbuf, a.port);
+            net_netadr_to_sockaddr(&a, (struct sockaddr *) &sadr);
+            net_sockaddr_to_string(s, sizeof(s), (struct sockaddr *) &sadr);
         }
         break;
     case NA_BAD:
     default:
         snprintf(s, sizeof(s), "BADADDR");
+        break;
+    }
+
+    return s;
+}
+
+IC_PUBLIC
+char *net_address_to_string_port(struct netadr a)
+{
+    static char s[MAX_ADDR_STRING];
+
+    switch (a.type) {
+    case NA_IP:
+        snprintf(s, sizeof(s), "%s:%hu", net_address_to_string(a), a.port);
+        break;
+    case NA_IP6:
+        snprintf(s, sizeof(s), "[%s]:%hu", net_address_to_string(a), a.port);
+        break;
+    default:
+        snprintf(s, sizeof(s), "%s", net_address_to_string(a));
         break;
     }
 

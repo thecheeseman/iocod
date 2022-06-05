@@ -20,8 +20,8 @@ enum netadr_type {
     NA_BAD,
     NA_LOOPBACK,
     NA_BROADCAST,
-    NA_IPV4,
-    NA_IPV6
+    NA_IP,
+    NA_IP6
 };
 
 enum netsrc_type {
@@ -32,10 +32,11 @@ enum netsrc_type {
 struct netadr {
     enum netadr_type type;
 
-    byte ipv4[4];
-    byte ipv6[16];
+    byte ip[4];
+    byte ip6[16];
 
     unsigned short port;
+    unsigned long scope_id;
 };
 
 IC_PUBLIC
@@ -45,6 +46,18 @@ IC_PUBLIC
 void net_shutdown(void);
 
 IC_PUBLIC
+void net_restart(void);
+
+IC_PUBLIC
 char *net_address_to_string(struct netadr a);
+
+IC_PUBLIC
+char *net_address_to_string_port(struct netadr a);
+
+IC_PUBLIC
+void net_show_ip(void);
+
+IC_PUBLIC
+bool net_is_lan_address(struct netadr adr);
 
 #endif /* IC_NETWORK_H */
