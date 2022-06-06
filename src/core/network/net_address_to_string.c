@@ -1,11 +1,11 @@
 #include "net_local.h"
 
 IC_PUBLIC
-char *net_address_to_string(struct netadr a)
+char *net_address_to_string(struct netadr addr)
 {
     static char s[MAX_ADDR_STRING];
 
-    switch (a.type) {
+    switch (addr.type) {
     case NA_LOOPBACK:
         snprintf(s, sizeof(s), "loopback");
         break;
@@ -19,8 +19,8 @@ char *net_address_to_string(struct netadr a)
 
             memset(&sadr, 0, sizeof(sadr));
 
-            net_netadr_to_sockaddr(&a, (struct sockaddr *) &sadr);
-            net_sockaddr_to_string(s, sizeof(s), (struct sockaddr *) &sadr);
+            net_netadr_to_sockaddr(&addr, (struct sockaddr *) &sadr);
+            net_sockaddr_to_string((struct sockaddr *) &sadr, sizeof(s), s);
         }
         break;
     case NA_BAD:
@@ -33,19 +33,21 @@ char *net_address_to_string(struct netadr a)
 }
 
 IC_PUBLIC
-char *net_address_to_string_port(struct netadr a)
+char *net_address_to_string_port(struct netadr addr)
 {
     static char s[MAX_ADDR_STRING];
 
-    switch (a.type) {
+    switch (addr.type) {
     case NA_IP:
-        snprintf(s, sizeof(s), "%s:%hu", net_address_to_string(a), a.port);
+        snprintf(s, sizeof(s), "%s:%hu", net_address_to_string(addr), 
+                 addr.port);
         break;
     case NA_IP6:
-        snprintf(s, sizeof(s), "[%s]:%hu", net_address_to_string(a), a.port);
+        snprintf(s, sizeof(s), "[%s]:%hu", net_address_to_string(addr), 
+                 addr.port);
         break;
     default:
-        snprintf(s, sizeof(s), "%s", net_address_to_string(a));
+        snprintf(s, sizeof(s), "%s", net_address_to_string(addr));
         break;
     }
 

@@ -1,28 +1,28 @@
 #include "net_local.h"
 
 IC_PUBLIC
-bool net_is_lan_address(struct netadr adr)
+bool net_is_lan_address(struct netadr addr)
 {
-    if (adr.type == NA_LOOPBACK)
+    if (addr.type == NA_LOOPBACK)
         return true;
 
-    if (adr.type == NA_IP) {
+    if (addr.type == NA_IP) {
         // RFC1918:
         // 10.0.0.0        -   10.255.255.255  (10/8 prefix)
         // 172.16.0.0      -   172.31.255.255  (172.16/12 prefix)
         // 192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
-        if (adr.ip[0] == 10)
+        if (addr.ip[0] == 10)
             return true;
-        else if (adr.ip[0] == 172 && (adr.ip[1] & 0xf0) == 16)
+        else if (addr.ip[0] == 172 && (addr.ip[1] & 0xf0) == 16)
             return true;
-        else if (adr.ip[0] == 192 && adr.ip[1] == 168)
+        else if (addr.ip[0] == 192 && addr.ip[1] == 168)
             return true;
-        else if (adr.ip[0] == 127)
+        else if (addr.ip[0] == 127)
             return true;
-    } else if (adr.type == NA_IP6) {
-        if (adr.ip6[0] == 0xfe && (adr.ip6[1] & 0xc0) == 0x80)
+    } else if (addr.type == NA_IP6) {
+        if (addr.ip6[0] == 0xfe && (addr.ip6[1] & 0xc0) == 0x80)
             return true;
-        if ((adr.ip6[0] & 0xfe) == 0xfc)
+        if ((addr.ip6[0] & 0xfe) == 0xfc)
             return true;
     }
 
@@ -33,25 +33,25 @@ bool net_is_lan_address(struct netadr adr)
         byte *compare_ip;
         int addrsize;
 
-        if (localip[i].type == adr.type) {
-            if (adr.type == NA_IP) {
+        if (localip[i].type == addr.type) {
+            if (addr.type == NA_IP) {
                 compare_ip = (byte *) 
                     &((struct sockaddr_in *) &localip[i].addr)->sin_addr.s_addr;
                 compare_mask = (byte *) 
                     &((struct sockaddr_in *) &localip[i].netmask)->sin_addr.s_addr;
-                compare_adr = adr.ip;
+                compare_adr = addr.ip;
 
-                addrsize = sizeof(adr.ip);
-            } else if (adr.type == NA_IP6) {
+                addrsize = sizeof(addr.ip);
+            } else if (addr.type == NA_IP6) {
                 // TODO? should we check the scope_id here?
 
                 compare_ip = (byte *) 
                     &((struct sockaddr_in6 *) &localip[i].addr)->sin6_addr;
                 compare_mask = (byte *) 
                     &((struct sockaddr_in6 *) &localip[i].netmask)->sin6_addr;
-                compare_adr = adr.ip6;
+                compare_adr = addr.ip6;
 
-                addrsize = sizeof(adr.ip6);
+                addrsize = sizeof(addr.ip6);
             }
 
             bool differed = false;

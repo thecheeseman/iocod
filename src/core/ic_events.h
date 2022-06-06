@@ -30,38 +30,136 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define IC_EVENTS_H
 
 enum sys_event_type {
-    SE_NONE = 0,        /**< marks the end of the queue */
+    /**
+     * @brief Marks the end of the system event queue.
+    */
+    SE_NONE = 0,
 
-    SE_KEY,             /**< key up/down event
-                             value = keycode
-                             value2 = down flag */
-    SE_CHAR,            /**< normal key chars (console, chatfields, etc) 
-                             value = keycode */
-    SE_MOUSE,           /**< mouse event 
-                             value = relative signed x move
-                             value2 = relative signed y move */
-    SE_JOYSTICK_AXIS,   /**< joystick event 
-                             value = axis number
-                             value2 = current state (-127 to 128) */
+    /**
+     * @brief Key up/down event.
+     * 
+     * @ref sys_event.value is the ASCII keycode of this key.
+     * 
+     * @ref sys_event.value2 is `1` if the key is down.
+    */
+    SE_KEY,
 
-    SE_CONSOLE,         /**< events from actual stdin/tty console 
-                             ptr = `char *` */
-    SE_PACKET,          /**< network packet events 
-                             ptr = `struct netadr` followed by data bytes
-                             ptr_length = total number of bytes */
+    /**
+     * @brief Normal keyboard characters used for in-game console/chatfields,
+     * etc.
+     * 
+     * @ref sys_event.value is the ASCII keycode of this key.
+    */
+    SE_CHAR,
 
-    SE_BAD_EVENT        /**< should never happen */
+    /**
+     * @brief Mouse event.
+     * 
+     * @ref sys_event.value is the relative signed `x` coord. 
+     * 
+     * @ref sys_event.value2 is the relative signed `y` coord.
+    */
+    SE_MOUSE,
+
+    /**
+     * @brief Joystick event.
+     * 
+     * @ref sys_event.value is the axis number of the joystick move.
+     * 
+     * @ref sys_event.value2 is the current state (-127 to 128).
+    */
+    SE_JOYSTICK_AXIS,
+
+    /**
+     * @brief Event from stdin/tty console.
+     * 
+     * @ref sys_event.ptr is a pointer to the console string data.
+    */
+    SE_CONSOLE,
+
+    /**
+     * @brief Network packet event.
+     * 
+     * @ref sys_event.ptr is a pointer to a @ref netadr structure, followed by
+     * the actual packet data.
+     * 
+     * @ref sys_event.ptr_length is the length of the packet in bytes.
+    */
+    SE_PACKET,
+
+    /**
+     * @brief An event type that should never occur.
+    */
+    SE_BAD_EVENT
 };
 
+/**
+ * @brief System event structure.
+*/
 struct sys_event {
+    /**
+     * @brief Time of system event in milliseconds since startup.
+    */
     int time;
-    
+
+    /**
+     * @brief Type of event
+     * @see sys_event_type
+    */
     enum sys_event_type type;
 
+    /**
+     * @brief Depending on @ref type, this will hold a value with a different 
+     * meaning.
+     * 
+     * For a given @ref type, this means:
+     * @code
+     * type                 meaning
+     * ----------------------------------------------
+     * SE_KEY               ASCII key code
+     * SE_CHAR              ASCII key code
+     * SE_MOUSE             relative signed `x` coord 
+     * SE_JOYSTICK_AXIS     axis number 
+     * @endcode
+     * 
+     * Otherwise, this is unused.
+    */
     int value;
+
+    /**
+     * @brief Depending on @ref type, this will hold a value with a different
+     * meaning.
+     * 
+     * For a given @ref type, this means:
+     * @code
+     * type                 meaning
+     * ------------------------------------------------------
+     * SE_KEY               1 if the key is down
+     * SE_MOUSE             relative signed `y` coord
+     * SE_JOYSTICK_AXIS     current axis state (-127 to +128)
+     * @endcode
+     * 
+     * Otherwise, this is unused.
+    */
     int value2;
 
+    /**
+     * @brief Length of @ref ptr. 
+     * 
+     * Only used if @ref type is @ref SE_PACKET.
+    */
     int ptr_length;
+
+    /**
+     * @brief Pointer to data used for @ref SE_CONSOLE and @ref SE_PACKET 
+     * event types.
+     * 
+     * If @ref type is @ref SE_CONSOLE, this will be a pointer to the console
+     * string data. If @ref type is @ref SE_PACKET, this will be a pointer to 
+     * a @ref netadr structure, followed directly by the actual packet data.
+     * 
+     * Otherwise, this is unused.
+    */
     void *ptr;
 };
 
@@ -93,19 +191,22 @@ int ev_loop(void);
 
 /**
  * @brief Push an event into the pushed events loop.
- * @param event event to push
+ * @param[in] event event to push
 */
 IC_PUBLIC
 void ev_push(struct sys_event *event);
 
 /**
  * @brief Queue an event.
- * @param time event time, or 0 for current system time
- * @param type event type
- * @param value 
- * @param value2
- * @param ptr_length if ptr, length of ptr
- * @param ptr
+ * @param[in] time          event time, or specify `0` for current system time
+ * @param[in] type          type of event
+ * @param[in] value         event value, if applicable
+ * @param[in] value2        event value2, if applicable
+ * @param[in] ptr_length    length of @p ptr, if applicable
+ * @param[in] ptr           pointer to data, or NULL
+ * 
+ * @see sys_event
+ * @see sys_event_type
 */
 IC_PUBLIC
 void ev_queue(int time, enum sys_event_type type, int value, int value2,
@@ -113,4 +214,4 @@ void ev_queue(int time, enum sys_event_type type, int value, int value2,
 
 /** @} */
 
-#endif /* IC_SEVENTS_H */
+#endif /* IC_EVENTS_H */

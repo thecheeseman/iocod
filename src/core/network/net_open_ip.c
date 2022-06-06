@@ -59,8 +59,8 @@ static socket_t open_socket(int family, char *netif, int port, int *err)
         if (netif == NULL || *netif == '\0') {
             addr4.sin_addr.s_addr = INADDR_ANY;
         } else {
-            if (!net_string_to_sockaddr(netif, (struct sockaddr *) &addr4,
-                                        sizeof(addr4), AF_INET)) {
+            if (!net_string_to_sockaddr(netif, AF_INET, sizeof(addr4), 
+                                        (struct sockaddr *) &addr4)) {
                 closesocket(newsock);
                 return INVALID_SOCKET;
             }
@@ -79,8 +79,8 @@ static socket_t open_socket(int family, char *netif, int port, int *err)
         if (netif == NULL || *netif == '\0') {
             addr6.sin6_addr = in6addr_any;
         } else {
-            if (!net_string_to_sockaddr(netif, (struct sockaddr *) &addr6,
-                                        sizeof(addr6), AF_INET6)) {
+            if (!net_string_to_sockaddr(netif, AF_INET6, sizeof(addr6), 
+                                        (struct sockaddr *) &addr6)) {
                 closesocket(newsock);
                 return INVALID_SOCKET;
             }

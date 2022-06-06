@@ -21,7 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /**
- * @defgroup cvar Cvars
+ * @defgroup ic_cvar Cvars
  * @brief C Variables.
  * @{ 
  */
@@ -41,25 +41,83 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @enum cv_flags
+ * @brief Cvar flags.
 */
 enum cv_flags {
-    CV_NONE         = 0,    /**< no flags */
-    CV_ARCHIVE      = 1,    /**< used for system variables, not for
-                                     player-specific configurations */
-    CV_USER_INFO    = 2,    /**< sent to server on connect or change */
-    CV_SERVER_INFO  = 4,    /**< sent in response to packet requests */
-    CV_SYSTEM_INFO  = 8,    /**< duplicated on all clients */
-    CV_INIT         = 16,   /**< can only be changed from the command line */
-    CV_LATCH        = 32,   /**< only updated when `cvar_get()` is called */
-    CV_ROM          = 64,   /**< display only */
-    CV_USER_CREATED = 128,  /**< created by the 'set' family of commands */
-    CV_TEMP         = 256,  /**< can be set even when cheats are disabled,
-                                     but is not archived */
-    CV_CHEAT        = 512,  /**< cannot be changed if cheats are disabled */
-    CV_NO_RESTART   = 1024, /**< not cleared when `cvar_restart` is run */
-    CV_WOLF_INFO    = 2048, /**< added in RTCW */
-    CV_4096         = 4096, /**< unknown */
-    CV_8192         = 8192  /**< added in COD1 */
+    /**
+     * @brief No cvar flags.
+    */
+    CV_NONE         = 0,
+
+    /**
+     * @brief Variables which are automatically written to the config files.
+    */
+    CV_ARCHIVE      = 1,
+
+    /**
+     * @brief Sent to the server on client connect or change.
+    */
+    CV_USER_INFO    = 2,
+
+    /**
+     * @brief Sent in response to frontend requests.
+    */
+    CV_SERVER_INFO  = 4,
+
+    /**
+     * @brief Cvars which are duplicated on all clients.
+    */
+    CV_SYSTEM_INFO  = 8, 
+
+    /**
+     * @brief Only allow changes from the command line (no console changes).
+    */
+    CV_INIT         = 16,
+
+    /**
+     * @brief Latched until the next @ref cv_get() call.
+    */
+    CV_LATCH        = 32,
+
+    /**
+     * @brief Display only, cannot be set by the user at all.
+    */
+    CV_ROM          = 64,
+
+    /**
+     * @brief Variables created by the `set` family of commands.
+    */
+    CV_USER_CREATED = 128,
+
+    /**
+     * @brief Can be set even when cheats are disabled, but is not archived.
+    */
+    CV_TEMP         = 256,
+
+    /**
+     * @brief Cannot be changed if cheats are disabled.
+    */
+    CV_CHEAT        = 512,
+
+    /**
+     * @brief Do not clear when `cvar_restart` is issued.
+    */
+    CV_NO_RESTART   = 1024,
+
+    /**
+     * @brief Added in RTCW. Could be CV_SERVER_CREATED
+    */
+    CV_WOLF_INFO    = 2048,
+
+    /**
+     * @brief Unknown. Could be CV_PROTECTED
+    */
+    CV_4096         = 4096,
+
+    /**
+     * @brief Unknown. Added in COD1.
+    */
+    CV_8192         = 8192
 };
 
 /**
@@ -77,26 +135,64 @@ typedef long    cv_int;
 /**
  * @brief Cvar structure.
  * 
- * @warning Nothing outside of the `cvar_*()` functions should modify
+ * @warning Nothing outside of the `cv_*()` functions should modify
  * these fields!
 */
 struct cvar {
-    char *name;                 /**< cvar name */
+    /**
+     * @brief Name of cvar.
+    */
+    char *name;
     
-    char *string;               /**< string value */
-    char *reset_string;         /**< `cvar_restart` resets to this value */
-    char *latched_string;       /**< used for #CV_LATCH flagged cvars */
-    
-    enum cv_flags flags;        /**< flags */
-    
-    bool modified;              /**< set each time the cvar is changed */
-    int modification_count;     /**< incremented each time the cvar is changed */
+    /**
+     * @brief Cvar string value.
+    */
+    char *string;
 
-    cv_float value;             /**< floating point representation of string */
-    cv_int integer;             /**< integer representation of string */
+    /**
+     * @brief Issuing a `cvar_restart` will reset the cvar to this value.
+    */
+    char *reset_string;
 
-    struct cvar *next;          /**< next cvar */
-    struct cvar *hash_next;     /**< next hashtable entry */
+    /**
+     * @brief Used for #CV_LATCH flagged cvars.
+    */
+    char *latched_string;
+    
+    /**
+     * @brief Cvar flags.
+    */
+    enum cv_flags flags;
+    
+    /**
+     * @brief Set each time the cvar is modified.
+    */
+    bool modified;
+
+    /**
+     * @brief Number of total times this cvar has been changed.
+    */
+    int modification_count;
+
+    /**
+     * @brief Floating-point representation of the value.
+    */
+    cv_float value;
+
+    /**
+     * @brief Integer representation of the value.
+    */
+    cv_int integer;
+
+    /**
+     * @brief Next cvar in the linked list.
+    */
+    struct cvar *next;
+
+    /**
+     * @brief Next hashtable entry.
+    */
+    struct cvar *hash_next;
 };
 
 /**
@@ -137,7 +233,7 @@ struct vmcvar {
  * 
  * @param[in] name name of the cvar to look for
  * 
- * @return NULL if not found, otherwise a `struct cvar *`
+ * @return NULL if not found, otherwise a pointer to a @ref cvar structure
 */
 IC_PUBLIC
 struct cvar *cv_find(const char *name);
@@ -150,15 +246,16 @@ IC_PUBLIC
  * given cvar exists, and if not it will create it automatically with the
  * default @p value and @p flags as specified. 
  
- * If it already exists, and it's flagged as #CV_USER_CREATED, it will 
- * set the `reset_string` to the value passed and update the flags. If there
- * is already a string latched, it will immediately take the latched value.
+ * If it already exists, and it's flagged as @ref CV_USER_CREATED, it will 
+ * set the @ref cvar.reset_string to the value passed and update the flags. 
+ * If there is already a string latched, it will immediately take the 
+ * latched value.
  * 
  * @param[in] name  cvar name
  * @param[in] value default value
  * @param[in] flags cvar flags
  * 
- * @return NULL if failed, otherwise `struct cvar *`
+ * @return NULL if failed, otherwise a pointer to a @ref cvar structure
 */
 struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags);
 
@@ -227,19 +324,19 @@ void cv_shutdown(void);
  * @brief Try to set a cvar with the given string value.
  * 
  * If the given cvar does not already exist and @p force is `false`, this will
- * create a new cvar with a #CV_USER_CREATED flag. If @p force is `true`, this
- * will create it with no flags at all.
+ * create a new cvar with a @ref CV_USER_CREATED flag. If @p force is `true`, 
+ * this will create it with no flags at all.
  * 
- * If the cvar already exists, and @p force is `false`, will set the cvar's
- * `latched_string` value. If @p force is `true`, then will always try to 
- * set the value (unless it is blocked by a #CV_ROM, #CV_LATCH, #CV_INIT, or 
- * #CV_CHEAT flag).
+ * If the cvar already exists, and @p force is `false`, will set its 
+ * @ref cvar.latched_string value. If @p force is `true`, then will always 
+ * try to set the value (unless it is blocked by a @ref CV_ROM, @ref CV_LATCH, 
+ * @ref CV_INIT, or @ref CV_CHEAT flag).
  * 
  * @param[in] name  name of the cvar
  * @param[in] value value to set the cvar to
  * @param[in] force whether to force this cvar to be set
  * 
- * @return NULL if failed, or `struct cvar *` otherwise
+ * @return NULL if failed, or pointer to a @ref cvar structure otherwise
 */
 IC_PUBLIC
 struct cvar *cv_set2(const char *name, const char *value, bool force);
@@ -253,20 +350,20 @@ struct cvar *cv_set2(const char *name, const char *value, bool force);
  * 
  * @see cv_set2
  *
- * @return NULL if failed, or `struct cvar *` otherwise
+ * @return NULL if failed, or pointer to a @ref cvar structure otherwise
 */
 IC_PUBLIC
 struct cvar *cv_set_string(const char *name, const char *value);
 
 /**
- * @brief Set a cvar's `latched_string` with the given value.
+ * @brief Set a cvar's @ref cvar.latched_string with the given value.
  *
  * @param[in] name  name of the cvar
  * @param[in] value value to set the cvar to
  *
  * @see cv_set2
  *
- * @return NULL if failed, or `struct cvar *` otherwise
+ * @return NULL if failed, or pointer to a @ref cvar structure otherwise
 */
 IC_PUBLIC
 struct cvar *cv_set_string_latched(const char *name, const char *value);
@@ -280,7 +377,7 @@ struct cvar *cv_set_string_latched(const char *name, const char *value);
  *
  * @see cv_set2
  *
- * @return NULL if failed, or `struct cvar *` otherwise
+ * @return NULL if failed, or pointer to a @ref cvar structure otherwise
 */
 IC_PUBLIC
 struct cvar *cv_set_value(const char *name, cv_float value);
@@ -293,17 +390,17 @@ struct cvar *cv_set_value(const char *name, cv_float value);
  *
  * @see cv_set2
  *
- * @return NULL if failed, or `struct cvar *` otherwise
+ * @return NULL if failed, or pointer to a @ref cvar structure otherwise
 */
 IC_PUBLIC
 struct cvar *cv_set_integer(const char *name, cv_int value);
 
 /**
- * @brief Reset a cvar to its `reset_string` value.
+ * @brief Reset a cvar to its @ref cvar.reset_string value.
  *
  * @param[in] name  name of the cvar
  *
- * @return NULL if failed, or `struct cvar *` otherwise
+ * @return NULL if failed, or pointer to a @ref cvar structure otherwise
 */
 IC_PUBLIC
 struct cvar *cv_reset(const char *name);
@@ -393,8 +490,8 @@ cv_int cv_get_integer(const char *name);
 /**
  * @brief Write cvar defaults to a given file. 
  * 
- * This will actively ignore any cvar that has a #CV_ROM, #CV_USER_CREATED,
- * #CV_CHEAT, or #CV_4096 flag set.
+ * This will actively ignore any cvar that has a @ref CV_ROM, 
+ * @ref CV_USER_CREATED, @ref CV_CHEAT, or @ref CV_4096 flag set.
  *
  * @param f handle to output file
  * 
@@ -405,7 +502,7 @@ bool cv_write_defaults(filehandle f);
 
 /**
  * @brief Write archived cvar variables to a given file. Only cvars with the
- * #CV_ARCHIVE flag are written.
+ * @ref CV_ARCHIVE flag are written.
  *
  * @param f handle to output file
  *

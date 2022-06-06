@@ -13,8 +13,8 @@ static struct addrinfo *search_addrinfo(struct addrinfo *hints,
     return NULL;
 }
 
-bool net_string_to_sockaddr(const char *s, struct sockaddr *addr, 
-                            socklen_t addrlen, sa_family_t family)
+bool net_string_to_sockaddr(const char *s, sa_family_t family, 
+                            socklen_t addrlen, struct sockaddr *addr)
 {
     struct addrinfo hints;
 
@@ -71,17 +71,18 @@ end:
     return ret;
 }
 
-void net_sockaddr_to_string(char *dest, int size, struct sockaddr *in)
+void net_sockaddr_to_string(struct sockaddr *in, socklen_t destsize, 
+                            char *dest)
 {
-    int len;
+    socklen_t addrlen;
 
     if (in->sa_family == AF_INET)
-        len = sizeof(struct sockaddr_in);
+        addrlen = sizeof(struct sockaddr_in);
     else if (in->sa_family == AF_INET6)
-        len = sizeof(struct sockaddr_in6);
+        addrlen = sizeof(struct sockaddr_in6);
 
-    if (getnameinfo(in, len, dest, size, NULL, 0, NI_NUMERICHOST) != 0 
-        && len > 0) {
+    if (getnameinfo(in, addrlen, dest, destsize, NULL, 0, NI_NUMERICHOST) != 0 
+        && addrlen > 0) {
         *dest = '\0';
     }
 }
