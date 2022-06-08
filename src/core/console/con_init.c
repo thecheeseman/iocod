@@ -1,10 +1,62 @@
 #include "con_local.h"
-#include <stdlib.h>
 
-struct console_data condata;
+struct console_data console;
 
 #ifdef IC_PLATFORM_WINDOWS
+static BOOL WINAPI con_sigint(DWORD sig)
+{
+    // TODO:
+    return TRUE;
+}
 
+IC_PUBLIC
+void con_init(void)
+{
+    memset(&console, 0, sizeof(console));
+
+    SetConsoleCtrlHandler(con_sigint, TRUE);
+
+    console.hin = GetStdHandle(STD_INPUT_HANDLE);
+    if (console.hin == INVALID_HANDLE_VALUE)
+        return;
+
+    console.hout = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (console.hout == INVALID_HANDLE_VALUE)
+        return;
+
+    // enable mouse wheel scrolling + virtual terminal sequences
+    GetConsoleMode(console.hin, &console.original_mode);
+    SetConsoleMode(console.hin, console.original_mode & 
+                   (~ENABLE_MOUSE_INPUT | ENABLE_VIRTUAL_TERMINAL_INPUT));
+
+    FlushConsoleInputBuffer(console.hin);
+
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(console.hout, &info);
+    console.attributes = info.wAttributes;
+    console.bg_attributes = console.attributes & 
+        (BACKGROUND_BLUE | BACKGROUND_GREEN | 
+         BACKGROUND_RED | BACKGROUND_INTENSITY);
+
+    con_set_title("iocod " IC_VERSION_STRING " dedicated server console");
+
+    // init history tbd
+
+    SetConsoleTextAttribute(console.hout, console.attributes);
+}
+
+IC_PUBLIC
+void con_shutdown(void)
+{
+    con_hide();
+
+    SetConsoleMode(console.hin, console.original_mode);
+    SetConsoleCursorInfo(console.hout, &console.original_cursorinfo);
+    SetConsoleTextAttribute(console.hout, console.attributes);
+
+    CloseHandle(console.hout);
+    CloseHandle(console.hin);
+}
 #else
 static void con_sigcont(int signum)
 {
@@ -27,7 +79,7 @@ static bool stdin_is_atty(void)
 IC_PUBLIC
 void con_init(void)
 {
-    memset(&condata, 0, sizeof(condata));
+    memset(&console, 0, sizeof(console));
 
     // ignore tty in/tty out signals
     // if the process is running non-interactively these can turn into
@@ -44,17 +96,17 @@ void con_init(void)
     if (!stdin_is_atty()) {
         ic_printf(_("tty console mode disabled\n"));
 
-        condata.stdin_active = true;
+        console.stdin_active = true;
         return;
     }
 
-    memset(&condata.con, 0, sizeof(condata.con));
+    memset(&console.field, 0, sizeof(console.field));
 
-    tcgetattr(STDIN_FILENO, &condata.tc);
-    condata.erase = condata.tc.c_cc[VERASE];
-    condata.eof = condata.tc.c_cc[VEOF];
+    tcgetattr(STDIN_FILENO, &console.tc);
+    console.tty_erase = console.tc.c_cc[VERASE];
+    console.tty_eof = console.tc.c_cc[VEOF];
 
-    struct termios tc = condata.tc;
+    struct termios tc = console.tc;
 
     /*
         ECHO: don't echo input characters
@@ -77,8 +129,10 @@ void con_init(void)
 
     tcsetattr(STDIN_FILENO, TCSADRAIN, &tc);
 
-    condata.on = true;
-    condata.hide = 1;
+    console.on = true;
+    console.hide = 1;
+
+    con_set_title("iocod " IC_VERSION_STRING " dedicated server console");
 
     con_show();
 }
@@ -86,9 +140,9 @@ void con_init(void)
 IC_PUBLIC
 void con_shutdown(void)
 {
-    if (condata.on) {
+    if (console.on) {
         con_hide();
-        tcsetattr(STDIN_FILENO, TCSADRAIN, &condata.tc);
+        tcsetattr(STDIN_FILENO, TCSADRAIN, &console.tc);
     }
 
     // restore blocking to stdin reads

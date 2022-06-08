@@ -3,6 +3,8 @@
 
 #include "iocod.h"
 
+#include <stdlib.h>
+
 #ifdef IC_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
@@ -12,9 +14,10 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/select.h>
 #endif
 
-#define TTY_PROMPT "]"
+#define TTY_PROMPT "] "
 
 #define MAX_EDIT_LINE 256
 
@@ -42,26 +45,73 @@ struct field *history_next(void);
  * @brief Local console data.
 */
 struct console_data {
-    #ifdef IC_PLATFORM_WINDOWS
+    enum q3color bgcolor;
+    enum q3color textcolor;
 
-    #else
+    /**
+     * @brief Flag if the tty console is currently on.
+    */
     bool on;
+
+    #ifdef IC_PLATFORM_WINDOWS
+    HANDLE hin;
+    HANDLE hout;
+
+    DWORD original_mode;
+    CONSOLE_CURSOR_INFO original_cursorinfo;
+
+    DWORD attributes;
+    DWORD bg_attributes;
+    #else
+
+    /**
+     * @brief Flag if the console is currently in non-interactive mode.
+    */
     bool stdin_active;
 
+    /**
+     * @brief Termios data
+    */
     struct termios tc;
-    struct field con;
 
-    int erase;
-    int eof;
+    /**
+     * @brief Current console field data.
+    */
+    struct field field;
+
+    /**
+     * @brief TTY erase char.
+    */
+    int tty_erase;
+
+    /**
+     * @brief TTY EOF char.
+    */
+    int tty_eof;
+
+    /**
+     * @brief Number of hidden characters waiting to be shown.
+    */
     int hide;
-    int show_overdue;
 
+    /**
+     * @brief Number of overdue characters (due to no trailing '\n').
+    */
+    int overdue;
     #endif
 };
 
-extern struct console_data condata;
+extern struct console_data console;
 
+void con_back(void);
 void con_hide(void);
 void con_show(void);
+
+void con_set_bg_color(enum q3color color);
+void con_set_text_color(enum q3color color);
+
+// EXPORT TO GLOBALS:
+IC_PUBLIC
+void con_set_title(const char *title);
 
 #endif /* CON_LOCAL_H */

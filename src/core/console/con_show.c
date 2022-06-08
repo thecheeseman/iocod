@@ -1,9 +1,22 @@
 #include "con_local.h"
 
 #ifdef IC_PLATFORM_WINDOWS
+void con_back(void)
+{
 
+}
+
+void con_hide(void)
+{
+
+}
+
+void con_show(void)
+{
+
+}
 #else
-static void con_back(void)
+void con_back(void)
 {
     char key = '\b';
     write(STDOUT_FILENO, &key, 1);
@@ -15,16 +28,16 @@ static void con_back(void)
 
 void con_hide(void)
 {
-    if (!condata.on)
+    if (!console.on)
         return;
 
-    if (condata.hide > 0) {
-        condata.hide++;
+    if (console.hide > 0) {
+        console.hide++;
         return;
     }
 
-    if (condata.con.cursor > 0) {
-        for (int i = 0; i < condata.con.cursor; i++)
+    if (console.field.cursor > 0) {
+        for (int i = 0; i < console.field.cursor; i++)
             con_back();
     }
 
@@ -32,23 +45,23 @@ void con_hide(void)
     for (int i = strlen(TTY_PROMPT); i > 0; i--)
         con_back();
 
-    condata.hide++;
+    console.hide++;
 }
 
 void con_show(void)
 {
-    if (!condata.on)
+    if (!console.on)
         return;
 
-    assert(condata.hide > 0);
-    condata.hide--;
+    assert(console.hide > 0);
+    console.hide--;
 
-    if (condata.hide == 0) {
+    if (console.hide == 0) {
         write(STDOUT_FILENO, TTY_PROMPT, strlen(TTY_PROMPT));
 
-        if (condata.con.cursor > 0) {
-            for (int i = 0; i < condata.con.cursor; i++)
-                write(STDOUT_FILENO, condata.con.buffer + i, 1);
+        if (console.field.cursor > 0) {
+            for (int i = 0; i < console.field.cursor; i++)
+                write(STDOUT_FILENO, console.field.buffer + i, 1);
         }
     }
 }

@@ -3,6 +3,17 @@
 
 #include <stdarg.h>
 
+enum q3color {
+    COLOR_BLACK,
+    COLOR_RED,
+    COLOR_GREEN,
+    COLOR_YELLOW,
+    COLOR_BLUE,
+    COLOR_CYAN,
+    COLOR_MAGENTA,
+    COLOR_WHITE
+};
+
 /**
  * @brief Get current milliseconds since application began.
  * @return 
