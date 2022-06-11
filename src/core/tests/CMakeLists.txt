@@ -19,6 +19,10 @@ function(add_core_test TEST_NAME)
         target_link_libraries(${TEST_NAME} Ws2_32)
     endif()
 
+    if (${TEST_NAME} STREQUAL "test-console" AND UNIX)
+        target_link_libraries(${TEST_NAME} tinfo)
+    endif()
+
     set_target_properties(${TEST_NAME} PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"

@@ -7,7 +7,8 @@
 
 #ifdef IC_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
-#include "windows.h"
+#include <windows.h>
+#include <strsafe.h>
 #else
 #include <termios.h>
 #include <signal.h>
@@ -53,6 +54,17 @@ struct console_data {
     */
     bool on;
 
+    /**
+     * @brief ANSI color support.
+     *
+     * On Windows, this is via the ENABLE_VIRTUAL_TERMINAL_PROCESSING console
+     * mode.
+    */
+    bool ansi_color;
+
+    int num_lines;
+    int num_columns;
+
     #ifdef IC_PLATFORM_WINDOWS
     HANDLE hin;
     HANDLE hout;
@@ -63,6 +75,8 @@ struct console_data {
     DWORD attributes;
     DWORD bg_attributes;
     #else
+
+    const char *term;
 
     /**
      * @brief Flag if the console is currently in non-interactive mode.

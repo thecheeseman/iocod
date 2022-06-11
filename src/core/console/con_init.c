@@ -1,8 +1,47 @@
 #include "con_local.h"
 
+#ifndef IC_PLATFORM_WINDOWS
+#include <term.h>
+#endif
+
 struct console_data console;
 
 #ifdef IC_PLATFORM_WINDOWS
+void ErrorExit(LPTSTR lpszFunction)
+{
+    // Retrieve the system error message for the last-error code
+
+    LPVOID lpMsgBuf;
+    LPVOID lpDisplayBuf;
+    DWORD dw = GetLastError();
+
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &lpMsgBuf,
+        0, NULL);
+
+    // Display the error message and exit the process
+
+    lpDisplayBuf = (LPVOID) LocalAlloc(LMEM_ZEROINIT,
+                                       (lstrlen((LPCTSTR) lpMsgBuf) + 
+                                        lstrlen((LPCTSTR) lpszFunction) + 40) * 
+                                       sizeof(TCHAR));
+    StringCchPrintf((LPTSTR) lpDisplayBuf,
+                    LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+                    TEXT("%s failed with error %d: %s"),
+                    lpszFunction, dw, lpMsgBuf);
+    MessageBox(NULL, (LPCTSTR) lpDisplayBuf, TEXT("Error"), MB_OK);
+
+    LocalFree(lpMsgBuf);
+    LocalFree(lpDisplayBuf);
+    ExitProcess(dw);
+}
+
 static BOOL WINAPI con_sigint(DWORD sig)
 {
     // TODO:
@@ -24,10 +63,16 @@ void con_init(void)
     if (console.hout == INVALID_HANDLE_VALUE)
         return;
 
-    // enable mouse wheel scrolling + virtual terminal sequences
+    // enable mouse wheel scrolling
     GetConsoleMode(console.hin, &console.original_mode);
-    SetConsoleMode(console.hin, console.original_mode & 
-                   (~ENABLE_MOUSE_INPUT | ENABLE_VIRTUAL_TERMINAL_INPUT));
+    SetConsoleMode(console.hin, console.original_mode & ~ENABLE_MOUSE_INPUT);
+
+    // check if we can do virtual terminal processing
+    DWORD mode;
+    GetConsoleMode(console.hout, &mode);
+    mode |= ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    if (SetConsoleMode(console.hout, mode))
+        console.ansi_color = true; // we can support it
 
     FlushConsoleInputBuffer(console.hin);
 
@@ -66,11 +111,10 @@ static void con_sigcont(int signum)
 static bool stdin_is_atty(void)
 {
     bool atty = isatty(STDIN_FILENO);
-
-    const char *term = getenv("TERM");
     bool dumbterm = false;
 
-    if (term == NULL || strcmp(term, "raw") == 0 || strcmp(term, "dumb") == 0)
+    if (console.term == NULL || strcmp(console.term, "raw") == 0 || 
+        strcmp(console.term, "dumb") == 0)
         dumbterm = true;
 
     return atty && !dumbterm;
@@ -80,6 +124,17 @@ IC_PUBLIC
 void con_init(void)
 {
     memset(&console, 0, sizeof(console));
+
+    // setupterm will auto exit if there's an error
+    console.term = getenv("TERM");
+    setupterm(console.term, STDOUT_FILENO, (int *) 0);
+
+    // not foolproof, but an easy check
+    if (tigetnum("colors") > 0)
+        console.ansi_color = true;
+
+    console.num_lines = tigetnum("lines");
+    console.num_columns = tigetnum("cols");
 
     // ignore tty in/tty out signals
     // if the process is running non-interactively these can turn into

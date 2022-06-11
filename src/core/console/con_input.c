@@ -3,7 +3,7 @@
 #ifdef IC_PLATFORM_WINDOWS
 char *con_input(void)
 {
-
+    return NULL;
 }
 #else
 // non-interactive/dumb terminals

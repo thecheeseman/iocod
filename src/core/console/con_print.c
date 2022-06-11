@@ -11,8 +11,47 @@ static bool color_string(const char *p)
     return true;
 }
 
+#ifdef IC_PLATFORM_WINDOWS
+static DWORD colors[] = {
+    0,
+    FOREGROUND_RED,
+    FOREGROUND_GREEN,
+    FOREGROUND_RED | FOREGROUND_GREEN,
+    FOREGROUND_BLUE,
+    FOREGROUND_GREEN | FOREGROUND_BLUE,
+    FOREGROUND_RED | FOREGROUND_BLUE,
+    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE
+};
+
+static DWORD color_to_attrib(enum q3color color)
+{
+    DWORD attrib;
+
+    if (color == COLOR_WHITE) {
+        attrib = console.attributes;
+    } else {
+        attrib = colors[color];
+
+        // use console's background color
+        attrib |= console.bg_attributes;
+    }
+
+    return attrib;
+}
+#endif
+
 #define MAX_PRINT_MSG 4096
 
+/*
+ * color printing is annoying. on *nix/macos we have support for VT100/ANSI
+ * color coding, with the \033[xxx; format and that's easy enough. some
+ * consoles don't support this, and we can sort of check with terminfo but
+ * not all consoles support terminfo either...
+ * 
+ * windows sucks in general but at least win10+ supports VT100/ANSI codes, 
+ * but none of the previous versions do... so we have to fall back on win32
+ * console attributes
+ */
 static void color_print(const char *msg)
 {
     static char buffer[MAX_PRINT_MSG];
@@ -29,12 +68,30 @@ static void color_print(const char *msg)
             }
 
             if (*msg == '\n') {
-                fputs("\033[0m\n", stderr);
+                if (console.ansi_color) {
+                    fputs("\033[0m\n", stderr);
+                } else {
+                    #ifdef IC_PLATFORM_WINDOWS
+                    SetConsoleTextAttribute(console.hout, 
+                                            color_to_attrib(COLOR_WHITE));
+                    #endif
+
+                    fputs("\n", stderr);
+                }
+
                 msg++;
             } else {
                 int color = (int) (*(msg + 1) - '0');
-                snprintf(buffer, sizeof(buffer), "\033[%dm", color + 30);
-                fputs(buffer, stderr);
+
+                if (console.ansi_color) {
+                    snprintf(buffer, sizeof(buffer), "\033[%dm", color + 30);
+                    fputs(buffer, stderr);
+                } else {
+                    #ifdef IC_PLATFORM_WINDOWS
+                    SetConsoleTextAttribute(console.hout,
+                                            color_to_attrib(color));
+                    #endif
+                }
                 msg += 2;
             }
         } else {
@@ -53,17 +110,6 @@ static void color_print(const char *msg)
     }
 }
 
-#ifdef IC_PLATFORM_WINDOWS
-void con_print(const char *msg)
-{
-    con_hide();
-
-    color_print(msg);
-
-    con_show();
-}
-#else
-IC_PUBLIC
 void con_print(const char *msg)
 {
     if (msg == NULL || *msg == '\0')
@@ -73,9 +119,9 @@ void con_print(const char *msg)
 
     color_print(msg);
 
-    if (!console.on)
-        return;
-
+    #ifdef IC_PLATFORM_WINDOWS
+    con_show();
+    #else
     if (msg[strlen(msg) - 1] == '\n') {
         con_show();
 
@@ -87,5 +133,5 @@ void con_print(const char *msg)
         // defer calling con_show
         console.overdue++;
     }
+    #endif
 }
-#endif
