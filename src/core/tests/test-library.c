@@ -98,6 +98,8 @@ bool syslib_symbol(void *handle, const char *fn, void **symbol)
 int TEST_MAIN()
 {
     void *handle;
+
+    #ifdef IC_PLATFORM_WINDOWS
     if (!syslib_load("user32.dll", &handle)) {
         fprintf(stderr, "error: %s\n", syslib_error());
         return 1;
@@ -110,6 +112,9 @@ int TEST_MAIN()
     }
 
     messagebox(NULL, "general kenobi", "hello there", MB_ICONWARNING);
+    #else
+
+    #endif
 
     syslib_close(handle);
 
