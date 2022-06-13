@@ -10,7 +10,8 @@ foreach (subdir
     network
     parse
     shared
-    strings)
+    strings
+    system)
     file(GLOB sources "${subdir}/*.c")
     list(APPEND IC_CORE_SRCS ${sources})
 endforeach()
