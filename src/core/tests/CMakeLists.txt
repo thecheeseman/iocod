@@ -9,7 +9,7 @@ function(add_core_test TEST_NAME)
         WORKING_DIRECTORY $<TARGET_FILE_DIR:${TEST_NAME}>
         COMMAND $<TARGET_FILE:${TEST_NAME}>)
     add_dependencies(check ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} $<TARGET_OBJECTS:confuse> iccore)
+    target_link_libraries(${TEST_NAME} $<TARGET_OBJECTS:confuse> iocod_core)
 
     if (WIN32)
         target_link_options(${TEST_NAME} BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
@@ -21,6 +21,10 @@ function(add_core_test TEST_NAME)
 
     if (${TEST_NAME} STREQUAL "test-console" AND UNIX)
         target_link_libraries(${TEST_NAME} tinfo)
+    endif()
+
+    if (${TEST_NAME} STREQUAL "test-library" AND UNIX)
+        target_link_libraries(${TEST_NAME} dl)
     endif()
 
     set_target_properties(${TEST_NAME} PROPERTIES

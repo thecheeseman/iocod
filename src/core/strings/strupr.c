@@ -1,5 +1,5 @@
 #include <ctype.h>
-#include "../iocod.h"
+#include "iocod.h"
 
 IC_PUBLIC
 IC_NON_NULL(1)

@@ -39,27 +39,6 @@ void ic_bit_set(int arr[], int num)
 }
 
 IC_PUBLIC
-IC_NON_NULL(1, 3)
-void ic_default_extension(char *path, size_t size, const char *ext)
-{
-    char oldpath[MAX_PATH];
-    
-    /* if path doesn't have an extension, append */
-    char *src = path + strlen(path) - 1;
-
-    /* walk backwards through the string */
-    while (*src != '/' && src != path) {
-        if (*src == '.')
-            return; /* already has an extension */
-
-        src--;
-    }
-
-    strncpyz(oldpath, path, sizeof(oldpath));
-    snprintf(path, size, "%s%s", oldpath, ext);
-}
-
-IC_PUBLIC
 IC_NON_NULL(1)
 char *ic_skip_path(char *path)
 {

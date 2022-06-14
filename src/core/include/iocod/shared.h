@@ -1,6 +1,8 @@
 #ifndef IC_SHARED_H
 #define IC_SHARED_H
 
+#include "iocod.h"
+
 #include <stdarg.h>
 
 enum q3color {
@@ -35,19 +37,26 @@ char *va(const char *fmt, ...);
 #define INFO_STRING_BIG 8192
 
 /**
- * @brief Take a given path and append an extension (if one doesn't already
- * exist).
+ * @brief Take a given path @p path and append extension @p ext if it does
+ * not already exist.
+ * 
+ * This function is a replacement of Q3's `Com_DefaultExtension` since that
+ * function only cares if the path _has_ an extension, not whether that
+ * extension is correct.
+ * 
+ * @note @p ext is case-sensitive.
+ * @note If extension already exists, but is different, this will append the
+ * new extension to the end -- e.g. if @p ext is `".dll"`, and @p path is
+ * `"test.ext"`, the new path will be `"test.ext.dll"`
  *
- * If the given path string already has an extension (regardless if it is
- * the same as `ext`, will not append anything).
- *
- * @param[in,out] path string path
- * @param[in]     size max size of string
+ * @param[in,out] path NULL-terminated path string
+ * @param[in]     size max size of @p path
  * @param[in]     ext  extension to append
+ * @return true if success (or nothing was done), false if invalid parameters
+ * are specified
  */
 IC_PUBLIC
-IC_NON_NULL(1, 3)
-void ic_default_extension(char *path, size_t size, const char *ext);
+bool ic_append_extension(char *path, size_t size, const char *ext);
 
 /**
  * @brief Remove a key/value pair from an info string.

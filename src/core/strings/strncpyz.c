@@ -1,4 +1,4 @@
-#include "../iocod.h"
+#include "iocod.h"
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)

@@ -2,121 +2,73 @@
 
 #include "iocod.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#else
-#include <dlfcn.h>
-#endif
-
-/**
- * @brief Get last library error, if applicable. Clears last error.
- * @return NULL-terminated string containing error message, otherwise NULL
-*/
-char *syslib_error(void)
-{
-    #ifdef IC_PLATFORM_WINDOWS
-    DWORD err = GetLastError();
-    static char msg[1024];
-
-    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
-                  NULL,
-                  err,
-                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  msg, 
-                  sizeof(msg), 
-                  NULL);
-
-    return msg;
-    #else
-    return dlerror();
-    #endif
-}
-
-/**
- * @brief Load a system library.
- * @param[in]  path   file path to library module
- * @param[out] handle handle to loaded library module, NULL if failed
- * @return true if success, false otherwise
-*/
-bool syslib_load(const char *path, void **handle)
-{
-    *handle = NULL;
-
-    if (path == NULL)
-        return false;
-
-    #ifdef IC_PLATFORM_WINDOWS
-    *handle = (void *) LoadLibrary(path);
-    #else
-    *handle = dlopen(path, RTLD_NOW);
-    #endif
-
-    return (*handle != NULL);
-}
-
-/**
- * @brief Close a system library.
- * @param[in] handle loaded library module
- * @return true if success, false otherwise
-*/
-bool syslib_close(void *handle)
-{
-    #ifdef IC_PLATFORM_WINDOWS
-    return FreeLibrary((HMODULE) handle);
-    #else
-    return (dlclose(handle) == 0);
-    #endif
-}
-
-/**
- * @brief Load a given @p symbol in a library module @p handle
- * 
- * @note MSVC will throw warnings if you do not cast @p symbol to (void *)
- * 
- * @param[in] handle  loaded library module
- * @param[in] fn      name of symbol to load
- * @param[out] symbol handle to symbol, NULL if failed
- * @return true if success, false otherwise
-*/
-bool syslib_symbol(void *handle, const char *fn, void **symbol)
-{
-    *symbol = NULL;
-
-    if (handle == NULL)
-        return false;
-
-    #ifdef IC_PLATFORM_WINDOWS
-    *symbol = (void *) GetProcAddress((HMODULE) handle, fn);
-    #else
-    *symbol = dlsym(handle, fn);
-    #endif
-
-    return (*symbol != NULL);
-}
-
 int TEST_MAIN()
 {
     void *handle;
+    bool result;
+
+    // verify handling of NULL paths
+    result = sys_library_load(NULL, &handle);
+    IC_ASSERT(result == false);
+    IC_ASSERT(strcmp(sys_library_error(), "NULL path") == 0);
+
+    // verify handling of NULL handles
+    void *symbol;
+    result = sys_library_load_symbol(handle, NULL, &symbol);
+    IC_ASSERT(result == false);
+    IC_ASSERT(strcmp(sys_library_error(), "NULL handle") == 0);
+
+    // verify handling of NULL function names
+    handle = (void *) 1;
+    result = sys_library_load_symbol(handle, NULL, &symbol);
+    IC_ASSERT(result == false);
+    IC_ASSERT(strcmp(sys_library_error(), "NULL function name") == 0);
 
     #ifdef IC_PLATFORM_WINDOWS
-    if (!syslib_load("user32.dll", &handle)) {
-        fprintf(stderr, "error: %s\n", syslib_error());
-        return 1;
-    }
+    // verify regular path works
+    result = sys_library_load("user32.dll", &handle);
+    IC_ASSERT(result);
+    IC_ASSERT(handle != NULL);
 
+    // verify library close
+    result = sys_library_close(handle);
+    IC_ASSERT(result);
+
+    // verify automatic system dll extension
+    result = sys_library_load("user32", &handle);
+    IC_ASSERT(result);
+    IC_ASSERT(handle != NULL);
+
+    // verify loading of symbols
     int (*messagebox)(HWND, LPCSTR, LPCSTR, UINT);
-    if (!syslib_symbol(handle, "MessageBoxA", (void *) &messagebox)) {
-        fprintf(stderr, "error: %s\n", syslib_error());
-        return 1;
-    }
+    result = sys_library_load_symbol(handle, "MessageBoxA", 
+                                     (void *) &messagebox);
+    IC_ASSERT(result);
+    IC_ASSERT(messagebox != NULL);
 
-    messagebox(NULL, "general kenobi", "hello there", MB_ICONWARNING);
+    // messagebox(NULL, "test message", "test message", MB_OK);
     #else
+    // verify regular path works
+    result = sys_library_load("libm-2.31.so", &handle);
+    IC_ASSERT(result);
+    IC_ASSERT(handle != NULL);
 
+    result = sys_library_close(handle);
+    IC_ASSERT(result);
+
+    // verify automatic system so extension
+    result = sys_library_load("libm-2.31", &handle);
+    IC_ASSERT(result);
+    IC_ASSERT(handle != NULL);
+
+    // verify loading of symbols
+    double (*_sqrt)(double);
+    result = sys_library_load_symbol(handle, "sqrt", (void *) &_sqrt);
+    IC_ASSERT(result);
+    IC_ASSERT(_sqrt != NULL);
     #endif
 
-    syslib_close(handle);
+    sys_library_close(handle);
 
     return 0;
 }

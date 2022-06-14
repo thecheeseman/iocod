@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../iocod.h"
+#include "iocod.h"
 
 IC_PUBLIC
 IC_PRINTF_FORMAT(3, 4)
