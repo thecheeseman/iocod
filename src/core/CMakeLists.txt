@@ -18,6 +18,14 @@ foreach (subdir
     list(APPEND IC_CORE_SRCS ${sources})
 endforeach()
 
+if (IC_PLATFORM_WINDOWS)
+    # silence some warnings
+    add_compile_options(/wd4244) # conversion from 'double' to 'float'
+    add_compile_options(/wd4305) # truncation from 'double' to 'float'
+    add_compile_options(/wd4996) # unsafe functions strcpy etc
+endif()
+
+add_compile_definitions(HAVE_CONFIG_H)
 include_directories("${STAGED_INSTALL_PREFIX}/include")
 include_directories("../include")
 include_directories(${PROJECT_BINARY_DIR})

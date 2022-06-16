@@ -2,7 +2,7 @@
 # code adapted from stackoverflow: http://stackoverflow.com/a/19578320
 # from post authored by https://stackoverflow.com/users/2556117/fraser
 macro(setup_color_terminal)
-    set(SUPPORT_ASCII_COLORS OFF)
+    set(SUPPORT_ASCII_COLORS OFF CACHE BOOL "ASCII colors supported")
 
     message(CHECK_START "Checking if terminal supports ASCII color")
     if (NOT WIN32)

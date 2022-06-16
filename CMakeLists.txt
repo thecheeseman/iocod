@@ -69,14 +69,18 @@ include(check_features)
 check_features()
 
 #
+# check headers etc
+#
+
+
+#
 # superbuild
 #
 set_property(DIRECTORY PROPERTY EP_BASE ${CMAKE_BINARY_DIR}/deps)
 set(STAGED_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/staged)
 message(STATUS "${PROJECT_NAME} staged install: ${STAGED_INSTALL_PREFIX}")
 
-configure_file("config.h.in" "${STAGED_INSTALL_PREFIX}/config.h")
-add_compile_options(-DHAVE_CONFIG_H)
+configure_file("config.h.in" "${STAGED_INSTALL_PREFIX}/include/config.h")
 include_directories(${STAGED_INSTALL_PREFIX})
 
 # copy all relevant cache variables (IC_) to external project
@@ -99,25 +103,28 @@ message(DEBUG "IC_CACHE_ARGS: ${IC_CACHE_ARGS}")
 
 #add_subdirectory(external)
 
-include(ExternalProject)
-ExternalProject_Add(${PROJECT_NAME}_core
-    #DEPENDS
-    #    miniz_external
-    SOURCE_DIR 
-        ${CMAKE_CURRENT_LIST_DIR}/src
-    CMAKE_ARGS
-        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-        -DCMAKE_C_STANDARD=${CMAKE_C_STANDARD}
-        -DCMAKE_C_STANDARD_REQUIRED=${CMAKE_C_STANDARD_REQUIRED}
-        -DCMAKE_C_EXTENSIONS=${CMAKE_C_EXTENSIONS}
-    CMAKE_CACHE_ARGS
-        -DSTAGED_INSTALL_PREFIX:STRING=${STAGED_INSTALL_PREFIX}
-        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-        -DCMAKE_PREFIX_PATH:PATH=${CMAKE_PREFIX_PATH}
-        -DHAVE_CONFIG_H:BOOL=TRUE
-        ${IC_CACHE_ARGS}
-    BUILD_ALWAYS 
-        ON
-    INSTALL_COMMAND
-        ""
-)
+if (SUPERBUILD)
+    include(ExternalProject)
+    ExternalProject_Add(${PROJECT_NAME}_core
+        #DEPENDS
+        #    miniz_external
+        SOURCE_DIR 
+            ${CMAKE_CURRENT_LIST_DIR}/src
+        CMAKE_ARGS
+            -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+            -DCMAKE_C_STANDARD=${CMAKE_C_STANDARD}
+            -DCMAKE_C_STANDARD_REQUIRED=${CMAKE_C_STANDARD_REQUIRED}
+            -DCMAKE_C_EXTENSIONS=${CMAKE_C_EXTENSIONS}
+        CMAKE_CACHE_ARGS
+            -DSTAGED_INSTALL_PREFIX:STRING=${STAGED_INSTALL_PREFIX}
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_PREFIX_PATH:PATH=${CMAKE_PREFIX_PATH}
+            ${IC_CACHE_ARGS}
+        BUILD_ALWAYS 
+            ON
+        INSTALL_COMMAND
+            ""
+    )
+else()
+    add_subdirectory("src")
+endif()

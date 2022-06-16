@@ -741,6 +741,9 @@ IC_DIAGNOSTIC_POP
  * @brief Defined if we are compiling with Clang.
  */
 #ifndef IC_PLATFORM_COMPILER
+
+/* if these aren't already defined by CMake, we'll check ourselves */
+#if !defined IC_PLATFORM_MSVC && !defined IC_PLATFORM_GCC && !defined IC_PLATFORM_CLANG
 #if defined _MSC_VER 
 #define IC_PLATFORM_MSVC
 #define IC_PLATFORM_COMPILER "msvc"
@@ -763,6 +766,7 @@ IC_DIAGNOSTIC_POP
 #else
 #define IC_PLATFORM_UNKNOWN
 #define IC_PLATFORM_COMPILER "unknown"
+#endif /* _MSC_VER */
 #endif
 #endif
 
@@ -778,19 +782,19 @@ IC_DIAGNOSTIC_POP
  *`game_mp_x86.dll`. In the future these should just be: `iocodgame-x64.so` or
  * `iocodgame-x64.dll`.
  */
-#if defined __i386__ 
-#define IC_PLATFORM_ARCH "i386" /* 32-bit *nix */
-#elif defined _M_IX86
-#define IC_PLATFORM_ARCH "x86"  /* 32-bit windows */
+#ifndef IC_PLATFORM_ARCH
+#if defined __i386__ || defined _M_IX86
+#define IC_PLATFORM_ARCH "x86"
 #elif defined __x86_64__ || defined _M_AMD64
-#define IC_PLATFORM_ARCH "x64"
+#define IC_PLATFORM_ARCH "amd64"
 #elif defined __arm__
 #if defined __arm64__ || defined __aarch64__
-#define IC_PLATFORM_ARCH "arm64"
+#define IC_PLATFORM_ARCH "aarch64"
 #else
-#define IC_PLATFORM_ARCH "arm32"
+#define IC_PLATFORM_ARCH "aarch32"
 #endif /* __arm64__ || defined __aarch64__ */
 #endif /* __i386__ */
+#endif /* IC_PLATFORM_ARCH */
 
 /**
  * @def IC_PLATFORM_OS
@@ -855,9 +859,14 @@ IC_DIAGNOSTIC_POP
  * @note On MSVC this is defined as `__declspec(dllimport)`.
  */
 #if defined IC_PLATFORM_WINDOWS
-#define IC_PLATFORM_WINDOWS 1
-#define IC_PLATFORM_OS      "win"
+
+#ifndef IC_PLATFORM_OS
+#define IC_PLATFORM_OS      "windows"
+#endif
+
+#ifndef IC_PLATFORM_DLL
 #define IC_PLATFORM_DLL     "dll"
+#endif
 
 #define PATH_SEP    '\\'
 
@@ -883,14 +892,21 @@ IC_DIAGNOSTIC_POP
 #define IC_IMPORT extern
 
 #if defined __linux__ 
-#define IC_PLATFORM_LINUX   1
-
+#ifndef IC_PLATFORM_OS
 #define IC_PLATFORM_OS      "linux"
+#endif
+
+#ifndef IC_PLATFORM_DLL
 #define IC_PLATFORM_DLL     "so"
+#endif
 #elif defined __APPLE__
-#define IC_PLATFORM_MACOS   1
+#ifndef IC_PLATFORM_OS
 #define IC_PLATFORM_OS      "macos"
+#endif
+
+#ifndef IC_PLATFORM_DLL
 #define IC_PLATFORM_DLL     "dylib"
+#endif
 #endif
 #else /* other systems */
 #define PATH_SEP '/'
@@ -898,14 +914,20 @@ IC_DIAGNOSTIC_POP
 #define IC_PUBLIC
 #define IC_IMPORT
 
-#define IC_PLATFORM_DLL ""
-
 #if defined __DOXYGEN__
 #define IC_PLATFORM_WINDOWS
 #define IC_PLATFORM_LINUX
 #define IC_PLATFORM_MACOS
+
+#ifdef IC_PLATFORM_ARCH
+#undef IC_PLATFORM_ARCH
 #define IC_PLATFORM_ARCH "doxygen"
+#endif
+
+#ifdef IC_PLATFORM_OS
+#undef IC_PLATFORM_OS
 #define IC_PLATFORM_OS "doxygen"
+#endif
 
 #define IC_GNUC_VERSION 0
 #define IC_GCC_VERSION  0

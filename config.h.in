@@ -13,24 +13,24 @@
  ******************************************************************************/
 
 /* architecture */
-#define _IC_PLATFORM_ARCH "@_IC_PLATFORM_ARCH@"
-#cmakedefine _IC_PLATFORM_64BIT 1
+#define IC_PLATFORM_ARCH "@IC_PLATFORM_ARCH@"
+#cmakedefine IC_PLATFORM_64BIT 1
 
 /* operating system */
-#define _IC_PLATFORM_OS "@_IC_PLATFORM_OS@"
-#define _IC_PLATFORM_OS_VERSION "@_IC_PLATFORM_OS_VERSION@"
-#cmakedefine _IC_PLATFORM_LINUX 1
-#cmakedefine _IC_PLATFORM_MACOS 1
-#cmakedefine _IC_PLATFORM_WINDOWS 1
-#define _IC_PLATFORM_EXE "@_IC_PLATFORM_EXE@"
-#define _IC_PLATFORM_DLL "@_IC_PLATFORM_DLL@"
+#define IC_PLATFORM_OS "@IC_PLATFORM_OS@"
+#define IC_PLATFORM_OS_VERSION "@IC_PLATFORM_OS_VERSION@"
+#cmakedefine IC_PLATFORM_LINUX 1
+#cmakedefine IC_PLATFORM_MACOS 1
+#cmakedefine IC_PLATFORM_WINDOWS 1
+#define IC_PLATFORM_EXE "@IC_PLATFORM_EXE@"
+#define IC_PLATFORM_DLL "@IC_PLATFORM_DLL@"
 
 /* compiler */
-#define _IC_PLATFORM_COMPILER "@_IC_PLATFORM_COMPILER@"
-#cmakedefine _IC_PLATFORM_MSVC 1
-#cmakedefine _IC_PLATFORM_GCC 1
-#cmakedefine _IC_PLATFORM_CLANG 1
-#define _IC_PLATFORM_COMPILER_VER "@_IC_PLATFORM_COMPILER_VERSION@"
+#define IC_PLATFORM_COMPILER "@IC_PLATFORM_COMPILER@"
+#cmakedefine IC_PLATFORM_MSVC 1
+#cmakedefine IC_PLATFORM_GCC 1
+#cmakedefine IC_PLATFORM_CLANG 1
+#define IC_PLATFORM_COMPILER_VER "@IC_PLATFORM_COMPILER_VERSION@"
 
 
 /*******************************************************************************
