@@ -1,8 +1,9 @@
 #include <sys/stat.h>
 
 #include "iocod.h"
-#include "confuse.h"
 
+#if 0
+#include "confuse/confuse.h"
 static cfg_t *cfg;
 
 /**
@@ -159,4 +160,65 @@ IC_PUBLIC
 void config_shutdown(void)
 {
     cfg_free(cfg);
+}
+#endif
+
+IC_PUBLIC
+bool config_get_bool(const char *name)
+{
+    return false;
+}
+
+IC_PUBLIC
+long config_get_int(const char *name)
+{
+    return 0;
+}
+
+IC_PUBLIC
+double config_get_float(const char *name)
+{
+    return 0.0;
+}
+
+IC_PUBLIC
+char *config_get_string(const char *name)
+{
+    return NULL;
+}
+
+IC_PUBLIC
+void config_set_bool(const char *name, bool value)
+{
+
+}
+
+IC_PUBLIC
+void config_set_int(const char *name, long value)
+{
+
+}
+
+IC_PUBLIC
+void config_set_float(const char *name, double value)
+{
+
+}
+
+IC_PUBLIC
+void config_set_string(const char *name, const char *value)
+{
+
+}
+
+IC_PUBLIC
+void config_init(void)
+{
+
+}
+
+IC_PUBLIC
+void config_shutdown(void)
+{
+
 }

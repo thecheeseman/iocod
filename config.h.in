@@ -9,52 +9,37 @@
 #define CONFIG_H
 
 /*******************************************************************************
+ * system information
+ ******************************************************************************/
+
+/* architecture */
+#define _IC_PLATFORM_ARCH "@_IC_PLATFORM_ARCH@"
+#cmakedefine _IC_PLATFORM_64BIT 1
+
+/* operating system */
+#define _IC_PLATFORM_OS "@_IC_PLATFORM_OS@"
+#define _IC_PLATFORM_OS_VERSION "@_IC_PLATFORM_OS_VERSION@"
+#cmakedefine _IC_PLATFORM_LINUX 1
+#cmakedefine _IC_PLATFORM_MACOS 1
+#cmakedefine _IC_PLATFORM_WINDOWS 1
+#define _IC_PLATFORM_EXE "@_IC_PLATFORM_EXE@"
+#define _IC_PLATFORM_DLL "@_IC_PLATFORM_DLL@"
+
+/* compiler */
+#define _IC_PLATFORM_COMPILER "@_IC_PLATFORM_COMPILER@"
+#cmakedefine _IC_PLATFORM_MSVC 1
+#cmakedefine _IC_PLATFORM_GCC 1
+#cmakedefine _IC_PLATFORM_CLANG 1
+#define _IC_PLATFORM_COMPILER_VER "@_IC_PLATFORM_COMPILER_VERSION@"
+
+
+/*******************************************************************************
  * iocod variables
  ******************************************************************************/
 
-#define IC_VERSION_MAJOR    @iocod_VERSION_MAJOR@
-#define IC_VERSION_MINOR    @iocod_VERSION_MINOR@
-#define IC_VERSION_PATCH    @iocod_VERSION_PATCH@
-
-/*******************************************************************************
- * platform variables
- ******************************************************************************/
-
-/* defined to 1 if the platform is 64-bit */
-#cmakedefine IC_CMAKE_PLATFORM_64BIT 1
-
-/* architecture string */
-#define IC_CMAKE_PLATFORM_ARCH "@iocod_ARCH@"
-
-/* operating system string */
-#define IC_CMAKE_PLATFORM_OS "@iocod_OS@"
-
-/* defined to 1 if the system is Linux */
-#cmakedefine IC_CMAKE_PLATFORM_LINUX 1
-
-/* defined to 1 if the system is MacOS */
-#cmakedefine IC_CMAKE_PLATFORM_MACOS 1
-
-/* defined to 1 if the system is Windows */
-#cmakedefine IC_CMAKE_PLATFORM_WINDOWS 1
-
-/* string containing 'msvc', 'mingw', 'gnu', 'clang', etc */
-#define IC_CMAKE_PLATFORM_COMPILER "@iocod_COMPILER@"
-
-/* defined to 1 if the system is building with MSVC */
-#cmakedefine IC_CMAKE_PLATFORM_MSVC 1
-
-/* defined to 1 if the system is building with MinGW */
-#cmakedefine IC_CMAKE_PLATFORM_MINGW 1
-
-/* defined to 1 if the system is building with GCC */
-#cmakedefine IC_CMAKE_PLATFORM_GCC 1
-
-/* defined to 1 if the system is building with Clang */
-#cmakedefine IC_CMAKE_PLATFORM_CLANG 1
-
-/* compiler version */
-#define IC_CMAKE_PLATFORM_COMPILER_VER "@iocod_COMPILER_VER@"
+#define IC_VERSION_MAJOR @iocod_VERSION_MAJOR@
+#define IC_VERSION_MINOR @iocod_VERSION_MINOR@
+#define IC_VERSION_PATCH @iocod_VERSION_PATCH@
 
 /*******************************************************************************
  * library/function variables

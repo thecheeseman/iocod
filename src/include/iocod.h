@@ -109,78 +109,7 @@ General useful macros / utils
 #define IC_CONCAT3(a, b, c)     IC_CONCAT3_EX(a, b, c)
 /** @} */
 
-/**
- * @defgroup version_macros Version Macros
- * @brief Macros for dealing with version data.
- * @{ 
- */
-
-/**
- * @def IC_VERSION_ENCODE
- * @brief Encode separate version numbers into one large number.
- */
-#define IC_VERSION_ENCODE(maj, min, rev) \
-    (((maj) * 1000000) + ((min) * 1000) + (rev))
-
-/**
- * @def IC_VERSION_DECODE_MAJOR
- * @brief Decode the major version from the full version value.
- */
-#define IC_VERSION_DECODE_MAJOR(version)        ((version) / 1000000)
-
-/**
- * @def IC_VERSION_DECODE_MINOR
- * @brief Decode the minor version from the full version value.
- */
-#define IC_VERSION_DECODE_MINOR(version)        ((version % 1000000) / 1000)
-
-/**
- * @def IC_VERSION_DECODE_REVISION
- * @brief Decode the revision number from the full version value.
- */
-#define IC_VERSION_DECODE_REVISION(version)     ((version) % 1000)
-
-/**
- * @def IC_VERSION_MAJOR
- * @brief Major version number. Automatically filled out by CMake.
- */
-#ifndef IC_VERSION_MAJOR
-#define IC_VERSION_MAJOR 0
-#endif
-
-/**
- * @def IC_VERSION_MINOR
- * @brief Minor version number. Automatically filled out by CMake.
- */
-#ifndef IC_VERSION_MINOR
-#define IC_VERSION_MINOR 0
-#endif
-
-/**
- * @def IC_VERSION_PATCH
- * @brief Patch version number. Automatically filled out by CMake.
- */
-#ifndef IC_VERSION_PATCH
-#define IC_VERSION_PATCH 0
-#endif
-
-/**
- * @def IC_VERSION
- * @brief The numeric representation of the version.
- */
-#define IC_VERSION \
-    IC_VERSION_ENCODE(IC_VERSION_MAJOR, IC_VERSION_MINOR, IC_VERSION_PATCH)
-
-/**
- * @def IC_VERSION_STRING
- * @brief Version string preprended with "v" and separated by ".".
- */
-#define IC_VERSION_STRING \
-    "v" IC_STRINGIFY(IC_VERSION_MAJOR) \
-    "." IC_STRINGIFY(IC_VERSION_MINOR) \
-    "." IC_STRINGIFY(IC_VERSION_PATCH)
-
-/** @} */
+#include "iocod/version.h"
 
 /*
 ================================================================================

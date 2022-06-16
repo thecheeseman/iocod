@@ -854,7 +854,7 @@ IC_DIAGNOSTIC_POP
  * @note On GNUC this has no effect.
  * @note On MSVC this is defined as `__declspec(dllimport)`.
  */
-#if defined _WIN32
+#if defined IC_PLATFORM_WINDOWS
 #define IC_PLATFORM_WINDOWS 1
 #define IC_PLATFORM_OS      "win"
 #define IC_PLATFORM_DLL     "dll"
@@ -868,7 +868,7 @@ IC_DIAGNOSTIC_POP
 #ifndef __BASE_FILE__
 #define __BASE_FILE__ __FILE__
 #endif
-#elif defined __linux__ || defined __APPLE__
+#elif defined IC_PLATFORM_LINUX || defined IC_PLATFORM_MACOS
 #define PATH_SEP    '/'
 
 #if IC_HAS_ATTRIBUTE(visibility) || \

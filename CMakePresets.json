@@ -47,9 +47,9 @@
             "inherits": "linux-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_32_BIT": {
+                "BUILD64": {
                     "type": "BOOL",
-                    "value": "true"
+                    "value": "false"
                 }
             }
         },
@@ -59,9 +59,9 @@
             "inherits": "linux-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "BUILD_32_BIT": {
+                "BUILD64": {
                     "type": "BOOL",
-                    "value": "true"
+                    "value": "false"
                 }
             }
         },
@@ -162,9 +162,9 @@
             },
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_32_BIT": {
+                "BUILD64": {
                     "type": "BOOL",
-                    "value": "true"
+                    "value": "false"
                 }
             }
         },
@@ -174,9 +174,9 @@
             "inherits": "win32-debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "BUILD_32_BIT": {
+                "BUILD64": {
                     "type": "BOOL",
-                    "value": "true"
+                    "value": "false"
                 }
             }
         }

@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+
 project(iocod_core LANGUAGES C)
 
 file(GLOB IC_CORE_SRCS "*.c")
@@ -16,10 +18,14 @@ foreach (subdir
     list(APPEND IC_CORE_SRCS ${sources})
 endforeach()
 
-include_directories("${CMAKE_SOURCE_DIR}/external/libconfuse/src")
-include_directories("./include")
+include_directories("${STAGED_INSTALL_PREFIX}/include")
+include_directories("../include")
 include_directories(${PROJECT_BINARY_DIR})
 
-add_library(iocod_core STATIC $<TARGET_OBJECTS:confuse> ${IC_CORE_SRCS})
+link_directories("${STAGED_INSTALL_PREFIX}/lib")
+
+message(STATUS "${CMAKE_INCLUDE_PATH}")
+
+add_library(iocod_core STATIC ${IC_CORE_SRCS})
 
 add_subdirectory("tests")
