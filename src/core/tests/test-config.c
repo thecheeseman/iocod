@@ -1,29 +1,47 @@
 #include "ic_test.h"
+#include <math.h>
 
-#define CFG_HEADER(x) { .name = "hdr", .type = CFG_HEADER, .default_str = x }
-#define CFG_COMMENT(x) { .name = "cmt", .type = CFG_COMMENT, .default_str = x }
-#define CFG_BLANK() { .name = "blk", .type = CFG_BLANK }
-#define CFG_BOOL(n, v) { .name = n, .type = CFG_BOOL, .default_str = #v }
-#define CFG_INT(n, v) { .name = n, .type = CFG_INT, .default_str = #v }
-#define CFG_FLOAT(n, v) { .name = n, .type = CFG_FLOAT, .default_str = #v }
-#define CFG_STR(n, v) { .name = n, .type = CFG_STRING, .default_str = v }
-#define CFG_END() { .name = "", .type = CFG_END }
+struct confopt opts[] = {
+    CONF_HEADER("test header"),
+    CONF_COMMENT("this is a test comment"),
+    CONF_BOOL("test_bool", on),
+    CONF_INT("int", 42),
+    CONF_FLOAT("pi", 3.14),
+    CONF_STR("str", "this is a string value"),
 
-struct configopt opts[] = {
-    CFG_HEADER("test header"),
-    CFG_COMMENT("this is a test comment"),
-    CFG_BOOL("test_bool", YES),
-    CFG_INT("int", 42),
-    CFG_FLOAT("pi", 3.14),
-    CFG_STR("str", "this is a string value"),
-
-    CFG_END()
+    CONF_END()
 };
 
 int TEST_MAIN()
 {
-    struct config *cfg = config_init("test.conf", opts);
+    struct conf *cfg = conf_init("test.conf", opts, 0);
 
-    config_shutdown();
+    // test getting values
+    bool test_bool = conf_get_bool(cfg, "test_bool");
+    IC_ASSERT(test_bool);
+
+    conf_int i = conf_get_int(cfg, "int");
+    IC_ASSERT(i == 42);
+
+    conf_float pi = conf_get_float(cfg, "pi");
+    IC_ASSERT(fabs(pi - 3.14) < 0.0001); // float comparisons
+
+    char *str = conf_get_string(cfg, "str");
+    IC_ASSERT(strcmp(str, "this is a string value") == 0);
+
+    // test setting values
+    IC_ASSERT(conf_set_bool(cfg, "test_bool", false));
+    IC_ASSERT(conf_get_bool(cfg, "test_bool") == false);
+
+    IC_ASSERT(conf_set_int(cfg, "int", 99));
+    IC_ASSERT(conf_get_int(cfg, "int") == 99);
+
+    IC_ASSERT(conf_set_float(cfg, "pi", 3.0));
+    IC_ASSERT(fabs(conf_get_float(cfg, "pi") - 3.0) < 0.00001);
+
+    IC_ASSERT(conf_set_string(cfg, "str", "another test string"));
+    IC_ASSERT(strcmp(conf_get_string(cfg, "str"), "another test string") == 0);
+
+    conf_shutdown(cfg);
     return 0;
 }

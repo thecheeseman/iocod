@@ -774,13 +774,7 @@ IC_DIAGNOSTIC_POP
  * @def IC_PLATFORM_ARCH
  * @brief A string containing the name of the architecture being compiled on. 
  *
- * Valid options are `i386` (linux/macos), `x86` (windows), `x86_64`, `arm32`, 
- * and `arm64`.
- * 
- * Currently these are defined to match the game dlls from the original game
- * for testing compatibility purposes, e.g. `game.mp.i386.so` and 
- *`game_mp_x86.dll`. In the future these should just be: `iocodgame-x64.so` or
- * `iocodgame-x64.dll`.
+ * Valid options are `x86`, `amd64`, `aarch32`, and `aarch64`.
  */
 #ifndef IC_PLATFORM_ARCH
 #if defined __i386__ || defined _M_IX86
@@ -801,7 +795,7 @@ IC_DIAGNOSTIC_POP
  * @brief String containing the name of the operating system we were 
  * compiled on.
  * 
- * Valid options are `win`, `linux`, `macos`, or `unsupported`.
+ * Valid options are `windows`, `linux`, `macos`, or `unsupported`.
  */
 
 /**
@@ -810,6 +804,13 @@ IC_DIAGNOSTIC_POP
  * on the system.
  * 
  * Valid options are `dll` for Windows, `so` for Linux, and `dylib` for MacOS.
+ */
+
+/**
+ * @def IC_PLATFORM_EXE
+ * @brief String containing the extension of the executables on the system.
+ *
+ * Valid options are `exe` for Windows and blank for every othersystem.
  */
 
 /**
@@ -921,13 +922,23 @@ IC_DIAGNOSTIC_POP
 
 #ifdef IC_PLATFORM_ARCH
 #undef IC_PLATFORM_ARCH
-#define IC_PLATFORM_ARCH "doxygen"
 #endif
+#define IC_PLATFORM_ARCH "doxygen"
 
 #ifdef IC_PLATFORM_OS
 #undef IC_PLATFORM_OS
-#define IC_PLATFORM_OS "doxygen"
 #endif
+#define IC_PLATFORM_OS "doxygen"
+
+#ifdef IC_PLATFORM_EXE
+#undef IC_PLATFORM_EXE
+#endif
+#define IC_PLATFORM_EXE ".doxygen"
+
+#ifdef IC_PLATFORM_DLL
+#undef IC_PLATFORM_DLL
+#endif
+#define IC_PLATFORM_DLL ".doxygen"
 
 #define IC_GNUC_VERSION 0
 #define IC_GCC_VERSION  0

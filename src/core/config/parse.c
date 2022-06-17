@@ -1,9 +1,9 @@
 #include "conf_local.h"
 
-static bool end_of_script(struct config *cfg, bool crossline)
+static bool end_of_script(struct conf *cfg, bool crossline)
 {
     if (!crossline) {
-        conf_set_error(CFG_ERR_INCOMPLETE, cfg->script_line);
+        conf_set_error(CONF_ERR_INCOMPLETE, cfg->script_line);
         return false;
     }
 
@@ -12,7 +12,7 @@ static bool end_of_script(struct config *cfg, bool crossline)
     return false;
 }
 
-static bool get_token(struct config *cfg, bool crossline)
+static bool get_token(struct conf *cfg, bool crossline)
 {
     if (cfg->script_p >= cfg->end_p)
         return end_of_script(cfg, crossline);
@@ -24,7 +24,7 @@ skipspace:
 
         if (*cfg->script_p++ == '\n') {
             if (!crossline) {
-                conf_set_error(CFG_ERR_INCOMPLETE, cfg->script_line);
+                conf_set_error(CONF_ERR_INCOMPLETE, cfg->script_line);
                 return false;
             }
 
@@ -40,7 +40,7 @@ skipspace:
         *cfg->script_p == '#' ||
         (cfg->script_p[0] == '/' && cfg->script_p[1] == '/')) {
         if (!crossline) {
-            conf_set_error(CFG_ERR_INCOMPLETE, cfg->script_line);
+            conf_set_error(CONF_ERR_INCOMPLETE, cfg->script_line);
             return false;
         }
 
@@ -64,7 +64,7 @@ skipspace:
                 break;
 
             if (token_p == &cfg->token[MAX_CONFIG_TOKEN]) {
-                conf_set_error(CFG_ERR_TOKEN_TOO_LARGE, cfg->script_line);
+                conf_set_error(CONF_ERR_TOKEN_TOO_LARGE, cfg->script_line);
                 return false;
             }
         }
@@ -78,7 +78,7 @@ skipspace:
                 break;
 
             if (token_p == &cfg->token[MAX_CONFIG_TOKEN]) {
-                conf_set_error(CFG_ERR_TOKEN_TOO_LARGE, cfg->script_line);
+                conf_set_error(CONF_ERR_TOKEN_TOO_LARGE, cfg->script_line);
                 return false;
             }
         }
@@ -89,7 +89,7 @@ skipspace:
     return true;
 }
 
-bool conf_parse(struct config *cfg)
+bool conf_parse(struct conf *cfg)
 {
     while (!cfg->end) {
         // out of tokens
@@ -100,11 +100,11 @@ bool conf_parse(struct config *cfg)
         strncpyz(optname, cfg->token, sizeof(optname));
 
         bool valid = false;
-        struct configopt *opt;
-        for (opt = cfg->options; opt->type != CFG_END; opt++) {
+        struct confopt *opt;
+        for (opt = cfg->options; opt->type != CONF_END; opt++) {
             // skip blanks, comments, headers
-            if (opt->type == CFG_BLANK || opt->type == CFG_HEADER ||
-                opt->type == CFG_COMMENT) {
+            if (opt->type == CONF_BLANK || opt->type == CONF_HEADER ||
+                opt->type == CONF_COMMENT) {
                 continue;
             }
 
@@ -116,36 +116,39 @@ bool conf_parse(struct config *cfg)
         }
 
         if (!get_token(cfg, false)) {
-            conf_set_error(CFG_ERR_EXPECTED_TOKEN, optname);
+            conf_set_error(CONF_ERR_EXPECTED_TOKEN, optname);
             return false; // stop parsing
         }
 
         // copy data
-        char *str;
         switch (opt->type) {
-        case CFG_BOOL:
+        case CONF_BOOL:
             if (strcasecmp(cfg->token, "yes") == 0 ||
-                strcasecmp(cfg->token, "true") == 0) {
+                strcasecmp(cfg->token, "true") == 0 ||
+                strcasecmp(cfg->token, "on") == 0) {
                 opt->value.i = 1;
             } else if (strcasecmp(cfg->token, "no") == 0 ||
-                       strcasecmp(cfg->token, "false") == 0) {
+                       strcasecmp(cfg->token, "false") == 0 ||
+                       strcasecmp(cfg->token, "off") == 0) {
                 opt->value.i = 0;
             } else {
-                conf_set_error(CFG_ERR_UNKNOWN_BOOLEAN, cfg->token);
+                conf_set_error(CONF_ERR_UNKNOWN_BOOLEAN, cfg->token);
                 return false;
             }
             break;
-        case CFG_INT:
-            opt->value.i = strtol(cfg->token, NULL, 10);
+        case CONF_INT:
+            opt->value.i = (conf_int) strtol(cfg->token, NULL, 10);
             break;
-        case CFG_FLOAT:
-            opt->value.f = strtod(cfg->token, NULL);
+        case CONF_FLOAT:
+            opt->value.f = (conf_float) strtod(cfg->token, NULL);
             break;
-        case CFG_STRING:
-        case CFG_HEADER:
-        case CFG_COMMENT:
-            str = strdup(cfg->token);
-            opt->value.s = str;
+        case CONF_STRING:
+        case CONF_HEADER:
+        case CONF_COMMENT:
+            if (opt->value.s != NULL)
+                ic_free(opt->value.s);
+
+            opt->value.s = strdup(cfg->token);
             break;
         }
     }

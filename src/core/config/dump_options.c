@@ -12,32 +12,39 @@ static const char *opttypestr[] = {
     "CFG_END"
 };
 
-void conf_dump_options(struct config *cfg)
+IC_PUBLIC
+void conf_dump_options(struct conf *cfg)
 {
-    for (struct configopt *opt = cfg->options; opt->type != CFG_END; opt++) {
+    char *comment = "#";
+    if (cfg->comment_style == CONF_COMMENTSTYLE_CXX)
+        comment = "//";
+    else if (cfg->comment_style == CONF_COMMENTSTYLE_INF)
+        comment = ";";
+
+    for (struct confopt *opt = cfg->options; opt->type != CONF_END; opt++) {
         printf("%-32s %-16s ", opt->name,
-               opt->type <= CFG_END ? opttypestr[opt->type] : "BAD TYPE");
+               opt->type <= CONF_END ? opttypestr[opt->type] : "BAD TYPE");
 
         switch (opt->type) {
-        case CFG_BLANK:
+        case CONF_BLANK:
             break;
-        case CFG_BOOL:
+        case CONF_BOOL:
             if (opt->value.i)
                 printf("true");
             else
                 printf("false");
             break;
-        case CFG_INT:
+        case CONF_INT:
             printf("%d", opt->value.i);
             break;
-        case CFG_FLOAT:
+        case CONF_FLOAT:
             printf("%f", opt->value.f);
             break;
-        case CFG_STRING:
+        case CONF_STRING:
             printf("\"%s\"", opt->value.s);
             break;
-        case CFG_COMMENT:
-            printf("// %s", opt->value.s);
+        case CONF_COMMENT:
+            printf("%s %s", comment, opt->value.s);
             break;
         }
 

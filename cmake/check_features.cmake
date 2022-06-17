@@ -80,6 +80,7 @@ macro(check_features)
     set(IC_PLATFORM_MSVC FALSE CACHE BOOL "MSVC build")
     set(IC_PLATFORM_GCC FALSE CACHE BOOL "GCC build")
     set(IC_PLATFORM_CLANG FALSE CACHE BOOL "Clang build")
+    set(IC_PLATFORM_MINGW FALSE CACHE BOOL "MinGW build")
 
     if (${IC_PLATFORM_COMPILER} STREQUAL "msvc")
         set(IC_PLATFORM_MSVC TRUE)
@@ -87,6 +88,8 @@ macro(check_features)
         set(IC_PLATFORM_GCC TRUE)
     elseif (${IC_PLATFORM_COMPILER} STREQUAL "clang")
         set(IC_PLATFORM_CLANG TRUE)
+    elseif (${IC_PLATFORM_COMPILER} STREQUAL "mingw")
+        set(IC_PLATFORM_MINGW TRUE)
     endif()
 
     # compiler options for 32-bit

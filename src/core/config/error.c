@@ -1,7 +1,7 @@
 #include <errno.h>
 #include "conf_local.h"
 
-static int conferrno = CFG_ERR_OK;
+static int conferrno = CONF_ERR_OK;
 
 static char *errstrs[] = {
     "OK",

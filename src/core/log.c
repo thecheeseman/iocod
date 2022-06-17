@@ -104,7 +104,7 @@ struct logger {
     struct timeval now;     /**< current time */
 };
 
-static struct logger log = {
+static struct logger iclog = {
     .name = "iocod",
     .path = "iocod.log",
     .level = LOG_LEVEL_INFO,
@@ -152,6 +152,7 @@ static const char *stdout_prefix[] = {
 };
 
 /* color prefixes */
+
 static const char *color_prefix[] = {
     [LOG_LEVEL_NONE] = "",
     [LOG_LEVEL_FATAL] = LOG_COLOR_FATAL,
@@ -218,7 +219,7 @@ static int gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     const UINT64 epochFileTime = 116444736000000000ULL;
     FILETIME ft;
-    ULARGE_INTEGER li;
+    ULARGE_INTEGER li = { 0 };
     UINT64 t;
 
     if (tv == NULL)
@@ -266,19 +267,19 @@ void log_init(void)
     }
     #endif
 
-    log.fp = fopen(log.path, "ab");
-    if (log.fp == NULL) {
+    iclog.fp = fopen(iclog.path, "ab");
+    if (iclog.fp == NULL) {
         ic_error(_("Couldn't open logfile '%1$s': %2$s\n"), 
-                 log.path, strerror(errno));
+                 iclog.path, strerror(errno));
         return;
     }
 
     /* get current file size */
-    long pos = ftell(log.fp);
-    fseek(log.fp, 0, SEEK_END);
-    size_t end = ftell(log.fp);
-    fseek(log.fp, pos, SEEK_SET);
-    log.size = end;
+    long pos = ftell(iclog.fp);
+    fseek(iclog.fp, 0, SEEK_END);
+    size_t end = ftell(iclog.fp);
+    fseek(iclog.fp, pos, SEEK_SET);
+    iclog.size = end;
 
     /* TODO: file splitting once file gets too large? */
 
@@ -295,8 +296,8 @@ void log_shutdown(void)
     log_debug(_("Log file closed\n"));
     log_banner();
 
-    fclose(log.fp);
-    log.fp = NULL;
+    fclose(iclog.fp);
+    iclog.fp = NULL;
 
     #ifdef IC_PLATFORM_WINDOWS
     DeleteCriticalSection(&log_mutex);
@@ -311,13 +312,13 @@ void log_shutdown(void)
 IC_PUBLIC
 void log_clear(void)
 {
-    if (log.fp == NULL)
+    if (iclog.fp == NULL)
         return;
 
-    log.fp = freopen(log.path, "wb", log.fp);
-    if (log.fp == NULL) {
+    iclog.fp = freopen(iclog.path, "wb", iclog.fp);
+    if (iclog.fp == NULL) {
         ic_error(_("Couldn't open logfile '%1$s': %2$s\n"), 
-                 log.path, strerror(errno));
+                 iclog.path, strerror(errno));
         return;
     }
 
@@ -331,13 +332,13 @@ void log_clear(void)
 IC_PUBLIC
 void log_banner(void)
 {
-    bool oldstdout = log.echo_stdout;
-    log.echo_stdout = false;
+    bool oldstdout = iclog.echo_stdout;
+    iclog.echo_stdout = false;
 
-    log.hide_next_source = true;
+    iclog.hide_next_source = true;
     log_print("--------------------------------------------------------------------------------");
 
-    log.echo_stdout = oldstdout;
+    iclog.echo_stdout = oldstdout;
 }
 
 /*
@@ -348,11 +349,11 @@ void log_set_level(enum log_level new_level)
 {
     IC_ASSERT((new_level >= LOG_LEVEL_NONE) && (new_level <= LOG_LEVEL_ALL));
 
-    if (log.level != new_level) {
+    if (iclog.level != new_level) {
         log_debug(_("Log level changed from '%1$s' to '%2$s'\n"),
-                  level_str[log.level], level_str[new_level]);
+                  level_str[iclog.level], level_str[new_level]);
 
-        log.level = new_level;
+        iclog.level = new_level;
     }
 }
 
@@ -364,11 +365,11 @@ void log_echo_stdout(bool echo)
 {
     IC_ASSERT((echo == true) || (echo == false));
 
-    if (log.echo_stdout != echo) {
+    if (iclog.echo_stdout != echo) {
         log_debug(_("log option 'echo_stdout' changed to '%s'\n"),
                   echo ? _("true") : _("false"));
 
-        log.echo_stdout = echo;
+        iclog.echo_stdout = echo;
     }
 }
 
@@ -380,11 +381,11 @@ void log_auto_lf(bool lf)
 {
     IC_ASSERT((lf == true) || (lf == false));
 
-    if (log.auto_lf != lf) {
+    if (iclog.auto_lf != lf) {
         log_debug(_("log option 'auto_lf' changed to '%s'\n"),
                   lf ? _("true") : _("false"));
 
-        log.auto_lf = lf;
+        iclog.auto_lf = lf;
     }
 }
 
@@ -396,8 +397,8 @@ void log_enable_color(bool color)
 {
     IC_ASSERT((color == true) || (color == false));
 
-    if (log.enable_color != color) {
-        log.enable_color = color;
+    if (iclog.enable_color != color) {
+        iclog.enable_color = color;
 
         log_debug(_("log option 'enable_color' changed to '%s'\n"),
                   color ? _("true") : _("false"));
@@ -414,17 +415,17 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
 {
     IC_ASSERT((level >= LOG_LEVEL_NONE) && (level <= LOG_LEVEL_ALL));
 
-    if (log.fp == NULL)
+    if (iclog.fp == NULL)
         return 0;
 
     /* ignore message if it's not a high enough priority */
-    if (level != LOG_LEVEL_ALL && level > log.level)
+    if (level != LOG_LEVEL_ALL && level > iclog.level)
         return 0;
 
-    gettimeofday(&log.now, NULL);
+    gettimeofday(&iclog.now, NULL);
 
     char timestamp[LOG_MAX_TIMESTAMP];
-    get_timestamp(&log.now, timestamp, sizeof(timestamp));
+    get_timestamp(&iclog.now, timestamp, sizeof(timestamp));
 
     long threadid = current_thread_id();
 
@@ -438,15 +439,15 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
     size_t size;
     size_t printed = 0;
 
-    if (!log.hide_next_source) {
-        if ((size = fprintf(log.fp, "%s %s %ld %s:%s:%d: ",
+    if (!iclog.hide_next_source) {
+        if ((size = fprintf(iclog.fp, "%s %s %ld %s:%s:%d: ",
                             log_prefix[level], timestamp, threadid, file,
                             func, line)) > 0) {
-            log.size += size;
+            iclog.size += size;
             printed += size;
         }
     } else {
-        log.hide_next_source = false;
+        iclog.hide_next_source = false;
     }
 
     /* handle message */
@@ -456,32 +457,32 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
 
-    if ((size = fprintf(log.fp, "%s", msg)) > 0) {
-        log.size += size;
+    if ((size = fprintf(iclog.fp, "%s", msg)) > 0) {
+        iclog.size += size;
         printed += size;
     }
 
     /* auto lf */
-    if (msg[size - 1] != '\n' && log.auto_lf) {
-        if ((size = fprintf(log.fp, "\n")) > 0) {
-            log.size += size;
+    if (msg[size - 1] != '\n' && iclog.auto_lf) {
+        if ((size = fprintf(iclog.fp, "\n")) > 0) {
+            iclog.size += size;
             printed += size;
         }
     }
 
-    fflush(log.fp);
+    fflush(iclog.fp);
 
     /* echo to stdout */
-    if (log.echo_stdout) {
-        if (log.enable_color)
+    if (iclog.echo_stdout) {
+        if (iclog.enable_color)
             fprintf(stdout, "%s%s", CSI_START, color_prefix[level]);
 
         fprintf(stdout, "%s%s", stdout_prefix[level], msg);
 
-        if (log.enable_color)
+        if (iclog.enable_color)
             fprintf(stdout, "%s", CSI_END);
 
-        if (msg[size - 1] != '\n' && log.auto_lf)
+        if (msg[size - 1] != '\n' && iclog.auto_lf)
             fprintf(stdout, "\n");
 
         fflush(stdout);

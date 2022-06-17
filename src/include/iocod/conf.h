@@ -26,57 +26,379 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 /**
- * @brief Types of config options.
+ * @defgroup conf Config
+ * @brief Config module for handling configuration files. Can be used by
+ * any internal system, or the module system.
+ * 
+ * Example usage:
+ * @code
+ * struct conf *cfg;
+ * struct confopt opts[] = {
+ *      // options go here
+ *      CONF_HEADER("Section header"),
+ *      CONF_COMMENT("This variable will control whether something happens"),
+ *      CONF_BOOL("variable", off),
+ * 
+ *      CONF_HEADER("Another section"),
+ *      CONF_INT("some_value", 42),
+ *      CONF_STRING("name", "billy bob"),
+ * 
+ *      // Structure must _always_ end with this
+ *      CONF_END()
+ * };
+ * 
+ * void conf_example(void)
+ * {
+ *      cfg = conf_init("test.conf", opts, 0);
+ *      
+ *      // do something with the config
+ *      if (!conf_get_bool("variable"))
+ *          // ...
+ * 
+ *      // shutdown
+ *      conf_shutdown(cfg);
+ * }
+ * @endcode
+ * @{
+ */
+
+#define CONF_COMMENTSTYLE_BASH 0
+#define CONF_COMMENTSTYLE_CXX  1
+#define CONF_COMMENTSTYLE_INF  2
+
+typedef long conf_int;
+typedef double conf_float;
+
+/**
+ * @brief Config key/value pair types.
 */
-enum configopt_type {
-    CFG_NONE,
-    CFG_BLANK,
-    CFG_HEADER,
-    CFG_COMMENT,
-    CFG_BOOL,
-    CFG_INT,
-    CFG_FLOAT,
-    CFG_STRING,
-    CFG_END
+enum confopt_type {
+    /**
+     * @brief Blank (default) key/value type. Does nothing.
+    */
+    CONF_BLANK,
+
+    /**
+     * @brief Basic comment line in config. Can be prefixed with '#', '//' or
+     * ';', depending on the config comment style setting.
+    */
+    CONF_COMMENT,
+
+    /**
+     * @brief Header sections.
+     *
+     * @code
+     * // config entry 
+     * CONF_HEADER("This is a header"),
+     * 
+     * // will output this into the conf file:
+     * #
+     * # This is a header
+     * #
+     * @endcode
+    */
+    CONF_HEADER,
+
+    /**
+     * @brief Boolean value.
+     * 
+     * Valid options for booleans are `yes`, `no`, `on`, `off`, `true`, 
+     * and `false`.
+    */
+    CONF_BOOL,
+
+    /**
+     * @brief Integer value.
+    */
+    CONF_INT,
+
+    /**
+     * @brief Floating point value.
+    */
+    CONF_FLOAT,
+
+    /**
+     * @brief String value.
+    */
+    CONF_STRING,
+
+    /**
+     * @brief Used to mark the end of a config structure. Every config 
+     * must end with this.
+     * 
+     * Example:
+     * @code
+     * struct confopt opts[] = {
+     *      CONF_HEADER("Some header"),
+     *      CONF_BOOL("setting", yes),
+     *      CONF_INT("another_setting", 10)
+     *      CONF_END()
+     * };
+     * @endcode
+    */
+    CONF_END
 };
 
-struct configopt {
+/**
+ * @brief Config key/value pair options.
+*/
+struct confopt {
+    /**
+     * @brief Name of option.
+    */
     const char *name;
-    enum configopt_type type;
 
+    /**
+     * @brief Option type.
+    */
+    enum confopt_type type;
+
+    /**
+     * @brief Default string.
+    */
     char *default_str;
+
+    /**
+     * @brief Current value, determined by @ref confopt.type
+    */
     union value {
-        long i;
-        double f;
+        conf_int i;
+        conf_float f;
         char *s;
     } value;
 };
 
+/**
+ * @def CONF_HEADER
+ * @brief Insert header @p x into the config structure.
+ */
+#define CONF_HEADER(x)   { .name = "hdr", .type = CONF_HEADER, .default_str = x }
+
+/**
+ * @def CONF_COMMENT
+ * @brief Insert comment @p x into the config structure.
+ */
+#define CONF_COMMENT(x)  { .name = "cmt", .type = CONF_COMMENT, .default_str = x }
+
+/**
+ * @def CONF_BLANK
+ * @brief Insert a blank line into the config structure.
+ */
+#define CONF_BLANK()     { .name = "blk", .type = CONF_BLANK }
+
+/**
+ * @def CONF_BOOL
+ * @brief Insert boolean @p n with default value @p v into the config structure.
+ * 
+ * Valid options for booleans are `yes`, `no`, `on`, `off`, `true`, and `false`.
+ * Automatically converts boolean values to strings (required internally), so 
+ * correct usage looks like this:
+ * 
+ * @code
+ * // ...
+ * CONF_BOOL("some_setting", true),
+ * CONF_BOOL("other_setting", yes),
+ * // etc ...
+ * @endcode
+ */
+#define CONF_BOOL(n, v)  { .name = n, .type = CONF_BOOL, .default_str = #v }
+
+/**
+ * @def CONF_INT
+ * @brief Insert integer @p n with default value @p v into the config structure.
+ */
+#define CONF_INT(n, v)   { .name = n, .type = CONF_INT, .default_str = #v }
+
+/**
+ * @def CONF_FLOAT
+ * @brief Insert float @p n with default value @p v into the config structure.
+ */
+#define CONF_FLOAT(n, v) { .name = n, .type = CONF_FLOAT, .default_str = #v }
+
+/**
+ * @def CONF_STRING
+ * @brief Insert string @p n with default value @p v into the config structure.
+ */
+#define CONF_STR(n, v)   { .name = n, .type = CONF_STRING, .default_str = v }
+
+/**
+ * @def CONF_END
+ * @brief End of config structure. 
+ * @warning This is a required element and must be the last element of your
+ * config structure array.
+ * 
+ * Example:
+ * @code
+ * struct confopt opts[] = {
+ *      CONF_HEADER("Some header"),
+ *      CONF_BOOL("setting", yes),
+ *      CONF_INT("another_setting", 10)
+ *      CONF_END()
+ * };
+ * @endcode
+ */
+#define CONF_END()       { .name = "", .type = CONF_END }
+
 #define MAX_CONFIG_TOKEN 1024
 
-struct config {
+/**
+ * @brief Config.
+*/
+struct conf {
+    /**
+     * @brief Filename.
+    */
     const char *filename;
+
+    /**
+     * @brief Size of file.
+    */
     size_t size;
 
+    /**
+     * @brief Comment style. 0 = bash (#), 1 = CXX (//), 2 = inf (;)
+    */
+    int comment_style;
+
+    /**
+     * @brief Config key/value pairs.
+    */
+    struct confopt *options;
+
+    // internal stuff that doesn't need documenting
     char *buffer;
     char *script_p;
     char *end_p;
-
     int line;
     int script_line;
-
     bool end;
-
     char token[MAX_CONFIG_TOKEN];
-
-    struct configopt *options;
+    // internal stuff that doesn't need documenting
 };
 
+/**
+ * @brief Initialize a config file.
+ * 
+ * @param[in] filename name of config file
+ * @param[in] kv       pointer to config key/value pairs
+ * @param[in] options  any options to set for the config
+ * @return NULL on failure, otherwise pointer to new config
+*/
 IC_PUBLIC
-struct config *config_init(const char *filename, struct configopt *options);
+struct conf *conf_init(const char *filename, struct confopt *kv, int options);
 
+/**
+ * @brief Shutdown config file. Automatically frees any dynamically allocated
+ * memory associated with config.
+ * 
+ * @param[in] cfg config file to shutdown
+ * @return true if success, false if failure
+ */
 IC_PUBLIC
-void config_shutdown(void);
+bool conf_shutdown(struct conf *cfg);
+
+/**
+ * @brief Dump all loaded config opts/values to stdout.
+ * 
+ * @param[in] cfg config file to dump
+*/
+IC_PUBLIC
+void conf_dump_options(struct conf *cfg);
+
+/**
+ * @brief Get a config key/value pair.
+ * 
+ * @param[in] cfg  config to check
+ * @param[in] name name of key/value pair
+ * @return NULL if not found, pointer to key/value pair otherwise
+*/
+IC_PUBLIC
+struct confopt *conf_get_opt(struct conf *cfg, const char *name);
+
+/**
+ * @brief Get a config boolean.
+ * 
+ * @param[in] cfg  config to check
+ * @param[in] name name of key to get
+ * @return value of key (if exists), otherwise default value for type
+*/
+IC_PUBLIC
+bool conf_get_bool(struct conf *cfg, const char *name);
+
+/**
+ * @brief Get a config integer.
+ *
+ * @param[in] cfg  config to check
+ * @param[in] name name of key to get
+ * @return value of key (if exists), otherwise default value for type
+*/
+IC_PUBLIC
+conf_int conf_get_int(struct conf *cfg, const char *name);
+
+/**
+ * @brief Get a config float.
+ *
+ * @param[in] cfg  config to check
+ * @param[in] name name of key to get
+ * @return value of key (if exists), otherwise default value for type
+*/
+IC_PUBLIC
+conf_float conf_get_float(struct conf *cfg, const char *name);
+
+/**
+ * @brief Get a config string.
+ *
+ * @param[in] cfg  config to check
+ * @param[in] name name of key to get
+ * @return value of key (if exists), otherwise default value for type
+*/
+IC_PUBLIC
+char *conf_get_string(struct conf *cfg, const char *name);
+
+/**
+ * @brief Set a config boolean.
+ *
+ * @param[in] cfg   config to check
+ * @param[in] name  name of key to get
+ * @param[in] value value to set
+ * @return true if success, false otherwise
+*/
+IC_PUBLIC
+bool conf_set_bool(struct conf *cfg, const char *name, bool value);
+
+/**
+ * @brief Set a config integer.
+ *
+ * @param[in] cfg   config to check
+ * @param[in] name  name of key to get
+ * @param[in] value value to set
+ * @return true if success, false otherwise
+*/
+IC_PUBLIC
+bool conf_set_int(struct conf *cfg, const char *name, conf_int value);
+
+/**
+ * @brief Set a config float.
+ *
+ * @param[in] cfg   config to check
+ * @param[in] name  name of key to get
+ * @param[in] value value to set
+ * @return true if success, false otherwise
+*/
+IC_PUBLIC
+bool conf_set_float(struct conf *cfg, const char *name, conf_float value);
+
+/**
+ * @brief Set a config string. Will automatically deallocate old string
+ * and allocate new one.
+ *
+ * @param[in] cfg   config to check
+ * @param[in] name  name of key to get
+ * @param[in] value value to set
+ * @return true if success, false otherwise
+*/
+IC_PUBLIC
+bool conf_set_string(struct conf *cfg, const char *name, char *value);
 
 /** @} */
 
