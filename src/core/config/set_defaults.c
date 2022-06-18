@@ -26,6 +26,7 @@ bool conf_set_defaults(struct conf *cfg)
             break;
         case CONF_STRING:
         case CONF_HEADER:
+        case CONF_SECTION:
         case CONF_COMMENT:
             opt->value.s = strdup(opt->default_str);
             break;

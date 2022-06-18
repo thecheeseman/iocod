@@ -35,10 +35,8 @@ skipspace:
     if (cfg->script_p >= cfg->end_p)
         return end_of_script(cfg, crossline);
 
-    // handle ; # // comments
-    if (*cfg->script_p == ';' ||
-        *cfg->script_p == '#' ||
-        (cfg->script_p[0] == '/' && cfg->script_p[1] == '/')) {
+    // handle # comments
+    if (*cfg->script_p == '#') {
         if (!crossline) {
             conf_set_error(CONF_ERR_INCOMPLETE, cfg->script_line);
             return false;

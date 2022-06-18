@@ -19,12 +19,6 @@ struct conf *conf_init(const char *filename, struct confopt *kv, int options)
     cfg->filename = strdup(filename);
     cfg->options = kv;
 
-    cfg->comment_style = CONF_COMMENTSTYLE_BASH;
-    if (options & CONF_COMMENTSTYLE_CXX)
-        cfg->comment_style = CONF_COMMENTSTYLE_CXX;
-    else if (options & CONF_COMMENTSTYLE_INF)
-        cfg->comment_style = CONF_COMMENTSTYLE_INF;
-
     if (!conf_set_defaults(cfg) || 
         !conf_write_defaults(cfg) ||
         !conf_load(cfg) || 

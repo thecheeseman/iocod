@@ -1,6 +1,21 @@
 #include <sys/stat.h>
 #include "conf_local.h"
 
+static void print_header(FILE *fp, char *header)
+{
+    size_t len = strnlen(header, 76) + 4;
+
+    for (int i = 0; i < len; i++)
+        fwrite("#", 1, 1, fp);
+
+    fprintf(fp, "\n# %s #\n", header);
+
+    for (int i = 0; i < len; i++)
+        fwrite("#", 1, 1, fp);
+
+    fwrite("\n", 1, 1, fp);
+}
+
 bool conf_write_defaults(struct conf *cfg)
 {
     struct stat st;
@@ -13,23 +28,18 @@ bool conf_write_defaults(struct conf *cfg)
         return false;
     }
 
-    char *comment = "#";
-    if (cfg->comment_style == CONF_COMMENTSTYLE_CXX)
-        comment = "//";
-    else if (cfg->comment_style == CONF_COMMENTSTYLE_INF)
-        comment = ";";
-
     for (struct confopt *opt = cfg->options; opt->type != CONF_END; opt++) {
         switch (opt->type) {
         case CONF_BLANK:
             break;
         case CONF_HEADER:
-            fprintf(fp, "%s\n", comment);
-            fprintf(fp, "%s %s\n", comment, opt->value.s);
-            fprintf(fp, "%s\n", comment);
+            print_header(fp, opt->value.s);
+            break;
+        case CONF_SECTION:
+            fprintf(fp, "#\n# %s\n#", opt->value.s);
             break;
         case CONF_COMMENT:
-            fprintf(fp, "%s %s", comment, opt->value.s);
+            fprintf(fp, "# %s", opt->value.s);
             break;
         case CONF_BOOL:
             fprintf(fp, "%s %s", opt->name, opt->default_str);

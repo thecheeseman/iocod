@@ -7,7 +7,7 @@ struct confopt opts[] = {
     CONF_BOOL("test_bool", on),
     CONF_INT("int", 42),
     CONF_FLOAT("pi", 3.14),
-    CONF_STR("str", "this is a string value"),
+    CONF_STRING("str", "this is a string value"),
 
     CONF_END()
 };

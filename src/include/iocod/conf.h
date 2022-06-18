@@ -62,10 +62,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @{
  */
 
-#define CONF_COMMENTSTYLE_BASH 0
-#define CONF_COMMENTSTYLE_CXX  1
-#define CONF_COMMENTSTYLE_INF  2
-
 typedef long conf_int;
 typedef double conf_float;
 
@@ -85,19 +81,34 @@ enum confopt_type {
     CONF_COMMENT,
 
     /**
-     * @brief Header sections.
+     * @brief Headers. Try to keep <76 chars.
      *
      * @code
      * // config entry 
      * CONF_HEADER("This is a header"),
      * 
      * // will output this into the conf file:
-     * #
-     * # This is a header
-     * #
+     * ####################
+     * # This is a header #
+     * ####################
      * @endcode
     */
     CONF_HEADER,
+
+     /**
+     * @brief Sections.
+     *
+     * @code
+     * // config entry
+     * CONF_SECTION("This is a section"),
+     *
+     * // will output this into the conf file:
+     * #
+     * # This is a section
+     * #
+     * @endcode
+    */
+    CONF_SECTION,
 
     /**
      * @brief Boolean value.
@@ -172,19 +183,25 @@ struct confopt {
  * @def CONF_HEADER
  * @brief Insert header @p x into the config structure.
  */
-#define CONF_HEADER(x)   { .name = "hdr", .type = CONF_HEADER, .default_str = x }
+#define CONF_HEADER(x) { .name = "hdr", .type = CONF_HEADER, .default_str = x }
+
+/**
+ * @def CONF_SECTION
+ * @brief Insert section @p x into the config structure.
+ */
+#define CONF_SECTION(x) { .name = "sec", .type = CONF_SECTION, .default_str = x }
 
 /**
  * @def CONF_COMMENT
  * @brief Insert comment @p x into the config structure.
  */
-#define CONF_COMMENT(x)  { .name = "cmt", .type = CONF_COMMENT, .default_str = x }
+#define CONF_COMMENT(x) { .name = "cmt", .type = CONF_COMMENT, .default_str = x }
 
 /**
  * @def CONF_BLANK
  * @brief Insert a blank line into the config structure.
  */
-#define CONF_BLANK()     { .name = "blk", .type = CONF_BLANK }
+#define CONF_BLANK() { .name = "blk", .type = CONF_BLANK }
 
 /**
  * @def CONF_BOOL
@@ -201,13 +218,13 @@ struct confopt {
  * // etc ...
  * @endcode
  */
-#define CONF_BOOL(n, v)  { .name = n, .type = CONF_BOOL, .default_str = #v }
+#define CONF_BOOL(n, v) { .name = n, .type = CONF_BOOL, .default_str = #v }
 
 /**
  * @def CONF_INT
  * @brief Insert integer @p n with default value @p v into the config structure.
  */
-#define CONF_INT(n, v)   { .name = n, .type = CONF_INT, .default_str = #v }
+#define CONF_INT(n, v) { .name = n, .type = CONF_INT, .default_str = #v }
 
 /**
  * @def CONF_FLOAT
@@ -219,7 +236,7 @@ struct confopt {
  * @def CONF_STRING
  * @brief Insert string @p n with default value @p v into the config structure.
  */
-#define CONF_STR(n, v)   { .name = n, .type = CONF_STRING, .default_str = v }
+#define CONF_STRING(n, v) { .name = n, .type = CONF_STRING, .default_str = v }
 
 /**
  * @def CONF_END
@@ -248,17 +265,12 @@ struct conf {
     /**
      * @brief Filename.
     */
-    const char *filename;
+    char *filename;
 
     /**
      * @brief Size of file.
     */
     size_t size;
-
-    /**
-     * @brief Comment style. 0 = bash (#), 1 = CXX (//), 2 = inf (;)
-    */
-    int comment_style;
 
     /**
      * @brief Config key/value pairs.

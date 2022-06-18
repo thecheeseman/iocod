@@ -1,53 +1,61 @@
 #include "conf_local.h"
 
 static const char *opttypestr[] = {
-    "CFG_NONE",
-    "CFG_BLANK",
-    "CFG_HEADER",
-    "CFG_COMMENT",
-    "CFG_BOOL",
-    "CFG_INT",
-    "CFG_FLOAT",
-    "CFG_STRING",
-    "CFG_END"
+    "",
+    "comment",
+    "header",
+    "section",
+    "boolean",
+    "integer",
+    "float",
+    "string",
+    ""
 };
 
 IC_PUBLIC
 void conf_dump_options(struct conf *cfg)
 {
-    char *comment = "#";
-    if (cfg->comment_style == CONF_COMMENTSTYLE_CXX)
-        comment = "//";
-    else if (cfg->comment_style == CONF_COMMENTSTYLE_INF)
-        comment = ";";
+    printf("%-16s %-32s %s\n", "type", "name", "value");
 
     for (struct confopt *opt = cfg->options; opt->type != CONF_END; opt++) {
-        printf("%-32s %-16s ", opt->name,
-               opt->type <= CONF_END ? opttypestr[opt->type] : "BAD TYPE");
+        char value[256];
+        bool print_name = true;
 
         switch (opt->type) {
-        case CONF_BLANK:
+        case CONF_HEADER:
+        case CONF_SECTION:
+        case CONF_COMMENT:
+            print_name = false;
+
+            if (opt->type == CONF_COMMENT)
+                snprintf(value, sizeof(value), "# %s", opt->value.s);
+            else
+                snprintf(value, sizeof(value), "%s", opt->value.s);
             break;
         case CONF_BOOL:
             if (opt->value.i)
-                printf("true");
+                snprintf(value, sizeof(value), "true");
             else
-                printf("false");
+                snprintf(value, sizeof(value), "false");
             break;
         case CONF_INT:
-            printf("%d", opt->value.i);
+            snprintf(value, sizeof(value), "%d", opt->value.i);
             break;
         case CONF_FLOAT:
-            printf("%f", opt->value.f);
+            snprintf(value, sizeof(value), "%g", opt->value.f);
             break;
         case CONF_STRING:
-            printf("\"%s\"", opt->value.s);
-            break;
-        case CONF_COMMENT:
-            printf("%s %s", comment, opt->value.s);
+            snprintf(value, sizeof(value), "\"%s\"", opt->value.s);
             break;
         }
 
-        printf("\n");
+        if (opt->type == CONF_BLANK) {
+            printf("\n");
+        } else {
+            printf("%-16s %-32s %s\n",
+                   opt->type <= CONF_END ? opttypestr[opt->type] : "bad type",
+                   print_name ? opt->name : "",
+                   value);
+        }
     }
 }
