@@ -102,7 +102,7 @@ bool conf_parse(struct conf *cfg)
         for (opt = cfg->options; opt->type != CONF_END; opt++) {
             // skip blanks, comments, headers
             if (opt->type == CONF_BLANK || opt->type == CONF_HEADER ||
-                opt->type == CONF_COMMENT) {
+                opt->type == CONF_SECTION || opt->type == CONF_COMMENT) {
                 continue;
             }
 
@@ -147,6 +147,11 @@ bool conf_parse(struct conf *cfg)
                 ic_free(opt->value.s);
 
             opt->value.s = strdup(cfg->token);
+            break;
+        case CONF_BLANK:
+        case CONF_SECTION:
+        case CONF_END:
+        default:
             break;
         }
     }
