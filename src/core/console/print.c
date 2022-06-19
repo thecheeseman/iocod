@@ -1,45 +1,5 @@
 #include "con_local.h"
 
-static bool color_string(const char *p)
-{
-    if (p == NULL || p[0] != '^' || p[1] == '\0')
-        return false;
-
-    if (p[1] < 0 || isalnum(p[1]) == 0)
-        return false;
-
-    return true;
-}
-
-#ifdef IC_PLATFORM_WINDOWS
-static DWORD colors[] = {
-    0,
-    FOREGROUND_RED,
-    FOREGROUND_GREEN,
-    FOREGROUND_RED | FOREGROUND_GREEN,
-    FOREGROUND_BLUE,
-    FOREGROUND_GREEN | FOREGROUND_BLUE,
-    FOREGROUND_RED | FOREGROUND_BLUE,
-    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE
-};
-
-static DWORD color_to_attrib(enum q3color color)
-{
-    DWORD attrib;
-
-    if (color == COLOR_WHITE) {
-        attrib = console.attributes;
-    } else {
-        attrib = colors[color];
-
-        // use console's background color
-        attrib |= console.bg_attributes;
-    }
-
-    return attrib;
-}
-#endif
-
 #define MAX_PRINT_MSG 4096
 
 /*
@@ -54,7 +14,7 @@ static DWORD color_to_attrib(enum q3color color)
  */
 static void color_print(const char *msg)
 {
-    static char buffer[MAX_PRINT_MSG];
+    static char buffer[MAX_PRINT_MSG] = { 0 };
     int length = 0;
 
     while (*msg != '\0') {
@@ -84,7 +44,8 @@ static void color_print(const char *msg)
                 int color = (int) (*(msg + 1) - '0');
 
                 if (console.ansi_color) {
-                    snprintf(buffer, sizeof(buffer), "\033[%dm", color + 30);
+                    snprintf(buffer, sizeof(buffer), "\033[%sm", 
+                             color_to_ascii_code(color));
                     fputs(buffer, stderr);
                 } else {
                     #ifdef IC_PLATFORM_WINDOWS

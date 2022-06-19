@@ -74,6 +74,10 @@ struct console_data {
 
     DWORD attributes;
     DWORD bg_attributes;
+
+    char line[MAX_EDIT_LINE];
+    int line_len;
+    int cursor;
     #else
 
     const char *term;
@@ -124,8 +128,16 @@ void con_show(void);
 void con_set_bg_color(enum q3color color);
 void con_set_text_color(enum q3color color);
 
+bool color_string(const char *p);
+char *color_to_ascii_code(enum q3color color);
+
+#ifdef IC_PLATFORM_WINDOWS
+DWORD color_to_attrib(enum q3color color);
+#endif
+
 // EXPORT TO GLOBALS:
 IC_PUBLIC
 void con_set_title(const char *title);
+void con_print(const char *msg);
 
 #endif /* CON_LOCAL_H */

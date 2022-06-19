@@ -28,6 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdarg.h>
 
 enum q3color {
+    // standard q3 colors
     COLOR_BLACK,
     COLOR_RED,
     COLOR_GREEN,
@@ -35,7 +36,11 @@ enum q3color {
     COLOR_BLUE,
     COLOR_CYAN,
     COLOR_MAGENTA,
-    COLOR_WHITE
+    COLOR_WHITE,
+
+    // 1.5 added these
+    COLOR_PURPLE,
+    COLOR_ROSE
 };
 
 /**
