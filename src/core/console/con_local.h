@@ -135,9 +135,4 @@ char *color_to_ascii_code(enum q3color color);
 DWORD color_to_attrib(enum q3color color);
 #endif
 
-// EXPORT TO GLOBALS:
-IC_PUBLIC
-void con_set_title(const char *title);
-void con_print(const char *msg);
-
 #endif /* CON_LOCAL_H */

@@ -1,6 +1,7 @@
 #include "con_local.h"
 
 #ifdef IC_PLATFORM_WINDOWS
+IC_PUBLIC
 char *con_input(void)
 {
     DWORD events = 0;
@@ -124,7 +125,7 @@ char *con_input(void)
 
     if (console.line_len == 0) {
         con_show();
-        con_print("\n");
+        con_print(IC_PLATFORM_NEWLINE);
         return NULL;
     }
 
@@ -132,7 +133,7 @@ char *con_input(void)
     con_show();
     // history_add();
 
-    con_print(va("%s\n", console.line));
+    con_print(va("%s%s", console.line, IC_PLATFORM_NEWLINE));
     return console.line;
 }
 #else
@@ -216,9 +217,7 @@ char *con_input(void)
         strncpyz(text, console.field.buffer, sizeof(text));
         memset(&console.field, 0, sizeof(console.field));
 
-        key = '\n';
-
-        write(STDOUT_FILENO, &key, 1);
+        write(STDOUT_FILENO, IC_PLATFORM_NEWLINE, strlen(IC_PLATFORM_NEWLINE));
         write(STDOUT_FILENO, TTY_PROMPT, strlen(TTY_PROMPT));
 
         return text;

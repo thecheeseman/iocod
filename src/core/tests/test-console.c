@@ -1,14 +1,6 @@
 #include "ic_test.h"
 #include <signal.h>
 
-extern void con_init(void);
-extern void con_shutdown(void);
-extern void con_print(const char *msg);
-extern char *con_input(void);
-void con_set_color(enum q3color fore, enum q3color back);
-void con_set_text_color(enum q3color color);
-void con_set_back_color(enum q3color color);
-
 bool quit = false;
 void handle_interrupt(int sig)
 {
@@ -21,8 +13,18 @@ int TEST_MAIN()
 
     signal(SIGINT, handle_interrupt);
 
-    con_print("this is a ^1test ^7message ^6with ^5colours\n");
-    con_print("asdf\n");
+    con_print("console test\n");
+    con_print("^0black text\n");
+    con_print("^1red text\n");
+    con_print("^2green text\n");
+    con_print("^3yellow text\n");
+    con_print("^4blue text\n");
+    con_print("^5cyan text\n");
+    con_print("^6magenta text\n");
+    con_print("^7white text\n");
+    con_print("^8purple text\n");
+    con_print("^9rose text\n");
+    con_print("^7to exit, type exit\n");
 
     while (!quit) {
         char *s = con_input();

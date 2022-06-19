@@ -84,12 +84,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define LOG_COLOR_TRACE                 (LFF_MAGENTA LFB_NULL LFS_NORMAL)
 #define LOG_COLOR_PRINT                 (LFF_WHITE   LFB_NULL LFS_NORMAL)
 
-#ifdef IC_PLATFORM_WINDOWS
-#define NL "\r\n"
-#else
-#define NL "\n"
-#endif
-
 /*
  * Log structure.
  */
@@ -470,7 +464,7 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
 
     /* auto lf */
     if (msg[size - 1] != '\n' && iclog.auto_lf) {
-        if ((size = fprintf(iclog.fp, "%s", NL)) > 0) {
+        if ((size = fprintf(iclog.fp, "%s", IC_PLATFORM_NEWLINE)) > 0) {
             iclog.size += size;
             printed += size;
         }
@@ -489,7 +483,7 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
             fprintf(stdout, "%s", CSI_END);
 
         if (msg[size - 1] != '\n' && iclog.auto_lf)
-            fprintf(stdout, "%s", NL);
+            fprintf(stdout, "%s", IC_PLATFORM_NEWLINE);
 
         fflush(stdout);
     }

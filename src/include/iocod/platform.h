@@ -859,6 +859,15 @@ IC_DIAGNOSTIC_POP
  * @note On GNUC this has no effect.
  * @note On MSVC this is defined as `__declspec(dllimport)`.
  */
+
+/**
+ * @def IC_PLATFORM_NEWLINE
+ * @brief Newline character string for the given OS. 
+ 
+ * @note On Windows, this is `"\r\n"` for backwards compatibility with older 
+ * Windows versions.
+ * @note On MacOS / Linux this is just `"\n"`
+ */
 #if defined IC_PLATFORM_WINDOWS
 
 #ifndef IC_PLATFORM_OS
@@ -874,6 +883,8 @@ IC_DIAGNOSTIC_POP
 #define IC_PRIVATE  
 #define IC_PUBLIC   __declspec(dllexport)
 #define IC_IMPORT   __declspec(dllimport)
+
+#define IC_PLATFORM_NEWLINE "\r\n"
 
 #ifndef __BASE_FILE__
 #define __BASE_FILE__ __FILE__
@@ -908,12 +919,15 @@ IC_DIAGNOSTIC_POP
 #ifndef IC_PLATFORM_DLL
 #define IC_PLATFORM_DLL     "dylib"
 #endif
+
+#define IC_PLATFORM_NEWLINE "\n"
 #endif
 #else /* other systems */
 #define PATH_SEP '/'
 #define IC_PRIVATE
 #define IC_PUBLIC
 #define IC_IMPORT
+#define IC_PLATFORM_NEWLINE "\n"
 
 #if defined __DOXYGEN__
 #define IC_PLATFORM_WINDOWS

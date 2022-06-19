@@ -29,14 +29,16 @@ static void color_print(const char *msg)
 
             if (*msg == '\n') {
                 if (console.ansi_color) {
-                    fputs("\033[0m\n", stderr);
+                    snprintf(buffer, sizeof(buffer), "\033[0m%s", 
+                             IC_PLATFORM_NEWLINE);
+                    fputs(buffer, stderr);
                 } else {
                     #ifdef IC_PLATFORM_WINDOWS
                     SetConsoleTextAttribute(console.hout, 
                                             color_to_attrib(COLOR_WHITE));
                     #endif
 
-                    fputs("\n", stderr);
+                    fputs(IC_PLATFORM_NEWLINE, stderr);
                 }
 
                 msg++;
@@ -71,6 +73,7 @@ static void color_print(const char *msg)
     }
 }
 
+IC_PUBLIC
 void con_print(const char *msg)
 {
     if (msg == NULL || *msg == '\0')
