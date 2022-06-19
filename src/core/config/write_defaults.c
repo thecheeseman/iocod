@@ -1,6 +1,12 @@
 #include <sys/stat.h>
 #include "conf_local.h"
 
+#ifdef IC_PLATFORM_WINDOWS
+#define NL "\r\n"
+#else
+#define NL "\n"
+#endif
+
 static void print_header(FILE *fp, char *header)
 {
     size_t len = strnlen(header, 76) + 4;
@@ -8,12 +14,12 @@ static void print_header(FILE *fp, char *header)
     for (int i = 0; i < len; i++)
         fwrite("#", 1, 1, fp);
 
-    fprintf(fp, "\n# %s #\n", header);
+    fprintf(fp, "%s# %s #%s", NL, header, NL);
 
     for (int i = 0; i < len; i++)
         fwrite("#", 1, 1, fp);
 
-    fwrite("\n", 1, 1, fp);
+    fprintf(fp, "%s", NL);
 }
 
 bool conf_write_defaults(struct conf *cfg)
@@ -36,7 +42,7 @@ bool conf_write_defaults(struct conf *cfg)
             print_header(fp, opt->value.s);
             break;
         case CONF_SECTION:
-            fprintf(fp, "#\n# %s\n#", opt->value.s);
+            fprintf(fp, "#%s# %s%s#", NL, opt->value.s, NL);
             break;
         case CONF_COMMENT:
             fprintf(fp, "# %s", opt->value.s);
@@ -58,7 +64,7 @@ bool conf_write_defaults(struct conf *cfg)
             return false;
         }
 
-        fprintf(fp, "\n");
+        fprintf(fp, "%s", NL);
     }
 
     fclose(fp);
