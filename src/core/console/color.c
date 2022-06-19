@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include "con_local.h"
 
 bool color_string(const char *p)
