@@ -4,6 +4,8 @@
 bool quit = false;
 void handle_interrupt(int sig)
 {
+    UNUSED_PARAM(sig);
+
     quit = true;
 }
 

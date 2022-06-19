@@ -5,12 +5,12 @@ static void print_header(FILE *fp, char *header)
 {
     size_t len = strnlen(header, 76) + 4;
 
-    for (int i = 0; i < len; i++)
+    for (size_t i = 0; i < len; i++)
         fwrite("#", 1, 1, fp);
 
     fprintf(fp, "%s# %s #%s", IC_PLATFORM_NEWLINE, header, IC_PLATFORM_NEWLINE);
 
-    for (int i = 0; i < len; i++)
+    for (size_t i = 0; i < len; i++)
         fwrite("#", 1, 1, fp);
 
     fprintf(fp, "%s", IC_PLATFORM_NEWLINE);

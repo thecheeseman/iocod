@@ -1,5 +1,11 @@
 #include "ic_test.h"
 
+// disable warning: null argument where non-null required [-Wnonnull]
+#if defined IC_PLATFORM_GCC || defined IC_PLATFORM_CLANG
+IC_DIAGNOSTIC_PUSH
+IC_SILENCE_WARNING(-Wnonnull)
+#endif
+
 #define TEST _ic_strlwr
 
 int TEST_MAIN()
@@ -18,3 +24,7 @@ int TEST_MAIN()
 
     return 0;
 }
+
+#if defined IC_PLATFORM_GCC || defined IC_PLATFORM_CLANG
+IC_DIAGNOSTIC_POP
+#endif

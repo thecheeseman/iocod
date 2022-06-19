@@ -26,7 +26,7 @@
  * @brief Console field structure, for history.
 */
 struct field {
-    int cursor;
+    size_t cursor;
     int scroll;
     int width;
 

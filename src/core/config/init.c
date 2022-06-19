@@ -3,6 +3,8 @@
 IC_PUBLIC
 struct conf *conf_init(const char *filename, struct confopt *kv, int options)
 {
+    UNUSED_PARAM(options);
+
     if (filename == NULL) {
         conf_set_error(CONF_ERR_NULL_FILENAME);
         ic_error("%s", conf_error_string());

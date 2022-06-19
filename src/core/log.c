@@ -217,6 +217,8 @@ struct timezone {
 
 static int gettimeofday(struct timeval *tv, struct timezone *tz)
 {
+    UNUSED_PARAM(tz);
+
     const UINT64 epochFileTime = 116444736000000000ULL;
     FILETIME ft;
     ULARGE_INTEGER li = { 0 };

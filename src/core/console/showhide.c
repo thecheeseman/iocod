@@ -91,7 +91,7 @@ void con_hide(void)
     }
 
     if (console.field.cursor > 0) {
-        for (int i = 0; i < console.field.cursor; i++)
+        for (size_t i = 0; i < console.field.cursor; i++)
             con_back();
     }
 
@@ -114,7 +114,7 @@ void con_show(void)
         write(STDOUT_FILENO, TTY_PROMPT, strlen(TTY_PROMPT));
 
         if (console.field.cursor > 0) {
-            for (int i = 0; i < console.field.cursor; i++)
+            for (size_t i = 0; i < console.field.cursor; i++)
                 write(STDOUT_FILENO, console.field.buffer + i, 1);
         }
     }

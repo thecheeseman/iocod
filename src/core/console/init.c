@@ -44,6 +44,7 @@ void ErrorExit(LPTSTR lpszFunction)
 
 static BOOL WINAPI con_sigint(DWORD sig)
 {
+    UNUSED_PARAM(sig);
     // TODO:
     return TRUE;
 }
@@ -105,6 +106,8 @@ void con_shutdown(void)
 #else
 static void con_sigcont(int signum)
 {
+    UNUSED_PARAM(signum);
+
     con_init();
 }
 

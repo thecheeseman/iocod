@@ -233,7 +233,7 @@ void strncatz(char *dest, size_t size, const char *src);
 IC_PUBLIC
 IC_PRINTF_FORMAT(3, 4)
 IC_NON_NULL(1)
-size_t snprintfz(char *dest, size_t size, const char *fmt, ...);
+ssize_t snprintfz(char *dest, size_t size, const char *fmt, ...);
 
 /** @} */
 

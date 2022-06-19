@@ -22,7 +22,7 @@ static socket_t open_socket(int family, char *netif, int port, int *err)
     }
 
     // make it non-blocking
-    bool _true = true;
+    unsigned long _true = true;
     if (ioctlsocket(newsock, FIONBIO, &_true) == SOCKET_ERROR) {
         log_warn("ioctlsocket: %s", net_error_string());
 
@@ -48,9 +48,9 @@ static socket_t open_socket(int family, char *netif, int port, int *err)
         #endif
     }
 
-    struct sockaddr_in addr4;
-    struct sockaddr_in6 addr6;
-    void *addr;
+    struct sockaddr_in addr4 = {0};
+    struct sockaddr_in6 addr6 = {0};
+    void *addr = NULL;
     int addrsize = 0;
     
     if (family == AF_INET) {

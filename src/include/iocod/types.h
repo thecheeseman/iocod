@@ -23,6 +23,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_TYPES_H
 #define IOCOD_TYPES_H
 
+#include "iocod.h"
+
+#ifdef IC_PLATFORM_WINDOWS
+typedef long ssize_t;
+#else
+#include <sys/types.h>
+#endif
+
 /**
  * @defgroup common_types Common Types
  * @brief Various common types used throughout the project.
@@ -98,6 +106,8 @@ typedef vec_t vec4_t[4];
 typedef vec_t vec5_t[5];
 /** @} */
 #endif
+
+
 
 /** @} */
 

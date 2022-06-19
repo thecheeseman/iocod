@@ -69,7 +69,6 @@ void net_get_local_address(void)
     mask6.sin6_family = AF_INET6;
 
     struct addrinfo *ptr = NULL;
-    int i = 0;
     for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
         if (ptr->ai_family == AF_INET)
             add_local_address("", ptr->ai_addr, (struct sockaddr *) &mask4);

@@ -31,6 +31,7 @@ static char *skip_whitespace(char *data, bool *new_lines)
     return data;
 }
 
+IC_DIAGNOSTIC_DISABLE_UNUSED_FUNCTION
 static char *parse_ext2(char **data_p, bool line_breaks)
 {
     char *c = *data_p;
@@ -329,7 +330,7 @@ IC_PUBLIC
 IC_NON_NULL(1)
 char *ps_parse_rest_of_line(char **data_p)
 {
-    static char	line[MAX_TOKEN_CHARS];
+    static char	line[MAX_TOKEN_CHARS] = {0};
     const char *token;
 
     line[0] = '\0';

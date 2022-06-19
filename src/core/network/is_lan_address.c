@@ -28,10 +28,10 @@ bool net_is_lan_address(struct netadr addr)
 
     // compare against the networks this computer is member of
     for (int i = 0; i < numip; i++) {
-        byte *compare_adr;
-        byte *compare_mask;
-        byte *compare_ip;
-        int addrsize;
+        byte *compare_adr = NULL;
+        byte *compare_mask = NULL;
+        byte *compare_ip = NULL;
+        int addrsize = 0;
 
         if (localip[i].type == addr.type) {
             if (addr.type == NA_IP) {

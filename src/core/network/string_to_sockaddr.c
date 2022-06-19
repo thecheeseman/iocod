@@ -74,7 +74,7 @@ end:
 void net_sockaddr_to_string(struct sockaddr *in, socklen_t destsize, 
                             char *dest)
 {
-    socklen_t addrlen;
+    socklen_t addrlen = 0;
 
     if (in->sa_family == AF_INET)
         addrlen = sizeof(struct sockaddr_in);

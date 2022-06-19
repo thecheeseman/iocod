@@ -140,12 +140,11 @@ char *con_input(void)
 // non-interactive/dumb terminals
 static char *get_stdin(void)
 {
-    fd_set fdset;
-
+    fd_set fdset = {0};
     FD_ZERO(&fdset);
     FD_SET(STDIN_FILENO, &fdset);
 
-    struct timeval timeout;
+    struct timeval timeout = {0};
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     if (select(STDIN_FILENO + 1, &fdset, NULL, NULL, &timeout) == -1 ||

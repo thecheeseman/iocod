@@ -118,6 +118,9 @@ bool conf_parse(struct conf *cfg)
             return false; // stop parsing
         }
 
+        if (!valid)
+            ic_warning(_("Unknown config option '%s'"), optname);
+
         // copy data
         switch (opt->type) {
         case CONF_BOOL:

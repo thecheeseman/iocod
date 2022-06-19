@@ -3,14 +3,14 @@
 bool net_get_packet(struct netadr *net_from, struct netmsg *msg, fd_set *fdr)
 {
     for (int protocol = 0; protocol < 2; protocol++) {
-        socket_t sock;
+        socket_t sock = INVALID_SOCKET;
         if (protocol == 0)
             sock = ip_socket;
         else if (protocol == 1)
             sock = ip6_socket;
 
         if (sock != INVALID_SOCKET && FD_ISSET(sock, fdr)) {
-            struct sockaddr_storage from;
+            struct sockaddr_storage from = {0};
             socklen_t fromlen = sizeof(from);
 
             int ret = recvfrom(sock, (void *) msg->data, msg->max_size, 0,

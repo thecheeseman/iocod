@@ -53,7 +53,7 @@ static char *forecolor[] = {
     [COLOR_ROSE] =      "91"    // but most modern xterms should have different
                                 // colors here
 };
-
+#if 0
 static char *bgcolor[] = {
     [COLOR_BLACK] =     "40",
     [COLOR_RED] =       "41",
@@ -64,7 +64,7 @@ static char *bgcolor[] = {
     [COLOR_MAGENTA] =   "45",
     [COLOR_WHITE] =     "47"
 };
-
+#endif
 char *color_to_ascii_code(enum q3color color)
 {
     return forecolor[color];

@@ -331,17 +331,52 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @brief Allows popping of the diagnostic pragma from the stack.
  */
 #if defined __clang__
-#define IC_DIAGNOSTIC_PUSH  _Pragma("clang diagnostic push")
-#define IC_DIAGNOSTIC_POP   _Pragma("clang diagnostic pop")
+#define IC_DIAGNOSTIC_PUSH  IC_PRAGMA(clang diagnostic push)
+#define IC_DIAGNOSTIC_POP   IC_PRAGMA(clang diagnostic pop)
 #elif IC_GCC_VERSION_CHECK(4, 6, 0)
-#define IC_DIAGNOSTIC_PUSH  _Pragma("GCC diagnostic push")
-#define IC_DIAGNOSTIC_POP   _Pragma("GCC diagnostic pop")
+#define IC_DIAGNOSTIC_PUSH  IC_PRAGMA(GCC diagnostic push)
+#define IC_DIAGNOSTIC_POP   IC_PRAGMA(GCC diagnostic pop)
 #elif IC_MSVC_VERSION_CHECK(15, 0, 0)
-#define IC_DIAGNOSTIC_PUSH  __pragma(warning(push))
-#define IC_DIAGNOSTIC_POP   __pragma(warning(pop))
+#define IC_DIAGNOSTIC_PUSH  IC_PRAGMA(warning(push))
+#define IC_DIAGNOSTIC_POP   IC_PRAGMA(warning(pop))
 #else
 #define IC_DIAGNOSTIC_PUSH
 #define IC_DIAGNOSTIC_POP
+#endif
+
+/**
+ * @def IC_SILENCE_WARNING
+ * @brief Silences the given warning. GCC/Clang can use the same syntax,
+ * but you should do an `#if` check for MSVC as warnings are numerical and not
+ * flags.
+ * 
+ * Example:
+ * @code
+ * IC_DIAGNOSTIC_PUSH
+ * 
+ * #ifdef IC_PLATFORM_MSVC
+ * IC_SILENCE_WARNING(4505)
+ * #elif defined IC_PLATFORM_GCC || defined IC_PLATFORM_CLANG
+ * IC_SILENCE_WARNING(-Wunused-function)
+ * #endif
+ * 
+ * IC_DIAGNOSTIC_POP
+ * @endcode
+ * 
+ * @note Must be called between an @ref IC_DIAGNOSTIC_PUSH and 
+ * @ref IC_DIAGNOSTIC_POP.
+ */
+#if defined __clang__
+#define IC_SILENCE_WARNING_EX(w) IC_PRAGMA(clang diagnostic ignored w)
+#define IC_SILENCE_WARNING(w) IC_SILENCE_WARNING_EX(#w)
+#elif IC_GCC_VERSION_CHECK(4, 6, 0)
+#define IC_SILENCE_WARNING_EX(w) IC_PRAGMA(GCC diagnostic ignored w)
+#define IC_SILENCE_WARNING(w) IC_SILENCE_WARNING_EX(#w)
+#elif IC_MSVC_VERSION_CHECK(15, 0, 0)
+#define IC_SILENCE_WARNING_EX(w) IC_PRAGMA(warning(disable:w))
+#define IC_SILENCE_WARNING(w) IC_SILENCE_WARNING_EX(w)
+#else
+#define IC_SILENCE_WARNING(w)
 #endif
 
 /**
@@ -356,13 +391,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #if IC_HAS_WARNING("-Wunused-function")
 #define IC_DIAGNOSTIC_DISABLE_UNUSED_FUNCTION \
-    _Pragma("clang diagnostic ignored \"-Wunused-function\"")
+    IC_SILENCE_WARNING(-Wunused-function)
 #elif IC_GCC_VERSION_CHECK(3, 4, 0)
 #define IC_DIAGNOSTIC_DISABLE_UNUSED_FUNCTION \
-    _Pragma("GCC diagnostic ignored \"-Wunused-function\"")
+    IC_SILENCE_WARNING(-Wunused-function)
 #elif IC_MSVC_VERSION_CHECK(1, 0, 0)
 #define IC_DIAGNOSTIC_DISABLE_UNUSED_FUNCTION \
-    __pragma(warning(disable:4505))
+    IC_SILENCE_WARNING(4505)
 #else
 #define IC_DIAGNOSTIC_DISABLE_UNUSED_FUNCTION
 #endif
@@ -509,15 +544,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 IC_DIAGNOSTIC_PUSH
 #if IC_HAS_WARNING("-Wpedantic")
-#pragma clang diagnostic ignored "-Wpedantic"
+IC_SILENCE_WARNING(-Wpedantic)
 #endif
 
 #if IC_GCC_HAS_WARNING("-Wvariadic-macros", 4, 0, 0)
-#if defined __clang__
-#pragma clang diagnostic ignored "-Wvariadic-macros"
-#elif defined IC_GCC_VERSION
-#pragma GCC diagnostic ignored "-Wvariadic-macros"
-#endif
+IC_SILENCE_WARNING(-Wvariadic-macros)
 #endif
 
 #if IC_HAS_ATTRIBUTE(nonnull) || IC_GCC_VERSION_CHECK(3, 3, 0)
@@ -644,12 +675,10 @@ IC_DIAGNOSTIC_POP
  * @def IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS
  * @brief Disable unknown pragma warnings.
  */
-#if IC_HAS_WARNING("-Wunknown-pragmas")
-#define IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS _Pragma("clang diagnostic ignored \"-Wunknown-pragmas\"")
-#elif IC_GCC_VERSION_CHECK(4, 3, 0)
-#define IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS _Pragma("GCC diagnostic ignored \"-Wunknown-pragmas\"")
+#if IC_HAS_WARNING("-Wunknown-pragmas") || IC_GCC_VERSION_CHECK(4, 3, 0)
+IC_SILENCE_WARNING(-Wunknown-pragmas)
 #elif IC_MSVC_VERSION_CHECK(15, 0, 0)
-#define IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS __pragma(warning(disable:4068))
+IC_SILENCE_WARNING(4068)
 #else
 #define IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS
 #endif
