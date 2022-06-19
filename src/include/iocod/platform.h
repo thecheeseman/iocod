@@ -901,6 +901,7 @@ IC_DIAGNOSTIC_POP
 #define IC_PUBLIC
 #endif
 
+#define IC_PLATFORM_NEWLINE "\n"
 #define IC_IMPORT extern
 
 #if defined __linux__ 
@@ -919,8 +920,6 @@ IC_DIAGNOSTIC_POP
 #ifndef IC_PLATFORM_DLL
 #define IC_PLATFORM_DLL     "dylib"
 #endif
-
-#define IC_PLATFORM_NEWLINE "\n"
 #endif
 #else /* other systems */
 #define PATH_SEP '/'
