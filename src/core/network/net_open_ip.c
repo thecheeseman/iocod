@@ -3,11 +3,11 @@
 static socket_t open_socket(int family, char *netif, int port, int *err)
 {
     if (family == AF_INET) {
-        log_print(_("Opening IP socket: %s:%i"),
+        log_print(_("Opening IPv4 socket: %s:%i"),
                   netif != NULL ? netif : "0.0.0.0",
                   port);
     } else if (family == AF_INET6) {
-        log_print(_("Opening IP6 socket: [%s]:%i"),
+        log_print(_("Opening IPv6 socket: [%s]:%i"),
                   netif != NULL ? netif : "::", 
                   port);
     } 
@@ -130,7 +130,7 @@ void net_open_ip(void)
         }
 
         if (ip6_socket == INVALID_SOCKET)
-            log_warn(_("Could not bind to an IPV6 address"));
+            log_warn(_("Could not bind to an IPv6 address"));
     }
 
     // IPV4
@@ -151,6 +151,6 @@ void net_open_ip(void)
         }
 
         if (ip_socket == INVALID_SOCKET)
-            log_warn(_("Could not bind to an IPV4 address"));
+            log_warn(_("Could not bind to an IPv4 address"));
     }
 }

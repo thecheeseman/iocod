@@ -9,8 +9,8 @@ void net_show_ip(void)
                                (struct sockaddr *) &localip[i].addr);
 
         if (localip[i].type == NA_IP)
-            log_print("IP: %s\n", s);
+            log_print("IPv4: %s\n", s);
         else if (localip[i].type == NA_IP6)
-            log_print("IP6: %s\n", s);
+            log_print("IPv6: %s\n", s);
     }
 }
