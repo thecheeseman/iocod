@@ -2,7 +2,6 @@
 
 int TEST_MAIN()
 {   
-    int len;
     char test[64];
 
     // cannot write to NULL
@@ -16,7 +15,7 @@ int TEST_MAIN()
 
     // normal usage case
     char buf[16];
-    len = snprintfz(buf, sizeof(buf), "this is a %s\n", "test");
+    size_t len = snprintfz(buf, sizeof(buf), "this is a %s\n", "test");
     IC_ASSERT_MSG(len != -1, "failed writing string");
     IC_ASSERT_MSG(strncmp(buf, "this is a test\n", sizeof(buf)) == 0, 
                   "strings do not match");

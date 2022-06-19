@@ -39,7 +39,7 @@ DWORD color_to_attrib(enum q3color color)
 #define CSI_START   "\033["
 #define CSI_END     "\033[0m"
 
-static const char *forecolor[] = {
+static char *forecolor[] = {
     [COLOR_BLACK] =     "30",
     [COLOR_RED] =       "31",
     [COLOR_GREEN] =     "32",
@@ -53,7 +53,7 @@ static const char *forecolor[] = {
                                 // colors here
 };
 
-static const char *bgcolor[] = {
+static char *bgcolor[] = {
     [COLOR_BLACK] =     "40",
     [COLOR_RED] =       "41",
     [COLOR_GREEN] =     "42",

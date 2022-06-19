@@ -11,8 +11,8 @@ void ErrorExit(LPTSTR lpszFunction)
 {
     // Retrieve the system error message for the last-error code
 
-    LPVOID lpMsgBuf;
-    LPVOID lpDisplayBuf;
+    LPVOID lpMsgBuf = NULL;
+    LPVOID lpDisplayBuf = NULL;
     DWORD dw = GetLastError();
 
     FormatMessage(
