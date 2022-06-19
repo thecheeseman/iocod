@@ -153,7 +153,7 @@ static char *get_stdin(void)
         return NULL;
     }
 
-    char text[MAX_EDIT_LINE];
+    static char text[MAX_EDIT_LINE];
     ssize_t len = read(STDIN_FILENO, text, sizeof(text));
     if (len == 0) {
         // eof
