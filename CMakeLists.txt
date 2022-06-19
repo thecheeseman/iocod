@@ -34,7 +34,7 @@ endif()
 # build type
 #
 if (NOT DEFINED CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug 
+    set(CMAKE_BUILD_TYPE Release 
         CACHE STRING
         "Valid build types are: None, Debug, Release, RelWithDebInfo, MinSizeRel"
         FORCE
@@ -58,7 +58,7 @@ project(iocod
     LANGUAGES C
 )
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_EXTENSIONS TRUE)
 

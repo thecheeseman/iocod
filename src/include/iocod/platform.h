@@ -927,6 +927,8 @@ IC_DIAGNOSTIC_POP
 #define IC_PUBLIC
 #define IC_IMPORT
 #define IC_PLATFORM_NEWLINE "\n"
+#define IC_PLATFORM_EXE ""
+#define IC_PLATFORM_DLL ""
 
 #if defined __DOXYGEN__
 #define IC_PLATFORM_WINDOWS
