@@ -124,13 +124,13 @@ enum cv_flags {
  * @brief Cvar floating point type.
  * @note All Q3-based games use `float`.
 */
-typedef double  cv_float;
+typedef float cv_float;
 
 /**
  * @brief Cvar integer type.
  * @note All Q3-based games use `int`.
 */
-typedef long    cv_int;
+typedef int cv_int;
 
 /**
  * @brief Cvar structure.

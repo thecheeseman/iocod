@@ -129,7 +129,7 @@ struct cvar *cv_set_integer(const char *name, cv_int value)
 {
     char v[64];
 
-    snprintf(v, sizeof(v), "%ld", value);
+    snprintf(v, sizeof(v), "%d", value);
     return cv_set_string(name, v);
 }
 

@@ -31,7 +31,7 @@ void _ic_print(bool warning, const char *fmt, ...)
 {
     char msg[MAX_PRINT_LEN];
 
-    va_list argptr;
+    va_list argptr = {0};
     va_start(argptr, fmt);
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
@@ -63,7 +63,7 @@ void _ic_error(bool fatal, const char *filename, const char *function,
     UNUSED_PARAM(function);
     UNUSED_PARAM(line);
 
-    va_list argptr;
+    va_list argptr = {0};
     va_start(argptr, fmt);
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);

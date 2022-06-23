@@ -58,6 +58,9 @@ list(APPEND SPECIAL_TESTS
     "test-netadr" 
     "test-console" 
     "test-library"
+    "test-logger"
+    "test-events"
+    "test-cvar"
 )
 
 file(GLOB TEST_SRCS "*.c")
@@ -79,7 +82,33 @@ foreach (_test IN LISTS TEST_SRCS)
     endif()
 endforeach()
 
-add_core_test(NAME "test-network"   SOURCES "test-network.c"    WIN32_LIBS "Ws2_32")
-add_core_test(NAME "test-netadr"    SOURCES "test-netadr.c"     WIN32_LIBS "Ws2_32")
-add_core_test(NAME "test-console"   SOURCES "test-console.c"    LINUX_LIBS "tinfo")
-add_core_test(NAME "test-library"   SOURCES "test-library.c"    LINUX_LIBS "dl")
+add_core_test(NAME "test-network"
+    SOURCES "test-network.c"
+    WIN32_LIBS "Ws2_32" 
+    LINUX_LIBS "tinfo"
+)
+add_core_test(NAME "test-netadr"
+    SOURCES "test-netadr.c"
+    WIN32_LIBS "Ws2_32"
+    LINUX_LIBS "tinfo"
+)
+add_core_test(NAME "test-console"
+    SOURCES "test-console.c"
+    LINUX_LIBS "tinfo"
+)
+add_core_test(NAME "test-library"
+    SOURCES "test-library.c"
+    LINUX_LIBS "dl"
+)
+add_core_test(NAME "test-logger"
+    SOURCES "test-logger.c"
+    LINUX_LIBS "tinfo"
+)
+add_core_test(NAME "test-events"
+    SOURCES "test-events.c"
+    LINUX_LIBS "tinfo"
+)
+add_core_test(NAME "test-cvar"
+    SOURCES "test-cvar.c"
+    LINUX_LIBS "tinfo"
+)

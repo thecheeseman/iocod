@@ -26,7 +26,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 #ifdef IC_PLATFORM_WINDOWS
+#if IC_PLATFORM_64BIT
+typedef long long ssize_t;
+#else
 typedef long ssize_t;
+#endif
 #else
 #include <sys/types.h>
 #endif
@@ -36,8 +40,6 @@ typedef long ssize_t;
  * @brief Various common types used throughout the project.
  * @{
  */
-#ifndef _IC_DEFINED_BOOL
-#define _IC_DEFINED_BOOL
 #ifdef bool
 #undef bool
 #endif
@@ -55,19 +57,11 @@ typedef int _boolean;
 
 #define false 0
 #define true  1
-#endif
-
-#ifndef _IC_DEFINED_BYTE
-#define _IC_DEFINED_BYTE
 
 /**
  * @brief Shorthand for `unsigned char`.
 */
 typedef unsigned char byte;
-#endif
-
-#ifndef _IC_DEFINED_FILEHANDLE
-#define _IC_DEFINED_FILEHANDLE
 
 /**
  * @typedef size_t filehandle
@@ -79,22 +73,12 @@ typedef unsigned char byte;
  * rather than just meaning 'nth open file' as it currently does.
 */
 typedef size_t filehandle;
-#endif
-
-#ifndef _IC_DEFINED_VECTOR
-#define _IC_DEFINED_VECTOR
 
 /**
- * @typedef double vec_t
+ * @typedef float vec_t
  * @brief Basic vector unit for math.
- *
- * If `IC_VECTOR_FLOAT` is defined, this will instead be `float`.
  */
-#ifdef IC_VECTOR_FLOAT
 typedef float vec_t;
-#else
-typedef double vec_t;
-#endif
 
 /**
  * @brief Array of vectors.
@@ -105,9 +89,6 @@ typedef vec_t vec3_t[3];
 typedef vec_t vec4_t[4];
 typedef vec_t vec5_t[5];
 /** @} */
-#endif
-
-
 
 /** @} */
 
