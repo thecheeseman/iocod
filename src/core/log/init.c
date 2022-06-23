@@ -1,7 +1,7 @@
 /*
 ================================================================================
 iocod
-Copyright (C) 2021-2022 thecheeseman
+Copyright (C) 2022 thecheeseman
 
 This file is part of the iocod GPL source code.
 
@@ -19,14 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
-
-/**
- * @file   log.c
- * @author thecheeseman
- * @date   2022-05-14
- *
- * Logging functionality.
- */
 
 #include "log_local.h"
 

@@ -1,7 +1,7 @@
 /*
 ================================================================================
 iocod
-Copyright (C) 2021-2022 thecheeseman
+Copyright (C) 2022 thecheeseman
 
 This file is part of the iocod GPL source code.
 
