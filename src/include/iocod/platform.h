@@ -29,62 +29,56 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_PLATFORM_H
 #define IC_PLATFORM_H
 
-#if defined __STDC_VERSION__
 /**
- * @def IC_PLATFORM_STD_C89
- * @brief This is defined if the compiler supports ANSI C.
+ * @def IC_PLATFORM_COMPILER
+ * @brief A string containing the name of the compiler used. This is defined
+ * by CMake, but if it is not for some reason, we will manually check.
  */
-#define IC_PLATFORM_STD_C89
-
 /**
- * @def IC_PLATFORM_STD_95
- * @brief Defined if the compiler supports `__STDC_VERSION__` as first 
- * introduced in C95.
+ * @def IC_PLATFORM_MSVC
+ * @brief Defined if we are compiling with MSVC.
  */
-#define IC_PLATFORM_STD_C95
-
 /**
- * @def IC_PLATFORM_C99
- * @brief Defined if the compiler supports C99 mode.
- * 
- * @note First supported in GCC ~3.0, MSVC 12.0
+ * @def IC_PLATFORM_MINGW
+ * @brief Defined if we are compiling with MinGW.
  */
-#if __STDC_VERSION__ >= 199901L
-#define IC_PLATFORM_STD_C99
-#endif
-
 /**
- * @def IC_PLATFORM_C11
- * @brief Defined if the compiler supports C11 mode.
- *
- * @note First supported in GCC 4.6, Clang 3.1, MSVC 16.8
+ * @def IC_PLATFORM_GCC
+ * @brief Defined if we are compiling with GCC.
  */
-#if __STDC_VERSION__ >= 201112L
-#define IC_PLATFORM_STD_C11
-#endif
-
 /**
- * @def IC_PLATFORM_STD_C17
- * @brief Defined if the compiler supports C17 mode.
- * 
- * @note First supported in GCC 8.1, Clang 7.0, MSVC 16.8
+ * @def IC_PLATFORM_CLANG
+ * @brief Defined if we are compiling with Clang.
  */
-#if __STDC_VERSION__ >= 201710L
-#define IC_PLATFORM_STD_C17
-#endif
-
-/**
- * @def IC_PLATFORM_STD_C2X
- * @brief Defined if the compiler supports future versions of the C standard.
- *
- * @note This is currently only supported by the latest GCC versions.
- */
-#if __STDC_VERSION__ >= 202000L
-#define IC_PLATFORM_STD_C2X
-#endif
-
-#elif defined __STDC__
-#define IC_PLATFORM_STD_C89
+#ifndef IC_PLATFORM_COMPILER
+/* MSVC */
+#if defined _MSC_VER 
+#define IC_PLATFORM_MSVC
+#define IC_PLATFORM_COMPILER "msvc"
+/* MinGW */
+#elif defined __MINGW32__ || defined __MINGW64__
+#define IC_PLATFORM_MINGW
+#define IC_PLATFORM_COMPILER "mingw"
+/* Clang */
+#elif defined __clang__
+#define IC_PLATFORM_CLANG
+#define IC_PLATFORM_COMPILER "clang"
+/* GCC */
+#elif (defined __GNUC__ && !defined __clang__)
+#define IC_PLATFORM_GCC
+#define IC_PLATFORM_COMPILER "gcc"
+/* Doxygen */
+#elif defined __DOXYGEN__
+#define IC_PLATFORM_MSVC
+#define IC_PLATFORM_MINGW
+#define IC_PLATFORM_GCC
+#define IC_PLATFORM_CLANG
+#define IC_PLATFORM_COMPILER "doxygen"
+#define IC_PLATFORM_DOXYGEN
+#else
+#define IC_PLATFORM_UNKNOWN
+#define IC_PLATFORM_COMPILER "unknown"
+#endif /* _MSC_VER */
 #endif
 
 /**
@@ -330,7 +324,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @def IC_DIAGNOSTIC_POP
  * @brief Allows popping of the diagnostic pragma from the stack.
  */
-#if defined __clang__
+#if defined IC_PLATFORM_CLANG
 #define IC_DIAGNOSTIC_PUSH  IC_PRAGMA(clang diagnostic push)
 #define IC_DIAGNOSTIC_POP   IC_PRAGMA(clang diagnostic pop)
 #elif IC_GCC_VERSION_CHECK(4, 6, 0)
@@ -640,7 +634,7 @@ IC_DIAGNOSTIC_POP
 #endif
 
 /**
- * @def IC_FALL_THROUGH
+ * @def IC_FALLTHROUGH
  * @brief This attribute tells the compiler that we explictly intend to have
  * a fall through switch case.
  * 
@@ -648,12 +642,13 @@ IC_DIAGNOSTIC_POP
  * @note On MSVC this is defined as `__fallthrough`.
  */
 #if IC_HAS_ATTRIBUTE(fallthrough) || IC_GCC_VERSION_CHECK(7, 0, 0)
-#define IC_FALL_THROUGH __attribute__((__fallthrough__))
+#define IC_FALLTHROUGH __attribute__((__fallthrough__))
 #elif defined __fallthrough
-#define IC_FALL_THROUGH __fallthrough
+#define IC_FALLTHROUGH __fallthrough
 #else
-#define IC_FALL_THROUGH
+#define IC_FALLTHROUGH do {} while (0)
 #endif
+#define fallthrough IC_FALLTHROUGH
 
 /**
  * @def IC_RETURNS_NON_NULL
@@ -742,61 +737,6 @@ IC_SILENCE_WARNING(4068)
 #define IC_UNUSED __attribute__((unused))
 #else
 #define IC_UNUSED
-#endif
-
-/**
- * @def IC_PLATFORM_COMPILER
- * @brief A string containing the name of the compiler used. Valid options are
- * `msvc`, `mingw`, `gcc`, `clang` or `unknown`.
- */
-
-/**
- * @def IC_PLATFORM_MSVC
- * @brief Defined if we are compiling with MSVC.
- */
-
-/**
- * @def IC_PLATFORM_MINGW
- * @brief Defined if we are compiling with MinGW.
- */
-
-/**
- * @def IC_PLATFORM_GCC
- * @brief Defined if we are compiling with GCC.
- */
-
-/**
- * @def IC_PLATFORM_CLANG
- * @brief Defined if we are compiling with Clang.
- */
-#ifndef IC_PLATFORM_COMPILER
-
-/* if these aren't already defined by CMake, we'll check ourselves */
-#if !defined IC_PLATFORM_MSVC && !defined IC_PLATFORM_GCC && !defined IC_PLATFORM_CLANG
-#if defined _MSC_VER 
-#define IC_PLATFORM_MSVC
-#define IC_PLATFORM_COMPILER "msvc"
-#elif defined __MINGW32__ || defined __MINGW64__
-#define IC_PLATFORM_MINGW
-#define IC_PLATFORM_COMPILER "mingw"
-#elif (defined __GNUC__ && !defined __clang__)
-#define IC_PLATFORM_GCC
-#define IC_PLATFORM_COMPILER "gcc"
-#elif defined __clang__
-#define IC_PLATFORM_CLANG
-#define IC_PLATFORM_COMPILER "clang"
-#elif defined __DOXYGEN__
-/* define these so they show up in the documentation */
-#define IC_PLATFORM_MSVC
-#define IC_PLATFORM_MINGW
-#define IC_PLATFORM_GCC
-#define IC_PLATFORM_CLANG
-#define IC_PLATFORM_COMPILER "doxygen"
-#else
-#define IC_PLATFORM_UNKNOWN
-#define IC_PLATFORM_COMPILER "unknown"
-#endif /* _MSC_VER */
-#endif
 #endif
 
 /**
