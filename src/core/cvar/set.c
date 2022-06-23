@@ -97,7 +97,7 @@ out:
 IC_PUBLIC
 struct cvar *cv_set2(const char *name, const char *value, bool force)
 {
-    log_debug(_("\t\tCvar set %1$s '%2$s'"), name, value);
+    log_debug(_("Cvar set %s '%s'"), name, value);
 
     if (!cv_validate_string(name)) {
         log_error(_("Invalid cvar name '%s'"), name);

@@ -41,8 +41,8 @@ static const char *stdout_prefix[] = {
     [LOG_LEVEL_ERROR] = "ERROR: ",
     [LOG_LEVEL_WARN] = "WARNING: ",
     [LOG_LEVEL_INFO] = "",
-    [LOG_LEVEL_DEBUG] = "debug: ",
-    [LOG_LEVEL_TRACE] = "trace: ",
+    [LOG_LEVEL_DEBUG] = "",
+    [LOG_LEVEL_TRACE] = "",
     [LOG_LEVEL_ALL] = ""
 };
 

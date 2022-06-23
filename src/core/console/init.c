@@ -106,8 +106,6 @@ void con_init(void)
         (BACKGROUND_BLUE | BACKGROUND_GREEN | 
          BACKGROUND_RED | BACKGROUND_INTENSITY);
 
-    con_set_title("iocod " IC_VERSION_STRING " dedicated server console");
-
     // init history tbd
 
     SetConsoleTextAttribute(console.hout, console.attributes);
@@ -174,7 +172,7 @@ void con_init(void)
     fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL, 0) | O_NONBLOCK);
 
     if (!stdin_is_atty()) {
-        ic_printf(_("tty console mode disabled\n"));
+        fprintf(stderr, _("tty console mode disabled\n"));
 
         console.stdin_active = true;
         return;
@@ -211,8 +209,6 @@ void con_init(void)
 
     console.on = true;
     console.hide = 1;
-
-    con_set_title("iocod " IC_VERSION_STRING " dedicated server console");
 
     con_show();
 }

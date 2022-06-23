@@ -8,6 +8,7 @@ void sys_exit(int code)
     con_shutdown();
     net_shutdown();
     config_shutdown();
+    log_shutdown();
 
     exit(code);
 }

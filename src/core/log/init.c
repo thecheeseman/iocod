@@ -71,6 +71,9 @@ void log_init(void)
 
     log_banner();
     log_debug(_("Log file opened\n"));
+
+    if (config_initialized())
+        log_set_level(config_log_level());
 }
 
 /*

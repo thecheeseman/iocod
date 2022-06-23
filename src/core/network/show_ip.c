@@ -31,8 +31,8 @@ void net_show_ip(void)
                                sizeof(s), s);
 
         if (localip[i].type == NA_IP)
-            log_print("IPv4: %s\n", s);
+            log_debug("IPv4: %s\n", s);
         else if (localip[i].type == NA_IP6)
-            log_print("IPv6: %s\n", s);
+            log_debug("IPv6: %s\n", s);
     }
 }

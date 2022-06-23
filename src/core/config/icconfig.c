@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "conf_local.h"
 
-static struct conf *icconf;
+static struct conf *icconf = NULL;
 static struct confopt opts[] = {
     CONF_HEADER("iocod config"),
 
@@ -50,6 +50,23 @@ static struct confopt opts[] = {
     CONF_COMMENT("options: \"english\""),
     CONF_COMMENT("default: \"english\""),
     CONF_STRING("language", "english"),
+    CONF_BLANK(),
+
+    CONF_COMMENT("set log level"),
+    CONF_COMMENT("log levels are as listed below:"),
+    CONF_COMMENT("  0 = no logging"),
+    CONF_COMMENT("  1 = log only fatal errors"),
+    CONF_COMMENT("  2 = log ALL errors"),
+    CONF_COMMENT("  3 = log ALL errors and warnings"),
+    CONF_COMMENT("  4 (default) = log errors, warnings, and useful messages"),
+    CONF_COMMENT("  5 = debug messages"),
+    CONF_COMMENT("  6 = trace messages (very verbose)"),
+    CONF_COMMENT("  7 = log everything"),
+    CONF_COMMENT(""),
+    CONF_COMMENT("type:    integer"),
+    CONF_COMMENT("options: 0-7"),
+    CONF_COMMENT("default: 4 (errors, warnings + useful messages)"),
+    CONF_INT("log_level", 4),
     CONF_BLANK(),
 
     CONF_HEADER("compatibility"),
@@ -174,11 +191,47 @@ struct conf *config_get(void)
 }
 
 IC_PUBLIC
+int config_log_level(void)
+{
+    struct confopt *opt = conf_get_opt(icconf, "log_level");
+    
+    // something bad has happened
+    if (opt == NULL)
+        return LOG_LEVEL_INFO;
+
+    // sanity check
+    if (opt->value.i > LOG_LEVEL_ALL)
+        return LOG_LEVEL_ALL;
+    else if (opt->value.i < LOG_LEVEL_NONE)
+        return LOG_LEVEL_INFO;
+    else
+        return opt->value.i;
+}
+
+IC_PUBLIC
+char *config_console_language(void)
+{
+    struct confopt *opt = conf_get_opt(icconf, "language");
+
+    if (opt == NULL || opt->value.s == NULL)
+        return "english";
+
+    // TEMP until we have multilang support
+    return "english";
+}
+
+IC_PUBLIC
 void config_init(void)
 {
     icconf = conf_init("iocod.conf", opts, 0);
     if (icconf == NULL)
         ic_error(_("error creating 'iocod.conf'"));
+}
+
+IC_PUBLIC
+bool config_initialized(void)
+{
+    return (icconf != NULL);
 }
 
 IC_PUBLIC

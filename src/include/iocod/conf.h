@@ -295,7 +295,7 @@ struct conf {
  * @param[in] kv       pointer to config key/value pairs
  * @param[in] options  any options to set for the config
  * @return NULL on failure, otherwise pointer to new config
-*/
+ */
 IC_PUBLIC
 struct conf *conf_init(const char *filename, struct confopt *kv, int options);
 
@@ -313,7 +313,7 @@ bool conf_shutdown(struct conf *cfg);
  * @brief Dump all loaded config opts/values to stdout.
  * 
  * @param[in] cfg config file to dump
-*/
+ */
 IC_PUBLIC
 void conf_dump_options(struct conf *cfg);
 
@@ -323,7 +323,7 @@ void conf_dump_options(struct conf *cfg);
  * @param[in] cfg  config to check
  * @param[in] name name of key/value pair
  * @return NULL if not found, pointer to key/value pair otherwise
-*/
+ */
 IC_PUBLIC
 struct confopt *conf_get_opt(struct conf *cfg, const char *name);
 
@@ -333,7 +333,7 @@ struct confopt *conf_get_opt(struct conf *cfg, const char *name);
  * @param[in] cfg  config to check
  * @param[in] name name of key to get
  * @return value of key (if exists), otherwise default value for type
-*/
+ */
 IC_PUBLIC
 bool conf_get_bool(struct conf *cfg, const char *name);
 
@@ -343,7 +343,7 @@ bool conf_get_bool(struct conf *cfg, const char *name);
  * @param[in] cfg  config to check
  * @param[in] name name of key to get
  * @return value of key (if exists), otherwise default value for type
-*/
+ */
 IC_PUBLIC
 conf_int conf_get_int(struct conf *cfg, const char *name);
 
@@ -353,7 +353,7 @@ conf_int conf_get_int(struct conf *cfg, const char *name);
  * @param[in] cfg  config to check
  * @param[in] name name of key to get
  * @return value of key (if exists), otherwise default value for type
-*/
+ */
 IC_PUBLIC
 conf_float conf_get_float(struct conf *cfg, const char *name);
 
@@ -363,7 +363,7 @@ conf_float conf_get_float(struct conf *cfg, const char *name);
  * @param[in] cfg  config to check
  * @param[in] name name of key to get
  * @return value of key (if exists), otherwise default value for type
-*/
+ */
 IC_PUBLIC
 char *conf_get_string(struct conf *cfg, const char *name);
 
@@ -374,7 +374,7 @@ char *conf_get_string(struct conf *cfg, const char *name);
  * @param[in] name  name of key to get
  * @param[in] value value to set
  * @return true if success, false otherwise
-*/
+ */
 IC_PUBLIC
 bool conf_set_bool(struct conf *cfg, const char *name, bool value);
 
@@ -385,7 +385,7 @@ bool conf_set_bool(struct conf *cfg, const char *name, bool value);
  * @param[in] name  name of key to get
  * @param[in] value value to set
  * @return true if success, false otherwise
-*/
+ */
 IC_PUBLIC
 bool conf_set_int(struct conf *cfg, const char *name, conf_int value);
 
@@ -396,7 +396,7 @@ bool conf_set_int(struct conf *cfg, const char *name, conf_int value);
  * @param[in] name  name of key to get
  * @param[in] value value to set
  * @return true if success, false otherwise
-*/
+ */
 IC_PUBLIC
 bool conf_set_float(struct conf *cfg, const char *name, conf_float value);
 
@@ -408,7 +408,7 @@ bool conf_set_float(struct conf *cfg, const char *name, conf_float value);
  * @param[in] name  name of key to get
  * @param[in] value value to set
  * @return true if success, false otherwise
-*/
+ */
 IC_PUBLIC
 bool conf_set_string(struct conf *cfg, const char *name, char *value);
 
@@ -429,6 +429,28 @@ void config_shutdown(void);
  */
 IC_PUBLIC
 struct conf *config_get(void);
+
+/**
+ * @brief Get the log level set in the iocod config.
+ * @return Returns the log level. If the log_level option can't be found, or is 
+ * out of range, will always return @ref LOG_LEVEL_INFO
+ */
+IC_PUBLIC
+int config_log_level(void);
+
+/**
+ * @brief Get the preferred console language from the iocod config.
+ * @return The language specified, otherwise on error just returns "english".
+*/
+IC_PUBLIC
+char *config_console_language(void);
+
+/**
+ * @brief Check if the iocod config is initialized.
+ * @return true if it is, false otherwise
+ */
+IC_PUBLIC
+bool config_initialized(void);
 
 /** @} */
 
