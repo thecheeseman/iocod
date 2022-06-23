@@ -38,7 +38,7 @@ static ULARGE_INTEGER timebase;
  * <1 ms precision and up to 1 us precision
  */
 IC_PUBLIC
-int32_t ic_milliseconds(void)
+int32_t sys_milliseconds(void)
 {
     if (!timebase_init) {
         FILETIME base;
@@ -68,7 +68,7 @@ static struct timespec timebase;
  * than on Windows (<1 us precision)
  */
 IC_PUBLIC
-int32_t ic_milliseconds(void)
+int32_t sys_milliseconds(void)
 {
     if (!timebase_init) {
         clock_gettime(CLOCK_REALTIME, &timebase);

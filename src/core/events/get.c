@@ -65,7 +65,7 @@ static struct sys_event get_event(void)
     struct sys_event ev;
     memset(&ev, 0, sizeof(ev));
 
-    ev.time = ic_milliseconds();
+    ev.time = sys_milliseconds();
 
     return ev;
 }

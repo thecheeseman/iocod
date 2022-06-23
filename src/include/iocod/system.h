@@ -60,4 +60,11 @@ bool sys_library_close(void *handle);
 IC_PUBLIC
 bool sys_library_load_symbol(void *handle, const char *fn, void **symbol);
 
+/**
+ * @brief Get current milliseconds since application began.
+ * @return current milliseconds
+*/
+IC_PUBLIC
+int32_t sys_milliseconds(void);
+
 #endif /* IC_SYSTEM_H */

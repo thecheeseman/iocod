@@ -38,7 +38,7 @@ void ev_queue(int time, enum sys_event_type type, int value, int value2,
     event_head++;
 
     if (time == 0)
-        time = ic_milliseconds();
+        time = sys_milliseconds();
 
     ev->time = time;
     ev->type = type;

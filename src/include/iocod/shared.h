@@ -44,13 +44,6 @@ enum q3color {
 };
 
 /**
- * @brief Get current milliseconds since application began.
- * @return 
-*/
-IC_PUBLIC
-int32_t ic_milliseconds(void);
-
-/**
  * @brief Formatted string concatenation.
  *
  * @param[in] fmt string format
