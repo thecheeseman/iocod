@@ -2,9 +2,10 @@
 
 int TEST_MAIN()
 {
+    con_init();
     log_init();
+    log_echo_stdout(true);
     log_set_level(LOG_LEVEL_ALL);
-    log_enable_color(true);
 
     log_print("example log print messages:");
     log_trace("example trace message");

@@ -100,14 +100,6 @@ IC_PUBLIC
 void log_auto_lf(bool lf);
 
 /**
- * @brief Set if the log stdout should have color or not.
- *
- * @param[in] color set to true if you want color
- */
-IC_PUBLIC
-void log_enable_color(bool color);
-
-/**
  * @brief Print to log.
  *
  * @param[in] level log level of message
@@ -119,6 +111,13 @@ void log_enable_color(bool color);
  * @return number of characters printed to the log
  *
  * @note Recommended to use the log_ macros instead of calling this directly.
+ * @see log_fatal
+ * @see log_error
+ * @see log_warn
+ * @see log_info
+ * @see log_debug
+ * @see log_trace
+ * @see log_print
  */
 IC_PUBLIC
 IC_PRINTF_FORMAT(5, 6)

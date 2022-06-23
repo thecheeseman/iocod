@@ -5,10 +5,13 @@ project(iocod_core LANGUAGES C)
 file(GLOB IC_CORE_SRCS "*.c")
 
 foreach (subdir
+    common
     config
     console
     cvar
     events
+    fs
+    log
     network
     parse
     shared
