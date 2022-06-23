@@ -212,8 +212,6 @@ static void open_ipv6_socket(void)
 
 void net_open_ip(void)
 {
-    int err;
-
     net_get_local_address();
 
     // IPV6
