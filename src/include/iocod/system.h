@@ -23,6 +23,33 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_SYSTEM_H
 #define IC_SYSTEM_H
 
+enum exit_code {
+    /**
+     * @brief Normal exit.
+    */
+    IC_OK,
+
+    /**
+     * @brief Abnormal exit due to terminate/interrupt signal.
+    */
+    IC_TERMINATE,
+
+    /**
+     * @brief Abnormal exit due to segmentation fault.
+    */
+    IC_SEGFAULT,
+
+    /**
+     * @brief Abnormal exit due to other signal.
+    */
+    IC_SIGNAL,
+
+    /**
+     * @brief Exit due to error.
+    */
+    IC_ERROR
+};
+
 /**
  * @brief Get last library error, if applicable. Clears last error.
  * @return NULL-terminated string containing error message, otherwise NULL
@@ -66,5 +93,18 @@ bool sys_library_load_symbol(void *handle, const char *fn, void **symbol);
 */
 IC_PUBLIC
 int32_t sys_milliseconds(void);
+
+IC_PUBLIC
+IC_NO_RETURN
+void sys_exit(int code);
+
+IC_PUBLIC
+void sys_quit(void);
+
+IC_PUBLIC
+void sys_setup_signal_handler(void);
+
+IC_PUBLIC
+void sys_set_floatenv(void);
 
 #endif /* IC_SYSTEM_H */

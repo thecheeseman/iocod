@@ -18,26 +18,15 @@
 
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(iocod_core LANGUAGES C)
+project(iocod_dedicated LANGUAGES C)
 
-file(GLOB IC_CORE_SRCS "*.c")
-
-foreach (subdir
-    common
-    config
-    console
-    cvar
-    events
-    fs
-    log
-    network
-    parse
-    shared
-    strings
-    system)
-    file(GLOB sources "${subdir}/*.c")
-    list(APPEND IC_CORE_SRCS ${sources})
-endforeach()
+file(GLOB DED_SRCS "*.c")
+#foreach (subdir
+#   xxx
+#)
+#    file(GLOB sources "${subdir}/*.c")
+#    list(APPEND IC_CORE_SRCS ${sources})
+#endforeach()
 
 if (IC_PLATFORM_MSVC)
     # always silence these warnings
@@ -57,17 +46,32 @@ elseif (IC_PLATFORM_GCC OR IC_PLATFORM_CLANG OR IC_PLATFORM_MINGW)
 endif()
 
 add_compile_definitions(HAVE_CONFIG_H)
+add_compile_definitions(DEDICATED) # disable client stuff
+
 include_directories("${STAGED_INSTALL_PREFIX}/include")
 include_directories("../include")
 include_directories(${PROJECT_BINARY_DIR})
 link_directories("${STAGED_INSTALL_PREFIX}/lib")
 
-add_library(iocod_core STATIC ${IC_CORE_SRCS})
+if (IC_PLATFORM_WINDOWS)
+    add_executable(iocod_dedicated WIN32 ${DED_SRCS})
+else()
+    add_executable(iocod_dedicated ${DED_SRCS})
+endif()
 
-set_target_properties(iocod_core PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/lib"
+add_dependencies(iocod_dedicated iocod_core)
+target_link_libraries(iocod_dedicated iocod_core)
+
+if (IC_PLATFORM_WINDOWS)
+    target_link_options(iocod_dedicated BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
+    target_link_libraries(iocod_dedicated Ws2_32)
+else()
+    target_link_libraries(iocod_dedicated tinfo m pthread)
+endif()
+
+set_target_properties(iocod_dedicated PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/dedicated"
+    LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/dedicated"
+    RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/dedicated"
+    OUTPUT_NAME "iocodded${IC_PLATFORM_BITS}"
 )
-
-add_subdirectory("tests")
