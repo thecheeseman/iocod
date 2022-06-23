@@ -66,7 +66,11 @@ static struct confopt opts[] = {
     CONF_COMMENT("type:    integer"),
     CONF_COMMENT("options: 0-7"),
     CONF_COMMENT("default: 4 (errors, warnings + useful messages)"),
+    #ifdef IC_DEBUG
+    CONF_INT("log_level", 7),
+    #else
     CONF_INT("log_level", 4),
+    #endif
     CONF_BLANK(),
 
     CONF_HEADER("compatibility"),
@@ -196,8 +200,13 @@ int config_log_level(void)
     struct confopt *opt = conf_get_opt(icconf, "log_level");
     
     // something bad has happened
-    if (opt == NULL)
+    if (opt == NULL) {
+        #ifdef IC_DEBUG
+        return LOG_LEVEL_ALL;
+        #else
         return LOG_LEVEL_INFO;
+        #endif
+    }
 
     // sanity check
     if (opt->value.i > LOG_LEVEL_ALL)

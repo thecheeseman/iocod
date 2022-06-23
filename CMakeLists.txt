@@ -42,6 +42,10 @@ if (NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "${Cyan}Build type: ${CMAKE_BUILD_TYPE}${ColorReset}")
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(IC_DEBUG TRUE)
+endif()
+
 #
 # grab version string/numbering
 #

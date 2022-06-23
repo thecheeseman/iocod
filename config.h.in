@@ -38,6 +38,10 @@
  * iocod variables
  ******************************************************************************/
 
+/* enable debugging (build with CMAKE_BUILD_TYPE="Debug") */
+#cmakedefine IC_DEBUG 1
+
+/* versioning */
 #define IC_VERSION_MAJOR @iocod_VERSION_MAJOR@
 #define IC_VERSION_MINOR @iocod_VERSION_MINOR@
 #define IC_VERSION_PATCH @iocod_VERSION_PATCH@
