@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "con_local.h"
+#include <signal.h>
 
 #ifndef IC_PLATFORM_WINDOWS
 #include <term.h>
@@ -29,46 +30,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 struct console_data console;
 
 #ifdef IC_PLATFORM_WINDOWS
-void ErrorExit(LPTSTR lpszFunction)
-{
-    // Retrieve the system error message for the last-error code
-
-    LPVOID lpMsgBuf = NULL;
-    LPVOID lpDisplayBuf = NULL;
-    DWORD dw = GetLastError();
-
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM |
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        dw,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPTSTR) &lpMsgBuf,
-        0, NULL);
-
-    // Display the error message and exit the process
-
-    lpDisplayBuf = (LPVOID) LocalAlloc(LMEM_ZEROINIT,
-                                       (lstrlen((LPCTSTR) lpMsgBuf) + 
-                                        lstrlen((LPCTSTR) lpszFunction) + 40) * 
-                                       sizeof(TCHAR));
-    StringCchPrintf((LPTSTR) lpDisplayBuf,
-                    LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-                    TEXT("%s failed with error %d: %s"),
-                    lpszFunction, dw, lpMsgBuf);
-    MessageBox(NULL, (LPCTSTR) lpDisplayBuf, TEXT("Error"), MB_OK);
-
-    LocalFree(lpMsgBuf);
-    LocalFree(lpDisplayBuf);
-    ExitProcess(dw);
-}
-
 static BOOL WINAPI con_sigint(DWORD sig)
 {
-    UNUSED_PARAM(sig);
-    // TODO:
-    return TRUE;
+    switch (sig) {
+    case CTRL_C_EVENT:
+        sys_signal_handler(SIGINT);
+        return TRUE;
+    case CTRL_CLOSE_EVENT:
+    case CTRL_BREAK_EVENT:
+    case CTRL_LOGOFF_EVENT:
+    case CTRL_SHUTDOWN_EVENT:
+        sys_signal_handler(SIGTERM);
+        return TRUE;
+    default:
+        return FALSE;        
+    }
 }
 
 IC_PUBLIC
@@ -76,15 +52,14 @@ void con_init(void)
 {
     memset(&console, 0, sizeof(console));
 
-    SetConsoleCtrlHandler(con_sigint, TRUE);
+    if (!SetConsoleCtrlHandler(con_sigint, TRUE))
+        sys_handle_error_exit(__func__);
 
-    console.hin = GetStdHandle(STD_INPUT_HANDLE);
-    if (console.hin == INVALID_HANDLE_VALUE)
-        return;
+    if ((console.hin = GetStdHandle(STD_INPUT_HANDLE)) == INVALID_HANDLE_VALUE)
+        sys_handle_error_exit(__func__);
 
-    console.hout = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (console.hout == INVALID_HANDLE_VALUE)
-        return;
+    if ((console.hout = GetStdHandle(STD_OUTPUT_HANDLE)) == INVALID_HANDLE_VALUE)
+        sys_handle_error_exit(__func__);
 
     // enable mouse wheel scrolling
     GetConsoleMode(console.hin, &console.original_mode);

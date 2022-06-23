@@ -41,8 +41,12 @@ static struct sys_event get_event(void)
     #ifdef IC_PLATFORM_WINDOWS
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-        if (!GetMessage(&msg, NULL, 0, 0))
-            exit(1);
+        BOOL ret = GetMessage(&msg, NULL, 0, 0);
+
+        if (ret == -1)
+            sys_handle_error_exit(__func__);
+        else if (ret == 0)
+            sys_exit(IC_TERMINATE);
 
         // window_vars.msg_time = msg.time;
 
@@ -52,6 +56,13 @@ static struct sys_event get_event(void)
     #endif
 
     // TODO: console input
+    char *s = con_input();
+    if (s != NULL) {
+        size_t len = strlen(s) + 1;
+        char *b = ic_malloc(len);
+        strncpy(b, s, len);
+        ev_queue(0, SE_CONSOLE, 0, 0, len, b);
+    }
 
     // TODO: network
 

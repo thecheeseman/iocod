@@ -27,21 +27,20 @@ int main(int argc, char *argv[])
     log_init();
 
     // autoupdate?
-
     sys_setup_signal_handler();
     sys_set_floatenv();
     sys_milliseconds();
+    sys_platform_init();
 
     // parse args
     // argc/argv
     
     // com_init
+    ev_init(); // move to com_init later
     net_init();
     
     while (true) {
-        char *s = con_input();
-        if (s != NULL && strcmp(s, "exit") == 0)
-            break;
+        ev_loop();
     }
 
     sys_quit();

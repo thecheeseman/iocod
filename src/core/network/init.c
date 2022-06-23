@@ -119,12 +119,12 @@ void net_init(void)
     #ifdef IC_PLATFORM_WINDOWS
     int r = WSAStartup(MAKEWORD(1, 1), &winsockdata);
     if (r != 0) {
-        log_error("WSAStartup: %s\n", net_error_string());
+        log_error("WSAStartup: %s", net_error_string());
         return;
     }
 
     winsock_init = true;
-    log_print(_("Winsock initialized\n"));
+    log_print(_("Winsock initialized"));
     #endif
 
     net_config(true);

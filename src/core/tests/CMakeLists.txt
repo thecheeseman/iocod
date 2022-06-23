@@ -60,6 +60,7 @@ function(add_core_test)
 
     if (IC_PLATFORM_WINDOWS)
         target_link_options(${CT_NAME} BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
+        target_link_libraries(${CT_NAME} Ws2_32)
     endif()
 
     set_target_properties(${CT_NAME} PROPERTIES
@@ -102,12 +103,10 @@ endforeach()
 
 add_core_test(NAME "test-network"
     SOURCES "test-network.c"
-    WIN32_LIBS "Ws2_32" 
     LINUX_LIBS "tinfo"
 )
 add_core_test(NAME "test-netadr"
     SOURCES "test-netadr.c"
-    WIN32_LIBS "Ws2_32"
     LINUX_LIBS "tinfo"
 )
 add_core_test(NAME "test-console"

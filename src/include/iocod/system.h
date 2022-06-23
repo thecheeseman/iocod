@@ -102,9 +102,44 @@ IC_PUBLIC
 void sys_quit(void);
 
 IC_PUBLIC
+void sys_signal_handler(int signal);
+
+IC_PUBLIC
 void sys_setup_signal_handler(void);
 
 IC_PUBLIC
 void sys_set_floatenv(void);
+
+IC_PUBLIC
+void sys_handle_error_exit(const char *function);
+
+IC_PUBLIC
+void sys_platform_init();
+
+enum system_type {
+    SYSTEM_LINUX,
+
+    SYSTEM_MACOS,
+    
+    SYSTEM_WIN2000,
+
+    SYSTEM_WINXP,
+
+    SYSTEM_WIN2003,
+
+    SYSTEM_WINVISTA,
+
+    SYSTEM_WIN7,
+
+    SYSTEM_WIN8_OR_LATER,
+
+    SYSTEM_UNKNOWN
+};
+
+IC_PUBLIC
+enum system_type sys_system_type(void);
+
+IC_PUBLIC
+bool sys_is_windows(void);
 
 #endif /* IC_SYSTEM_H */

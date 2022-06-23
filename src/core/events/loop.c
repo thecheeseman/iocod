@@ -38,6 +38,9 @@ int ev_loop(void)
         case SE_JOYSTICK_AXIS:
             break; // TODO: client
         case SE_CONSOLE:
+            if (!strcasecmp(ev.ptr, "exit"))
+                sys_exit(IC_OK);
+            
             // cbuf_add_text((char *) ev.ptr);
             // cbuf_add_text("\n");
             break;
