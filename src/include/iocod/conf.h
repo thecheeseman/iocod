@@ -412,6 +412,24 @@ bool conf_set_float(struct conf *cfg, const char *name, conf_float value);
 IC_PUBLIC
 bool conf_set_string(struct conf *cfg, const char *name, char *value);
 
+/**
+ * @brief Initialize iocod config.
+ */
+IC_PUBLIC
+void config_init(void);
+
+/**
+ * @brief Shutdown iocod config.
+ */
+IC_PUBLIC
+void config_shutdown(void);
+
+/**
+ * @brief Return a reference to the iocod config.
+ */
+IC_PUBLIC
+struct conf *config_get(void);
+
 /** @} */
 
 #endif /* IC_CONFIG_H */

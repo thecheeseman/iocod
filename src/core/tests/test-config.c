@@ -43,5 +43,12 @@ int TEST_MAIN()
     IC_ASSERT(strcmp(conf_get_string(cfg, "str"), "another test string") == 0);
 
     conf_shutdown(cfg);
+
+    config_init();
+    cfg = config_get();
+    IC_ASSERT(cfg != NULL);
+    conf_dump_options(cfg);
+    config_shutdown();
+
     return 0;
 }
