@@ -25,6 +25,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
+#define MAX_PRINT_MSG 4096
+
 /**
  * @defgroup console Console
  * @brief Console module for handling input, output, etc.

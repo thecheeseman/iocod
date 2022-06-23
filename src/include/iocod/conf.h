@@ -62,8 +62,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @{
  */
 
-typedef long conf_int;
-typedef double conf_float;
+typedef int conf_int;
+typedef float conf_float;
 
 /**
  * @brief Config key/value pair types.

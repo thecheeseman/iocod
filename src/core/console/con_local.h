@@ -3,6 +3,12 @@
 
 #include "iocod.h"
 
+/**
+ * @defgroup con_local Console (local)
+ * @brief Local config procedures and structures needed for console module.
+ * @{
+ */
+
 #include <stdlib.h>
 
 #ifdef IC_PLATFORM_WINDOWS
@@ -134,5 +140,7 @@ char *color_to_ascii_code(enum q3color color);
 #ifdef IC_PLATFORM_WINDOWS
 DWORD color_to_attrib(enum q3color color);
 #endif
+
+/** @} */
 
 #endif /* CON_LOCAL_H */

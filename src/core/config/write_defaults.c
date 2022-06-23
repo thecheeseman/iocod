@@ -49,7 +49,7 @@ bool conf_write_defaults(struct conf *cfg)
             fprintf(fp, "%s \"%s\"", opt->name, opt->default_str);
             break;
         case CONF_INT:
-            fprintf(fp, "%s %ld", opt->name, opt->value.i);
+            fprintf(fp, "%s %d", opt->name, opt->value.i);
             break;
         case CONF_FLOAT:
             fprintf(fp, "%s %g", opt->name, opt->value.f);

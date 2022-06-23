@@ -39,7 +39,7 @@ void conf_dump_options(struct conf *cfg)
                 snprintf(value, sizeof(value), "false");
             break;
         case CONF_INT:
-            snprintf(value, sizeof(value), "%ld", opt->value.i);
+            snprintf(value, sizeof(value), "%d", opt->value.i);
             break;
         case CONF_FLOAT:
             snprintf(value, sizeof(value), "%g", opt->value.f);

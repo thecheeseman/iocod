@@ -1,7 +1,5 @@
 #include "con_local.h"
 
-#define MAX_PRINT_MSG 4096
-
 /*
  * color printing is annoying. on *nix/macos we have support for VT100/ANSI
  * color coding, with the \033[xxx; format and that's easy enough. some
@@ -86,6 +84,9 @@ void con_print(const char *msg)
     #ifdef IC_PLATFORM_WINDOWS
     con_show();
     #else
+    if (!console.on)
+        return;
+
     if (msg[strlen(msg) - 1] == '\n') {
         con_show();
 
