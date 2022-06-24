@@ -22,26 +22,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+#include <stdlib.h>
 
 IC_PUBLIC
-void sys_set_floatenv(void)
+IC_PRINTF_FORMAT(1, 2)
+void ic_printf(const char *fmt, ...)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    char msg[MAX_PRINT_MSG];
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    va_list argptr = { 0 };
+    va_start(argptr, fmt);
+    vsnprintf(msg, sizeof(msg), fmt, argptr);
+    va_end(argptr);
+
+    con_print(msg);
+
+    // TODO: log stuff
 }

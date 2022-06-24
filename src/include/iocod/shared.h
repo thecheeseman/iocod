@@ -56,6 +56,9 @@ char *va(const char *fmt, ...);
 #define MAX_INFO_STRING 1024
 #define INFO_STRING_BIG 8192
 
+#define MAX_STRING_CHARS 1024
+#define MAX_STRING_TOKENS 1024
+
 /**
  * @brief Take a given path @p path and append extension @p ext if it does
  * not already exist.

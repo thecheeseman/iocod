@@ -20,28 +20,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "cvar_local.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
-
-IC_PUBLIC
-void sys_set_floatenv(void)
+void cv_toggle_f(void)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    unsigned int argc = cmd_argc();
+    
+    if (argc < 2) {
+        ic_printf(_("usage: toggle <variable> [<value1> <value2> ...]\n"));
+        return;
+    } else if (argc == 2) {
+        cv_set2(cmd_argv(1), va("%d", !cv_get_integer(cmd_argv(1))), false);
+        return;
+    } else if (argc == 3) {
+        ic_printf(_("toggle: nothing to toggle to\n"));
+        return;
+    }
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    char *val = cv_get_string(cmd_argv(1));
+    for (unsigned int i = 2; i + 1 < argc; i++) {
+        if (strcmp(val, cmd_argv(i)) == 0) {
+            cv_set2(cmd_argv(1), cmd_argv(i + 1), false);
+            return;
+        }
+    }
+
+    // fallback
+    cv_set2(cmd_argv(1), cmd_argv(2), false);
 }

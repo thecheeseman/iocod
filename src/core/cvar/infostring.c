@@ -20,9 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
-
-extern struct cvar *cvars;
+#include "cvar_local.h"
 
 IC_PUBLIC
 char *cv_infostring(enum cv_flags mask)

@@ -20,28 +20,42 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#ifndef COMMAND_LOCAL_H
+#define COMMAND_LOCAL_H
+
 #include "iocod.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+/**
+ * @defgroup command_local Commands (local)
+ * @brief Local command procedures and structures needed for command module.
+ * @{
+ */
 
-IC_PUBLIC
-void sys_set_floatenv(void)
-{
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+#define	MAX_CMD_BUFFER  128*1024
+#define	MAX_CMD_LINE	1024
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
-}
+struct cmd {
+    byte *data;
+    size_t maxsize;
+    size_t cursize;
+};
+
+// args.c
+extern unsigned int argc;
+extern char *argv[MAX_STRING_TOKENS];
+
+// tokenize_string.c
+extern char cmd_tokenized[INFO_STRING_BIG + MAX_STRING_TOKENS];
+extern char cmd_cmd[INFO_STRING_BIG];
+
+extern struct cmd_function *cmd_functions;
+extern size_t cmd_wait;
+
+void cmd_echo_f(void);
+void cmd_list_f(void);
+void cmd_vstr_f(void);
+void cmd_wait_f(void);
+
+/** @} */
+
+#endif /* COMMAND_LOCAL_H */

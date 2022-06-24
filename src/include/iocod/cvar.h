@@ -188,11 +188,17 @@ struct cvar {
      * @brief Next cvar in the linked list.
     */
     struct cvar *next;
+    struct cvar *prev;
 
     /**
      * @brief Next hashtable entry.
     */
     struct cvar *hash_next;
+    struct cvar *hash_prev;
+
+    int hash_index;
+
+    char *description;
 };
 
 /**
@@ -510,6 +516,12 @@ bool cv_write_defaults(filehandle f);
  */
 IC_PUBLIC
 bool cv_write_variables(filehandle f);
+
+IC_PUBLIC
+bool cv_command(void);
+
+IC_PUBLIC
+void cv_print(struct cvar *cv);
 
 /** @} */
 

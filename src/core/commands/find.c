@@ -20,28 +20,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
-
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+#include "cmd_local.h"
 
 IC_PUBLIC
-void sys_set_floatenv(void)
+struct cmd_function *cmd_find(const char *name)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    struct cmd_function *cmd;
+    for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
+        if (strcasecmp(cmd->name, name) == 0)
+            return cmd;
+    }
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    return NULL;
 }

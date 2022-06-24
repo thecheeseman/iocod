@@ -20,28 +20,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "com_local.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+struct cvar *com_dedicated;
+struct cvar *com_sv_running;
 
 IC_PUBLIC
-void sys_set_floatenv(void)
+void com_init(void)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    ev_init();
+    cv_init();
+    cbuf_init();
+    cmd_init();
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    cmd_add("quit", com_quit_f);
+    cmd_add("exit", com_quit_f);
+
+    com_dedicated = cv_get("dedicated", "2", CV_ROM);
+    com_sv_running = cv_get("sv_running", "1", CV_ROM);
+}
+
+IC_PUBLIC
+void com_shutdown(void)
+{
+    
 }

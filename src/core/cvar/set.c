@@ -22,11 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdlib.h>
 
-#include "iocod.h"
-
-extern int modified_flags;
-extern struct cvar *sv_console_lockout;
-extern struct cvar *com_sv_running;
+#include "cvar_local.h"
 
 static struct cvar *update_cvar(struct cvar *v, const char *name, 
                                 const char *value, bool force)
@@ -155,8 +151,41 @@ struct cvar *cv_set_integer(const char *name, cv_int value)
     return cv_set_string(name, v);
 }
 
-IC_PUBLIC
-struct cvar *cv_reset(const char *name)
+void cv_set_f(void)
 {
-    return cv_set2(name, NULL, false);
+    char *cmd = cmd_argv(0);
+
+    if (cmd_argc() < 2) {
+        ic_printf(_("usage: %s <variable> <value>\n"), cmd);
+        return;
+    } else if (cmd_argc() == 2) {
+        cv_print_f(); // just print it
+        return;
+    }
+
+    struct cvar *cv = cv_set2(cmd_argv(1), cmd_args_from(2), false);
+    if (cv == NULL)
+        return;
+
+    // nice ioquake3 hack to use 1 set function for all the setX commands
+    switch (cmd[3]) {
+    case 'a':
+        if ((cv->flags & CV_ARCHIVE) == 0) {
+            cv->flags |= CV_ARCHIVE;
+            modified_flags |= CV_ARCHIVE;
+        }
+        break;
+    case 'u':
+        if ((cv->flags & CV_USER_INFO) == 0) {
+            cv->flags |= CV_USER_INFO;
+            modified_flags |= CV_USER_INFO;
+        }
+        break;
+    case 's':
+        if ((cv->flags & CV_SERVER_INFO) == 0) {
+            cv->flags |= CV_SERVER_INFO;
+            modified_flags |= CV_SERVER_INFO;
+        }
+        break;
+    }
 }

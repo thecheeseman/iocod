@@ -26,32 +26,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define MAX_PRINT_LEN 1024
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(2, 3)
-void _ic_print(bool warning, const char *fmt, ...)
-{
-    char msg[MAX_PRINT_LEN];
-
-    va_list argptr = {0};
-    va_start(argptr, fmt);
-    vsnprintf(msg, sizeof(msg), fmt, argptr);
-    va_end(argptr);
-
-    if (warning) {
-        #if !defined SYS_WARN
-        fprintf(stderr, "WARNING: %s", msg);
-        #else
-        SYS_WARN(msg);
-        #endif
-    } else {
-        #if !defined SYS_PRINT
-        fprintf(stderr, "%s", msg);
-        #else
-        SYS_PRINT(msg);
-        #endif
-    }
-}
-
-IC_PUBLIC
 IC_PRINTF_FORMAT(5, 6)
 void _ic_error(bool fatal, const char *filename, const char *function, 
                const int line, const char *fmt, ...)

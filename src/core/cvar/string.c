@@ -20,7 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "cvar_local.h"
 
 IC_PUBLIC
 char *cv_clear_foreign_chars(const char *value)

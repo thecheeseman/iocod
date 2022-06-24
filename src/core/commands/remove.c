@@ -20,28 +20,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
-
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+#include "cmd_local.h"
 
 IC_PUBLIC
-void sys_set_floatenv(void)
+bool cmd_remove(const char *name)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    struct cmd_function *cmd;
+    struct cmd_function **back = &cmd_functions;
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    while (true) {
+        cmd = *back;
+        if (cmd == NULL) {
+            // command wasn't active
+            break;
+        }
+
+        if (strcasecmp(name, cmd->name) == 0) {
+            *back = cmd->next;
+
+            ic_free(cmd->name);
+            ic_free(cmd);
+            return true;
+        }
+
+        back = &cmd->next;
+    }
+
+    return false;
 }

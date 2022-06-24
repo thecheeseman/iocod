@@ -46,21 +46,25 @@ function(add_core_test)
     add_dependencies(check ${CT_NAME})
     target_link_libraries(${CT_NAME} iocod_core)
 
-    if (IC_PLATFORM_WINDOWS AND DEFINED CT_WIN32_LIBS)
-        target_link_libraries(${CT_NAME} ${CT_WIN32_LIBS})
+    if (IC_PLATFORM_WINDOWS)
+        target_link_options(${CT_NAME} BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
+        target_link_libraries(${CT_NAME} Ws2_32)
+
+        if (DEFINED CT_WIN32_LIBS)
+            target_link_libraries(${CT_NAME} ${CT_WIN32_LIBS})
+        endif()
     endif()
 
-    if (IC_PLATFORM_LINUX AND DEFINED CT_LINUX_LIBS)
-        target_link_libraries(${CT_NAME} ${CT_LINUX_LIBS})
+    if (IC_PLATFORM_LINUX)
+        target_link_libraries(${CT_NAME} tinfo)
+        
+        if (DEFINED CT_LINUX_LIBS)
+            target_link_libraries(${CT_NAME} ${CT_LINUX_LIBS})
+        endif()
     endif()
 
     if (IC_PLATFORM_MACOS AND DEFINED CT_MACOS_LIBS)
         target_link_libraries(${CT_NAME} ${CT_MACOS_LIBS})
-    endif()
-
-    if (IC_PLATFORM_WINDOWS)
-        target_link_options(${CT_NAME} BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
-        target_link_libraries(${CT_NAME} Ws2_32)
     endif()
 
     set_target_properties(${CT_NAME} PROPERTIES
@@ -73,13 +77,7 @@ endfunction()
 
 # special tests that require more arguments
 list(APPEND SPECIAL_TESTS 
-    "test-network" 
-    "test-netadr" 
-    "test-console" 
     "test-library"
-    "test-logger"
-    "test-events"
-    "test-cvar"
 )
 
 file(GLOB TEST_SRCS "*.c")
@@ -101,31 +99,7 @@ foreach (_test IN LISTS TEST_SRCS)
     endif()
 endforeach()
 
-add_core_test(NAME "test-network"
-    SOURCES "test-network.c"
-    LINUX_LIBS "tinfo"
-)
-add_core_test(NAME "test-netadr"
-    SOURCES "test-netadr.c"
-    LINUX_LIBS "tinfo"
-)
-add_core_test(NAME "test-console"
-    SOURCES "test-console.c"
-    LINUX_LIBS "tinfo"
-)
 add_core_test(NAME "test-library"
     SOURCES "test-library.c"
     LINUX_LIBS "dl"
-)
-add_core_test(NAME "test-logger"
-    SOURCES "test-logger.c"
-    LINUX_LIBS "tinfo"
-)
-add_core_test(NAME "test-events"
-    SOURCES "test-events.c"
-    LINUX_LIBS "tinfo"
-)
-add_core_test(NAME "test-cvar"
-    SOURCES "test-cvar.c"
-    LINUX_LIBS "tinfo"
 )

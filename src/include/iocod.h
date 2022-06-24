@@ -135,6 +135,8 @@ iocod includes
 */
 
 #include "iocod/assert.h"
+#include "iocod/commands.h"
+#include "iocod/common.h"
 #include "iocod/conf.h"
 #include "iocod/console.h"
 #include "iocod/cvar.h"

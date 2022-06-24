@@ -31,6 +31,12 @@ int ev_loop(void)
     while (true) {
         struct sys_event ev = ev_get();
 
+        if (ev.type == SE_NONE) {
+            // net_getloop
+
+            return ev.time;
+        }
+
         switch (ev.type) {
         case SE_KEY:
         case SE_CHAR:
@@ -38,21 +44,15 @@ int ev_loop(void)
         case SE_JOYSTICK_AXIS:
             break; // TODO: client
         case SE_CONSOLE:
-            if (!strcasecmp(ev.ptr, "exit"))
-                sys_exit(IC_OK);
-            
-            // cbuf_add_text((char *) ev.ptr);
-            // cbuf_add_text("\n");
+            cbuf_add_text((char *) ev.ptr);
+            cbuf_add_text("\n");
             break;
         case SE_PACKET:
             break; // TODO: net
         case SE_BAD_EVENT:
+        default:
             log_error(_("Bad event type %i\n"), ev.type);
             break;
-        default:
-            // TODO: net loopback
-
-            return ev.time;
         }
 
         ic_free(ev.ptr);

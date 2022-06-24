@@ -20,42 +20,57 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "cvar_local.h"
+#include "cmd_local.h"
 
-struct cvar *cv_cheats;
-struct cvar *sv_console_lockout;
+unsigned int argc;
+char *argv[MAX_STRING_TOKENS];
 
 IC_PUBLIC
-void cv_init(void)
+unsigned int cmd_argc(void)
 {
-    cv_cheats = cv_get("sv_cheats", "0", CV_ROM | CV_SYSTEM_INFO);
-    sv_console_lockout = cv_get("sv_console_lockout", "0", 
-                                CV_ROM | CV_SYSTEM_INFO);
-
-    cmd_add("cvarlist", cv_list_f);
-    cmd_add("print", cv_print_f);
-    cmd_add("set", cv_set_f);
-    cmd_add("seta", cv_set_f);
-    cmd_add("sets", cv_set_f);
-    cmd_add("setu", cv_set_f);
-    cmd_add("toggle", cv_toggle_f);
-    cmd_add("unset", cv_unset_f);
+    return argc;
 }
 
 IC_PUBLIC
-void cv_shutdown(void)
+char *cmd_argv(unsigned int arg)
 {
-    for (struct cvar *v = cvars; v != NULL; v = v->next) {
-        if (v->name != NULL)
-            ic_free(v->name);
+    if (arg < argc)
+        return argv[arg];
+    
+    return "";
+}
 
-        if (v->string != NULL)
-            ic_free(v->string);
+IC_PUBLIC
+void cmd_argv_buffer(unsigned int arg, size_t buflen, char *buf)
+{
+    if (buf != NULL && buflen > 0)
+        strncpyz(buf, cmd_argv(arg), buflen);
+}
 
-        if (v->latched_string != NULL)
-            ic_free(v->latched_string);
+IC_PUBLIC
+char *cmd_args_from(unsigned int arg)
+{
+    static char args[MAX_STRING_CHARS] = {0};
 
-        if (v->reset_string != NULL)
-            ic_free(v->reset_string);
+    args[0] = '\0';
+    for (unsigned int i = arg; i < argc; i++) {
+        strncatz(args, sizeof(args), cmd_argv(i));
+        if (i < argc - 1)
+            strncatz(args, sizeof(args), " ");
     }
+
+    return args;
+}
+
+IC_PUBLIC
+char *cmd_args(void)
+{
+    return cmd_args_from(1);
+}
+
+IC_PUBLIC
+void cmd_args_buffer(size_t buflen, char *buf)
+{
+    if (buf != NULL && buflen > 0)
+        strncpyz(buf, cmd_args(), buflen);
 }

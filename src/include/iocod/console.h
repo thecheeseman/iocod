@@ -27,6 +27,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #define MAX_PRINT_MSG 4096
 
+#define IC_CONSOLE_TITLE "iocod dedicated server console [" \
+    IC_VERSION_STRING "-" IC_PLATFORM_STRING "]"
+
 /**
  * @defgroup console Console
  * @brief Console module for handling input, output, etc.

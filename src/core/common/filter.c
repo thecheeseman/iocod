@@ -1,0 +1,114 @@
+/*
+================================================================================
+iocod
+Copyright (C) 2022 thecheeseman
+
+This file is part of the iocod GPL source code.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+================================================================================
+*/
+
+#include "com_local.h"
+#include <ctype.h>
+
+IC_PUBLIC
+bool com_filter(char *filter, char *name, bool casesensitive)
+{
+    char buf[MAX_TOKEN_CHARS] = {0};
+    char *ptr;
+    int i;
+
+    while (*filter != '\0') {
+        bool found;
+        
+        if (*filter == '*') {
+            filter++;
+            for (i = 0; *filter != '\0'; i++) {
+                if (*filter == '*' || *filter == '?') 
+                    break;
+
+                buf[i] = *filter;
+                filter++;
+            }
+            buf[i] = '\0';
+
+            if (strlen(buf) > 0) {
+                ptr = com_string_contains(name, buf, casesensitive);
+                if (ptr == NULL) 
+                    return false;
+                name = ptr + strlen(buf);
+            }
+        } else if (*filter == '?') {
+            filter++;
+            name++;
+        } else if (*filter == '[' && *(filter + 1) == '[') {
+            filter++;
+        } else if (*filter == '[') {
+            filter++;
+            found = false;
+            while (*filter != '\0' && !found) {
+                if (*filter == ']' && *(filter + 1) != ']') 
+                    break;
+
+                if (*(filter + 1) == '-' && *(filter + 2) && 
+                    (*(filter + 2) != ']' || *(filter + 3) == ']')) {
+                    if (casesensitive) {
+                        if (*name >= *filter && *name <= *(filter + 2)) 
+                            found = true;
+                    } else {
+                        if (toupper(*name) >= toupper(*filter) &&
+                            toupper(*name) <= toupper(*(filter + 2))) {
+                            found = true;
+                        }
+                    }
+                    filter += 3;
+                } else {
+                    if (casesensitive) {
+                        if (*filter == *name)
+                            found = true;
+                    } else {
+                        if (toupper(*filter) == toupper(*name)) 
+                            found = true;
+                    }
+
+                    filter++;
+                }
+            }
+
+            if (!found) 
+                return false;
+
+            while (*filter != '\0') {
+                if (*filter == ']' && *(filter + 1) != ']') 
+                    break;
+                filter++;
+            }
+            filter++;
+            name++;
+        } else {
+            if (casesensitive) {
+                if (*filter != *name) 
+                    return false;
+            } else {
+                if (toupper(*filter) != toupper(*name)) 
+                    return false;
+            }
+            filter++;
+            name++;
+        }
+    }
+
+    return true;
+}

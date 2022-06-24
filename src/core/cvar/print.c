@@ -20,28 +20,41 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
-
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+#include "cvar_local.h"
 
 IC_PUBLIC
-void sys_set_floatenv(void)
+void cv_print(struct cvar *cv)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    ic_printf("\"%s\" is: \"%s^7\"", cv->name, cv->string);
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    if ((cv->flags & CV_ROM) == 0) {
+        if (strcasecmp(cv->string, cv->reset_string) == 0)
+            ic_printf(", set to default");
+        else
+            ic_printf(" default: \"%s^7\"", cv->reset_string);
+    }
+
+    ic_printf("\n");
+
+    if (cv->latched_string != NULL)
+        ic_printf("latched: \"%s^7\"", cv->latched_string);
+
+    if (cv->description != NULL)
+        ic_printf("%s\n", cv->description);
+}
+
+void cv_print_f(void)
+{
+    if (cmd_argc() != 2) {
+        ic_printf(_("usage: print <variable>\n"));
+        return;
+    }
+
+    char *name = cmd_argv(1);
+    struct cvar *cv = cv_find(name);
+    
+    if (cv != NULL)
+        cv_print(cv);
+    else
+        ic_printf(_("Cvar '%s' does not exist.\n"), name);
 }

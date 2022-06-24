@@ -20,9 +20,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "com_local.h"
+#include <ctype.h>
 
-void cv_add_commands(void)
+IC_PUBLIC
+char *com_string_contains(char *str1, char *str2, bool casesensitive)
 {
+    int len, i, j;
 
+    len = strlen(str1) - strlen(str2);
+    for (i = 0; i <= len; i++, str1++) {
+        for (j = 0; str2[j] != '\0'; j++) {
+            if (casesensitive) {
+                if (str1[j] != str2[j])
+                    break;
+            } else {
+                if (toupper(str1[j]) != toupper(str2[j]))
+                    break;
+            }
+        }
+
+        if (str2[j] == '\0')
+            return str1;
+    }
+    return NULL;
 }

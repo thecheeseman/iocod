@@ -23,15 +23,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "iocod.h"
+#include "cvar_local.h"
 
 struct cvar *cvars;
-extern struct cvar *cv_cheats;
 
 static struct cvar indexes[MAX_CVARS];
-static size_t num_indexes = 0;
-
-static struct cvar *hashtable[MAX_CVARS];
+size_t num_indexes = 0;
+struct cvar *hashtable[MAX_CVARS];
 
 int modified_flags = 0;
 
@@ -139,14 +137,17 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
 /*
  * create a cvar.
  */
-static struct cvar *create_cvar(const char *name, const char *value,
+static struct cvar *create_cvar(size_t index, const char *name, const char *value,
                                 enum cv_flags flags)
 {
-    struct cvar *v = &indexes[num_indexes];
-    num_indexes++;
+    struct cvar *v = &indexes[index];
+
+    if (index >= num_indexes)
+        num_indexes = index + 1;
 
     v->name = strdup(name);
     v->flags = flags;
+    modified_flags |= v->flags;
     
     v->string = strdup(value);
     v->reset_string = strdup(value);
@@ -156,13 +157,24 @@ static struct cvar *create_cvar(const char *name, const char *value,
     v->modified = true;
     v->modification_count = 1;
 
+    v->description = NULL;
+
     /* link the next var */
     v->next = cvars;
+    if (cvars != NULL)
+        cvars->prev = v;
+
+    v->prev = NULL;
     cvars = v;
 
     /* hashtable */
     long hash = cv_hash(name);
+    v->hash_index = hash;
     v->hash_next = hashtable[hash];
+    if (hashtable[hash] != NULL)
+        hashtable[hash]->hash_prev = v;
+
+    v->hash_prev = NULL;
     hashtable[hash] = v;
 
     return v;
@@ -187,11 +199,18 @@ struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags)
         return v;
     }
 
-    if (num_indexes >= MAX_CVARS) {
+    // ioq3 find the next open cvar
+    size_t index;
+    for (index = 0; index < MAX_CVARS; index++) {
+        if (indexes[index].name == NULL)
+            break;
+    }
+
+    if (index >= MAX_CVARS) {
         log_error(_("Reached maximum number of cvars"));
         return NULL;
     }
 
-    return create_cvar(name, value, flags);
+    return create_cvar(index, name, value, flags);
 }
 

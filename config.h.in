@@ -41,6 +41,8 @@
 /* enable debugging (build with CMAKE_BUILD_TYPE="Debug") */
 #cmakedefine IC_DEBUG 1
 
+#define IC_DEDICATED 1
+
 /* versioning */
 #define IC_VERSION_MAJOR @iocod_VERSION_MAJOR@
 #define IC_VERSION_MINOR @iocod_VERSION_MINOR@

@@ -20,28 +20,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "cmd_local.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
-
-IC_PUBLIC
-void sys_set_floatenv(void)
+void cmd_vstr_f(void)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    if (cmd_argc() != 2) {
+        ic_printf(_("vstr <variable_name>: execute a variable command\n"));
+        return;
+    }
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    char *v = cv_get_string(cmd_argv(1));
+    cbuf_insert_text(va("%s\n", v));
 }

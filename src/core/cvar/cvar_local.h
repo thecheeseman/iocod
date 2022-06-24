@@ -20,28 +20,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#ifndef CVAR_LOCAL_H
+#define CVAR_LOCAL_H
+
 #include "iocod.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+extern struct cvar *cvars;
+extern size_t num_indexes;
+extern int modified_flags;
+extern struct cvar *hashtable[MAX_CVARS];
+extern struct cvar *sv_console_lockout;
+extern struct cvar *com_sv_running;
+extern struct cvar *cv_cheats;
 
-IC_PUBLIC
-void sys_set_floatenv(void)
-{
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+void cv_list_f(void);
+void cv_print_f(void);
+void cv_set_f(void);
+void cv_toggle_f(void);
+void cv_unset_f(void);
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
-}
+#endif /* CVAR_LOCAL_H */

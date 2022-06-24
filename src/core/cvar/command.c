@@ -20,28 +20,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
-
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+#include "cvar_local.h"
 
 IC_PUBLIC
-void sys_set_floatenv(void)
+bool cv_command(void)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    struct cvar *cv = cv_find(cmd_argv(0));
+    if (cv == NULL)
+        return false;
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+    // print variable
+    if (cmd_argc() == 1) {
+        cv_print(cv);
+        return true;
+    }
+
+    // set value
+    cv_set2(cv->name, cmd_args(), false);
+    return true;
 }

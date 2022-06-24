@@ -20,28 +20,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
-
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+#include "cvar_local.h"
 
 IC_PUBLIC
-void sys_set_floatenv(void)
+struct cvar *cv_reset(const char *name)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    return cv_set2(name, NULL, false);
+}
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+void cv_reset_f(void)
+{
+    if (cmd_argc() != 2) {
+        ic_printf(_("usage: reset <variable>\n"));
+        return;
+    }
+
+    cv_reset(cmd_argv(1));
 }

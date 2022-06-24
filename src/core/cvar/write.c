@@ -22,11 +22,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdio.h>
 
-#include "iocod.h"
+#include "cvar_local.h"
 
 #define fs_printf(f, s, ...) ic_printf(s, __VA_ARGS__)
-
-extern struct cvar *cvars;
 
 IC_PUBLIC
 bool cv_write_defaults(filehandle f)

@@ -55,10 +55,9 @@ static struct sys_event get_event(void)
     }
     #endif
 
-    // TODO: console input
     char *s = con_input();
     if (s != NULL) {
-        size_t len = strlen(s) + 1;
+        int len = (int) strlen(s) + 1;
         char *b = ic_malloc(len);
         strncpy(b, s, len);
         ev_queue(0, SE_CONSOLE, 0, 0, len, b);

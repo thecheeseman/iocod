@@ -20,28 +20,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "cmd_local.h"
+#include <stdlib.h>
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <float.h>
-#else
-#include <fenv.h>
-#endif
+size_t cmd_wait = 0;
 
-IC_PUBLIC
-void sys_set_floatenv(void)
+void cmd_wait_f(void)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    #define FPUCWMASK1 (_MCW_RC | _MCW_EM)
-    #define FPUCW (_RC_NEAR | _MCW_EM | _PC_53)
+    if (cmd_argc() == 2) {
+        long wait = strtol(cmd_argv(1), NULL, 10);
 
-    #if IC_PLATFORM_64BIT
-    #define FPUCWMASK	(FPUCWMASK1)
-    #else
-    #define FPUCWMASK	(FPUCWMASK1 | _MCW_PC)
-    #endif
-    _controlfp(FPUCW, FPUCWMASK);
-    #else
-    fesetround(FE_TONEAREST);
-    #endif
+        if (wait < 0)
+            cmd_wait = 1; // ignore the argument
+        else
+            cmd_wait = (size_t) wait;
+    } else {
+        cmd_wait = 1;
+    }
 }
