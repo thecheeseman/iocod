@@ -15,6 +15,10 @@
 /* architecture */
 #define IC_PLATFORM_ARCH "@IC_PLATFORM_ARCH@"
 #cmakedefine IC_PLATFORM_64BIT 1
+#cmakedefine IC_PLATFORM_AMD64 1
+#cmakedefine IC_PLATFORM_X86 1
+#cmakedefine IC_PLATFORM_ARM32 1
+#cmakedefine IC_PLATFORM_ARM64 1
 
 /* operating system */
 #define IC_PLATFORM_OS "@IC_PLATFORM_OS@"

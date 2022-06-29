@@ -33,8 +33,16 @@ macro(check_features)
     message(DEBUG "Building on ${IC_PLATFORM_OS}")
 
     # arch
+    set(IC_PLATFORM_AMD64 FALSE CACHE BOOL "AMD64")
+    set(IC_PLATFORM_X86 FALSE CACHE BOOL "x86")
+    set(IC_PLATFORM_ARM32 FALSE CACHE BOOL "arm32")
+    set(IC_PLATFORM_ARM64 FALSE CACHE BOOL "arm64")
+
     if (${IC_PLATFORM_ARCH} STREQUAL "x86_64")
         set(IC_PLATFORM_ARCH "amd64")
+        set(IC_PLATFORM_AMD64 TRUE)
+    elseif(${IC_PLATFORM_ARCH} STREQUAL "aarch64")
+        set(IC_PLATFORM_ARM64 TRUE)
     endif()
 
     set(IC_PLATFORM_BITS "64" CACHE STRING "'32' or '64''")
@@ -55,8 +63,10 @@ macro(check_features)
             # reset arch strings to be correct
             if (${IC_PLATFORM_ARCH} STREQUAL "amd64")
                 set(IC_PLATFORM_ARCH "x86")
+                set(IC_PLATFORM_X86 TRUE)
             elseif (${IC_PLATFORM_ARCH} STREQUAL "aarch64")
                 set(IC_PLATFORM_ARCH "aarch32")
+                set(IC_PLATFORM_ARM32 TRUE)
             endif()
         else()
             set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS TRUE)
@@ -96,4 +106,6 @@ macro(check_features)
         endif()
     endif()
     message(DEBUG "32-Bit compile flags: ${IC_PLATFORM_CFLAGS_32BIT}")
+
+    # debug flags
 endmacro()

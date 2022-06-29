@@ -38,7 +38,7 @@
             "displayName": "Release (64-bit)",
             "inherits": "linux-base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
             }
         },
         {
@@ -58,7 +58,7 @@
             "displayName": "Release (32-bit)",
             "inherits": "linux-base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "BUILD64": {
                     "type": "BOOL",
                     "value": "false"
@@ -106,7 +106,7 @@
             "displayName": "Release",
             "inherits": "macos-base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
             }
         },
         /*
