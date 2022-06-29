@@ -20,24 +20,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "cmd_local.h"
+#include "com_local.h"
 
-void cmd_list_f(void)
+IC_PUBLIC
+int com_milliseconds(void)
 {
-    char *match = NULL;
+    struct sys_event ev = {0};
+    do {
+        ev = ev_get();
 
-    if (cmd_argc() > 1)
-        match = cmd_argv(1);
+        if (ev.type != SE_NONE)
+            ev_push(&ev);
 
-    struct cmd_function *cmd;
-    int num_cmds = 0;
-    for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
-        if (match != NULL && !com_filter(match, cmd->name, false))
-            continue;
+    } while (ev.type != SE_NONE);
 
-        ic_printf("%s\n", cmd->name);
-        num_cmds++;
-    }
-
-    ic_printf(_("%i commands\n"), num_cmds);
+    return ev.time;
 }

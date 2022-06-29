@@ -27,6 +27,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdarg.h>
 
+#define MAX_PATH 256
+
 enum q3color {
     // standard q3 colors
     COLOR_BLACK,

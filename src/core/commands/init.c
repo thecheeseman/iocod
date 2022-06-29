@@ -21,14 +21,88 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "cmd_local.h"
+#include <stdlib.h>
 
-struct cmd_function *cmd_functions;
+struct cmd *cmd_functions;
+
+static void cmd_echo_f(struct cmd *self)
+{
+    UNUSED_PARAM(self);
+
+    ic_printf("%s\n", cmd_args());
+}
+
+static void cmd_help_f(struct cmd *self)
+{
+    UNUSED_PARAM(self);
+}
+
+static void cmd_list_f(struct cmd *self)
+{
+    UNUSED_PARAM(self);
+
+    char *match = NULL;
+
+    if (cmd_argc() > 1)
+        match = cmd_argv(1);
+
+    struct cmd *cmd;
+    int num_cmds = 0;
+    for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
+        if (match != NULL && !com_filter(match, cmd->name, false))
+            continue;
+
+        ic_printf("%s\n", cmd->name);
+        num_cmds++;
+    }
+
+    ic_printf(_("%i commands\n"), num_cmds);
+}
+
+static void cmd_vstr_f(struct cmd *self)
+{
+    UNUSED_PARAM(self);
+
+    char *v = cv_get_string(cmd_argv(1));
+    cbuf_insert_text(va("%s\n", v));
+}
+
+size_t cmd_wait = 0;
+
+void cmd_wait_f(void)
+{
+    if (cmd_argc() == 2) {
+        long wait = strtol(cmd_argv(1), NULL, 10);
+
+        if (wait < 0)
+            cmd_wait = 1; // ignore the argument
+        else
+            cmd_wait = (size_t) wait;
+    } else {
+        cmd_wait = 1;
+    }
+}
 
 IC_PUBLIC
 void cmd_init(void)
 {
-    cmd_add("cmdlist", cmd_list_f);
-    cmd_add("echo", cmd_echo_f);
-    cmd_add("vstr", cmd_vstr_f);
-    cmd_add("wait", cmd_wait_f);
+    cmd_add2("cmdlist", cmd_list_f, 0, 1,
+             _("cmdlist [match]"), 
+             _("List all available commands."));
+
+    cmd_add2("echo", cmd_echo_f, 1, 0, 
+             _("echo <string>"), 
+             _("Echo a string to the console output."));
+
+    cmd_add2("help", cmd_help_f, 0, 0,
+             _("help [<topic or command>]"),
+             _("Lookup usage or information about a given topic or command."));
+
+    cmd_add2("vstr", cmd_vstr_f, 1, 1, 
+             _("vstr <variable_name>"),
+             _("Execute a cvar as a command."));
+
+    cmd_add2("wait", cmd_wait_f, 1, 1,
+             _("wait <time>"),
+             _("Wait specified amount of frames."));
 }

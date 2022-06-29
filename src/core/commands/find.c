@@ -23,9 +23,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cmd_local.h"
 
 IC_PUBLIC
-struct cmd_function *cmd_find(const char *name)
+struct cmd *cmd_find(const char *name)
 {
-    struct cmd_function *cmd;
+    struct cmd *cmd;
     for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
         if (strcasecmp(cmd->name, name) == 0)
             return cmd;

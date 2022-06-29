@@ -78,7 +78,13 @@ void sys_signal_handler(int signal)
 
 quit:
     log_error(_("Signal %d (%s) caught, terminating...\n"), signal, sigtext);
-    
+
+    // dump backtrace
+    if (signal == SIGSEGV) {
+        log_error(_("Check crash.log for details\n"));
+        sys_backtrace();
+    }
+
     if (signal == SIGTERM || signal == SIGINT)
         sys_exit(IC_TERMINATE);
     else if (signal == SIGSEGV)

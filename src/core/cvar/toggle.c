@@ -22,14 +22,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cvar_local.h"
 
-void cv_toggle_f(void)
+void cv_toggle_f(struct cmd *self)
 {
+    UNUSED_PARAM(self);
+    
     unsigned int argc = cmd_argc();
     
-    if (argc < 2) {
-        ic_printf(_("usage: toggle <variable> [<value1> <value2> ...]\n"));
-        return;
-    } else if (argc == 2) {
+    if (argc == 2) {
         cv_set2(cmd_argv(1), va("%d", !cv_get_integer(cmd_argv(1))), false);
         return;
     } else if (argc == 3) {

@@ -27,16 +27,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 extern struct cvar *cvars;
 extern size_t num_indexes;
-extern int modified_flags;
 extern struct cvar *hashtable[MAX_CVARS];
 extern struct cvar *sv_console_lockout;
 extern struct cvar *com_sv_running;
 extern struct cvar *cv_cheats;
 
-void cv_list_f(void);
-void cv_print_f(void);
-void cv_set_f(void);
-void cv_toggle_f(void);
-void cv_unset_f(void);
+void cv_list_f(struct cmd *self);
+void cv_print_f(struct cmd *self);
+void cv_set_f(struct cmd *self);
+void cv_toggle_f(struct cmd *self);
+void cv_unset_f(struct cmd *self);
 
 #endif /* CVAR_LOCAL_H */

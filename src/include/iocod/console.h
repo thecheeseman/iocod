@@ -37,6 +37,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
+ * @brief Check if the console is initialized or not.
+ * @return true if the console is initialized, false otherwise.
+ */
+IC_PUBLIC
+bool con_initialized(void);
+
+/**
  * @brief Initialize console. Sets up input and output processing, color 
  * support (for termianls that support it), etc.
 */

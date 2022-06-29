@@ -82,11 +82,11 @@ bool cbuf_execute(void);
 /**
  * @brief Command function structure.
 */
-struct cmd_function {
+struct cmd {
     /**
      * @brief Next command in the linked list.
     */
-    struct cmd_function *next;
+    struct cmd *next;
 
     /**
      * @brief Name of the command.
@@ -96,7 +96,13 @@ struct cmd_function {
     /**
      * @brief Function to call when the command is executed.
     */
-    void (*function)(void);
+    void (*function)(struct cmd *);
+
+    int argc_min;
+    int argc_max;
+
+    char *usage;
+    char *description;
 
     // completionfunc complete;
 };
@@ -182,7 +188,11 @@ void cmd_tokenize_string(const char *text_in);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cmd_add(const char *name, void (*function)(void));
+bool cmd_add(const char *name, void (*function)(struct cmd *));
+
+IC_PUBLIC
+bool cmd_add2(const char *name, void (*function)(struct cmd *), int min,
+              int max, const char *usage, const char *description);
 
 /**
  * @brief Remove the given @p name command from the command list.
@@ -198,7 +208,7 @@ bool cmd_remove(const char *name);
  * @return the command or NULL if not found
 */
 IC_PUBLIC
-struct cmd_function *cmd_find(const char *name);
+struct cmd *cmd_find(const char *name);
 
 /** @} */
 

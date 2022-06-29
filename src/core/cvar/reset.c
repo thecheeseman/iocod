@@ -28,8 +28,10 @@ struct cvar *cv_reset(const char *name)
     return cv_set2(name, NULL, false);
 }
 
-void cv_reset_f(void)
+void cv_reset_f(struct cmd *self)
 {
+    UNUSED_PARAM(self);
+
     if (cmd_argc() != 2) {
         ic_printf(_("usage: reset <variable>\n"));
         return;

@@ -29,17 +29,36 @@ IC_PUBLIC
 void cv_init(void)
 {
     cv_cheats = cv_get("sv_cheats", "0", CV_ROM | CV_SYSTEM_INFO);
+    cv_set_description(cv_cheats, _("Enable or disable cheat cvars."));
+    
     sv_console_lockout = cv_get("sv_console_lockout", "0", 
                                 CV_ROM | CV_SYSTEM_INFO);
+    cv_set_description(sv_console_lockout, _("Disable console input."));
 
-    cmd_add("cvarlist", cv_list_f);
-    cmd_add("print", cv_print_f);
-    cmd_add("set", cv_set_f);
-    cmd_add("seta", cv_set_f);
-    cmd_add("sets", cv_set_f);
-    cmd_add("setu", cv_set_f);
-    cmd_add("toggle", cv_toggle_f);
-    cmd_add("unset", cv_unset_f);
+    cmd_add2("cvarlist", cv_list_f, 0, 1, 
+             _("cvarlist [match]"),
+             _("List all cvars."));
+    cmd_add2("print", cv_print_f, 1, 1, 
+             _("print <variable>"),
+             _("Print the value of a cvar."));
+    cmd_add2("set", cv_set_f, 1, 2,
+             _("set <variable> <value>"), 
+             _("Set a console variable."));
+    cmd_add2("seta", cv_set_f, 1, 2,
+             _("seta <variable> <value>"),
+             _("Set a console variable (ARCHIVE)."));
+    cmd_add2("sets", cv_set_f, 1, 2,
+             _("sets <variable> <value>"),
+             _("Set a console variable (SERVER INFO)."));
+    cmd_add2("setu", cv_set_f, 1, 2,
+             _("setu <variable> <value>"),
+             _("Set a console variable (USER INFO)."));
+    cmd_add2("toggle", cv_toggle_f, 1, 0,
+             _("toggle <variable> [value1, value2...]"),
+             _("Toggle a console variable."));
+    cmd_add2("unset", cv_unset_f, 1, 1,
+             _("unset <variable>"),
+             _("Unset a console variable."));
 }
 
 IC_PUBLIC

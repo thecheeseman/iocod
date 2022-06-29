@@ -23,33 +23,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_SYSTEM_H
 #define IC_SYSTEM_H
 
-enum exit_code {
-    /**
-     * @brief Normal exit.
-    */
-    IC_OK,
-
-    /**
-     * @brief Abnormal exit due to terminate/interrupt signal.
-    */
-    IC_TERMINATE,
-
-    /**
-     * @brief Abnormal exit due to segmentation fault.
-    */
-    IC_SEGFAULT,
-
-    /**
-     * @brief Abnormal exit due to other signal.
-    */
-    IC_SIGNAL,
-
-    /**
-     * @brief Exit due to error.
-    */
-    IC_ERROR
-};
-
 /**
  * @brief Get last library error, if applicable. Clears last error.
  * @return NULL-terminated string containing error message, otherwise NULL
@@ -94,52 +67,153 @@ bool sys_library_load_symbol(void *handle, const char *fn, void **symbol);
 IC_PUBLIC
 int32_t sys_milliseconds(void);
 
+/**
+ * @brief Cause the system to do a backtrace dump in case of segfaults.
+*/
+IC_PUBLIC
+void sys_backtrace(void);
+
+enum exit_code {
+    /**
+     * @brief Normal exit.
+    */
+    IC_OK,
+
+    /**
+     * @brief Abnormal exit due to terminate/interrupt signal.
+    */
+    IC_TERMINATE,
+
+    /**
+     * @brief Abnormal exit due to segmentation fault.
+    */
+    IC_SEGFAULT,
+
+    /**
+     * @brief Abnormal exit due to other signal.
+    */
+    IC_SIGNAL,
+
+    /**
+     * @brief Exit due to error.
+    */
+    IC_ERROR
+};
+
+/**
+ * @brief Exit with code @p code.
+ * @param code exit code
+*/
 IC_PUBLIC
 IC_NO_RETURN
 void sys_exit(int code);
 
+/**
+ * @brief Gracefully quit the system with exit code @ref IC_OK.
+*/
 IC_PUBLIC
 void sys_quit(void);
 
+/**
+ * @brief Signal handler. We want to handle most useful signals, especially
+ * SIGSEGV and SIGINT as those are the most likely.
+ * @param signal signal number
+*/
 IC_PUBLIC
 void sys_signal_handler(int signal);
 
+/**
+ * @brief Set up signal handling for errors.
+*/
 IC_PUBLIC
 void sys_setup_signal_handler(void);
 
+/**
+ * @brief Set processor floating point rounding to nearest.
+*/
 IC_PUBLIC
 void sys_set_floatenv(void);
 
+/**
+ * @brief Windows specific function for printing MessageBox errors.
+ * @param function
+*/
 IC_PUBLIC
 void sys_handle_error_exit(const char *function);
 
+/**
+ * @brief Platform specific initialization. At the moment, this only 
+ * detects which Windows version we're running (if we're on Windows).
+*/
 IC_PUBLIC
 void sys_platform_init();
 
+/**
+ * @def sys_is_windows
+ * @brief Used to check if we're on Windows -- the @ref IC_PLATFORM_WINDOWS
+ * macro is enough for most conditional compilation checks, but sometimes 
+ * we need a runtime check because some identical code can have different
+ * outcomes on Windows.
+ */
+#ifdef IC_PLATFORM_WINDOWS
+#define sys_is_windows() true
+#else
+#define sys_is_windows() false
+#endif
+
 enum system_type {
+    /**
+     * @brief Generic Linux.
+    */
     SYSTEM_LINUX,
 
+    /**
+     * @brief Generic MacOS.
+    */
     SYSTEM_MACOS,
     
+    /**
+     * @brief This is only here for prosterity. No one is using Win2000.
+    */
     SYSTEM_WIN2000,
 
+    /**
+     * @brief Minimum supported Windows version for iocod.
+    */
     SYSTEM_WINXP,
 
+    /**
+     * @brief Unlikely anyone is still using this.
+    */
     SYSTEM_WIN2003,
 
+    /**
+     * @brief Unlikely anyone is still using this.
+    */
     SYSTEM_WINVISTA,
 
+    /**
+     * @brief Windows 7.
+    */
     SYSTEM_WIN7,
 
+    /**
+     * @brief Windows 8, 8.1, 10, and 11 all report they are at least 
+     * Windows 8 due to some API changes. It's not really important to
+     * distinguish between any of these versions anyway.
+    */
     SYSTEM_WIN8_OR_LATER,
 
+    /**
+     * @brief Not possible.
+    */
     SYSTEM_UNKNOWN
 };
 
+/**
+ * @brief Get the current system type.
+*/
 IC_PUBLIC
 enum system_type sys_system_type(void);
-
-IC_PUBLIC
-bool sys_is_windows(void);
 
 #endif /* IC_SYSTEM_H */

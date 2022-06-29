@@ -25,6 +25,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
-void com_quit_f(void);
+void com_add_commands(void);
 
 #endif /* COM_LOCAL_H */

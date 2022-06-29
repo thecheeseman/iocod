@@ -154,6 +154,9 @@ void net_show_ip(void);
 IC_PUBLIC
 bool net_is_lan_address(struct netadr addr);
 
+IC_PUBLIC
+void net_sleep(int msec);
+
 /** @} */
 
         // RFC1918:

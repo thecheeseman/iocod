@@ -92,9 +92,22 @@ void com_frame(void)
     } while (msec < min_msec);
     #endif
 
+    int tv = 0;
     do {
-        int tv = timeval(min_msec);
-        UNUSED_PARAM(tv);
+        if (com_sv_running->integer > 0) {
+            // timeval SV = sv_send_queued_packets()
+            tv = timeval(min_msec);
+
+            // if (timeval SV < timeval)
+            // timeval = timeval sv;
+        } else {
+            tv = timeval(min_msec);
+        }
+
+        if (com_busy_wait->integer > 0 || tv < 1)
+            net_sleep(0);
+        else
+            net_sleep(tv - 1);
     } while (timeval(min_msec));
 
     last_time = com_frame_time;

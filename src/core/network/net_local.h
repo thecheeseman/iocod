@@ -172,6 +172,8 @@ void net_netadr_to_sockaddr(struct netadr *a, struct sockaddr *s);
 */
 void net_sockaddr_to_netadr(struct sockaddr *s, struct netadr *a);
 
+void net_event(fd_set *fdr);
+
 /** @} */
 
 #endif /* NET_LOCAL_H */

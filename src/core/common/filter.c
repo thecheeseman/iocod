@@ -112,3 +112,29 @@ bool com_filter(char *filter, char *name, bool casesensitive)
 
     return true;
 }
+
+IC_PUBLIC
+bool com_filter_path(char *filter, char *name, bool casesensitive)
+{
+    size_t i;
+    char new_filter[MAX_PATH] = {0};
+    
+    for (i = 0; i < MAX_PATH - 1 && filter[i] != '\0'; i++) {
+        if (filter[i] == '\\' || filter[i] == ':')
+            new_filter[i] = '/';
+        else
+            new_filter[i] = filter[i];
+    }
+    new_filter[i] = '\0';
+
+    char new_name[MAX_PATH] = {0};
+    for (i = 0; i < MAX_PATH - 1 && name[i] != '\0'; i++) {
+        if (name[i] == '\\' || name[i] == ':')
+            new_name[i] = '/';
+        else
+            new_name[i] = name[i];
+    }
+    new_name[i] = '\0';
+
+    return com_filter(new_filter, new_name, casesensitive);
+}

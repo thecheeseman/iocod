@@ -34,12 +34,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define	MAX_CMD_BUFFER  128*1024
 #define	MAX_CMD_LINE	1024
 
-struct cmd {
-    byte *data;
-    size_t maxsize;
-    size_t cursize;
-};
-
 // args.c
 extern unsigned int argc;
 extern char *argv[MAX_STRING_TOKENS];
@@ -48,13 +42,8 @@ extern char *argv[MAX_STRING_TOKENS];
 extern char cmd_tokenized[INFO_STRING_BIG + MAX_STRING_TOKENS];
 extern char cmd_cmd[INFO_STRING_BIG];
 
-extern struct cmd_function *cmd_functions;
+extern struct cmd *cmd_functions;
 extern size_t cmd_wait;
-
-void cmd_echo_f(void);
-void cmd_list_f(void);
-void cmd_vstr_f(void);
-void cmd_wait_f(void);
 
 /** @} */
 

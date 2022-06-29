@@ -48,7 +48,7 @@ function(add_core_test)
 
     if (IC_PLATFORM_WINDOWS)
         target_link_options(${CT_NAME} BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
-        target_link_libraries(${CT_NAME} Ws2_32)
+        target_link_libraries(${CT_NAME} Ws2_32 Dbghelp Psapi)
 
         if (DEFINED CT_WIN32_LIBS)
             target_link_libraries(${CT_NAME} ${CT_WIN32_LIBS})

@@ -64,7 +64,9 @@ target_link_libraries(iocod_dedicated iocod_core)
 
 if (IC_PLATFORM_WINDOWS)
     target_link_options(iocod_dedicated BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")
-    target_link_libraries(iocod_dedicated Ws2_32)
+    target_link_libraries(iocod_dedicated Ws2_32 Dbghelp Psapi)
+
+    target_compile_definitions(iocod_dedicated PUBLIC PSAPI_VERSION=1)
 else()
     target_link_libraries(iocod_dedicated tinfo m pthread)
 endif()

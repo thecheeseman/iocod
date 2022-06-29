@@ -56,6 +56,18 @@ static bool net_update_cvars(void)
     UPDATE(net_port6, va("%i", PORT_SERVER), CV_LATCH);
     #undef UPDATE_M
 
+    static bool firsttime = true;
+    if (firsttime) {
+        firsttime = false;
+
+        // only bother setting the cvar descriptions the first time
+        cv_set_description(net_enabled, _("Enable networking."));
+        cv_set_description(net_ip, _("IP address to bind to (IPv4)"));
+        cv_set_description(net_ip6, _("IP address to bind to (IPv6)"));
+        cv_set_description(net_port, _("Port to bind to (IPv4)"));
+        cv_set_description(net_port6, _("Port to bind to (IPv6)"));
+    }
+
     return modified > 0 ? true : false;
 }
 
@@ -128,6 +140,8 @@ void net_init(void)
     #endif
 
     net_config(true);
+
+    log_debug("Network initialized");
 }
 
 IC_PUBLIC
@@ -136,6 +150,8 @@ void net_shutdown(void)
     if (!networking_enabled)
         return;
 
+    log_debug("Network shutdown");
+    
     net_config(false);
 
     #ifdef IC_PLATFORM_WINDOWS
@@ -150,5 +166,6 @@ void net_shutdown(void)
 IC_PUBLIC
 void net_restart(void)
 {
+    log_debug("Network restart");
     net_config(true);
 }

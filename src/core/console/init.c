@@ -29,6 +29,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 struct console_data console;
 
+IC_PUBLIC
+bool con_initialized(void)
+{
+    return console.initialized;
+}
+
 #ifdef IC_PLATFORM_WINDOWS
 static BOOL WINAPI con_sigint(DWORD sig)
 {
@@ -84,6 +90,8 @@ void con_init(void)
     // init history tbd
 
     SetConsoleTextAttribute(console.hout, console.attributes);
+
+    console.initialized = true;
 }
 
 IC_PUBLIC
@@ -186,6 +194,8 @@ void con_init(void)
     console.hide = 1;
 
     con_show();
+
+    console.initialized = true;
 }
 
 IC_PUBLIC

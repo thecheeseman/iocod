@@ -23,40 +23,73 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 #include <signal.h>
 #include <float.h>
+#include <stdlib.h>
 
 static void print_gpl(void)
 {
-    con_print("iocod copyright (C) 2022 thecheeseman\n"
+    ic_printf("iocod copyright (C) 2022 thecheeseman\n"
               "iocod comes with ABSOLUTELY NO WARRANTY; for details use the "
               "command 'gplinfo'.\nThis is free software, and you are welcome "
               "to redistribute it under certain\nconditions; use 'gplinfo' "
               "for details.\n\n");
 }
 
+static void parse_args(int argc, char *argv[])
+{
+    if (argc != 2)
+        return;
+
+    if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0) {
+        fprintf(stderr, "iocod version " IC_VERSION_STRING " " __DATE__ "\n");
+        exit(0);
+    }
+}
+
+static void concat_args(int argc, char *argv[], size_t size, char *cmdline)
+{
+    for (int i = 1; i < argc; i++) {
+        bool spaces = (strchr(argv[i], ' ') != NULL);
+        if (spaces)
+            strncatz(cmdline, size, "\"");
+
+        strncatz(cmdline, size, argv[i]);
+
+        if (spaces)
+            strncatz(cmdline, size, "\"");
+
+        strncatz(cmdline, size, " ");
+    }
+}
+
 IC_PUBLIC
 int main(int argc, char *argv[])
 {
-    UNUSED_PARAM(argc);
-    UNUSED_PARAM(argv);
+    // setup signals
+    sys_setup_signal_handler();
+    
+    // set the initial time base
+    sys_milliseconds();
+
+    // parse args
+    parse_args(argc, argv);
+
+    // argc/argv
+    char cmdline[MAX_STRING_CHARS] = { 0 };
+    concat_args(argc, argv, sizeof(cmdline), cmdline);
+
+    print_gpl();
 
     con_init();
     con_set_title(IC_CONSOLE_TITLE);
-
-    print_gpl();
 
     config_init();
     log_init();
 
     // autoupdate?
-    sys_setup_signal_handler();
     sys_set_floatenv();
-    sys_milliseconds();
     sys_platform_init();
-
-    // parse args
-    // argc/argv
     
-    com_init();
+    com_init(cmdline);
     net_init();
     
     while (true) {

@@ -31,7 +31,7 @@ static struct cvar indexes[MAX_CVARS];
 size_t num_indexes = 0;
 struct cvar *hashtable[MAX_CVARS];
 
-int modified_flags = 0;
+int cv_modified_flags = 0;
 
 /*
  * Return a hash for a given cvar name.
@@ -103,7 +103,7 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
             ZOID--needs to be set so that cvars the game sets as
             SERVERINFO get sent to clients 
         */
-        modified_flags |= flags;
+        cv_modified_flags |= flags;
     }
 
     v->flags |= flags;
@@ -147,7 +147,7 @@ static struct cvar *create_cvar(size_t index, const char *name, const char *valu
 
     v->name = strdup(name);
     v->flags = flags;
-    modified_flags |= v->flags;
+    cv_modified_flags |= v->flags;
     
     v->string = strdup(value);
     v->reset_string = strdup(value);

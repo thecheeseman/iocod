@@ -30,16 +30,6 @@ enum system_type sys_system_type(void)
     return systype;
 }
 
-IC_PUBLIC
-bool sys_is_windows(void)
-{
-    #ifdef IC_PLATFORM_WINDOWS
-    return true;
-    #else
-    return false;
-    #endif
-}
-
 #ifdef IC_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

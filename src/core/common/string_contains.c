@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 char *com_string_contains(char *str1, char *str2, bool casesensitive)
 {
-    int len, i, j;
+    size_t len, i, j;
 
     len = strlen(str1) - strlen(str2);
     for (i = 0; i <= len; i++, str1++) {

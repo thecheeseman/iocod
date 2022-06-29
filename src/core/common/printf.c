@@ -35,7 +35,10 @@ void ic_printf(const char *fmt, ...)
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
 
-    con_print(msg);
+    if (!con_initialized())
+        fprintf(stderr, msg);
+    else
+        con_print(msg);
 
     // TODO: log stuff
 }

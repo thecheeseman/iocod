@@ -22,7 +22,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cmd_local.h"
 
-struct cmd cmd_text;
+struct cmdbuf {
+    byte *data;
+    size_t maxsize;
+    size_t cursize;
+};
+
+struct cmdbuf cmd_text;
 byte cmd_text_buf[MAX_CMD_BUFFER];
 
 IC_PUBLIC

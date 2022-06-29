@@ -25,11 +25,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
+extern struct cvar *com_busy_wait;
 extern struct cvar *com_dedicated;
+extern struct cvar *com_developer;
 extern struct cvar *com_sv_running;
 
 IC_PUBLIC
-void com_init(void);
+void com_init(char *cmdline);
+
+IC_PUBLIC
+int com_milliseconds(void);
 
 IC_PUBLIC
 void com_shutdown(void);
@@ -41,13 +46,21 @@ IC_PUBLIC
 bool com_filter(char *filter, char *name, bool casesensitive);
 
 IC_PUBLIC
+bool com_filter_path(char *filter, char *name, bool casesensitive);
+
+/**
+ * @brief Check if the given string @p str1 contains @p str2.
+ * @param[in] str1 the string to check.
+ * @param[in] str2 the string to check for.
+ * @param[in] casesensitive if true, the comparison is case sensitive.
+ * @return NULL if @p str1 does not contain @p str2, otherwise a
+ * pointer to the last matching character of the string
+*/
+IC_PUBLIC
 char *com_string_contains(char *str1, char *str2, bool casesensitive);
 
 /**
- * @brief Printf wrapper that allows direct output to `stderr`.
- *
- * If `SYS_PRINT` or `SYS_WARN` macros are defined, will call either
- * of those instead.
+ * @brief Printf wrapper that allows direct output to console.
  *
  * @note It is recommended to access this function via the macros
  * `ic_printf()` and `ic_warning()` instead of calling this directly.
@@ -64,5 +77,8 @@ IC_PRINTF_FORMAT(1, 2)
 void ic_printf(const char *fmt, ...);
 
 #define ic_warning(...) ic_printf(__VA_ARGS__)
+
+IC_PUBLIC
+void ic_print_header(const char *text, size_t size, char sep);
 
 #endif /* IC_COMMON_H */

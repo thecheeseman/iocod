@@ -22,6 +22,43 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cmd_local.h"
 
+static void cmd_call(struct cmd *cmd)
+{
+    bool printhelp = false;
+    
+    // min args
+    if (cmd->argc_min > 0 && (cmd_argc() - 1) < cmd->argc_min)
+    {
+        if (cmd->usage != NULL)
+            ic_printf(_("Usage: %s\n"), cmd->usage);
+        else
+            ic_printf(_("'%s' requires at least %d arguments\n"), cmd->argc_min);
+
+        printhelp = true;
+    }
+
+    // max args
+    if (cmd->argc_max > 0 && (cmd_argc() - 1) > cmd->argc_max)
+    {
+        if (cmd->usage != NULL)
+            ic_printf(_("Usage: %s\n"), cmd->usage);
+        else
+            ic_printf(_("'%s' requires at most %d arguments\n"), cmd->argc_max);
+
+        printhelp = true;
+    }
+
+    if (printhelp) {
+        if (cmd->description != NULL)
+            ic_printf("%s\n", cmd->description);
+
+        return;
+    }
+
+    // call it
+    cmd->function(cmd);
+}
+
 IC_PUBLIC
 bool cmd_execute_string(const char *text)
 {
@@ -29,8 +66,8 @@ bool cmd_execute_string(const char *text)
     if (cmd_argc() == 0)
         return false; // no tokens
 
-    struct cmd_function *cmd = NULL;
-    struct cmd_function **prev;
+    struct cmd *cmd = NULL;
+    struct cmd **prev;
     for (prev = &cmd_functions; *prev != NULL; prev = &cmd->next) {
         cmd = *prev;
 
@@ -43,7 +80,7 @@ bool cmd_execute_string(const char *text)
 
             // perform the action
             if (cmd->function != NULL)
-                cmd->function();
+                cmd_call(cmd);
             else
                 break; // let the VMs handle it
 

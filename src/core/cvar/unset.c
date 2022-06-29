@@ -28,7 +28,7 @@ struct cvar *cv_unset(struct cvar *cv)
     struct cvar *next = cv->next;
 
     // note what types of cvars have been modified
-    modified_flags |= cv->flags;
+    cv_modified_flags |= cv->flags;
 
     ic_free(cv->name);
     ic_free(cv->string);
@@ -57,12 +57,9 @@ struct cvar *cv_unset(struct cvar *cv)
     return next;
 }
 
-void cv_unset_f(void)
+void cv_unset_f(struct cmd *self)
 {
-    if (cmd_argc() != 2) {
-        ic_printf(_("Usage: unset <varname>\n"));
-        return;
-    }
+    UNUSED_PARAM(self);
 
     struct cvar *cv = cv_find(cmd_argv(1));
     if (cv == NULL)

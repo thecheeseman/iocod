@@ -77,6 +77,8 @@ struct console_data {
     enum q3color bgcolor;
     enum q3color textcolor;
 
+    bool initialized;
+
     /**
      * @brief Flag if the tty console is currently on.
     */

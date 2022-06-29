@@ -39,6 +39,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #define MAX_CVARS 4096
 
+extern int cv_modified_flags;
+
 /**
  * @enum cv_flags
  * @brief Cvar flags.
@@ -195,7 +197,6 @@ struct cvar {
     */
     struct cvar *hash_next;
     struct cvar *hash_prev;
-
     int hash_index;
 
     char *description;
@@ -221,18 +222,6 @@ struct vmcvar {
     cv_int integer;             /**< integer representation of string */
     char string[MAX_VMCVAR_STRING_LEN]; /**< string value */
 };
-
-/*
- * 
- * cv_commands.c
- *
- */
-
-/*
- *
- * cv_get.c 
- * 
- */
 
 /**
  * @brief Find a cvar by name.
@@ -265,12 +254,6 @@ IC_PUBLIC
 */
 struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags);
 
-/*
- *
- * cv_infostring.c 
- *
- */
-
 /**
  * @brief Return all cvars identified by given mask as a regular infostring.
  * 
@@ -302,12 +285,6 @@ IC_PUBLIC
 IC_NON_NULL(2)
 void cv_infostring_buffer(enum cv_flags mask, char *buf, size_t size);
 
-/*
- *
- * cv_init.c
- *
- */
-
 /**
  * @brief Initialise cvar system.
  */
@@ -319,12 +296,6 @@ void cv_init(void);
  */
 IC_PUBLIC
 void cv_shutdown(void);
-
-/*
- *
- * cv_set.c 
- *
- */
 
 /**
  * @brief Try to set a cvar with the given string value.
@@ -374,7 +345,6 @@ struct cvar *cv_set_string(const char *name, const char *value);
 IC_PUBLIC
 struct cvar *cv_set_string_latched(const char *name, const char *value);
 
-
 /**
  * @brief Set a cvar with the given floating point value.
  *
@@ -410,12 +380,6 @@ struct cvar *cv_set_integer(const char *name, cv_int value);
 */
 IC_PUBLIC
 struct cvar *cv_reset(const char *name);
-
-/*
- *
- * cv_string.c 
- *
- */
 
 /**
  * @brief Remove any extended ASCII characters from the given string.
@@ -459,12 +423,6 @@ void cv_get_string_buffer(const char *name, char *buf, size_t size);
 IC_PUBLIC
 bool cv_validate_string(const char *s);
 
-/*
- *
- * cv_value.c 
- *
- */
-
 /**
  * @brief Return a cvar's floating point value.
  * 
@@ -486,12 +444,6 @@ cv_float cv_get_value(const char *name);
 IC_PUBLIC
 IC_NON_NULL(1)
 cv_int cv_get_integer(const char *name);
-
-/*
- *
- * cv_write.c 
- *
- */
 
 /**
  * @brief Write cvar defaults to a given file. 
@@ -522,6 +474,9 @@ bool cv_command(void);
 
 IC_PUBLIC
 void cv_print(struct cvar *cv);
+
+IC_PUBLIC
+void cv_set_description(struct cvar *cv, const char *desc);
 
 /** @} */
 

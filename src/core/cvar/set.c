@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 static struct cvar *update_cvar(struct cvar *v, const char *name, 
                                 const char *value, bool force)
 {
-    modified_flags |= v->flags;
+    cv_modified_flags |= v->flags;
 
     if (!force) {
         if (v->flags & CV_ROM) {
@@ -151,15 +151,14 @@ struct cvar *cv_set_integer(const char *name, cv_int value)
     return cv_set_string(name, v);
 }
 
-void cv_set_f(void)
+void cv_set_f(struct cmd *self)
 {
+    UNUSED_PARAM(self);
+
     char *cmd = cmd_argv(0);
 
-    if (cmd_argc() < 2) {
-        ic_printf(_("usage: %s <variable> <value>\n"), cmd);
-        return;
-    } else if (cmd_argc() == 2) {
-        cv_print_f(); // just print it
+    if (cmd_argc() == 2) {
+        cv_print_f(self); // just print it
         return;
     }
 
@@ -172,20 +171,32 @@ void cv_set_f(void)
     case 'a':
         if ((cv->flags & CV_ARCHIVE) == 0) {
             cv->flags |= CV_ARCHIVE;
-            modified_flags |= CV_ARCHIVE;
+            cv_modified_flags |= CV_ARCHIVE;
         }
         break;
     case 'u':
         if ((cv->flags & CV_USER_INFO) == 0) {
             cv->flags |= CV_USER_INFO;
-            modified_flags |= CV_USER_INFO;
+            cv_modified_flags |= CV_USER_INFO;
         }
         break;
     case 's':
         if ((cv->flags & CV_SERVER_INFO) == 0) {
             cv->flags |= CV_SERVER_INFO;
-            modified_flags |= CV_SERVER_INFO;
+            cv_modified_flags |= CV_SERVER_INFO;
         }
         break;
     }
+}
+
+IC_PUBLIC
+void cv_set_description(struct cvar *cv, const char *desc)
+{
+    if (desc == NULL || *desc == '\0')
+        return;
+
+    if (cv->description != NULL)
+        ic_free(cv->description);
+
+    cv->description = strdup(desc);
 }

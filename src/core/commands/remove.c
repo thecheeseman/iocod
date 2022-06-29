@@ -25,8 +25,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 bool cmd_remove(const char *name)
 {
-    struct cmd_function *cmd;
-    struct cmd_function **back = &cmd_functions;
+    struct cmd *cmd;
+    struct cmd **back = &cmd_functions;
 
     while (true) {
         cmd = *back;

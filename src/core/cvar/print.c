@@ -25,31 +25,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 void cv_print(struct cvar *cv)
 {
-    ic_printf("\"%s\" is: \"%s^7\"", cv->name, cv->string);
+    ic_printf(_("\"%s\" is set to: \"%s^7\""), cv->name, cv->string);
 
     if ((cv->flags & CV_ROM) == 0) {
         if (strcasecmp(cv->string, cv->reset_string) == 0)
-            ic_printf(", set to default");
+            ic_printf(_(" (default)"));
         else
-            ic_printf(" default: \"%s^7\"", cv->reset_string);
+            ic_printf(_(" (default setting: \"%s^7\")"), cv->reset_string);
     }
 
     ic_printf("\n");
 
     if (cv->latched_string != NULL)
-        ic_printf("latched: \"%s^7\"", cv->latched_string);
+        ic_printf(_("Latched string: \"%s^7\""), cv->latched_string);
 
     if (cv->description != NULL)
-        ic_printf("%s\n", cv->description);
+        ic_printf(_("Description: %s\n"), cv->description);
 }
 
-void cv_print_f(void)
+void cv_print_f(struct cmd *self)
 {
-    if (cmd_argc() != 2) {
-        ic_printf(_("usage: print <variable>\n"));
-        return;
-    }
-
+    UNUSED_PARAM(self);
+    
     char *name = cmd_argv(1);
     struct cvar *cv = cv_find(name);
     
