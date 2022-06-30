@@ -219,4 +219,7 @@ enum system_type sys_system_type(void);
 IC_PUBLIC
 void sys_error(const char *err, ...);
 
+IC_PUBLIC
+void sys_sleep(int msec);
+
 #endif /* IC_SYSTEM_H */

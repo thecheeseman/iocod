@@ -29,10 +29,12 @@ static void cmd_call(struct cmd *cmd)
     // min args
     if (cmd->argc_min > 0 && (cmd_argc() - 1) < cmd->argc_min)
     {
-        if (cmd->usage != NULL)
+        if (cmd->usage != NULL) {
             ic_printf(_("Usage: %s\n"), cmd->usage);
-        else
-            ic_printf(_("'%s' requires at least %d arguments\n"), cmd->argc_min);
+        } else {
+            ic_printf(_("'%s' requires at least %d arguments\n"), cmd->name,
+                      cmd->argc_min);
+        }
 
         printhelp = true;
     }
@@ -40,10 +42,12 @@ static void cmd_call(struct cmd *cmd)
     // max args
     if (cmd->argc_max > 0 && (cmd_argc() - 1) > cmd->argc_max)
     {
-        if (cmd->usage != NULL)
+        if (cmd->usage != NULL) {
             ic_printf(_("Usage: %s\n"), cmd->usage);
-        else
-            ic_printf(_("'%s' requires at most %d arguments\n"), cmd->argc_max);
+        } else {
+            ic_printf(_("'%s' requires at most %d arguments\n"), cmd->name,
+                      cmd->argc_max);
+        }
 
         printhelp = true;
     }

@@ -90,32 +90,28 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
         if the C code is now specifying a variable that the user already
         set a value for, take the new value as the reset value 
     */
-    #define CV_MASK (CV_USER_CREATED | CV_4096)
-    if ((v->flags & CV_MASK) != 0 && (flags & CV_MASK) == 0 &&
-        ((*value != '\0') || (flags & CV_CHEAT) != 0)) {
-
-        v->flags &= ~CV_MASK;
+    if (v->flags & CV_USER_CREATED) {
+        v->flags &= ~CV_USER_CREATED;
 
         ic_free(v->reset_string);
         v->reset_string = strdup(value);
 
-        /* 
-            ZOID--needs to be set so that cvars the game sets as
-            SERVERINFO get sent to clients 
-        */
-        cv_modified_flags |= flags;
+        if (flags & CV_ROM) {
+            ic_free(v->latched_string);
+            v->latched_string = strdup(value);
+        }
     }
 
     v->flags |= flags;
 
     /* only allow one non-empty reset string without a warning */
-    if (*v->reset_string != '\0') {
+    if (v->reset_string[0] != '\0') {
         /* none yet */
         ic_free(v->reset_string);
 
         v->reset_string = strdup(value);
     } else if (*value != '\0' && strcmp(v->reset_string, value) != 0) {
-        log_warn(_("Cvar '%1$s' given initial values: '%2$s' and '%3$s'"),
+        log_warn(_("Cvar '%s' given initial values: '%s' and '%s'"),
                  name, v->reset_string, value);
     }
 
@@ -132,6 +128,12 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
         cv_cheats->integer == 0) {
         cv_set2(name, value, true);
     }
+
+    /*
+        ZOID--needs to be set so that cvars the game sets as
+        SERVERINFO get sent to clients
+    */
+    cv_modified_flags |= flags;
 }
 
 /*

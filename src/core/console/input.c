@@ -31,7 +31,7 @@ char *con_input(void)
     if (!GetNumberOfConsoleInputEvents(console.hin, &events))
         return NULL;
 
-    if (events < 1)
+    if (events == 0)
         return NULL;
 
     INPUT_RECORD buf[MAX_EDIT_LINE];

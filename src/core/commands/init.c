@@ -69,8 +69,10 @@ static void cmd_vstr_f(struct cmd *self)
 
 size_t cmd_wait = 0;
 
-void cmd_wait_f(void)
+static void cmd_wait_f(struct cmd *self)
 {
+    UNUSED_PARAM(self);
+
     if (cmd_argc() == 2) {
         long wait = strtol(cmd_argv(1), NULL, 10);
 
@@ -105,4 +107,21 @@ void cmd_init(void)
     cmd_add2("wait", cmd_wait_f, 1, 1,
              _("wait <time>"),
              _("Wait specified amount of frames."));
+}
+
+IC_PUBLIC
+void cmd_shutdown(void)
+{
+    struct cmd *head = cmd_functions;
+    struct cmd *cmd;
+
+    while (head != NULL) {
+        cmd = head;
+        head = cmd->next;
+        
+        ic_free(cmd->name);
+        ic_free(cmd->usage);
+        ic_free(cmd->description);
+        ic_free(cmd);
+    }
 }

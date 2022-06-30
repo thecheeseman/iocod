@@ -117,9 +117,9 @@ IC_PUBLIC
 bool com_filter_path(char *filter, char *name, bool casesensitive)
 {
     size_t i;
-    char new_filter[MAX_PATH] = {0};
+    char new_filter[PATH_MAX] = {0};
     
-    for (i = 0; i < MAX_PATH - 1 && filter[i] != '\0'; i++) {
+    for (i = 0; i < PATH_MAX - 1 && filter[i] != '\0'; i++) {
         if (filter[i] == '\\' || filter[i] == ':')
             new_filter[i] = '/';
         else
@@ -127,8 +127,8 @@ bool com_filter_path(char *filter, char *name, bool casesensitive)
     }
     new_filter[i] = '\0';
 
-    char new_name[MAX_PATH] = {0};
-    for (i = 0; i < MAX_PATH - 1 && name[i] != '\0'; i++) {
+    char new_name[PATH_MAX] = {0};
+    for (i = 0; i < PATH_MAX - 1 && name[i] != '\0'; i++) {
         if (name[i] == '\\' || name[i] == ':')
             new_name[i] = '/';
         else

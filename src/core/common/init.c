@@ -31,6 +31,7 @@ struct cvar *com_sv_running;
 
 struct cvar *com_timescale;
 struct cvar *com_fixedtime;
+struct cvar *com_speeds;
 
 struct cvar *cl_paused;
 struct cvar *sv_paused;
@@ -108,6 +109,8 @@ void com_init(char *cmdline)
     cl_paused = cv_get("cl_paused", "0", CV_ROM);
     sv_paused = cv_get("sv_paused", "0", CV_ROM);
 
+    com_speeds = cv_get("com_speeds", "0", CV_NONE);
+
     com_sv_running = cv_get("sv_running", "1", CV_ROM);
     cv_set_description(com_sv_running,
                        _("Server running. TEMP: Forced to 1."));
@@ -130,7 +133,7 @@ void com_init(char *cmdline)
     // sys_init
     // netchan_init
     // vm_init
-    // sv_init
+    sv_init();
 
     com_frame_time = com_milliseconds();
 
@@ -143,5 +146,6 @@ void com_init(char *cmdline)
 IC_PUBLIC
 void com_shutdown(void)
 {
-    
+    cmd_shutdown();
+    cv_shutdown();
 }

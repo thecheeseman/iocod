@@ -29,10 +29,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <dlfcn.h>
 #endif
 
-#ifndef MAX_PATH
-#define MAX_PATH 256
-#endif
-
 enum {
     ERR_OK,
     ERR_NULL_PATH,
@@ -90,7 +86,7 @@ bool sys_library_load(const char *path, void **handle)
     }
 
     // append system extension if not provided
-    char newpath[MAX_PATH];
+    char newpath[PATH_MAX];
     strncpyz(newpath, path, sizeof(newpath));
     ic_append_extension(newpath, sizeof(newpath), "." IC_PLATFORM_DLL);
 

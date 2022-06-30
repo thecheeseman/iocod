@@ -64,17 +64,17 @@ void cv_init(void)
 IC_PUBLIC
 void cv_shutdown(void)
 {
-    for (struct cvar *v = cvars; v != NULL; v = v->next) {
-        if (v->name != NULL)
-            ic_free(v->name);
+    struct cvar *head = cvars;
+    struct cvar *v;
 
-        if (v->string != NULL)
-            ic_free(v->string);
-
-        if (v->latched_string != NULL)
-            ic_free(v->latched_string);
-
-        if (v->reset_string != NULL)
-            ic_free(v->reset_string);
+    while (head != NULL) {
+        v = head;
+        head = v->next;
+        
+        ic_free(v->name);
+        ic_free(v->string);
+        ic_free(v->latched_string);
+        ic_free(v->reset_string);
+        ic_free(v->description);
     }
 }

@@ -22,8 +22,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
-#define MAX_PATH 256
-
 IC_PUBLIC
 bool ic_bit_check(const int arr[], int num)
 {

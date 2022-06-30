@@ -80,6 +80,13 @@ char *con_input(void);
 IC_PUBLIC
 void con_print(const char *msg);
 
+#ifdef IC_PLATFORM_WINDOWS
+#define stdin_is_atty(v)
+#else
+IC_PUBLIC
+bool stdin_is_atty(void);
+#endif
+
 /** @} */
 
 #endif /* IOCOD_CONSOLE_H */

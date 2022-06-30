@@ -20,15 +20,15 @@ static char *last_strstr(const char *haystack, const char *needle)
 }
 
 IC_PUBLIC
-char *ic_short_filename(char *filename)
+char *ic_short_filename(const char *filename)
 {
     char *match = last_strstr(filename, "src");
     if (match != NULL)
         return match;
 
     #ifdef IC_PLATFORM_WINDOWS
-    return (strrchr(filename, '\\') ? strrchr(filename, '\\') + 1 : filename);
+    return (char *)(strrchr(filename, '\\') ? strrchr(filename, '\\') + 1 : filename);
     #else
-    return (strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename);
+    return (char *)(strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename);
     #endif 
 }

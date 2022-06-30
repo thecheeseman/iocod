@@ -94,7 +94,7 @@ static void get_processor_info(FILE *out)
     memset(&osvi, 0, sizeof(OSVERSIONINFOEX));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
-    GetVersionEx(&osvi);
+    GetVersionEx((LPOSVERSIONINFOA) &osvi);
     
     fprintf(out, "System:         Windows\n");
     fprintf(out, "Release:        %d.%d build %d\n", 

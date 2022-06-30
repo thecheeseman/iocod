@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdarg.h>
 
-#define MAX_PATH 256
+#define PATH_MAX 256
 
 enum q3color {
     // standard q3 colors
@@ -141,6 +141,6 @@ IC_PUBLIC
 vec_t *tv(vec_t x, vec_t y, vec_t z);
 
 IC_PUBLIC
-char *ic_short_filename(char *filename);
+char *ic_short_filename(const char *filename);
 
 #endif /* IC_SHARED_H */

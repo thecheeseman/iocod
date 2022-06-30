@@ -33,6 +33,7 @@ foreach (subdir
     log
     network
     parse
+    server
     shared
     strings
     system)

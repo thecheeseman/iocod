@@ -1,7 +1,5 @@
 #include "ic_test.h"
 
-struct cvar *com_sv_running;
-
 int TEST_MAIN()
 {
     cv_init();

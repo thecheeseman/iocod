@@ -32,7 +32,7 @@ struct cvar *net_port;
 struct cvar *net_port6;
 
 #ifdef IC_PLATFORM_WINDOWS
-WSADATA winsockdata;
+WSADATA winsockdata = {0};
 bool winsock_init = false;
 #endif
 

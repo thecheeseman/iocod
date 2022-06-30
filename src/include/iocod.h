@@ -145,6 +145,7 @@ iocod includes
 #include "iocod/memory.h"
 #include "iocod/network.h"
 #include "iocod/parse.h"
+#include "iocod/server.h"
 #include "iocod/shared.h"
 #include "iocod/string.h"
 #include "iocod/system.h"

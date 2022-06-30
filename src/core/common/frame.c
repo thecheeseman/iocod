@@ -75,24 +75,25 @@ void com_frame(void)
     if (setjmp(abortframe))
         return; // error
 
+    // com_speeds
+    int tbefore_first_events = 0;
+    int tbefore_server = 0;
+    int tbefore_events = 0;
+    int tbefore_client = 0;
+    int tafter = 0;
+
+    // write config
+
+    // main event loop
+    if (com_speeds->integer > 0)
+        tbefore_first_events = sys_milliseconds();
+
     int min_msec = 1;
-    #ifndef IC_DEDICATED
-    if (com_maxfps->integer > 0 && com_dedicated->integer == 0)
-        min_msec = 1000 / com_maxfps->integer; 
-    #endif
+    if (com_dedicated->integer > 0)
+        min_msec = sv_frame_msec(); 
 
     int msec = 0;
     static int last_time = 0;
-    #if 0
-    do {
-        com_frame_time = ev_loop();
-        if (last_time > com_frame_time)
-            last_time = com_frame_time;
-
-        msec = com_frame_time - last_time;
-    } while (msec < min_msec);
-    #endif
-
     int tv = 0;
     do {
         if (com_sv_running->integer > 0) {
@@ -121,8 +122,19 @@ void com_frame(void)
     //com_frame_msec = msec;
     msec = modify_msec(msec);
 
-    // timescale
-    // sv_frame
+    // server side
+    if (com_speeds->integer > 0)
+        tbefore_server = sys_milliseconds();
+
+    sv_frame(msec);
+
+    if (com_speeds->integer > 0) {
+        tafter = sys_milliseconds();
+        tbefore_events = tafter;
+        tbefore_client = tafter;
+    }
+
+    // flush packet queue
 
     com_frame_number++;
     calculate_fps();

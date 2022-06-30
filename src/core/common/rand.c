@@ -34,14 +34,14 @@ static bool random_bytes(byte *str, size_t len)
     bool ret = true;
     
     #ifdef IC_PLATFORM_WINDOWS
-    HCRYPTPROV prov;
+    HCRYPTPROV prov = {0};
 
     if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL,
                              CRYPT_VERIFYCONTEXT)) {
         return false;
     }
 
-    if (!CryptGenRandom(prov, len, (BYTE *) str))
+    if (!CryptGenRandom(prov, (DWORD) len, (BYTE *) str))
         ret = false;
 
     CryptReleaseContext(prov, 0);
@@ -63,7 +63,7 @@ static bool random_bytes(byte *str, size_t len)
 
 void rand_init(void)
 {
-    unsigned int seed;
+    unsigned int seed = 0;
 
     if (random_bytes((byte *) &seed, sizeof(seed))) {
         log_debug(_("System provided random seed %u"), seed);

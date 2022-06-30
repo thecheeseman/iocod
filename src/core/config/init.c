@@ -65,7 +65,7 @@ bool conf_shutdown(struct conf *cfg)
 
     for (struct confopt *opt = cfg->options; opt->type != CONF_END; opt++) {
         if (opt->type == CONF_STRING || opt->type == CONF_HEADER ||
-            opt->type == CONF_COMMENT) {
+            opt->type == CONF_SECTION || opt->type == CONF_COMMENT) {
             ic_free(opt->value.s);
         }
     }

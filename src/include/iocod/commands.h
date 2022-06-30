@@ -98,8 +98,8 @@ struct cmd {
     */
     void (*function)(struct cmd *);
 
-    int argc_min;
-    int argc_max;
+    unsigned int argc_min;
+    unsigned int argc_max;
 
     char *usage;
     char *description;
@@ -112,6 +112,12 @@ struct cmd {
  */
 IC_PUBLIC
 void cmd_init(void);
+
+/**
+ * @brief Shutdown command system. Cleanup.
+ */
+IC_PUBLIC
+void cmd_shutdown(void);
 
 /**
  * @brief Get the current number of command line arguments.

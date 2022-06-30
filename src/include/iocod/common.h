@@ -32,6 +32,7 @@ extern struct cvar *com_busy_wait;
 extern struct cvar *com_dedicated;
 extern struct cvar *com_developer;
 extern struct cvar *com_sv_running;
+extern struct cvar *com_speeds;
 
 IC_PUBLIC
 void com_init(char *cmdline);

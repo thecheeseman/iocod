@@ -114,7 +114,8 @@ static void con_sigcont(int signum)
     con_init();
 }
 
-static bool stdin_is_atty(void)
+IC_PUBLIC
+bool stdin_is_atty(void)
 {
     bool atty = isatty(STDIN_FILENO);
     bool dumbterm = false;
@@ -208,5 +209,7 @@ void con_shutdown(void)
 
     // restore blocking to stdin reads
     fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL, 0) & ~O_NONBLOCK);
+
+    del_curterm(cur_term);
 }
 #endif
