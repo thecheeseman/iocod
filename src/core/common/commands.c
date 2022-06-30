@@ -57,6 +57,11 @@ static void com_setenv_f(struct cmd *self)
 static void com_error_f(struct cmd *self)
 {
     UNUSED_PARAM(self);
+
+    if (cmd_argc() == 2)
+        ic_fatal("FATAL ERROR TEST");
+    else
+        ic_error("ERROR TEST");
 }
 
 static void com_crash_f(struct cmd *self)
@@ -85,7 +90,11 @@ static void com_quit_f(struct cmd *self)
     UNUSED_PARAM(self);
     
     // TODO: handle errors here
-    com_shutdown();
+    if (!error_entered) {
+        // sv shutdown
+        // cl shutdown
+        com_shutdown();
+    }
 
     sys_quit();
 }

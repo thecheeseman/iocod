@@ -140,4 +140,7 @@ IC_PUBLIC
 */
 vec_t *tv(vec_t x, vec_t y, vec_t z);
 
+IC_PUBLIC
+char *ic_short_filename(char *filename);
+
 #endif /* IC_SHARED_H */

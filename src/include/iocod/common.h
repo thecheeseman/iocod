@@ -25,6 +25,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
+#define PROTOCOL_VERSION 10
+#define PROTOCOL_LEGACY 1
+
 extern struct cvar *com_busy_wait;
 extern struct cvar *com_dedicated;
 extern struct cvar *com_developer;
@@ -80,5 +83,60 @@ void ic_printf(const char *fmt, ...);
 
 IC_PUBLIC
 void ic_print_header(const char *text, size_t size, char sep);
+
+enum errcode {
+    ERR_FATAL,
+    ERR_DROP,
+    ERR_SERVER_DISCONNECT,
+    ERR_DISCONNECT,
+    ERR_NEED_CD
+};
+
+/**
+ * @brief Error wrapper that allows direct output to `stderr`.
+ *
+ * If `COM_ERROR` is defined, will call that instead.
+ *
+ * @note It is recommended to access this function via the macros
+ * `ic_error()` and `ic_error_fatal()` instead of calling this directly.
+ *
+ * @param[in] fatal    true if this is a fatal error and we should exit
+ * @param[in] filename name of file this was called from
+ * @param[in] function name of function this was called from
+ * @param[in] line     line number
+ * @param[in] fmt      format specifier
+ * @param[in] ...
+ *
+ * @see ic_error
+ * @see ic_error_fatal
+ */
+IC_PUBLIC
+IC_PRINTF_FORMAT(5, 6)
+void _ic_error(enum errcode code, const char *filename, const char *function,
+               const int line, const char *fmt, ...);
+
+/**
+ * @def ic_error
+ * @brief Wrapper for _ic_error.
+ *
+ * Automatically inputs current filename, function name, line number for
+ * better error messages.
+ *
+ * @see _ic_error
+ */
+#define ic_error(...) \
+    _ic_error(ERR_DROP, __BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
+
+/**
+ * @def ic_fatal
+ * @brief Wrapper for _ic_error.
+ *
+ * Automatically inputs current filename, function name, line number for
+ * better error messages. Causes program to exit.
+ *
+ * @see _ic_error
+ */
+#define ic_fatal(...) \
+    _ic_error(ERR_FATAL, __BASE_FILE__, __func__, __LINE__, __VA_ARGS__)
 
 #endif /* IC_COMMON_H */

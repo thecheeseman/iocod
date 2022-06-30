@@ -21,39 +21,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "iocod.h"
-#include <stdlib.h>
 
-#define MAX_PRINT_LEN 1024
+#ifdef IC_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <strsafe.h>
+#else
+
+#endif
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(5, 6)
-void _ic_error(bool fatal, const char *filename, const char *function, 
-               const int line, const char *fmt, ...)
+void sys_error(const char *err, ...)
 {
-    char msg[MAX_PRINT_LEN];
-
-    /* temp */
-    UNUSED_PARAM(filename);
-    UNUSED_PARAM(function);
-    UNUSED_PARAM(line);
-
-    va_list argptr = {0};
-    va_start(argptr, fmt);
-    vsnprintf(msg, sizeof(msg), fmt, argptr);
+    va_list argptr;
+    char str[1024];
+    
+    va_start(argptr, err);
+    vsnprintf(str, sizeof(str), err, argptr);
     va_end(argptr);
 
-    if (fatal) {
-        #if !defined COM_ERROR
-        fprintf(stderr, "ERROR: %s", msg);
-        exit(0);
-        #else
-        COM_ERROR(ERR_FATAL, msg);
-        #endif
-    } else {
-        #if !defined COM_ERROR
-        fprintf(stderr, "ERROR: %s", msg);
-        #else
-        COM_ERROR(ERR_DROP, msg);
-        #endif
-    }
+    ic_printf("^1");
+    ic_print_header("FATAL ERROR", 40, '*');
+    log_error(str);
+    ic_printf("^1");
+    ic_print_header("", 40, '*');
+
+    #ifdef IC_PLATFORM_WINDOWS
+    MessageBox(NULL, va(_("An unrecoverable error has occured: %s"), str), 
+               _("Unrecoverable Error"), MB_OK | MB_ICONERROR);
+    #endif
+    
+    sys_exit(IC_TERMINATE);
 }

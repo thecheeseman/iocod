@@ -24,7 +24,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define COM_LOCAL_H
 
 #include "iocod.h"
+#include <setjmp.h>
 
+extern jmp_buf abortframe;
+extern bool error_entered;
+extern int com_frame_time;
+
+/**
+ * @brief Add common commands to the command system.
+*/
 void com_add_commands(void);
+
+void parse_command_line(char *cmdline);
+void startup_variable(const char *match);
+bool add_startup_commands(void);
+
+/**
+ * @brief Set up random seed with a system-defined seed, or time(NULL) if 
+ * system could not provide a seed.
+*/
+void rand_init(void);
 
 #endif /* COM_LOCAL_H */

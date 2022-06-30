@@ -216,4 +216,7 @@ enum system_type {
 IC_PUBLIC
 enum system_type sys_system_type(void);
 
+IC_PUBLIC
+void sys_error(const char *err, ...);
+
 #endif /* IC_SYSTEM_H */

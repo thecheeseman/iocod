@@ -265,38 +265,6 @@ static void get_memory_info(FILE *out)
     #endif
 }
 
-/* https://stackoverflow.com/a/1643946 */
-static char *last_strstr(const char *haystack, const char *needle)
-{
-    if (*needle == '\0')
-        return (char *) haystack;
-
-    char *result = NULL;
-    while (true) {
-        char *p = strstr(haystack, needle);
-        if (p == NULL)
-            break;
-
-        result = p;
-        haystack = p + 1;
-    }
-
-    return result;
-}
-
-static char *shorten_filename(char *filename)
-{
-    char *match = last_strstr(filename, "src");
-    if (match != NULL)
-        return match;
-    
-    #ifdef IC_PLATFORM_WINDOWS
-    return (strrchr(filename, '\\') ? strrchr(filename, '\\') + 1 : filename);
-    #else
-    return (strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename);
-    #endif 
-}
-
 IC_PUBLIC
 void sys_backtrace(void)
 {   
@@ -345,7 +313,7 @@ void sys_backtrace(void)
 
         fprintf(out, "./iocodded64(+0x%llx) [0x%llx] %s:%s:%d\n",
                 (symbol->Address - symbol->ModBase), symbol->Address,
-                shorten_filename(line->FileName), symbol->Name, 
+                ic_short_filename(line->FileName), symbol->Name, 
                 line->LineNumber);
     }
 
@@ -362,7 +330,7 @@ void sys_backtrace(void)
 
             char *exe = strtok(symbols[i], "(");
             char *offset = strtok(NULL, ")");
-            fprintf(out, "%s", shorten_filename(addr2line(exe, offset)));
+            fprintf(out, "%s", ic_short_filename(addr2line(exe, offset)));
         }
     } else {
         fprintf(out, "no symbols returned\n");

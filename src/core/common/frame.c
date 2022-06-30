@@ -72,7 +72,8 @@ static int timeval(int msec)
 IC_PUBLIC
 void com_frame(void)
 {
-    // abortframe
+    if (setjmp(abortframe))
+        return; // error
 
     int min_msec = 1;
     #ifndef IC_DEDICATED
