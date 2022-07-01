@@ -43,9 +43,9 @@ struct conf *conf_init(const char *filename, struct confopt *kv, int options)
     cfg->filename = strdup(filename);
     cfg->options = kv;
 
-    if (!conf_set_defaults(cfg) || 
+    if (!conf_set_defaults(cfg) ||
         !conf_write_defaults(cfg) ||
-        !conf_load(cfg) || 
+        !conf_load(cfg) ||
         !conf_parse(cfg)) {
         conf_shutdown(cfg);
         ic_error("%s", conf_error_string());

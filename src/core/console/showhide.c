@@ -85,8 +85,8 @@ void con_show(void)
 
     COORD cursor = { 0, 0 };
     cursor.Y = info.dwCursorPosition.Y;
-    cursor.X = console.cursor < console.line_len 
-        ? console.cursor : console.line_len > info.srWindow.Right 
+    cursor.X = console.cursor < console.line_len
+        ? console.cursor : console.line_len > info.srWindow.Right
         ? info.srWindow.Right : console.line_len;
 
     SetConsoleCursorPosition(console.hout, cursor);

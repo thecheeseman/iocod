@@ -32,9 +32,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 static bool random_bytes(byte *str, size_t len)
 {
     bool ret = true;
-    
+
     #ifdef IC_PLATFORM_WINDOWS
-    HCRYPTPROV prov = {0};
+    HCRYPTPROV prov = { 0 };
 
     if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL,
                              CRYPT_VERIFYCONTEXT)) {
@@ -55,7 +55,7 @@ static bool random_bytes(byte *str, size_t len)
     if (fread(str, sizeof(byte), len, fp) != len)
         ret = false;
 
-    fclose(fp); 
+    fclose(fp);
     #endif
 
     return ret;

@@ -40,7 +40,7 @@ bool cv_write_defaults(filehandle f)
         #define CV_MASK (CV_ROM | CV_USER_CREATED | CV_CHEAT | CV_4096)
         if ((v->flags & CV_MASK) == 0) {
             char buf[1024];
-            snprintfz(buf, sizeof(buf), "set %s \"%s\"", v->name, 
+            snprintfz(buf, sizeof(buf), "set %s \"%s\"", v->name,
                       v->reset_string);
 
             fs_printf(f, "%s\n", buf);

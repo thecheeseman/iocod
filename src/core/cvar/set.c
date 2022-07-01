@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cvar_local.h"
 
-static struct cvar *update_cvar(struct cvar *v, const char *name, 
+static struct cvar *update_cvar(struct cvar *v, const char *name,
                                 const char *value, bool force)
 {
     cv_modified_flags |= v->flags;
@@ -55,7 +55,7 @@ static struct cvar *update_cvar(struct cvar *v, const char *name,
             if (v->latched_string != NULL) {
                 if (strcmp(value, v->latched_string) == 0)
                     goto out;
-                
+
                 ic_free(v->latched_string);
             } else {
                 if (strcmp(value, v->string) == 0)

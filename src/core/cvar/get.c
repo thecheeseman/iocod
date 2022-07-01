@@ -47,7 +47,7 @@ static long cv_hash(const char *name)
     long i = 0;
     while (name[i] != '\0') {
         char c = tolower(name[i]);
-        hash += (long)(c) * (i + 119);
+        hash += (long) (c) * (i + 119);
         i++;
     }
 
@@ -83,12 +83,12 @@ struct cvar *cv_find(const char *name)
 /*
  * update cvar flags / reset strings etc.
  */
-static void update_cvar(struct cvar *v, const char *name, const char *value, 
+static void update_cvar(struct cvar *v, const char *name, const char *value,
                         enum cv_flags flags)
 {
-    /* 
+    /*
         if the C code is now specifying a variable that the user already
-        set a value for, take the new value as the reset value 
+        set a value for, take the new value as the reset value
     */
     if (v->flags & CV_USER_CREATED) {
         v->flags &= ~CV_USER_CREATED;
@@ -124,7 +124,7 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
         ic_free(s);
     }
 
-    if ((v->flags & CV_CHEAT) != 0 && cv_cheats != NULL && 
+    if ((v->flags & CV_CHEAT) != 0 && cv_cheats != NULL &&
         cv_cheats->integer == 0) {
         cv_set2(name, value, true);
     }
@@ -150,7 +150,7 @@ static struct cvar *create_cvar(size_t index, const char *name, const char *valu
     v->name = strdup(name);
     v->flags = flags;
     cv_modified_flags |= v->flags;
-    
+
     v->string = strdup(value);
     v->reset_string = strdup(value);
     v->value = (cv_float) strtod(value, NULL);

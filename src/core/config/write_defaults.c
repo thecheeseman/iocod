@@ -58,7 +58,7 @@ bool conf_write_defaults(struct conf *cfg)
             print_header(fp, opt->value.s);
             break;
         case CONF_SECTION:
-            fprintf(fp, "#%s# %s%s#", IC_PLATFORM_NEWLINE, opt->value.s, 
+            fprintf(fp, "#%s# %s%s#", IC_PLATFORM_NEWLINE, opt->value.s,
                     IC_PLATFORM_NEWLINE);
             break;
         case CONF_COMMENT:

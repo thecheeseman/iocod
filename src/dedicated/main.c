@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 {
     // setup signals
     sys_setup_signal_handler();
-    
+
     // set the initial time base
     sys_milliseconds();
 
@@ -88,10 +88,10 @@ int main(int argc, char *argv[])
     // autoupdate?
     sys_set_floatenv();
     sys_platform_init();
-    
+
     com_init(cmdline);
     net_init();
-    
+
     while (true) {
         com_frame();
     }

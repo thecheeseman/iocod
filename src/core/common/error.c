@@ -57,7 +57,7 @@ void _ic_error(enum errcode code, const char *filename, const char *function,
         cv_set_string("com_errormessage", error_message);
 
     char loc[MAX_PRINT_MSG];
-    snprintfz(loc, sizeof(loc), "%s::%s() at line %d", 
+    snprintfz(loc, sizeof(loc), "%s::%s() at line %d",
               ic_short_filename(filename), function, line);
 
     switch (code) {

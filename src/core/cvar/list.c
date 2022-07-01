@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 void cv_list_f(struct cmd *self)
 {
     UNUSED_PARAM(self);
-    
+
     char *match = NULL;
     if (cmd_argc() > 1)
         match = cmd_argv(1);
@@ -55,7 +55,7 @@ void cv_list_f(struct cmd *self)
     }
 
     ic_printf("\n%i total cvars", num_cvars);
-    
+
     if (match != NULL)
         ic_printf(", %i matched \"%s\"", matched, match);
 

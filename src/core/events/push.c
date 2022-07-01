@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 void ev_push(struct sys_event *event)
 {
-    struct sys_event *ev = 
+    struct sys_event *ev =
         &pushed_events[pushed_events_head & (MASK_PUSHED_EVENTS)];
 
     static bool warned = false;

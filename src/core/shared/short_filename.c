@@ -27,8 +27,8 @@ char *ic_short_filename(const char *filename)
         return match;
 
     #ifdef IC_PLATFORM_WINDOWS
-    return (char *)(strrchr(filename, '\\') ? strrchr(filename, '\\') + 1 : filename);
+    return (char *) (strrchr(filename, '\\') ? strrchr(filename, '\\') + 1 : filename);
     #else
-    return (char *)(strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename);
+    return (char *) (strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename);
     #endif 
 }

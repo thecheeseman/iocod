@@ -46,10 +46,10 @@ void cv_print(struct cvar *cv)
 void cv_print_f(struct cmd *self)
 {
     UNUSED_PARAM(self);
-    
+
     char *name = cmd_argv(1);
     struct cvar *cv = cv_find(name);
-    
+
     if (cv != NULL)
         cv_print(cv);
     else

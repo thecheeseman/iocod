@@ -42,7 +42,7 @@ void sys_sleep(int msec)
         WaitForSingleObject(GetStdHandle(STD_INPUT_HANDLE), msec);
     #else
     if (stdin_is_atty()) {
-        fd_set fdset = {0};
+        fd_set fdset = { 0 };
         FD_ZERO(&fdset);
         FD_SET(STDIN_FILENO, &fdset);
 

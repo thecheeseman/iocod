@@ -27,8 +27,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * color coding, with the \033[xxx; format and that's easy enough. some
  * consoles don't support this, and we can sort of check with terminfo but
  * not all consoles support terminfo either...
- * 
- * windows sucks in general but at least win10+ supports VT100/ANSI codes, 
+ *
+ * windows sucks in general but at least win10+ supports VT100/ANSI codes,
  * but none of the previous versions do... so we have to fall back on win32
  * console attributes
  */
@@ -49,12 +49,12 @@ static void color_print(const char *msg)
 
             if (*msg == '\n') {
                 if (console.ansi_color) {
-                    snprintf(buffer, sizeof(buffer), "\033[0m%s", 
+                    snprintf(buffer, sizeof(buffer), "\033[0m%s",
                              IC_PLATFORM_NEWLINE);
                     fputs(buffer, stderr);
                 } else {
                     #ifdef IC_PLATFORM_WINDOWS
-                    SetConsoleTextAttribute(console.hout, 
+                    SetConsoleTextAttribute(console.hout,
                                             color_to_attrib(COLOR_WHITE));
                     #endif
 
@@ -66,7 +66,7 @@ static void color_print(const char *msg)
                 int color = (int) (*(msg + 1) - '0');
 
                 if (console.ansi_color) {
-                    snprintf(buffer, sizeof(buffer), "\033[%sm", 
+                    snprintf(buffer, sizeof(buffer), "\033[%sm",
                              color_to_ascii_code(color));
                     fputs(buffer, stderr);
                 } else {

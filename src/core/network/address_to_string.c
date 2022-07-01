@@ -36,15 +36,15 @@ char *net_address_to_string(struct netadr addr)
         break;
     case NA_IP:
     case NA_IP6:
-        {
-            struct sockaddr_storage sadr;
+    {
+        struct sockaddr_storage sadr;
 
-            memset(&sadr, 0, sizeof(sadr));
+        memset(&sadr, 0, sizeof(sadr));
 
-            net_netadr_to_sockaddr(&addr, (struct sockaddr *) &sadr);
-            net_sockaddr_to_string((struct sockaddr *) &sadr, sizeof(s), s);
-        }
+        net_netadr_to_sockaddr(&addr, (struct sockaddr *) &sadr);
+        net_sockaddr_to_string((struct sockaddr *) &sadr, sizeof(s), s);
         break;
+    }
     case NA_BAD:
     default:
         snprintf(s, sizeof(s), "BADADDR");
@@ -61,11 +61,11 @@ char *net_address_to_string_port(struct netadr addr)
 
     switch (addr.type) {
     case NA_IP:
-        snprintf(s, sizeof(s), "%s:%hu", net_address_to_string(addr), 
+        snprintf(s, sizeof(s), "%s:%hu", net_address_to_string(addr),
                  addr.port);
         break;
     case NA_IP6:
-        snprintf(s, sizeof(s), "[%s]:%hu", net_address_to_string(addr), 
+        snprintf(s, sizeof(s), "[%s]:%hu", net_address_to_string(addr),
                  addr.port);
         break;
     default:

@@ -22,8 +22,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
-/* 
-    this is smaller than RTCW (32000) but I can't imagine a scenario 
+/*
+    this is smaller than RTCW (32000) but I can't imagine a scenario
     where you actively need to concatenate more than 8K bytes at once
 */
 #define MAX_VA_STRING 8192

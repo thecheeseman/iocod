@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
-static const char illegal_chars[] = { '\\', ';', '\"', '\0'};
+static const char illegal_chars[] = { '\\', ';', '\"', '\0' };
 
 /*
  * Check if the given string contains illegal chars.
@@ -45,7 +45,7 @@ static bool contains_illegal_chars(const char *str)
  * copy/paste version for infostring/biginfostring
  */
 IC_NON_NULL(1, 2, 4, 5)
-static bool _if_remove_key(char *s, const char *key, size_t size, 
+static bool _if_remove_key(char *s, const char *key, size_t size,
                            char *pkey, char *value)
 {
     if (strlen(s) >= size) {
@@ -99,7 +99,7 @@ static bool _if_remove_key(char *s, const char *key, size_t size,
  * copy/paste version for infostring/biginfostring
  */
 IC_NON_NULL(1, 2, 3, 5)
-static bool _if_set_value_for_key(char *s, const char *key, const char *value, 
+static bool _if_set_value_for_key(char *s, const char *key, const char *value,
                                   size_t size, char *newif)
 {
     if (strlen(s) >= size) {

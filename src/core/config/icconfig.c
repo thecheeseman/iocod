@@ -198,7 +198,7 @@ IC_PUBLIC
 int config_log_level(void)
 {
     struct confopt *opt = conf_get_opt(icconf, "log_level");
-    
+
     // something bad has happened
     if (opt == NULL) {
         #ifdef IC_DEBUG

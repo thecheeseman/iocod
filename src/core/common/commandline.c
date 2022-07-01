@@ -37,7 +37,7 @@ void parse_command_line(char *cmdline)
             inquote = !inquote;
 
         // look for a + separating character
-        if ((*cmdline == '+' && !inquote) || *cmdline == '\n' || 
+        if ((*cmdline == '+' && !inquote) || *cmdline == '\n' ||
             *cmdline == '\r') {
             if (num_console_lines == MAX_CONSOLE_LINES)
                 return;

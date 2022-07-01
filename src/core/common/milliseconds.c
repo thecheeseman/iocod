@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 int com_milliseconds(void)
 {
-    struct sys_event ev = {0};
+    struct sys_event ev = { 0 };
     do {
         ev = ev_get();
 

@@ -95,9 +95,9 @@ static void get_processor_info(FILE *out)
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
     GetVersionEx((LPOSVERSIONINFOA) &osvi);
-    
+
     fprintf(out, "System:         Windows\n");
-    fprintf(out, "Release:        %d.%d build %d\n", 
+    fprintf(out, "Release:        %d.%d build %d\n",
             osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
 
     fprintf(out, "Version:        ");
@@ -133,23 +133,22 @@ static void get_processor_info(FILE *out)
     SYSTEM_INFO sysinfo;
     GetNativeSystemInfo(&sysinfo);
     fprintf(out, "Machine:        ");
-    switch (sysinfo.wProcessorArchitecture)
-    {
-        case PROCESSOR_ARCHITECTURE_AMD64:
-            fprintf(out, "x86_64\n");
-            break;
-        case PROCESSOR_ARCHITECTURE_ARM:
-            fprintf(out, "ARM\n");
-            break;
-        case PROCESSOR_ARCHITECTURE_IA64:
-            fprintf(out, "IA64\n");
-            break;
-        case PROCESSOR_ARCHITECTURE_INTEL:
-            fprintf(out, "x86\n");
-            break;
-        case PROCESSOR_ARCHITECTURE_UNKNOWN:
-            fprintf(out, "Unknown\n");
-            break;
+    switch (sysinfo.wProcessorArchitecture) {
+    case PROCESSOR_ARCHITECTURE_AMD64:
+        fprintf(out, "x86_64\n");
+        break;
+    case PROCESSOR_ARCHITECTURE_ARM:
+        fprintf(out, "ARM\n");
+        break;
+    case PROCESSOR_ARCHITECTURE_IA64:
+        fprintf(out, "IA64\n");
+        break;
+    case PROCESSOR_ARCHITECTURE_INTEL:
+        fprintf(out, "x86\n");
+        break;
+    case PROCESSOR_ARCHITECTURE_UNKNOWN:
+        fprintf(out, "Unknown\n");
+        break;
     }
 
     char buf[256];
@@ -172,7 +171,7 @@ static void get_processor_info(FILE *out)
     } else {
         fprintf(out, "Could not get uname info\n");
     }
-    
+
     FILE *info = popen(va("cat /proc/cpuinfo | grep processor | wc -l"), "r");
     if (info != NULL) {
         char buf[256];
@@ -189,9 +188,9 @@ static void get_memory_info(FILE *out)
 {
     fprintf(out, "----------------------------------------\n");
     fprintf(out, "Memory Information:\n");
-    
+
     #ifdef IC_PLATFORM_WINDOWS
-    MEMORYSTATUSEX statex = {0};
+    MEMORYSTATUSEX statex = { 0 };
     statex.dwLength = sizeof(statex);
 
     GlobalMemoryStatusEx(&statex);
@@ -247,7 +246,7 @@ static void get_memory_info(FILE *out)
             fprintf(out, "WorkingSetSize: 0\n");
         }
         fclose(rss);
-        fprintf(out, "WorkingSetSize: %ld KB\n", 
+        fprintf(out, "WorkingSetSize: %ld KB\n",
                 (workingsize * sysconf(_SC_PAGESIZE)) / 1024);
     }
     #endif
@@ -261,13 +260,13 @@ static void get_memory_info(FILE *out)
     fprintf(out, "PkWrkngSetSize: %ld KB\n", rusage.ru_maxrss);
     #endif
 
-    
+
     #endif
 }
 
 IC_PUBLIC
 void sys_backtrace(void)
-{   
+{
     time_t t;
     time(&t);
 
@@ -279,7 +278,7 @@ void sys_backtrace(void)
     FILE *fp = fopen("crash.log", "a+");
     if (fp != NULL)
         out = fp;
-    
+
     fprintf(out, "----------------------------------------"
             "----------------------------------------\n");
     fprintf(out, "Crash Date: %s\n", tmbuf);
@@ -308,12 +307,12 @@ void sys_backtrace(void)
 
     for (unsigned int i = 0; i < frames; i++) {
         DWORD displacement = 0;
-        SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
-        SymGetLineFromAddr(process, (DWORD64)(stack[i]), &displacement, line);
+        SymFromAddr(process, (DWORD64) (stack[i]), 0, symbol);
+        SymGetLineFromAddr(process, (DWORD64) (stack[i]), &displacement, line);
 
         fprintf(out, "./iocodded64(+0x%llx) [0x%llx] %s:%s:%d\n",
                 (symbol->Address - symbol->ModBase), symbol->Address,
-                ic_short_filename(line->FileName), symbol->Name, 
+                ic_short_filename(line->FileName), symbol->Name,
                 line->LineNumber);
     }
 

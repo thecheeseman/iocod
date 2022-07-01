@@ -35,7 +35,7 @@ void sys_error(const char *err, ...)
 {
     va_list argptr;
     char str[1024];
-    
+
     va_start(argptr, err);
     vsnprintf(str, sizeof(str), err, argptr);
     va_end(argptr);
@@ -47,9 +47,9 @@ void sys_error(const char *err, ...)
     ic_print_header("", 40, '*');
 
     #ifdef IC_PLATFORM_WINDOWS
-    MessageBox(NULL, va(_("An unrecoverable error has occured: %s"), str), 
+    MessageBox(NULL, va(_("An unrecoverable error has occured: %s"), str),
                _("Unrecoverable Error"), MB_OK | MB_ICONERROR);
     #endif
-    
+
     sys_exit(IC_TERMINATE);
 }

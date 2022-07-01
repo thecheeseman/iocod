@@ -63,28 +63,28 @@ DWORD color_to_attrib(enum q3color color)
 #define CSI_END     "\033[0m"
 
 static char *forecolor[] = {
-    [COLOR_BLACK] =     "30",
-    [COLOR_RED] =       "31",
-    [COLOR_GREEN] =     "32",
-    [COLOR_YELLOW] =    "33",
-    [COLOR_BLUE] =      "34",
-    [COLOR_CYAN] =      "36",
-    [COLOR_MAGENTA] =   "35",
-    [COLOR_WHITE] =     "37",
-    [COLOR_PURPLE] =    "94",   // these aren't guarenteed
-    [COLOR_ROSE] =      "91"    // but most modern xterms should have different
+    [COLOR_BLACK] = "30",
+    [COLOR_RED] = "31",
+    [COLOR_GREEN] = "32",
+    [COLOR_YELLOW] = "33",
+    [COLOR_BLUE] = "34",
+    [COLOR_CYAN] = "36",
+    [COLOR_MAGENTA] = "35",
+    [COLOR_WHITE] = "37",
+    [COLOR_PURPLE] = "94",   // these aren't guarenteed
+    [COLOR_ROSE] = "91"    // but most modern xterms should have different
                                 // colors here
 };
 #if 0
 static char *bgcolor[] = {
-    [COLOR_BLACK] =     "40",
-    [COLOR_RED] =       "41",
-    [COLOR_GREEN] =     "42",
-    [COLOR_YELLOW] =    "43",
-    [COLOR_BLUE] =      "44",
-    [COLOR_CYAN] =      "46",
-    [COLOR_MAGENTA] =   "45",
-    [COLOR_WHITE] =     "47"
+    [COLOR_BLACK] = "40",
+    [COLOR_RED] = "41",
+    [COLOR_GREEN] = "42",
+    [COLOR_YELLOW] = "43",
+    [COLOR_BLUE] = "44",
+    [COLOR_CYAN] = "46",
+    [COLOR_MAGENTA] = "45",
+    [COLOR_WHITE] = "47"
 };
 #endif
 char *color_to_ascii_code(enum q3color color)

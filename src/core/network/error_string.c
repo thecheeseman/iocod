@@ -28,7 +28,7 @@ static char *get_wsa_error_string(int code)
     static char msg[4096];
 
     FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                  NULL, code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), 
+                  NULL, code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                   msg, sizeof(msg), NULL);
 
     if (*msg == '\0')

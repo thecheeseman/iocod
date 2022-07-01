@@ -59,7 +59,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @def sockerror
- * @brief On Windows, this is equivalent to `WSAGetLastError()`, 
+ * @brief On Windows, this is equivalent to `WSAGetLastError()`,
  * otherwise this is equivalent to `errno`.
  */
 
@@ -92,7 +92,7 @@ typedef int socket_t;
 struct localaddr {
     char ifname[IF_NAMESIZE];           /**< interface name, if applicable */
     enum netadr_type type;              /**< address type */
-    sa_family_t family;                 /**< address family 
+    sa_family_t family;                 /**< address family
                                              (AF_INET or AF_INET6) */
     struct sockaddr_storage addr;       /**< address */
     struct sockaddr_storage netmask;    /**< netmask */
@@ -139,8 +139,8 @@ void net_open_ip(void);
 
 /**
  * @brief Convert @p s to a `sockaddr` structure.
- * 
- * @param[in]  s       string to convert 
+ *
+ * @param[in]  s       string to convert
  * @param[in]  family  `AF_INET` or `AF_INET6`
  * @param[in]  addrlen size of the sockaddr structure
  * @param[out] addr    converted `sockaddr` structure
@@ -152,16 +152,16 @@ bool net_string_to_sockaddr(const char *s, sa_family_t family,
 /**
  * @brief Convert @p in to a NULL-termined string.
  * @param[in]  in      `sockaddr` structure
- * @param[in]  destsize size of destination string 
- * @param[out] dest     output string 
+ * @param[in]  destsize size of destination string
+ * @param[out] dest     output string
 */
-void net_sockaddr_to_string(struct sockaddr *in, socklen_t destsize, 
+void net_sockaddr_to_string(struct sockaddr *in, socklen_t destsize,
                             char *dest);
 
 /**
  * @brief Convert @p a to a sockaddr structure.
  * @param[in]  a `netadr` structure
- * @param[out] s `sockaddr` structure 
+ * @param[out] s `sockaddr` structure
 */
 void net_netadr_to_sockaddr(struct netadr *a, struct sockaddr *s);
 

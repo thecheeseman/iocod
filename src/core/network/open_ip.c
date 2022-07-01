@@ -30,9 +30,9 @@ static socket_t open_socket(int family, char *netif, int port, int *err)
                   port);
     } else if (family == AF_INET6) {
         log_print(_("Opening IPv6 socket: [%s]:%i"),
-                  netif != NULL ? netif : "::", 
+                  netif != NULL ? netif : "::",
                   port);
-    } 
+    }
 
     // create the socket
     socket_t newsock;
@@ -74,18 +74,18 @@ static socket_t open_socket(int family, char *netif, int port, int *err)
         #endif
     }
 
-    struct sockaddr_in addr4 = {0};
-    struct sockaddr_in6 addr6 = {0};
+    struct sockaddr_in addr4 = { 0 };
+    struct sockaddr_in6 addr6 = { 0 };
     void *addr = NULL;
     int addrsize = 0;
-    
+
     if (family == AF_INET) {
         addr4.sin_family = AF_INET;
 
         if (netif == NULL || *netif == '\0') {
             addr4.sin_addr.s_addr = INADDR_ANY;
         } else {
-            if (!net_string_to_sockaddr(netif, AF_INET, sizeof(addr4), 
+            if (!net_string_to_sockaddr(netif, AF_INET, sizeof(addr4),
                                         (struct sockaddr *) &addr4)) {
                 closesocket(newsock);
                 return INVALID_SOCKET;
@@ -105,7 +105,7 @@ static socket_t open_socket(int family, char *netif, int port, int *err)
         if (netif == NULL || *netif == '\0') {
             addr6.sin6_addr = in6addr_any;
         } else {
-            if (!net_string_to_sockaddr(netif, AF_INET6, sizeof(addr6), 
+            if (!net_string_to_sockaddr(netif, AF_INET6, sizeof(addr6),
                                         (struct sockaddr *) &addr6)) {
                 closesocket(newsock);
                 return INVALID_SOCKET;

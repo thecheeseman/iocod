@@ -28,7 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /*
- * Get system event 
+ * Get system event
  */
 static struct sys_event get_event(void)
 {

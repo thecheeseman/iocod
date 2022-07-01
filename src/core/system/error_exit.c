@@ -68,7 +68,7 @@ IC_PUBLIC
 void sys_handle_error_exit(const char *function)
 {
     UNUSED_PARAM(function);
-    
+
     sys_exit(IC_TERMINATE);
 }
 #endif

@@ -66,7 +66,7 @@ void sys_signal_handler(int signal)
             goto quit;
     } else {
         if (caught) {
-            log_warn(_("Double signal fault: received %d (%s), ""exiting...\n"), 
+            log_warn(_("Double signal fault: received %d (%s), ""exiting...\n"),
                      signal, sigtext);
         } else {
             caught = true;

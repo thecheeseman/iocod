@@ -55,7 +55,7 @@ void log_init(void)
 
     iclog.fp = fopen(iclog.path, "ab");
     if (iclog.fp == NULL) {
-        ic_error(_("Couldn't open logfile '%1$s': %2$s\n"), 
+        ic_error(_("Couldn't open logfile '%1$s': %2$s\n"),
                  iclog.path, strerror(errno));
         return;
     }

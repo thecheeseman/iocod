@@ -91,9 +91,9 @@ struct tm *localtime_r(const time_t *timep, struct tm *result);
 
 /**
  * @brief Get string timestamp of current time.
- * @param time 
- * @param timestamp 
- * @param size 
+ * @param time
+ * @param timestamp
+ * @param size
 */
 void log_get_timestamp(const struct timeval *time, char *timestamp,
                        size_t size);

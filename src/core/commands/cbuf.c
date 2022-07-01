@@ -50,7 +50,7 @@ bool cbuf_add_text(const char *text)
 
     memcpy(&cmd_text.data[cmd_text.cursize], text, l);
     cmd_text.cursize += l;
-    
+
     return true;
 }
 
@@ -65,7 +65,7 @@ bool cbuf_insert_text(const char *text)
 
     // move the existing command text
     memmove(&cmd_text.data[len], &cmd_text.data[0], cmd_text.cursize);
-    
+
     // copy the new text in
     memcpy(&cmd_text.data[0], text, len);
 

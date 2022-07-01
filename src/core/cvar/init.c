@@ -30,19 +30,19 @@ void cv_init(void)
 {
     cv_cheats = cv_get("sv_cheats", "0", CV_ROM | CV_SYSTEM_INFO);
     cv_set_description(cv_cheats, _("Enable or disable cheat cvars."));
-    
-    sv_console_lockout = cv_get("sv_console_lockout", "0", 
+
+    sv_console_lockout = cv_get("sv_console_lockout", "0",
                                 CV_ROM | CV_SYSTEM_INFO);
     cv_set_description(sv_console_lockout, _("Disable console input."));
 
-    cmd_add2("cvarlist", cv_list_f, 0, 1, 
+    cmd_add2("cvarlist", cv_list_f, 0, 1,
              _("cvarlist [match]"),
              _("List all cvars."));
-    cmd_add2("print", cv_print_f, 1, 1, 
+    cmd_add2("print", cv_print_f, 1, 1,
              _("print <variable>"),
              _("Print the value of a cvar."));
     cmd_add2("set", cv_set_f, 1, 2,
-             _("set <variable> <value>"), 
+             _("set <variable> <value>"),
              _("Set a console variable."));
     cmd_add2("seta", cv_set_f, 1, 2,
              _("seta <variable> <value>"),
@@ -70,7 +70,7 @@ void cv_shutdown(void)
     while (head != NULL) {
         v = head;
         head = v->next;
-        
+
         ic_free(v->name);
         ic_free(v->string);
         ic_free(v->latched_string);

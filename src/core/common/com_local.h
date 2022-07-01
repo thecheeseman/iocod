@@ -40,7 +40,7 @@ void startup_variable(const char *match);
 bool add_startup_commands(void);
 
 /**
- * @brief Set up random seed with a system-defined seed, or time(NULL) if 
+ * @brief Set up random seed with a system-defined seed, or time(NULL) if
  * system could not provide a seed.
 */
 void rand_init(void);

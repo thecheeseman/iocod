@@ -26,13 +26,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 static void com_setenv_f(struct cmd *self)
 {
     UNUSED_PARAM(self);
-    
+
     int argc = cmd_argc();
     char *name = cmd_argv(1);
 
     if (argc > 2) {
         char *value = cmd_args_from(2);
-        
+
         #ifdef IC_PLATFORM_WINDOWS
         if (value != NULL && *value != '\0')
             _putenv(va("%s=%s", name, value));
@@ -88,7 +88,7 @@ static void com_freeze_f(struct cmd *self)
 static void com_quit_f(struct cmd *self)
 {
     UNUSED_PARAM(self);
-    
+
     // TODO: handle errors here
     if (!error_entered) {
         // sv shutdown
@@ -106,10 +106,10 @@ void com_add_commands(void)
              _("Set or retreive an environment variable."));
 
     if (com_developer != NULL && com_developer->integer > 0) {
-        cmd_add2("error", com_error_f, 0, 1, 
+        cmd_add2("error", com_error_f, 0, 1,
                  _("error"),
                  _("Cause an error."));
-        cmd_add2("crash", com_crash_f, 0, 0, 
+        cmd_add2("crash", com_crash_f, 0, 0,
                  _("crash"),
                  _("Crash the game intentionally."));
         cmd_add2("freeze", com_freeze_f, 1, 1,

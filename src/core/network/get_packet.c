@@ -32,7 +32,7 @@ bool net_get_packet(struct netadr *net_from, struct netmsg *msg, fd_set *fdr)
             sock = ip6_socket;
 
         if (sock != INVALID_SOCKET && FD_ISSET(sock, fdr)) {
-            struct sockaddr_storage from = {0};
+            struct sockaddr_storage from = { 0 };
             socklen_t fromlen = sizeof(from);
 
             int ret = recvfrom(sock, (void *) msg->data, msg->max_size, 0,

@@ -89,18 +89,18 @@ IC_PUBLIC
 void cmd_init(void)
 {
     cmd_add2("cmdlist", cmd_list_f, 0, 1,
-             _("cmdlist [match]"), 
+             _("cmdlist [match]"),
              _("List all available commands."));
 
-    cmd_add2("echo", cmd_echo_f, 1, 0, 
-             _("echo <string>"), 
+    cmd_add2("echo", cmd_echo_f, 1, 0,
+             _("echo <string>"),
              _("Echo a string to the console output."));
 
     cmd_add2("help", cmd_help_f, 0, 0,
              _("help [<topic or command>]"),
              _("Lookup usage or information about a given topic or command."));
 
-    cmd_add2("vstr", cmd_vstr_f, 1, 1, 
+    cmd_add2("vstr", cmd_vstr_f, 1, 1,
              _("vstr <variable_name>"),
              _("Execute a cvar as a command."));
 
@@ -118,7 +118,7 @@ void cmd_shutdown(void)
     while (head != NULL) {
         cmd = head;
         head = cmd->next;
-        
+
         ic_free(cmd->name);
         ic_free(cmd->usage);
         ic_free(cmd->description);

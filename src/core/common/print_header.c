@@ -28,14 +28,14 @@ void ic_print_header(const char *text, size_t size, char sep)
     size_t len = strlen(text);
     size_t i;
     size_t j;
-    
+
     if (size < len) {
         log_warn(_("Tried to print header with size smaller than text"));
         return;
     }
 
     char *header = ic_malloc(size + 1);
-    for (i = 0 ; i < size; i++)
+    for (i = 0; i < size; i++)
         header[i] = sep;
     header[size] = '\0';
 

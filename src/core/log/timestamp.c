@@ -55,7 +55,7 @@ struct tm *localtime_r(const time_t *timep, struct tm *result)
 #endif
 
 void log_get_timestamp(const struct timeval *time, char *timestamp,
-                          size_t size)
+                       size_t size)
 {
     time_t sec = time->tv_sec;
     struct tm calendar;

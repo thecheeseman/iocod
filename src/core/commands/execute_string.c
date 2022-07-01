@@ -25,10 +25,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 static void cmd_call(struct cmd *cmd)
 {
     bool printhelp = false;
-    
+
     // min args
-    if (cmd->argc_min > 0 && (cmd_argc() - 1) < cmd->argc_min)
-    {
+    if (cmd->argc_min > 0 && (cmd_argc() - 1) < cmd->argc_min) {
         if (cmd->usage != NULL) {
             ic_printf(_("Usage: %s\n"), cmd->usage);
         } else {
@@ -40,8 +39,7 @@ static void cmd_call(struct cmd *cmd)
     }
 
     // max args
-    if (cmd->argc_max > 0 && (cmd_argc() - 1) > cmd->argc_max)
-    {
+    if (cmd->argc_max > 0 && (cmd_argc() - 1) > cmd->argc_max) {
         if (cmd->usage != NULL) {
             ic_printf(_("Usage: %s\n"), cmd->usage);
         } else {

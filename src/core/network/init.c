@@ -32,7 +32,7 @@ struct cvar *net_port;
 struct cvar *net_port6;
 
 #ifdef IC_PLATFORM_WINDOWS
-WSADATA winsockdata = {0};
+WSADATA winsockdata = { 0 };
 bool winsock_init = false;
 #endif
 
@@ -151,7 +151,7 @@ void net_shutdown(void)
         return;
 
     log_debug("Network shutdown");
-    
+
     net_config(false);
 
     #ifdef IC_PLATFORM_WINDOWS

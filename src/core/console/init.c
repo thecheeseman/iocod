@@ -49,7 +49,7 @@ static BOOL WINAPI con_sigint(DWORD sig)
         sys_signal_handler(SIGTERM);
         return TRUE;
     default:
-        return FALSE;        
+        return FALSE;
     }
 }
 
@@ -83,8 +83,8 @@ void con_init(void)
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(console.hout, &info);
     console.attributes = info.wAttributes;
-    console.bg_attributes = console.attributes & 
-        (BACKGROUND_BLUE | BACKGROUND_GREEN | 
+    console.bg_attributes = console.attributes &
+        (BACKGROUND_BLUE | BACKGROUND_GREEN |
          BACKGROUND_RED | BACKGROUND_INTENSITY);
 
     // init history tbd
@@ -120,7 +120,7 @@ bool stdin_is_atty(void)
     bool atty = isatty(STDIN_FILENO);
     bool dumbterm = false;
 
-    if (console.term == NULL || strcmp(console.term, "raw") == 0 || 
+    if (console.term == NULL || strcmp(console.term, "raw") == 0 ||
         strcmp(console.term, "dumb") == 0)
         dumbterm = true;
 

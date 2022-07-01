@@ -162,11 +162,11 @@ char *con_input(void)
 // non-interactive/dumb terminals
 static char *get_stdin(void)
 {
-    fd_set fdset = {0};
+    fd_set fdset = { 0 };
     FD_ZERO(&fdset);
     FD_SET(STDIN_FILENO, &fdset);
 
-    struct timeval timeout = {0};
+    struct timeval timeout = { 0 };
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     if (select(STDIN_FILENO + 1, &fdset, NULL, NULL, &timeout) == -1 ||
@@ -229,7 +229,7 @@ char *con_input(void)
 
         write(STDOUT_FILENO, &key, 1);
         return NULL;
-    } 
+    }
 
     // handle control chars
     // new lines
@@ -255,7 +255,7 @@ char *con_input(void)
     avail = read(STDIN_FILENO, &key, 1);
     if (avail == -1) {
         ic_printf(_("Dropping ISCTL sequence: %d, tty_erase: %d\n"), key,
-                    console.tty_erase);
+                  console.tty_erase);
         goto out;
     }
 
@@ -263,7 +263,7 @@ char *con_input(void)
         avail = read(STDIN_FILENO, &key, 1);
         if (avail == -1) {
             ic_printf(_("Dropping ISCTL sequence: %d, tty_erase: %d\n"), key,
-                        console.tty_erase);
+                      console.tty_erase);
             goto out;
         }
 

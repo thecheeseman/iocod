@@ -35,7 +35,7 @@ static struct addrinfo *search_addrinfo(struct addrinfo *hints,
     return NULL;
 }
 
-bool net_string_to_sockaddr(const char *s, sa_family_t family, 
+bool net_string_to_sockaddr(const char *s, sa_family_t family,
                             socklen_t addrlen, struct sockaddr *addr)
 {
     struct addrinfo hints;
@@ -77,7 +77,7 @@ bool net_string_to_sockaddr(const char *s, sa_family_t family,
     }
 
     if (search == NULL) {
-        log_warn(_("Error resolving '%s': No address of required type found"), 
+        log_warn(_("Error resolving '%s': No address of required type found"),
                  s);
         goto end;
     }
@@ -93,7 +93,7 @@ end:
     return ret;
 }
 
-void net_sockaddr_to_string(struct sockaddr *in, socklen_t destsize, 
+void net_sockaddr_to_string(struct sockaddr *in, socklen_t destsize,
                             char *dest)
 {
     socklen_t addrlen = 0;
@@ -103,7 +103,7 @@ void net_sockaddr_to_string(struct sockaddr *in, socklen_t destsize,
     else if (in->sa_family == AF_INET6)
         addrlen = sizeof(struct sockaddr_in6);
 
-    if (getnameinfo(in, addrlen, dest, destsize, NULL, 0, NI_NUMERICHOST) != 0 
+    if (getnameinfo(in, addrlen, dest, destsize, NULL, 0, NI_NUMERICHOST) != 0
         && addrlen > 0) {
         *dest = '\0';
     }

@@ -32,7 +32,7 @@ static bool timebase_init = false;
 static ULARGE_INTEGER timebase;
 
 /*
- * Original Q3 method uses timeGetTime() from the WinMM library, but its 
+ * Original Q3 method uses timeGetTime() from the WinMM library, but its
  * precision is generally at best ~5 ms, depending on the machine (e.g.
  * my machine varies from 2-5 ms precision). This version has at least
  * <1 ms precision and up to 1 us precision
@@ -79,6 +79,6 @@ int32_t sys_milliseconds(void)
     clock_gettime(CLOCK_REALTIME, &curtime);
     double secs = (curtime.tv_sec - timebase.tv_sec) * 1000;
     double ns = (curtime.tv_nsec - timebase.tv_nsec) / 1000000;
-    return (int32_t)(secs + ns);
+    return (int32_t) (secs + ns);
 }
 #endif

@@ -28,15 +28,15 @@ void net_sleep(int msec)
     if (msec < 0)
         msec = 0;
 
-    fd_set fdr = {0};
+    fd_set fdr = { 0 };
     FD_ZERO(&fdr);
 
     socket_t highest = INVALID_SOCKET;
     if (ip_socket != INVALID_SOCKET) {
         FD_SET(ip_socket, &fdr);
         highest = ip_socket;
-    } 
-    
+    }
+
     if (ip6_socket != INVALID_SOCKET) {
         FD_SET(ip6_socket, &fdr);
 

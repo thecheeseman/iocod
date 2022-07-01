@@ -26,17 +26,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 bool com_filter(char *filter, char *name, bool casesensitive)
 {
-    char buf[MAX_TOKEN_CHARS] = {0};
+    char buf[MAX_TOKEN_CHARS] = { 0 };
     char *ptr;
     int i;
 
     while (*filter != '\0') {
         bool found;
-        
+
         if (*filter == '*') {
             filter++;
             for (i = 0; *filter != '\0'; i++) {
-                if (*filter == '*' || *filter == '?') 
+                if (*filter == '*' || *filter == '?')
                     break;
 
                 buf[i] = *filter;
@@ -46,7 +46,7 @@ bool com_filter(char *filter, char *name, bool casesensitive)
 
             if (strlen(buf) > 0) {
                 ptr = com_string_contains(name, buf, casesensitive);
-                if (ptr == NULL) 
+                if (ptr == NULL)
                     return false;
                 name = ptr + strlen(buf);
             }
@@ -59,13 +59,13 @@ bool com_filter(char *filter, char *name, bool casesensitive)
             filter++;
             found = false;
             while (*filter != '\0' && !found) {
-                if (*filter == ']' && *(filter + 1) != ']') 
+                if (*filter == ']' && *(filter + 1) != ']')
                     break;
 
-                if (*(filter + 1) == '-' && *(filter + 2) && 
+                if (*(filter + 1) == '-' && *(filter + 2) &&
                     (*(filter + 2) != ']' || *(filter + 3) == ']')) {
                     if (casesensitive) {
-                        if (*name >= *filter && *name <= *(filter + 2)) 
+                        if (*name >= *filter && *name <= *(filter + 2))
                             found = true;
                     } else {
                         if (toupper(*name) >= toupper(*filter) &&
@@ -79,7 +79,7 @@ bool com_filter(char *filter, char *name, bool casesensitive)
                         if (*filter == *name)
                             found = true;
                     } else {
-                        if (toupper(*filter) == toupper(*name)) 
+                        if (toupper(*filter) == toupper(*name))
                             found = true;
                     }
 
@@ -87,11 +87,11 @@ bool com_filter(char *filter, char *name, bool casesensitive)
                 }
             }
 
-            if (!found) 
+            if (!found)
                 return false;
 
             while (*filter != '\0') {
-                if (*filter == ']' && *(filter + 1) != ']') 
+                if (*filter == ']' && *(filter + 1) != ']')
                     break;
                 filter++;
             }
@@ -99,10 +99,10 @@ bool com_filter(char *filter, char *name, bool casesensitive)
             name++;
         } else {
             if (casesensitive) {
-                if (*filter != *name) 
+                if (*filter != *name)
                     return false;
             } else {
-                if (toupper(*filter) != toupper(*name)) 
+                if (toupper(*filter) != toupper(*name))
                     return false;
             }
             filter++;
@@ -117,8 +117,8 @@ IC_PUBLIC
 bool com_filter_path(char *filter, char *name, bool casesensitive)
 {
     size_t i;
-    char new_filter[PATH_MAX] = {0};
-    
+    char new_filter[PATH_MAX] = { 0 };
+
     for (i = 0; i < PATH_MAX - 1 && filter[i] != '\0'; i++) {
         if (filter[i] == '\\' || filter[i] == ':')
             new_filter[i] = '/';
@@ -127,7 +127,7 @@ bool com_filter_path(char *filter, char *name, bool casesensitive)
     }
     new_filter[i] = '\0';
 
-    char new_name[PATH_MAX] = {0};
+    char new_name[PATH_MAX] = { 0 };
     for (i = 0; i < PATH_MAX - 1 && name[i] != '\0'; i++) {
         if (name[i] == '\\' || name[i] == ':')
             new_name[i] = '/';

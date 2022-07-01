@@ -90,7 +90,7 @@ void com_frame(void)
 
     int min_msec = 1;
     if (com_dedicated->integer > 0)
-        min_msec = sv_frame_msec(); 
+        min_msec = sv_frame_msec();
 
     int msec = 0;
     static int last_time = 0;
@@ -118,7 +118,7 @@ void com_frame(void)
 
     // run any commands
     cbuf_execute();
-    
+
     //com_frame_msec = msec;
     msec = modify_msec(msec);
 

@@ -41,7 +41,7 @@ IC_PUBLIC
 void sv_frame(int msec)
 {
     UNUSED_PARAM(msec);
-    
+
     if (com_sv_running->integer == 0) {
         sys_sleep(-1);
         return;

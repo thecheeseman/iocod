@@ -57,9 +57,9 @@ bool net_is_lan_address(struct netadr addr)
 
         if (localip[i].type == addr.type) {
             if (addr.type == NA_IP) {
-                compare_ip = (byte *) 
+                compare_ip = (byte *)
                     &((struct sockaddr_in *) &localip[i].addr)->sin_addr.s_addr;
-                compare_mask = (byte *) 
+                compare_mask = (byte *)
                     &((struct sockaddr_in *) &localip[i].netmask)->sin_addr.s_addr;
                 compare_adr = addr.ip;
 
@@ -67,9 +67,9 @@ bool net_is_lan_address(struct netadr addr)
             } else if (addr.type == NA_IP6) {
                 // TODO? should we check the scope_id here?
 
-                compare_ip = (byte *) 
+                compare_ip = (byte *)
                     &((struct sockaddr_in6 *) &localip[i].addr)->sin6_addr;
-                compare_mask = (byte *) 
+                compare_mask = (byte *)
                     &((struct sockaddr_in6 *) &localip[i].netmask)->sin6_addr;
                 compare_adr = addr.ip6;
 
@@ -78,7 +78,7 @@ bool net_is_lan_address(struct netadr addr)
 
             bool differed = false;
             for (int run = 0; run < addrsize; run++) {
-                if ((compare_ip[run] & compare_mask[run]) != 
+                if ((compare_ip[run] & compare_mask[run]) !=
                     (compare_adr[run] & compare_mask[run])) {
                     differed = true;
                     break;

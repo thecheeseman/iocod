@@ -36,7 +36,7 @@ char *cmd_argv(unsigned int arg)
 {
     if (arg < argc)
         return argv[arg];
-    
+
     return "";
 }
 
@@ -50,7 +50,7 @@ void cmd_argv_buffer(unsigned int arg, size_t buflen, char *buf)
 IC_PUBLIC
 char *cmd_args_from(unsigned int arg)
 {
-    static char args[MAX_STRING_CHARS] = {0};
+    static char args[MAX_STRING_CHARS] = { 0 };
 
     args[0] = '\0';
     for (unsigned int i = arg; i < argc; i++) {

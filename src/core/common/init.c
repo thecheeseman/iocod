@@ -49,16 +49,16 @@ void com_init(char *cmdline)
 
     if (setjmp(abortframe))
         sys_error("Error occured during init");
-    
+
     ev_init();
     rand_init();
     cv_init();
 
     // parse command line
     parse_command_line(cmdline);
-    
+
     cbuf_init();
-    
+
     // startup variable -- override anything from the config files
     // with command line arguments
     startup_variable(NULL);
@@ -71,7 +71,7 @@ void com_init(char *cmdline)
     #else
     com_developer = cv_get("developer", "0", CV_TEMP);
     #endif
-    cv_set_description(com_developer, 
+    cv_set_description(com_developer,
                        _("Developer mode. Prints out debug messages."));
 
     // base path
@@ -85,7 +85,7 @@ void com_init(char *cmdline)
     startup_variable(NULL);
 
     com_dedicated = cv_get("dedicated", "2", CV_ROM);
-    cv_set_description(com_dedicated, 
+    cv_set_description(com_dedicated,
                        _("Dedicated server. TEMP: Forced to 2."));
 
     // init hunk
@@ -99,7 +99,7 @@ void com_init(char *cmdline)
     com_logfile = cv_get("logfile", "0", CV_TEMP);
     cv_set_description(com_logfile,
                        _("Enable game logging. 1 = normal, 2 = flush."));
-    
+
     com_timescale = cv_get("timescale", "1", CV_CHEAT | CV_SYSTEM_INFO);
     cv_set_description(com_timescale,
                        _("Game timescale. Cheat protected."));
@@ -123,7 +123,7 @@ void com_init(char *cmdline)
     com_protocol = cv_get("com_protocol", va("%i", PROTOCOL_VERSION),
                           CV_ROM | CV_SERVER_INFO);
     com_legacy_protocol = cv_get("com_legacyprotocol", va("%i", PROTOCOL_LEGACY),
-                                CV_ROM | CV_SERVER_INFO);
+                                 CV_ROM | CV_SERVER_INFO);
 
     if (com_legacy_protocol->integer > 0)
         protocol = cv_get("protocol", com_legacy_protocol->string, CV_ROM);

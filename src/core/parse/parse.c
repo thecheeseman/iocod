@@ -162,7 +162,7 @@ static char *parse_ext(char **data_p, bool line_breaks)
     }
 
     /* check for numbers */
-    if ((c >= '0' && c <= '9') || 
+    if ((c >= '0' && c <= '9') ||
         (c == '-' && data[1] >= '0' && data[1] <= '9') ||
         (c == '.' && data[1] >= '0' && data[1] <= '9')) {
         do {
@@ -213,7 +213,7 @@ static char *parse_ext(char **data_p, bool line_breaks)
         goto end;
     }
 
-    /* 
+    /*
      * check for a regular word
      * we still allow forward and back slashes in name tokens for pathnames
      * and also colons for drive letters
@@ -264,7 +264,7 @@ static char *parse_ext(char **data_p, bool line_breaks)
     pi->token[0] = *data;
     pi->token[1] = '\0';
     data++;
-    
+
 end:
     *data_p = data;
 out:
@@ -352,7 +352,7 @@ IC_PUBLIC
 IC_NON_NULL(1)
 char *ps_parse_rest_of_line(char **data_p)
 {
-    static char	line[MAX_TOKEN_CHARS] = {0};
+    static char	line[MAX_TOKEN_CHARS] = { 0 };
     const char *token;
 
     line[0] = '\0';
