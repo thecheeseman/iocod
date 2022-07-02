@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "net_local.h"
 
-bool net_get_packet(struct netadr *net_from, struct netmsg *msg, fd_set *fdr)
+bool net_get_packet(struct netadr *net_from, fd_set *fdr, struct netmsg *msg)
 {
     for (int protocol = 0; protocol < 2; protocol++) {
         socket_t sock = INVALID_SOCKET;
@@ -55,7 +55,7 @@ bool net_get_packet(struct netadr *net_from, struct netmsg *msg, fd_set *fdr)
                 return false;
             }
 
-            msg->cur_size = ret;
+            msg->current_size = ret;
             return true;
         }
     }

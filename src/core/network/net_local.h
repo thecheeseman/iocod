@@ -174,6 +174,80 @@ void net_sockaddr_to_netadr(struct sockaddr *s, struct netadr *a);
 
 void net_event(fd_set *fdr);
 
+/**
+ * @brief Get a packet.
+ * @param[in] net_from address of the sender
+ * @param[in] fdr      file descriptor set
+ * @param[out] msg     message buffer
+ * @return true if successful, false otherwise
+*/
+bool net_get_packet(struct netadr *net_from, fd_set *fdr, struct netmsg *msg);
+
+/* This is based on the Adaptive Huffman algorithm described in Sayood's Data
+ * Compression book.  The ranks are not actually stored, but implicitly defined
+ * by the location of a node within a doubly-linked list
+ */
+
+#define HMAX 256 /* Maximum symbol */
+#define NYT HMAX					/* NYT = Not Yet Transmitted */
+#define INTERNAL_NODE (HMAX+1)
+
+typedef struct nodetype {
+    /* tree structure */
+    struct nodetype *left;
+    struct nodetype *right;
+    struct nodetype *parent;
+
+    /* doubly-linked list */
+    struct nodetype *next;
+    struct nodetype *prev;
+
+    /* highest ranked node in block */
+    struct nodetype **head;
+    int	weight;
+    int	symbol;
+} node_t;
+
+typedef struct {
+    int	blocNode;
+    int	blocPtrs;
+
+    node_t *tree;
+    node_t *lhead;
+    node_t *ltail;
+    node_t *loc[HMAX + 1];
+    node_t **freelist;
+
+    node_t nodeList[768];
+    node_t *nodePtrs[768];
+} huff_t;
+
+typedef struct {
+    huff_t compressor;
+    huff_t decompressor;
+} huffman_t;
+
+extern huffman_t msg_huffman;
+
+void huff_compress(struct netmsg *buf, int offset);
+void huff_decompress(struct netmsg *buf, int offset);
+void huff_init(huffman_t *huff);
+void huff_add_ref(huff_t *huff, byte ch);
+int huff_receive(node_t *node, int *ch, byte *fin);
+void huff_transmit(huff_t *huff, int ch, byte *fout, int maxoffset);
+void huff_offset_receive(node_t *node, int *ch, byte *fin, int *offset, 
+                         int maxoffset);
+void huff_offset_transmit(huff_t *huff, int ch, byte *fout, int *offset, 
+                          int maxoffset);
+void huff_put_bit(int bit, byte *fout, int *offset);
+int huff_get_bit(byte *fout, int *offset);
+int	huff_get_bloc(void);
+void huff_set_bloc(int _bloc);
+
+void msg_init(struct netmsg *buf, byte *data, int length);
+void msg_init_oob(struct netmsg *buf, byte *data, int length);
+void msg_clear(struct netmsg *buf);
+
 /** @} */
 
 #endif /* NET_LOCAL_H */

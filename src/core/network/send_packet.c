@@ -23,9 +23,46 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "net_local.h"
 
 IC_PUBLIC
-void net_send_packet(int length, const void *data, struct netadr to)
+bool net_send_packet(int length, const void *data, struct netadr to)
 {
-    UNUSED_PARAM(length);
-    UNUSED_PARAM(data);
-    UNUSED_PARAM(to);
+    if (to.type != NA_BROADCAST && to.type != NA_IP && to.type != NA_IP6) {
+        ic_error(_("bad address type"));
+        return false;
+    }
+
+    if ((ip_socket == INVALID_SOCKET && to.type == NA_IP) ||
+        (ip6_socket == INVALID_SOCKET && to.type == NA_IP6)) {
+        log_debug(_("invalid socket"));
+        return false;
+    }
+
+    struct sockaddr_storage addr = { 0 };
+    memset(&addr, 0, sizeof(addr));
+    net_netadr_to_sockaddr(&to, (struct sockaddr *) &addr);
+
+    int ret = 0;
+    if (addr.ss_family == AF_INET) {
+        ret = sendto(ip_socket, data, length, 0, (struct sockaddr *) &addr,
+                     sizeof(struct sockaddr_in));
+    } else if (addr.ss_family == AF_INET6) {
+        ret = sendto(ip_socket, data, length, 0, (struct sockaddr *) &addr,
+                     sizeof(struct sockaddr_in6));
+    }
+
+    if (ret == SOCKET_ERROR) {
+        #ifdef IC_PLATFORM_WINDOWS
+        int err = WSAGetLastError();
+        #else
+        int err = errno;
+        #endif
+
+        // wouldblock is silent
+        if (err == EAGAIN)
+            return false;
+
+        log_debug(_("sendto failed: %s"), net_error_string());
+        return false;
+    }
+
+    return true;
 }

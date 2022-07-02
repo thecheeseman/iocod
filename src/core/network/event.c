@@ -24,5 +24,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 void net_event(fd_set *fdr)
 {
-    UNUSED_PARAM(fdr);
+    byte data[MAX_MSG_LEN + 1] = { 0 };
+    struct netadr from = { 0 };
+    struct netmsg msg = { 0 };
+
+    while (true) {
+        msg_init(&msg, data, sizeof(data));
+
+        if (!net_get_packet(&from, fdr, &msg))
+            break;
+
+        // dropsim 
+
+        #if 0
+        if (com_sv_running->integer > 0)
+            com_run_and_time_server_packet(&from, &msg);
+        else
+            cl_packet_event(from, &msg);
+        #endif
+    }
 }

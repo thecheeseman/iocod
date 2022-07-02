@@ -318,6 +318,7 @@ void sys_backtrace(void)
 
     ic_free(symbol);
     ic_free(line);
+    SymCleanup(process);
     #else
     int frames = backtrace(stack, STACK_SIZE);
     fprintf(out, "backtrace() returned %d frames\n", frames);

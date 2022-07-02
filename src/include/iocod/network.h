@@ -39,8 +39,8 @@ struct netmsg {
     byte *data;
 
     int max_size;
-    int cur_size;
-    int uncomp_size;
+    int current_size;
+    int uncompressed_size;
     int read_count;
     int bit;
 };
@@ -157,11 +157,16 @@ bool net_is_lan_address(struct netadr addr);
 IC_PUBLIC
 void net_sleep(int msec);
 
-/** @} */
+/**
+ * @brief Send packet of length @p length, to address @p to.
+ * @param[in] length length of packet to send
+ * @param[in] data   pointer to packet data
+ * @param[in] to     address to send packet to
+ * @return true if packet was sent, false otherwise
+*/
+IC_PUBLIC
+bool net_send_packet(int length, const void *data, struct netadr to);
 
-        // RFC1918:
-        // 10.0.0.0        -   10.255.255.255  (10/8 prefix)
-        // 172.16.0.0      -   172.31.255.255  (172.16/12 prefix)
-        // 192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
+/** @} */
 
 #endif /* IC_NETWORK_H */
