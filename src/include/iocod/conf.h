@@ -446,6 +446,12 @@ int config_log_level(void);
 IC_PUBLIC
 char *config_console_language(void);
 
+IC_PUBLIC
+bool config_log_buffered(void);
+
+IC_PUBLIC
+int config_log_buffer_size(void);
+
 /**
  * @brief Check if the iocod config is initialized.
  * @return true if it is, false otherwise

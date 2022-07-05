@@ -29,7 +29,10 @@ struct logger iclog = {
     .echo_stdout = true,
     .auto_lf = true,
     .hide_next_source = false,
-    .size = 0
+    .size = 0,
+    .buffered = true,
+    .buffer_size = 0,
+    .buffer = NULL,
 };
 
 #ifdef IC_PLATFORM_WINDOWS
@@ -69,11 +72,13 @@ void log_init(void)
 
     /* TODO: file splitting once file gets too large? */
 
+    if (config_initialized()) {
+        log_set_level(config_log_level());
+        log_set_buffered(config_log_buffered(), config_log_buffer_size());
+    }
+        
     log_banner();
     log_debug(_("Log file opened\n"));
-
-    if (config_initialized())
-        log_set_level(config_log_level());
 }
 
 /*

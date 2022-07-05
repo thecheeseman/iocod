@@ -24,27 +24,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 static struct conf *icconf = NULL;
 static struct confopt opts[] = {
-    CONF_HEADER("iocod config"),
+    CONF_HEADER("Config"),
 
-    CONF_SECTION("config file syntax notes"),
+    CONF_SECTION("Config file syntax notes"),
 
-    CONF_COMMENT("any line that begins with a '#' is treated as a comment"),
-    CONF_COMMENT("variables can be booleans, integers, floats, or strings"),
-    CONF_COMMENT("  booleans"),
-    CONF_COMMENT("    valid values are: true, false, yes, no, on, off"),
-    CONF_COMMENT("  integers"),
-    CONF_COMMENT("    can be any regular number (42, 25, etc)"),
-    CONF_COMMENT("    can also be hexadecimal (0xFE) or octal (031)"),
-    CONF_COMMENT("  floats"),
-    CONF_COMMENT("    can be any floating number (3.1415, etc)"),
-    CONF_COMMENT("    can also use exponents (+1.56E4)"),
-    CONF_COMMENT("  strings"),
-    CONF_COMMENT("    strings must be enclosed in \"quotes\""),
+    CONF_COMMENT("Any line that begins with a '#' is treated as a comment."),
+    CONF_COMMENT("Variables can be booleans, integers, floats, or strings."),
+    CONF_COMMENT("  Booleans"),
+    CONF_COMMENT("  - Valid values are: true, false, yes, no, on, off"),
+    CONF_COMMENT("  Integers"),
+    CONF_COMMENT("  - Can be any regular number (42, 25, etc)"),
+    CONF_COMMENT("  - Can also be hexadecimal (0xFE) or octal (031)"),
+    CONF_COMMENT("  Floats"),
+    CONF_COMMENT("  - Can be any floating number (3.1415, etc)"),
+    CONF_COMMENT("  - Can also use exponents (+1.56E4)"),
+    CONF_COMMENT("  Strings"),
+    CONF_COMMENT("  - Strings must be enclosed in \"quotes\""),
     CONF_BLANK(),
 
-    CONF_HEADER("general"),
+    CONF_HEADER("General"),
 
-    CONF_COMMENT("set console language"),
+    CONF_COMMENT("Console language"),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    string"),
     CONF_COMMENT("options: \"english\""),
@@ -52,19 +52,19 @@ static struct confopt opts[] = {
     CONF_STRING("language", "english"),
     CONF_BLANK(),
 
-    CONF_COMMENT("set log level"),
-    CONF_COMMENT("log levels are as listed below:"),
-    CONF_COMMENT("  0 = no logging"),
-    CONF_COMMENT("  1 = log only fatal errors"),
-    CONF_COMMENT("  2 = log ALL errors"),
-    CONF_COMMENT("  3 = log ALL errors and warnings"),
-    CONF_COMMENT("  4 (default) = log errors, warnings, and useful messages"),
-    CONF_COMMENT("  5 = debug messages"),
-    CONF_COMMENT("  6 = trace messages (very verbose)"),
-    CONF_COMMENT("  7 = log everything"),
+    CONF_COMMENT("Log level"),
+    CONF_COMMENT("Levels are as listed below:"),
+    CONF_COMMENT("  0 = No logging"),
+    CONF_COMMENT("  1 = Log only fatal errors"),
+    CONF_COMMENT("  2 = Log ALL errors"),
+    CONF_COMMENT("  3 = Log ALL errors and warnings"),
+    CONF_COMMENT("  4 = Log errors, warnings, and useful messages"),
+    CONF_COMMENT("  5 = Debug messages"),
+    CONF_COMMENT("  6 = Trace messages (very verbose)"),
+    CONF_COMMENT("  7 = Log everything"),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    integer"),
-    CONF_COMMENT("options: 0-7"),
+    CONF_COMMENT("options: 0 - 7"),
     CONF_COMMENT("default: 4 (errors, warnings + useful messages)"),
     #ifdef IC_DEBUG
     CONF_INT("log_level", 7),
@@ -73,19 +73,48 @@ static struct confopt opts[] = {
     #endif
     CONF_BLANK(),
 
-    CONF_HEADER("compatibility"),
+    CONF_COMMENT("Log buffering"),
+    CONF_COMMENT("If enabled, log file will only write once the log buffer"),
+    CONF_COMMENT("is completely full. You can disable this if you want, and"),
+    CONF_COMMENT("the log will always write immediately, but this could"),
+    CONF_COMMENT("impact performance. Recommended setting is on."),
+    CONF_COMMENT(""),
+    CONF_COMMENT("type:    boolean"),
+    CONF_COMMENT("default: on"),
+    CONF_BOOL("log_buffering", on),
+    CONF_BLANK(),
 
-    CONF_COMMENT("should we use codextended compatible GSC functions?"),
+    CONF_COMMENT("log buffer size"),
+    CONF_COMMENT("If log_buffering is enabled, this is the amount of data"),
+    CONF_COMMENT("that will be buffered before the log is written to disk."),
+    CONF_COMMENT("You may get increased performance by changing this, but"),
+    CONF_COMMENT("it is not guaranteed."),
+    CONF_COMMENT(""),
+    CONF_COMMENT("Windows defaults to 512."),
+    CONF_COMMENT("Linux distros generally are 4096 or 8192 by default."),
+    CONF_COMMENT(""),
+    CONF_COMMENT("If this is set to 0, then the OS will determine the best"),
+    CONF_COMMENT("buffer size (recommended setting)."),
+    CONF_COMMENT(""),
+    CONF_COMMENT("type:    integer"),
+    CONF_COMMENT("options: 0 - 1048576 (1 mb)"),
+    CONF_COMMENT("default: 0 (let OS determine buffer size)"),
+    CONF_INT("log_buffer_size", 0),
+    CONF_BLANK(),
+
+    CONF_HEADER("Compatibility"),
+
+    CONF_COMMENT("Should we use codextended compatible GSC functions?"),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    boolean"),
     CONF_COMMENT("default: true"),
     CONF_BOOL("codextended_compat", on),
     CONF_BLANK(),
 
-    CONF_COMMENT("controls which version of cod1 we are targeting"),
-    CONF_COMMENT("to target 1.1, set this to 1"),
-    CONF_COMMENT("to target 1.5, set this to 5"),
-    CONF_COMMENT("to target both, set this to 0"),
+    CONF_COMMENT("Controls which version of cod1 we are targeting"),
+    CONF_COMMENT("- To target 1.1, set this to 1"),
+    CONF_COMMENT("- To target 1.5, set this to 5"),
+    CONF_COMMENT("- To target both, set this to 0 (recommended)"),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    integer"),
     CONF_COMMENT("options: 0, 1, 5"),
@@ -93,23 +122,23 @@ static struct confopt opts[] = {
     CONF_INT("cod_version_target", 0),
     CONF_BLANK(),
 
-    CONF_HEADER("autoupdate"),
+    CONF_HEADER("Autoupdate"),
 
-    CONF_SECTION("note about autoupdates"),
-    CONF_COMMENT("recommended settings for STABLE servers are:"),
+    CONF_SECTION("Note about autoupdates"),
+    CONF_COMMENT("Recommended settings for STABLE servers are:"),
     CONF_COMMENT("  autoupdate_enabled on"),
     CONF_COMMENT("  autoupdate_branch \"stable\""),
     CONF_COMMENT("  autoupdate_on_major_release no"),
     CONF_COMMENT("  autoupdate_on_minor_release yes"),
     CONF_COMMENT("  autoupdate_on_patch_release no"),
     CONF_COMMENT(""),
-    CONF_COMMENT("the STABLE settings will only update when there are"),
+    CONF_COMMENT("The STABLE settings will only update when there are"),
     CONF_COMMENT("bug fixes, security patches, etc. and not update immediately"),
-    CONF_COMMENT("whenever there is a new update available. they will also not"),
+    CONF_COMMENT("whenever there is a new update available. They will also not"),
     CONF_COMMENT("automatically update when a major _game breaking_ change"),
     CONF_COMMENT("has been introduced."),
     CONF_COMMENT(""),
-    CONF_COMMENT("if you want the absolute latest (and EXPERIMENTAL)"),
+    CONF_COMMENT("If you want the absolute latest (and EXPERIMENTAL)"),
     CONF_COMMENT("development builds, then use these settings:"),
     CONF_COMMENT("  autoupdate_enabled on"),
     CONF_COMMENT("  autoupdate_branch \"develop\""),
@@ -117,18 +146,18 @@ static struct confopt opts[] = {
     CONF_COMMENT("  autoupdate_on_minor_release yes"),
     CONF_COMMENT("  autoupdate_on_patch_release yes"),
     CONF_COMMENT(""),
-    CONF_COMMENT("your server may crash and experience major issues if you"),
-    CONF_COMMENT("choose experimental options. you have been warned!"),
+    CONF_COMMENT("Your server may crash and experience major issues if you"),
+    CONF_COMMENT("choose experimental options. You have been warned!"),
     CONF_BLANK(),
 
-    CONF_COMMENT("automatically update with latest binaries from github?"),
+    CONF_COMMENT("Automatically update with latest binaries from GitHub?"),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    boolean"),
     CONF_COMMENT("default: on"),
     CONF_BOOL("autoupdate_enabled", on),
     CONF_BLANK(),
 
-    CONF_COMMENT("which branch should we pull updates from?"),
+    CONF_COMMENT("Which branch should we pull updates from?"),
     CONF_COMMENT("\"stable\" is recommended for most installations"),
     CONF_COMMENT("\"develop\" may contain experimental features and might cause"),
     CONF_COMMENT("server instability"),
@@ -139,36 +168,36 @@ static struct confopt opts[] = {
     CONF_STRING("autoupdate_branch", "stable"),
     CONF_BLANK(),
 
-    CONF_COMMENT("update on major releases?"),
-    CONF_COMMENT("major releases are generally _game breaking_ updates, so"),
-    CONF_COMMENT("it is usually unsafe to automatically update"),
+    CONF_COMMENT("Update on major releases?"),
+    CONF_COMMENT("Major releases are generally _game breaking_ updates."),
+    CONF_COMMENT("It is usually unsafe to automatically update."),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    boolean"),
     CONF_COMMENT("default: no"),
     CONF_BOOL("autoupdate_on_major_release", no),
     CONF_BLANK(),
 
-    CONF_COMMENT("update on minor releases?"),
-    CONF_COMMENT("minor releases are bug fixes, security patches, and"),
+    CONF_COMMENT("Update on minor releases?"),
+    CONF_COMMENT("Minor releases are bug fixes, security patches, and"),
     CONF_COMMENT("new features which DO NOT break compatibility, so they are"),
-    CONF_COMMENT("generally safe to update automatically"),
+    CONF_COMMENT("generally safe to update automatically."),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    boolean"),
     CONF_COMMENT("default: yes"),
     CONF_BOOL("autoupdate_on_minor_release", yes),
     CONF_BLANK(),
 
-    CONF_COMMENT("update on patch releases?"),
-    CONF_COMMENT("patch releases are very small incremental updates which might"),
-    CONF_COMMENT("contain bug fixes, security patches, etc."),
-    CONF_COMMENT("if you want the absolute _latest_ patches right away, enable this"),
+    CONF_COMMENT("Update on patch releases?"),
+    CONF_COMMENT("Patch releases are very small incremental updates which might"),
+    CONF_COMMENT("contain bug fixes, security patches, etc. If you want"),
+    CONF_COMMENT("the absolute _latest_ patches right away, enable this."),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    boolean"),
     CONF_COMMENT("default: no"),
     CONF_BOOL("autoupdate_on_patch_release", no),
     CONF_BLANK(),
 
-    CONF_COMMENT("automatically update when the server has been inactive for"),
+    CONF_COMMENT("Automatically update when the server has been inactive for"),
     CONF_COMMENT("a while?"),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    boolean"),
@@ -176,7 +205,7 @@ static struct confopt opts[] = {
     CONF_BOOL("autoupdate_when_inactive", no),
     CONF_BLANK(),
 
-    CONF_COMMENT("if autoupdate_when_inactive is enabled, how long should we"),
+    CONF_COMMENT("If autoupdate_when_inactive is enabled, how long should we"),
     CONF_COMMENT("wait before updating?"),
     CONF_COMMENT(""),
     CONF_COMMENT("type:    integer"),
@@ -227,6 +256,33 @@ char *config_console_language(void)
 
     // TEMP until we have multilang support
     return "english";
+}
+
+IC_PUBLIC
+bool config_log_buffered(void)
+{
+    struct confopt *opt = conf_get_opt(icconf, "log_buffered");
+
+    if (opt == NULL)
+        return true;
+
+    return (opt->value.i == 1);
+}
+
+IC_PUBLIC
+int config_log_buffer_size(void)
+{
+    struct confopt *opt = conf_get_opt(icconf, "log_buffer_size");
+
+    if (opt == NULL)
+        return 0;
+
+    if (opt->value.i < 0)
+        opt->value.i = 0;
+    else if (opt->value.i > 1048576)
+        opt->value.i = 1048576;
+
+    return opt->value.i;
 }
 
 IC_PUBLIC

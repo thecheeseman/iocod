@@ -104,6 +104,9 @@ void log_echo_stdout(bool echo);
 IC_PUBLIC
 void log_auto_lf(bool lf);
 
+IC_PUBLIC
+void log_set_buffered(bool buffered, int buffer_size);
+
 /**
  * @brief Print to log.
  *
