@@ -23,18 +23,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_CONSOLE_H
 #define IOCOD_CONSOLE_H
 
-#include "iocod.h"
-
-#define MAX_PRINT_MSG 4096
-
-#define IC_CONSOLE_TITLE "iocod dedicated server console [" \
-    IC_VERSION_STRING "-" IC_PLATFORM_STRING "]"
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
 /**
  * @defgroup console Console
  * @brief Console module for handling input, output, etc.
  * @{
  */
+
+#define MAX_PRINT_MSG 4096
+
+#define IC_CONSOLE_TITLE "iocod dedicated server console [" \
+    IC_VERSION_STRING "-" IC_PLATFORM_STRING "]"
 
 /**
  * @brief Check if the console is initialized or not.

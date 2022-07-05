@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_COMMANDS_H
 #define IC_COMMANDS_H
 
-#include "iocod.h"
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
 /**
  * @defgroup commands Commands
@@ -52,6 +53,17 @@ void cbuf_init(void);
 */
 IC_PUBLIC
 bool cbuf_add_text(const char *text);
+
+/**
+ * @brief Add the given @p text to the command buffer and immediately execute.
+ * 
+ * Calls cbuf_execute() immediately after to prevent text buffer overflowing.
+ * 
+ * @param[in] text text to add to the command buffer
+ * @return true on success, false on failure
+*/
+IC_PUBLIC
+bool cbuf_add_execute(const char *text);
 
 /**
  * @brief Insert the given @p text immediately after the current command. Will

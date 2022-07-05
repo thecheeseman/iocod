@@ -29,6 +29,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_PLATFORM_H
 #define IC_PLATFORM_H
 
+/* always include config.h */
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "iocod/version.h"
+
 /**
  * @def IC_PLATFORM_COMPILER
  * @brief A string containing the name of the compiler used. This is defined
@@ -928,6 +935,8 @@ IC_SILENCE_WARNING(4068)
 #define IC_GCC_VERSION  0
 #define IC_MSVC_VERSION 0
 
+#define IC_PLATFORM_LITTLE_ENDIAN // doxygen is little endian obviously
+
 #else
 #ifndef IC_PLATFORM_ARCH
 #define IC_PLATFORM_ARCH "unsupported"
@@ -943,10 +952,10 @@ IC_SILENCE_WARNING(4068)
  * @brief A string containing the platform information and optionally 
  * a debug flag.
  */
-#ifndef IC_DEBUG
-#define IC_PLATFORM_STRING IC_PLATFORM_OS "-" IC_PLATFORM_ARCH
-#else
+#ifdef IC_DEBUG
 #define IC_PLATFORM_STRING IC_PLATFORM_OS "-" IC_PLATFORM_ARCH "-debug"
+#else
+#define IC_PLATFORM_STRING IC_PLATFORM_OS "-" IC_PLATFORM_ARCH
 #endif
 
 /** @} */

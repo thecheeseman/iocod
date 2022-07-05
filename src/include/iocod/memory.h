@@ -23,11 +23,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_MEMORY_H
 #define IOCOD_MEMORY_H
 
+#include "iocod/platform.h"
+#include "iocod/types.h"
+
 /**
  * @defgroup memory Memory
  * @brief Library replacement memory functions.
  * @{
  */
+
+#define hunk_init()
 
 /**
  * @brief "Safer" library replacement for `malloc`.

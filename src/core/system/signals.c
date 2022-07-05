@@ -47,7 +47,7 @@ void sys_signal_handler(int signal)
 {
     static bool caught = false;
     static bool caught_sigint = false;
-    static int32_t last_sigint = 0;
+    static int last_sigint = 0;
 
     const char *sigtext = NULL;
     if (signal <= (int) signal_str_size && signal > 0 && signal_str[signal] != NULL)

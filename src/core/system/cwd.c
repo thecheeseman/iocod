@@ -20,32 +20,32 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#ifndef COM_LOCAL_H
-#define COM_LOCAL_H
+#include "iocod/platform.h"
 
-#include "iocod.h"
-#include <setjmp.h>
+#ifdef IC_PLATFORM_WINDOWS
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
 
-extern jmp_buf abortframe;
-extern bool error_entered;
-extern int com_frame_time;
-extern bool fully_initialized;
+#ifndef PATH_MAX
+#define PATH_MAX 256
+#endif
 
-/**
- * @brief Add common commands to the command system.
-*/
-void add_common_commands(void);
+IC_PUBLIC
+char *sys_cwd(void)
+{
+    static char cwd[PATH_MAX];
+    
+    #ifdef IC_PLATFORM_WINDOWS
+    if (_getcwd(cwd, sizeof(cwd) - 1) == NULL)
+        return NULL;
+    #else
+    if (getcwd(cwd, sizeof(cwd) - 1) == NULL)
+        return NULL;
+    #endif
 
-void parse_command_line(char *cmdline);
-void startup_variable(const char *match);
-bool add_startup_commands(void);
-
-bool safe_mode(void);
-
-/**
- * @brief Set up random seed with a system-defined seed, or time(NULL) if
- * system could not provide a seed.
-*/
-void rand_init(void);
-
-#endif /* COM_LOCAL_H */
+    cwd[PATH_MAX - 1] = '\0';
+    
+    return cwd;
+}

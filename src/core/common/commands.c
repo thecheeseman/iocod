@@ -99,7 +99,7 @@ static void com_quit_f(struct cmd *self)
     sys_quit();
 }
 
-void com_add_commands(void)
+void add_common_commands(void)
 {
     cmd_add2("setenv", com_setenv_f, 1, 2,
              _("setenv <variable> [<value>]"),

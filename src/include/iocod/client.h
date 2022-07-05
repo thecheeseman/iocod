@@ -20,32 +20,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#ifndef COM_LOCAL_H
-#define COM_LOCAL_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
-#include "iocod.h"
-#include <setjmp.h>
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
-extern jmp_buf abortframe;
-extern bool error_entered;
-extern int com_frame_time;
-extern bool fully_initialized;
+#define cl_init_key_commands()
+#define cl_init()
+#define cl_start_hunk_users()
+#define cl_disconnect(x)
+#define cl_shutdown_all()
 
-/**
- * @brief Add common commands to the command system.
-*/
-void add_common_commands(void);
-
-void parse_command_line(char *cmdline);
-void startup_variable(const char *match);
-bool add_startup_commands(void);
-
-bool safe_mode(void);
-
-/**
- * @brief Set up random seed with a system-defined seed, or time(NULL) if
- * system could not provide a seed.
-*/
-void rand_init(void);
-
-#endif /* COM_LOCAL_H */
+#endif /* CLIENT_H*/

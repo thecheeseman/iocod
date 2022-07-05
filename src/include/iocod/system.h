@@ -23,6 +23,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_SYSTEM_H
 #define IC_SYSTEM_H
 
+#include "iocod/platform.h"
+#include "iocod/types.h"
+#include <inttypes.h>
+
+IC_PUBLIC
+void sys_init(void);
+
+IC_PUBLIC
+char *sys_cwd(void);
+
+IC_PUBLIC
+bool sys_mkdir(const char *path);
+
+IC_PUBLIC
+char *sys_get_current_user(void);
+
 /**
  * @brief Get last library error, if applicable. Clears last error.
  * @return NULL-terminated string containing error message, otherwise NULL

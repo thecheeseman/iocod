@@ -20,7 +20,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "iocod/platform.h"
+#include "iocod/types.h"
+#include <inttypes.h>
 
 static bool timebase_init = false;
 

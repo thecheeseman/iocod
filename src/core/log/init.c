@@ -85,6 +85,9 @@ void log_shutdown(void)
     log_debug(_("Log file closed\n"));
     log_banner();
 
+    // flush before close
+    fflush(iclog.fp); 
+    
     fclose(iclog.fp);
     iclog.fp = NULL;
 

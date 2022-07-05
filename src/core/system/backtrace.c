@@ -276,8 +276,10 @@ void sys_backtrace(void)
 
     FILE *out = stderr;
     FILE *fp = fopen("crash.log", "a+");
-    if (fp != NULL)
+    if (fp != NULL) {
+        setvbuf(fp, NULL, _IONBF, 0);
         out = fp;
+    }
 
     fprintf(out, "----------------------------------------"
             "----------------------------------------\n");
@@ -339,8 +341,6 @@ void sys_backtrace(void)
 
     fprintf(out, "----------------------------------------"
             "----------------------------------------\n");
-
-    fflush(out);
 
     if (fp != NULL)
         fclose(fp);

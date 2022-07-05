@@ -29,7 +29,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_PARSE_H
 #define IC_PARSE_H
 
-#include "iocod.h"
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
 #define MAX_TOKEN_CHARS 1024
 

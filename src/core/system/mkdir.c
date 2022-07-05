@@ -20,32 +20,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#ifndef COM_LOCAL_H
-#define COM_LOCAL_H
-
 #include "iocod.h"
-#include <setjmp.h>
 
-extern jmp_buf abortframe;
-extern bool error_entered;
-extern int com_frame_time;
-extern bool fully_initialized;
+#ifdef IC_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
+#include <sys/stat.h>
+#endif
 
-/**
- * @brief Add common commands to the command system.
-*/
-void add_common_commands(void);
+IC_PUBLIC
+bool sys_mkdir(const char *path)
+{
+    #ifdef IC_PLATFORM_WINDOWS
+    if (!CreateDirectory(path, NULL)) {
+        if (GetLastError() != ERROR_ALREADY_EXISTS)
+            return false;
+    }
+    #else
+    if (mkdir(path, 0750) != 0) {
+        if (errno != EEXIST)
+            return false;
+    }
+    #endif
 
-void parse_command_line(char *cmdline);
-void startup_variable(const char *match);
-bool add_startup_commands(void);
-
-bool safe_mode(void);
-
-/**
- * @brief Set up random seed with a system-defined seed, or time(NULL) if
- * system could not provide a seed.
-*/
-void rand_init(void);
-
-#endif /* COM_LOCAL_H */
+    return true;
+}

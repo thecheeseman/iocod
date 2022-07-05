@@ -100,5 +100,6 @@ bool cmd_execute_string(const char *text)
 
     // check ui
 
+    ic_printf("Unknown command or cvar '%s'\n", cmd_argv(0));
     return false;
 }

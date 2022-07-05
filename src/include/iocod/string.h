@@ -23,6 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_STRING_H
 #define IC_STRING_H
 
+#include "iocod/platform.h"
+#include "iocod/types.h"
 #include <string.h>
 
 /**

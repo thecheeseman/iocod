@@ -118,6 +118,7 @@ Platform utilities
 */
 
 #include "iocod/platform.h"
+#include "iocod/platform_endianness.h"
 
 /*
 ================================================================================
@@ -135,6 +136,7 @@ iocod includes
 */
 
 #include "iocod/assert.h"
+#include "iocod/client.h"
 #include "iocod/commands.h"
 #include "iocod/common.h"
 #include "iocod/conf.h"

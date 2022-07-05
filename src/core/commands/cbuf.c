@@ -55,6 +55,15 @@ bool cbuf_add_text(const char *text)
 }
 
 IC_PUBLIC
+bool cbuf_add_execute(const char *text)
+{
+    cbuf_execute_text(EXEC_NOW, text);
+    cbuf_execute();
+
+    return true;
+}
+
+IC_PUBLIC
 bool cbuf_insert_text(const char *text)
 {
     size_t len = strlen(text) + 1;

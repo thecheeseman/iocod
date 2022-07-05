@@ -23,6 +23,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_NETWORK_H
 #define IC_NETWORK_H
 
+#include "iocod/platform.h"
+#include "iocod/types.h"
+
 /**
  * @defgroup network Network
  * @brief Public procedures and data structures for interfacing with the

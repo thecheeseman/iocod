@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_TYPES_H
 #define IOCOD_TYPES_H
 
-#include "iocod.h"
+#include "iocod/platform.h"
 
 #ifdef IC_PLATFORM_WINDOWS
 #if IC_PLATFORM_64BIT

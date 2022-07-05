@@ -20,14 +20,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#ifndef IC_EVENTS_H
+#define IC_EVENTS_H
+
+#include "iocod/platform.h"
+#include "iocod/types.h"
+
 /**
  * @defgroup events Events
  * @brief Event handling.
  * @{
  */
-
-#ifndef IC_EVENTS_H
-#define IC_EVENTS_H
 
 enum sys_event_type {
     /**

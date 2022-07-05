@@ -40,7 +40,7 @@ static void parse_args(int argc, char *argv[])
         return;
 
     if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0) {
-        fprintf(stderr, "iocod version " IC_VERSION_STRING " " __DATE__ "\n");
+        fprintf(stderr, IC_VERSION_STRING_FULL " " IC_PLATFORM_STRING "\n");
         exit(0);
     }
 }
@@ -67,9 +67,6 @@ int main(int argc, char *argv[])
     // setup signals
     sys_setup_signal_handler();
 
-    // set the initial time base
-    sys_milliseconds();
-
     // parse args
     parse_args(argc, argv);
 
@@ -85,17 +82,16 @@ int main(int argc, char *argv[])
     config_init();
     log_init();
 
-    // autoupdate?
-    sys_set_floatenv();
-    sys_platform_init();
-
+    // set the initial time base
+    sys_milliseconds();
+    
     com_init(cmdline);
-    net_init();
 
     while (true) {
         com_frame();
     }
 
+    // never reached
     sys_quit();
     return 0;
 }

@@ -20,32 +20,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#ifndef COM_LOCAL_H
-#define COM_LOCAL_H
+#include "iocod/network.h"
+#include "iocod/system.h"
 
-#include "iocod.h"
-#include <setjmp.h>
+IC_PUBLIC
+void sys_init(void)
+{
+    sys_set_floatenv();
+    sys_platform_init();
 
-extern jmp_buf abortframe;
-extern bool error_entered;
-extern int com_frame_time;
-extern bool fully_initialized;
-
-/**
- * @brief Add common commands to the command system.
-*/
-void add_common_commands(void);
-
-void parse_command_line(char *cmdline);
-void startup_variable(const char *match);
-bool add_startup_commands(void);
-
-bool safe_mode(void);
-
-/**
- * @brief Set up random seed with a system-defined seed, or time(NULL) if
- * system could not provide a seed.
-*/
-void rand_init(void);
-
-#endif /* COM_LOCAL_H */
+    net_init();
+}

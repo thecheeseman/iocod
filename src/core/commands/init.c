@@ -32,6 +32,11 @@ static void cmd_echo_f(struct cmd *self)
     ic_printf("%s\n", cmd_args());
 }
 
+static void cmd_exec_f(struct cmd *self)
+{
+    UNUSED_PARAM(self);
+}
+
 static void cmd_help_f(struct cmd *self)
 {
     UNUSED_PARAM(self);
@@ -95,6 +100,10 @@ void cmd_init(void)
     cmd_add2("echo", cmd_echo_f, 1, 0,
              _("echo <string>"),
              _("Echo a string to the console output."));
+
+    cmd_add2("exec", cmd_exec_f, 1, 0,
+             _("exec <file>"),
+             _("Execute a script file."));
 
     cmd_add2("help", cmd_help_f, 0, 0,
              _("help [<topic or command>]"),

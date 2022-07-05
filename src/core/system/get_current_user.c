@@ -20,32 +20,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#ifndef COM_LOCAL_H
-#define COM_LOCAL_H
+#include "iocod/platform.h"
 
-#include "iocod.h"
-#include <setjmp.h>
+#ifdef IC_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <pwd.h>
+#endif
 
-extern jmp_buf abortframe;
-extern bool error_entered;
-extern int com_frame_time;
-extern bool fully_initialized;
+IC_PUBLIC
+char *sys_get_current_user(void)
+{
+    #ifdef IC_PLATFORM_WINDOWS
+    static char username[256];
+    unsigned long size = sizeof(username);
 
-/**
- * @brief Add common commands to the command system.
-*/
-void add_common_commands(void);
+    if (!GetUserName(username, &size))
+        strncpy(username, "player", sizeof(username));
 
-void parse_command_line(char *cmdline);
-void startup_variable(const char *match);
-bool add_startup_commands(void);
+    if (username[0] == '\0')
+        strncpy(username, "player", sizeof(username));
 
-bool safe_mode(void);
+    return username;
+    #else
+    struct passwd *pw;
 
-/**
- * @brief Set up random seed with a system-defined seed, or time(NULL) if
- * system could not provide a seed.
-*/
-void rand_init(void);
+    if ((pw = getpwuid(getuid())) == NULL)
+        return "player";
 
-#endif /* COM_LOCAL_H */
+    return pw->pw_name;
+    #endif
+}

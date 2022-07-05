@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_COMMON_H
 #define IC_COMMON_H
 
-#include "iocod.h"
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
 #define PROTOCOL_VERSION 10
 #define PROTOCOL_LEGACY 1
@@ -31,8 +32,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 extern struct cvar *com_busy_wait;
 extern struct cvar *com_dedicated;
 extern struct cvar *com_developer;
+extern struct cvar *com_developer_script;
 extern struct cvar *com_sv_running;
+extern struct cvar *com_maxfps;
+extern struct cvar *com_timescale;
+extern struct cvar *com_fixedtime;
 extern struct cvar *com_speeds;
+extern struct cvar *com_cl_running;
+extern struct cvar *cl_paused;
+extern struct cvar *sv_paused;
+extern struct cvar *com_version;
+extern struct cvar *com_shortversion;
+extern struct cvar *com_protocol;
+extern struct cvar *com_legacy_protocol;
+extern struct cvar *com_logfile;
+extern struct cvar *com_viewlog;
+extern struct cvar *protocol;
 
 IC_PUBLIC
 void com_init(char *cmdline);

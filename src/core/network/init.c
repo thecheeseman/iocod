@@ -141,7 +141,7 @@ void net_init(void)
 
     net_config(true);
 
-    log_debug("Network initialized");
+    log_print("Network initialized");
 }
 
 IC_PUBLIC

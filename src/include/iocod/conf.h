@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_CONFIG_H
 #define IC_CONFIG_H
 
-#include "iocod.h"
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
 /**
  * @defgroup conf Config

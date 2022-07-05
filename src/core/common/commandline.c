@@ -26,6 +26,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 int num_console_lines;
 char *console_lines[MAX_CONSOLE_LINES];
 
+bool safe_mode(void)
+{
+    for (int i = 0; i < num_console_lines; i++) {
+        cmd_tokenize_string(console_lines[i]);
+
+        if (strcasecmp(cmd_argv(0), "safe") == 0 ||
+            strcasecmp(cmd_argv(0), "cvar_restart") == 0) {
+            console_lines[i][0] = '\0';
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void parse_command_line(char *cmdline)
 {
     console_lines[0] = cmdline;

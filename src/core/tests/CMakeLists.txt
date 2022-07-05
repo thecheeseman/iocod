@@ -56,7 +56,7 @@ function(add_core_test)
     endif()
 
     if (IC_PLATFORM_LINUX)
-        target_link_libraries(${CT_NAME} tinfo)
+        target_link_libraries(${CT_NAME} tinfo m)
         
         if (DEFINED CT_LINUX_LIBS)
             target_link_libraries(${CT_NAME} ${CT_LINUX_LIBS})

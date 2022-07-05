@@ -23,12 +23,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_LOG_H
 #define IC_LOG_H
 
-/**
- * @defgroup log Logging
- * @brief Utilities for logging.
- * @{
- */
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
+#ifndef __FILENAME__
 #ifdef IC_PLATFORM_WINDOWS
 #define __FILENAME__ \
     (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
@@ -36,6 +34,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define __FILENAME__ \
     (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #endif 
+#endif
+
+/**
+ * @defgroup log Logging
+ * @brief Utilities for logging.
+ * @{
+ */
 
 /**
  * @brief Log level.

@@ -19,6 +19,8 @@
 #cmakedefine IC_PLATFORM_X86 1
 #cmakedefine IC_PLATFORM_ARM32 1
 #cmakedefine IC_PLATFORM_ARM64 1
+#cmakedefine IC_PLATFORM_LITTLE_ENDIAN
+#cmakedefine IC_PLATFORM_BIG_ENDIAN
 
 /* operating system */
 #define IC_PLATFORM_OS "@IC_PLATFORM_OS@"

@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef SERVER_H
 #define SERVER_H
 
-#include "iocod.h"
+#include "iocod/platform.h"
+#include "iocod/types.h"
 
 IC_PUBLIC
 void sv_init(void);
@@ -33,5 +34,7 @@ int sv_frame_msec(void);
 
 IC_PUBLIC
 void sv_frame(int msec);
+
+#define sv_shutdown()
 
 #endif /* SERVER_H */

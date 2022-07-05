@@ -23,11 +23,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_SHARED_H
 #define IC_SHARED_H
 
-#include "iocod.h"
-
+#include "iocod/platform.h"
+#include "iocod/types.h"
 #include <stdarg.h>
 
+#ifndef PATH_MAX
 #define PATH_MAX 256
+#endif
 
 enum q3color {
     // standard q3 colors
@@ -140,7 +142,33 @@ IC_PUBLIC
 */
 vec_t *tv(vec_t x, vec_t y, vec_t z);
 
+/**
+ * @brief Get the shortened filename for a given path @p filename.
+ * 
+ * Will automatically search for a "src" in the path, and if found, will
+ * return the path as "src/whatever/file.c". If no "src" is found, will 
+ * instead just return the filename only.
+ * 
+ * For example:
+ * @code
+ * ic_shorten_filename("../../src/path/to/file.c") -> "src/path/to/file.c"
+ * ic_shorten_filename("/some/other/path/to/file.c") -> "file.c"
+ * @endcode
+ * 
+ * @param[in] filename filename to shorten
+ * @return shortened filename
+*/
 IC_PUBLIC
 char *ic_short_filename(const char *filename);
+
+/**
+ * @def __FILENAME__
+ * @brief Shorthand for getting the shortened filename of the current file.
+ */
+#ifdef __FILENAME__
+#undef __FILENAME__
+#endif
+
+#define __FILENAME__ ic_short_filename(__FILE__)
 
 #endif /* IC_SHARED_H */

@@ -20,7 +20,61 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "iocod/system.h"
+
+void copy_short_swap(void *dest, void *src)
+{
+    byte *to = dest;
+    byte *from = src;
+
+    to[0] = from[1];
+    to[1] = from[0];
+}
+
+void copy_long_swap(void *dest, void *src)
+{
+    byte *to = dest;
+    byte *from = src;
+
+    to[0] = from[3];
+    to[1] = from[2];
+    to[2] = from[1];
+    to[3] = from[0];
+}
+
+short short_swap(short l)
+{
+    byte b1 = l & 255;
+    byte b2 = (l >> 8) & 255;
+
+    return (b1 << 8) + b2;
+}
+
+int long_swap(int l)
+{
+    byte b1 = l & 255;
+    byte b2 = (l >> 8) & 255;
+    byte b3 = (l >> 16) & 255;
+    byte b4 = (l >> 24) & 255;
+
+    return ((int) b1 << 24) + ((int) b2 << 16) + ((int) b3 << 8) + b4;
+}
+
+union floatint {
+    float f;
+    int i;
+    unsigned int u;
+};
+
+float float_swap(const float *f)
+{
+    union floatint out = { 0 };
+
+    out.f = *f;
+    out.u = long_swap(out.u);
+
+    return out.f;
+}
 
 static enum system_type systype = SYSTEM_UNKNOWN;
 

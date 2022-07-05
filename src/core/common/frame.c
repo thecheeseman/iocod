@@ -137,5 +137,5 @@ void com_frame(void)
     // flush packet queue
 
     com_frame_number++;
-    calculate_fps();
+    //calculate_fps();
 }

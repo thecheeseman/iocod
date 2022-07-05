@@ -27,6 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <windows.h>
 #else
 #include <unistd.h>
+#include <sys/select.h>
 #endif
 
 IC_PUBLIC

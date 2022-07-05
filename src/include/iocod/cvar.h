@@ -20,16 +20,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-/**
- * @defgroup ic_cvar Cvars
- * @brief C Variables.
- * @{ 
- */
-
 #ifndef IC_CVAR_H
 #define IC_CVAR_H
 
-#include "iocod.h"
+#include "iocod/platform.h"
+#include "iocod/types.h"
+
+/**
+ * @defgroup ic_cvar Cvars
+ * @brief C Variables.
+ * @{
+ */
 
 /**
  * @def MAX_CVARS

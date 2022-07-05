@@ -33,16 +33,23 @@ macro(check_features)
     message(DEBUG "Building on ${IC_PLATFORM_OS}")
 
     # arch
-    set(IC_PLATFORM_AMD64 FALSE CACHE BOOL "AMD64")
+    set(IC_PLATFORM_AMD64 FALSE CACHE BOOL "amd64")
     set(IC_PLATFORM_X86 FALSE CACHE BOOL "x86")
     set(IC_PLATFORM_ARM32 FALSE CACHE BOOL "arm32")
     set(IC_PLATFORM_ARM64 FALSE CACHE BOOL "arm64")
 
-    if (${IC_PLATFORM_ARCH} STREQUAL "x86_64")
+    if (${IC_PLATFORM_ARCH} STREQUAL "x86_64" OR 
+        ${IC_PLATFORM_ARCH} STREQUAL "amd64")
         set(IC_PLATFORM_ARCH "amd64")
         set(IC_PLATFORM_AMD64 TRUE)
     elseif(${IC_PLATFORM_ARCH} STREQUAL "aarch64")
+        set(IC_PLATFORM_ARCH "arm64")
         set(IC_PLATFORM_ARM64 TRUE)
+    elseif(${IC_PLATFORM_ARCH} STREQUAL "x86")
+        set(IC_PLATFORM_X86 TRUE)
+    elseif(${IC_PLATFORM_ARCH} STREQUAL "aarch32")
+        set(IC_PLATFORM_ARCH "arm32")
+        set(IC_PLATFORM_ARM32 TRUE)
     endif()
 
     set(IC_PLATFORM_BITS "64" CACHE STRING "'32' or '64''")
@@ -64,8 +71,8 @@ macro(check_features)
             if (${IC_PLATFORM_ARCH} STREQUAL "amd64")
                 set(IC_PLATFORM_ARCH "x86")
                 set(IC_PLATFORM_X86 TRUE)
-            elseif (${IC_PLATFORM_ARCH} STREQUAL "aarch64")
-                set(IC_PLATFORM_ARCH "aarch32")
+            elseif (${IC_PLATFORM_ARCH} STREQUAL "arm64")
+                set(IC_PLATFORM_ARCH "arm32")
                 set(IC_PLATFORM_ARM32 TRUE)
             endif()
         else()
@@ -108,4 +115,27 @@ macro(check_features)
     message(DEBUG "32-Bit compile flags: ${IC_PLATFORM_CFLAGS_32BIT}")
 
     # debug flags
+
+    # endianness
+    set(IC_PLATFORM_LITTLE_ENDIAN FALSE CACHE BOOL "Little-endian system")
+    set(IC_PLATFORM_BIG_ENDIAN FALSE CACHE BOOL "Big-endian system")
+
+    include(CheckCSourceCompiles)
+    set(CMAKE_REQUIRED_QUIET TRUE)
+    check_c_source_compiles(
+        "#include <inttypes.h>
+        int main(void)
+        {
+            volatile uint32_t i = 0x01234567;
+            
+            // return 0 for big endian, 1 for little endian
+            return (*((uint8_t *)(&i))) == 0x67;
+        }" LITTLE_ENDIAN
+    )
+
+    if (LITTLE_ENDIAN)
+        set(IC_PLATFORM_LITTLE_ENDIAN TRUE)
+    else()
+        set(IC_PLATFORM_BIG_ENDIAN TRUE)
+    endif()
 endmacro()

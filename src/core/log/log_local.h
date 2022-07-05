@@ -65,6 +65,8 @@ struct logger {
     FILE *fp;               /**< file */
     size_t size;            /**< size of bytes written */
 
+    size_t last_flush;
+
     struct timeval now;     /**< current time */
 };
 

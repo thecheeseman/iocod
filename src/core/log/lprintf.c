@@ -122,7 +122,11 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
         }
     }
 
-    fflush(iclog.fp);
+    // limit flushing to once every 4KB or so
+    if (iclog.size > (iclog.last_flush + 4096)) {
+        iclog.last_flush = iclog.size;
+        fflush(iclog.fp);
+    }
 
     /* echo to stdout */
     if (iclog.echo_stdout) {
