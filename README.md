@@ -18,13 +18,16 @@
 
 ## About
 
-iocod is an open source implementation of Call of Duty, patches 1.1-1.5. It is
-based on the GPL releases of [Quake 3][1] / [RTCW][2] along with custom
-implementations of game-specific functionality.
+iocod is an open source implementation of Call of Duty™, for patches 1.1 & 1.5.
+It is based on the GPL releases of [Quake III Team Arena][quake3] along with
+two of its derivatives: [ioquake3][ioquake3] and [Return to Castle Wolfenstein][rtcw]. 
+See [Sources](#sources) for more details. 
 
-Currently, the project is focused on building an open source **server binary**
-for Linux, Windows, & MacOS systems. A client version of this project is
-planned, but not a priority at this point.
+Currently, the project is focused on building an open source **server binary** 
+for Linux, Windows, & MacOS systems which is interoperable with the existing 
+original client executables. 
+
+An open source client version of this project is planned for some time in 2023.
 
 ### Legal Advisory
 
@@ -34,15 +37,15 @@ planned, but not a priority at this point.
     You are required to supply your own legally-sourced game assets via an
     official download through a legitimate online retailer or via physical CD.
 
-    Call of Duty is a registered trademark of Activision Publishing, Inc.
+    Call of Duty™ is a registered trademark of Activision Publishing, Inc.
 
 ## FAQ
 
 ### What is the purpose of this project?
 
-The purpose of this project is to replace the original Call of Duty server
-executables and provide better interoperability, bug/exploit fixes, and 
-extended functionality.
+The purpose of this project is to provide binary replacements for the original 
+Call of Duty™ server executables to allow for better interoperability across
+patch versions, bug/exploit fixes, as well as extending functionality.
 
 ### What kinds of things are going to be added/fixed?
 
@@ -72,11 +75,6 @@ Here's a short list:
 Yes, there will be 100% script compatibility with CoDExtended. You will not 
 have to change anything!
 
-### What will I need to install this?
-
-When the project is released, all you will need to do is download the server
-binaries and run them like you normally run your server!
-
 ### What can I do with this right now? 
 
 Short answer: **nothing**. It's not ready for public use. See the 
@@ -89,25 +87,13 @@ and we'll see what we can do!
 
 ## Roadmap
 
-| Timeline | &check; | System | Features |
-| --- | --- |  --- | --- |
-| **`2022/05`** |**--**| **`May`** |**---**|
-| |**25%** completed| file system | efficient & fast<br/>switch to `zlib` / `unzip` |
-| |**75%** completed| module system | support for dynamic modules<br/>module callbacks into real C code, <br/>API & documentation |
-| |:white_check_mark:| core API | string library |
-| |:white_check_mark:| core API | cvar, parse, infostring, logging |
-| |**50%** completed | core API | system interface, vm, cmd |
-| | | core API | net, msg, hunk mem |
-| **`2022/06`** |**--**| **`June`** |**---**|
-|  | | game engine | basic core functionality<br/>structures/data |
-| | | scripting engine | basic core functionality<br/> |
-| | | server | completed
-| **`2022/07`** |**--**| **`July`** |**---**|
-| | | game engine | completed
-| | | scripting engine | completed
-| **`2022/08`** |**--**| **`August`** | **`Public Alpha`** |
-| **`2022/09`** |**--**| **`September`** | **`Public Beta`** |
-| **`2022/10`** |**--**| **`October`** | **`Release v1.0`** |
+| Timeline          | Milestones
+| ----------------- | ---
+| **`July`**        | <ul><li>Core components</li><li>Game engine</li><li>Networking</li><li>UI</li>
+| **`August`**      | <ul><li>Game dll</li><li>Script engine</li></ul>
+| **`September`**   | **Alpha/Beta** - TBD
+| **`October`**     | **1.0 Release**
+| **`November`**    | **1.1 Release** <br/>Bug fixes/performance enhancements, etc.
 
 ### Release v1.0
 
@@ -127,33 +113,35 @@ smoother gameplay).
 
 ## Sources
 
-iocod is based on the GPL releases of [id-software][8]'s
-[Quake 3][1] / [RTCW][2]. Where possible, code has been modified from the
-original sources to better suit the goals of this project. These changes
-include minimal source changes as well as complete rewrites of original systems.
+iocod is based primarily on three GPL releases:
+- [Quake III Team Arena][quake3] and its derivatives
+    - [ioquake3][ioquake3]
+    - [Return to Castle Wolfenstein][rtcw]
 
-As this project is in a long line of other projects, it also shares features
-and influences from the work done on [CoDExtended][3] by
-[riicchhaarrd][4], [dftd][5], [prawy][9] and the rest of the xtnded team.
-Inevitably, as the xtnded project was originally influenced and inspired by
-[kungfooman][7]'s [libcod][6] project, that project has been included here
-for posterity.
+Where possible, code has been modified from the original sources to better 
+suit the goals of this project. These changes include minimal source changes 
+as well as complete rewrites of original systems.
 
-### id-software
-  - [Quake III Team Arena GPL Source][1]
-  - [RTCW MP GPL Source][2]
+This project is another in a long line of other Call of Duty™ modifications
+and projects, and shares features from previous work done on the
+[CoDExtended][codextended] and [libcod][libcod] projects. While very little 
+code has been actively borrowed from either of these projects, their influence
+on this project cannot be understated. Therefore, for posterity, the authors
+and contributors for those projects are cited as major influences for this
+project:
 
-### secondary sources or inspirations
-  - [CoDExtended][3] - [riicchhaarrd][4], [dftd][5], [prawy][9], and team
-  - [libcod][6] - [kungfooman][7]
-  - [libautoupdate][10] - Minqi Pan et al.
-  - [c-logger][11] - Yuki Suzumoto
+- [riicchhaarrd][riicchhaarrd]
+- [dftd][dftd]
+- [prawy][prawy]
+- [kungfooman][kungfooman]
 
-### libraries used
-  - [dirent interface for MSVC][12] - Toni Ronkko
-  - [dlfcn-win32][13] - Ramiro Polla
-  - [getopt][14] - Hans Dietrich
-  - [unistd.h][15] - AShelly
+### Secondary Sources
+  - [libautoupdate][libautoupdate] - Minqi Pan et al. - used to prepare 
+  custom autoupdate system along with code from [ioquake3][ioquake3]
+  - [c-logger][c-logger] - Yuki Suzumoto - used to build custom logging system
+
+### Libraries bundled
+  - [miniz][miniz] - richgel999 - for handling zip/inflate/deflate
 
 ## Building & Installation
 
@@ -163,29 +151,26 @@ and testing. Check the [roadmap](#roadmap) for more details about the timeline.
 
 **Build at your own risk.**
 
-### Linux & MacOS
-- a GNUC compatible compiler, i.e. `gcc` or `clang`
-- `cmake` version 3.13 or greater
-- `libcurl`
+### General Requirements
 
-#### Instructions
+- A compatible C11 compiler
+    - [GCC][gcc]/[Clang][clang] - any version since about 2012 will do
+    - [MSVC][msvc] - version 19.28 at a minimum (Visual Studio 2019 16.8)
+- [Git][git]
+- [CMake][cmake] 3.14 or greater
+
+### Linux & MacOS Instructions
 1. Download from source or git clone repo
 2. Run `cmake . && cmake --build .`
-3. Copy `out/iocod` to your `callofduty` installation
-4. Copy `out/game.mp.x86_64.so` to your `callofduty/main`
+3. Copy `bin/iocodded64` to your `callofduty` installation
+4. Copy `bin/main/icgame64.so` to your `callofduty/main`
 
-
-### Windows
-- `MSVC` version 14.30 or greater, i.e. **Visual Studio 2022**
-- `cmake` version 3.13 or greater
-- `libcurl` (you can install with [vcpkg](https://vcpkg.io/en/index.html))
-
-#### Instructions
-1. Open Visual Studio 2022 & import the CMake project
+### Windows Instructions
+1. Open Visual Studio 2019/2022 & import the CMake project
 2. Build from build menu
 3. Navigate to output directory
-4. Copy `out\iocod.exe` to your `Call of Duty` folder
-5. Copy `out\game_mp_x86_64.dll` to your `Call of Duty\main` folder
+4. Copy `bin\iocodded64.exe` to your `Call of Duty` folder
+5. Copy `bin\main\icgame64.dll` to your `Call of Duty\main` folder
 
 ## License
 
@@ -202,18 +187,25 @@ and testing. Check the [roadmap](#roadmap) for more details about the timeline.
 For more information or to read the full license agreement, see 
 [LICENSE](LICENSE).
 
-[1]: <https://github.com/id-Software/Quake-III-Arena>
-[2]: <https://github.com/id-Software/RTCW-MP>
-[3]: <https://github.com/xtnded/codextended>
-[4]: <https://github.com/riicchhaarrd>
-[5]: <https://github.com/dftd>
-[6]: <https://github.com/kungfooman/libcod>
-[7]: <https://github.com/kungfooman>
-[8]: <https://github.com/id-software>
-[9]: <https://github.com/PrawyCoD1>
-[10]: <https://github.com/pmq20/libautoupdate>
-[11]: <https://github.com/yksz/c-logger>
-[12]: <https://github.com/tronkko/dirent>
-[13]: <https://github.com/dlfcn-win32/dlfcn-win32>
-[14]: <https://www.codeproject.com/Articles/1940/XGetopt-A-Unix-compatible-getopt-for-MFC-and-Win32>
-[15]: <https://stackoverflow.com/a/826027/1202830>
+
+[//]: # (Links for reference)
+[id-software]: <https://github.com/id-software>
+[quake3]: <https://github.com/id-Software/Quake-III-Arena>
+[rtcw]: <https://github.com/id-Software/RTCW-MP>
+[ioquake3]: <https://github.com/ioquake/ioq3>
+[codextended]: <https://github.com/xtnded/codextended>
+[libcod]: <https://github.com/kungfooman/libcod>
+
+[riicchhaarrd]: <https://github.com/riicchhaarrd>
+[dftd]: <https://github.com/dftd>
+[kungfooman]: <https://github.com/kungfooman>
+[prawy]: <https://github.com/PrawyCoD1>
+[libautoupdate]: <https://github.com/pmq20/libautoupdate>
+[c-logger]: <https://github.com/yksz/c-logger>
+[miniz]: <https://github.com/richgel999/miniz>
+
+[git]: <https://git-scm.com/>
+[msvc]: <https://visualstudio.microsoft.com/>
+[clang]: <https://clang.llvm.org/>
+[gcc]: <https://gcc.gnu.org/>
+[cmake]: <https://cmake.org/>
