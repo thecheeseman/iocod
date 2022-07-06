@@ -206,6 +206,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #if defined __STDC_VERSION__
 /**
+ * @def IC_PLATFORM_STD_C99
+ * @brief Defined if the compiler supports the C99 standard.
+ * @note Supported by MSVC 12.0
+ * @since 0.186.0
+ */
+#if __STDC_VERSION__ >= 199901L
+#define IC_PLATFORM_STD_C99
+#endif
+
+/**
  * @def IC_PLATFORM_STD_C11
  * @brief Defined if the compiler supports the C11 standard.
  * @note Supported by MSVC 19.28+ (Visual Studio 16.8)
@@ -247,11 +257,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #if IC_MSVC_VERSION_CHECK(19, 28, 0)
 #define IC_PLATFORM_STD_C17
 #define IC_PLATFORM_STD_C11
+#define IC_PLATFORM_STD_C99
 #endif
 #endif
 
 #ifndef IC_PLATFORM_STD_C11
-#error "A compatible C11 compiler is required"
+//#error "A compatible C11 compiler is required"
 #endif
 
 /**

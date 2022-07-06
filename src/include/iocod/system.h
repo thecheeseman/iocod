@@ -121,7 +121,7 @@ enum exit_code {
  * @param code exit code
 */
 IC_PUBLIC
-IC_NO_RETURN
+IC_NO_RETURN 
 void sys_exit(int code);
 
 /**

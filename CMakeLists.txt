@@ -62,7 +62,28 @@ project(iocod
     LANGUAGES C
 )
 
-set(CMAKE_C_STANDARD 23)
+# require c11 as a minimum
+list(FIND CMAKE_C_COMPILE_FEATURES "c_std_11" HAS_C11)
+if (NOT HAS_C11)
+    status(SEND_ERROR "C Standard C11 is required")
+endif()
+
+if (${CMAKE_VERSION} VERSION_GREATER "3.21.0")
+    list(FIND CMAKE_C_COMPILE_FEATURES "c_std_17" HAS_C17)
+    list(FIND CMAKE_C_COMPILE_FEATURES "c_std_23" HAS_C23)
+
+    if (HAS_C23)
+        set(CMAKE_C_STANDARD 23)
+        message(STATUS "C Standard detected: C23")
+    else()
+        set(CMAKE_C_STANDARD 17)
+        message(STATUS "C Standard detected: C17")
+    endif()
+else()
+    set(CMAKE_C_STANDARD 11)
+    message(STATUS "C Standard detected: C11")
+endif()
+
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_EXTENSIONS TRUE)
 

@@ -15,7 +15,7 @@ void quit(struct cmd *self)
     sys_quit();
 }
 
-void cv_set(struct cmd *self)
+void set_cv(struct cmd *self)
 {
     UNUSED_PARAM(self);
     
@@ -49,7 +49,7 @@ int TEST_MAIN()
     cmd_add("echo", echo);
     cmd_add("echo2", echo);
     cmd_add("quit", quit);
-    cmd_add("set", cv_set);
+    cmd_add("set", set_cv);
     cmd_remove("echo2");
 
     while (true) {
