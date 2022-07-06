@@ -30,45 +30,33 @@ static bool timebase_init = false;
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-//static int32_t timebase = 0;
-static ULARGE_INTEGER timebase;
+static LARGE_INTEGER frequency;
+static LARGE_INTEGER timebase;
 
-/*
- * Original Q3 method uses timeGetTime() from the WinMM library, but its
- * precision is generally at best ~5 ms, depending on the machine (e.g.
- * my machine varies from 2-5 ms precision). This version has at least
- * <1 ms precision and up to 1 us precision
- */
 IC_PUBLIC
 int32_t sys_milliseconds(void)
 {
     if (!timebase_init) {
-        FILETIME base;
-        GetSystemTimeAsFileTime(&base);
-
-        timebase.LowPart = base.dwLowDateTime;
-        timebase.HighPart = base.dwHighDateTime;
+        QueryPerformanceFrequency(&frequency);
+        QueryPerformanceCounter(&timebase);
         timebase_init = true;
     }
+    
+    LARGE_INTEGER now = { 0 };
+    QueryPerformanceCounter(&now);
 
-    FILETIME curtime;
-    GetSystemTimeAsFileTime(&curtime);
+    LARGE_INTEGER elapsed = { 0 };
+    elapsed.QuadPart = now.QuadPart - timebase.QuadPart;
+    elapsed.QuadPart *= 1000000;
+    elapsed.QuadPart /= frequency.QuadPart;
 
-    ULARGE_INTEGER cur;
-    cur.LowPart = curtime.dwLowDateTime;
-    cur.HighPart = curtime.dwHighDateTime;
-
-    return (int32_t) (cur.QuadPart - timebase.QuadPart) / 10000;
+    return (int32_t) (elapsed.QuadPart / 1000);
 }
 #else
 #include <time.h>
 
 static struct timespec timebase;
 
-/*
- * I'm not entirely sure the _exact_ precision, but it's far better
- * than on Windows (<1 us precision)
- */
 IC_PUBLIC
 int32_t sys_milliseconds(void)
 {

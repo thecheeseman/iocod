@@ -76,10 +76,9 @@ int main(int argc, char *argv[])
 
     print_gpl();
 
+    config_init();
     con_init();
     con_set_title(IC_CONSOLE_TITLE);
-
-    config_init();
     log_init();
 
     // set the initial time base

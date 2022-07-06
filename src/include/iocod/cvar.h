@@ -373,6 +373,16 @@ IC_PUBLIC
 struct cvar *cv_set_integer(const char *name, cv_int value);
 
 /**
+ * @def cv_set
+ * @brief Generic handler for setting cvars.
+ */
+#define cv_set(name, value) \
+    _Generic((value), \
+    char *: cv_set_string, \
+    cv_float: cv_set_value, \
+    default: cv_set_integer)(name, value)
+
+/**
  * @brief Reset a cvar to its @ref cvar.reset_string value.
  *
  * @param[in] name  name of the cvar

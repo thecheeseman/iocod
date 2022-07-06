@@ -62,5 +62,5 @@ void log_get_timestamp(const struct timeval *time, char *timestamp,
 
     localtime_r(&sec, &calendar);
     strftime(timestamp, size, "%Y-%m-%d %H:%M:%S", &calendar);
-    sprintf(&timestamp[19], ".%06ld", (long) time->tv_usec);
+    sprintf(&timestamp[19], ".%06ld", (long) time->tv_usec); // 78us
 }

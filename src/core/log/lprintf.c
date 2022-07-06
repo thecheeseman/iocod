@@ -88,7 +88,7 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
         level date   time        threadid file:function:line:  message
         F 2022-03-15 21:05:10.395830 1651 logger.c:main:262: this is a fatal message
     */
-    size_t size;
+    size_t size = 0;
     size_t printed = 0;
 
     if (!iclog.hide_next_source) {
@@ -109,17 +109,13 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
 
-    if ((size = fprintf(iclog.fp, "%s", msg)) > 0) {
+    bool has_newline = (msg[strlen(msg) - 1] == '\n');
+
+    if ((size = fprintf(iclog.fp, "%s%s", msg,
+                        (!has_newline && iclog.auto_lf) 
+                        ? IC_PLATFORM_NEWLINE : "")) > 0) {
         iclog.size += size;
         printed += size;
-    }
-
-    /* auto lf */
-    if (msg[size - 1] != '\n' && iclog.auto_lf) {
-        if ((size = fprintf(iclog.fp, "%s", IC_PLATFORM_NEWLINE)) > 0) {
-            iclog.size += size;
-            printed += size;
-        }
     }
 
     // if we're not buffered, force flush now
@@ -132,10 +128,13 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
 
     /* echo to stdout */
     if (iclog.echo_stdout) {
-        con_print(va("%s%s%s", color_prefix[level], stdout_prefix[level], msg));
-
-        if (msg[size - 1] != '\n' && iclog.auto_lf)
-            con_print("\n");
+        con_print(va("%s%s%s%s", 
+                     color_prefix[level],
+                     stdout_prefix[level], 
+                     msg,
+                     (!has_newline && iclog.auto_lf)
+                     ? "\n" : "")); // IC_PLATFORM_NEWLINE not necessary here
+                                    // con_print() will replace \n with it
     }
 
     log_unlock();

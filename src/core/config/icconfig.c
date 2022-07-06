@@ -52,6 +52,13 @@ static struct confopt opts[] = {
     CONF_STRING("language", "english"),
     CONF_BLANK(),
 
+    CONF_COMMENT("Enable colored text in console"),
+    CONF_COMMENT(""),
+    CONF_COMMENT("type:    boolean"),
+    CONF_COMMENT("default: on"),
+    CONF_BOOL("color_console", on),
+    CONF_BLANK(),
+
     CONF_COMMENT("Log level"),
     CONF_COMMENT("Levels are as listed below:"),
     CONF_COMMENT("  0 = No logging"),
@@ -256,6 +263,17 @@ char *config_console_language(void)
 
     // TEMP until we have multilang support
     return "english";
+}
+
+IC_PUBLIC
+bool config_console_colors(void)
+{
+    struct confopt *opt = conf_get_opt(icconf, "color_console");
+
+    if (opt == NULL)
+        return true; // auto determine
+
+    return (opt->value.i == 1);
 }
 
 IC_PUBLIC

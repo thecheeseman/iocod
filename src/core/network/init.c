@@ -128,6 +128,8 @@ static void net_config(bool enable)
 IC_PUBLIC
 void net_init(void)
 {
+    metric_begin();
+    
     #ifdef IC_PLATFORM_WINDOWS
     int r = WSAStartup(MAKEWORD(1, 1), &winsockdata);
     if (r != 0) {
@@ -142,6 +144,7 @@ void net_init(void)
     net_config(true);
 
     log_print("Network initialized");
+    metric_end();
 }
 
 IC_PUBLIC

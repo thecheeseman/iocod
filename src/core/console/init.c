@@ -71,12 +71,15 @@ void con_init(void)
     GetConsoleMode(console.hin, &console.original_mode);
     SetConsoleMode(console.hin, console.original_mode & ~ENABLE_MOUSE_INPUT);
 
-    // check if we can do virtual terminal processing
     DWORD mode;
     GetConsoleMode(console.hout, &mode);
+
+    // check if we can do virtual terminal processing
     mode |= ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    if (SetConsoleMode(console.hout, mode))
-        console.ansi_color = true; // we can support it
+    if (SetConsoleMode(console.hout, mode)) {
+        if (config_initialized() && config_console_colors())
+            console.ansi_color = true; // we can support it
+    }
 
     FlushConsoleInputBuffer(console.hin);
 
@@ -90,6 +93,8 @@ void con_init(void)
     // init history tbd
 
     SetConsoleTextAttribute(console.hout, console.attributes);
+    SetConsoleTextAttribute(console.hout,
+                            color_to_attrib(COLOR_WHITE));
 
     console.initialized = true;
 }
@@ -137,8 +142,10 @@ void con_init(void)
     setupterm(console.term, STDOUT_FILENO, (int *) 0);
 
     // not foolproof, but an easy check
-    if (tigetnum("colors") > 0)
-        console.ansi_color = true;
+    if (config_initialized() && config_console_colors()) {
+        if (tigetnum("colors") > 0)
+            console.ansi_color = true;
+    }
 
     console.num_lines = tigetnum("lines");
     console.num_columns = tigetnum("cols");

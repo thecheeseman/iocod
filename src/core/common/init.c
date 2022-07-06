@@ -137,6 +137,7 @@ static void init_common_cvars(void)
 IC_PUBLIC
 void com_init(char *cmdline)
 {
+    metric_begin();
     ic_print_header("Common", 40, '-');
     ic_printf(IC_VERSION_STRING_FULL " " IC_PLATFORM_STRING "\n");
 
@@ -215,6 +216,8 @@ void com_init(char *cmdline)
     fully_initialized = true;
 
     ic_print_header("Common", 40, '-');
+
+    metric_end();
 }
 
 IC_PUBLIC

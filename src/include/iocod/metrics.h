@@ -20,25 +20,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#ifndef IC_METRICS_H
+#define IC_METRICS_H
+
 #include "iocod.h"
 
-#include <stdlib.h>
+enum metric_type {
+    METRIC_ONCE,
+    METRIC_MULTI
+};
 
-IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
-void ic_printf(const char *fmt, ...)
-{
-    char msg[MAX_PRINT_MSG];
+#ifdef IC_DEBUG
+void _metric_begin(enum metric_type type, const char *function,
+                   const char *filename, int line);
+void _metric_end(const char *function, int line);
 
-    va_list argptr = { 0 };
-    va_start(argptr, fmt);
-    vsnprintf(msg, sizeof(msg), fmt, argptr);
-    va_end(argptr);
+#define metric_begin() \
+    _metric_begin(METRIC_ONCE, __func__, __FILENAME__, __LINE__)
+#define metric_multi_begin() \
+    _metric_begin(METRIC_MULTI, __func__, __FILENAME__, __LINE__)
+#define metric_end() \
+    _metric_end(__func__, __LINE__)
+#else
+#define metric_begin()
+#define metric_multi_begin()
+#define metric_end()
+#endif
 
-    if (!con_initialized())
-        fputs(msg, stderr);
-    else
-        con_print(msg);
-
-    // TODO: log stuff
-}
+#endif /* IC_METRICS_H */

@@ -62,7 +62,7 @@ project(iocod
     LANGUAGES C
 )
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_EXTENSIONS TRUE)
 
@@ -75,7 +75,8 @@ check_features()
 #
 # check headers etc
 #
-
+include(check_headers)
+check_headers()
 
 #
 # superbuild

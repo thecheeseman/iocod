@@ -447,6 +447,9 @@ IC_PUBLIC
 char *config_console_language(void);
 
 IC_PUBLIC
+bool config_console_colors(void);
+
+IC_PUBLIC
 bool config_log_buffered(void);
 
 IC_PUBLIC

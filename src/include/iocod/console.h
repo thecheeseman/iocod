@@ -88,6 +88,9 @@ IC_PUBLIC
 bool stdin_is_atty(void);
 #endif
 
+IC_PUBLIC
+bool con_colors(void);
+
 /** @} */
 
 #endif /* IOCOD_CONSOLE_H */

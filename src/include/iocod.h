@@ -46,6 +46,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <limits.h>
 
 /*
@@ -145,6 +146,7 @@ iocod includes
 #include "iocod/events.h"
 #include "iocod/log.h"
 #include "iocod/memory.h"
+#include "iocod/metrics.h"
 #include "iocod/network.h"
 #include "iocod/parse.h"
 #include "iocod/server.h"

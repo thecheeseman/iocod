@@ -91,3 +91,9 @@ char *color_to_ascii_code(enum q3color color)
 {
     return forecolor[color];
 }
+
+IC_PUBLIC
+bool con_colors(void)
+{
+    return console.ansi_color;
+}
