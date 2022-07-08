@@ -34,7 +34,7 @@ endif()
 # build type
 #
 if (NOT DEFINED CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release 
+    set(CMAKE_BUILD_TYPE RelWithDebInfo
         CACHE STRING
         "Valid build types are: None, Debug, Release, RelWithDebInfo, MinSizeRel"
         FORCE

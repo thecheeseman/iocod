@@ -156,21 +156,46 @@ and testing. Check the [roadmap](#roadmap) for more details about the timeline.
 - A compatible C11 compiler
     - [GCC][gcc]/[Clang][clang] - any version since about 2012 will do
     - [MSVC][msvc] - version 19.28 at a minimum (Visual Studio 2019 16.8)
-- [Git][git]
 - [CMake][cmake] 3.14 or greater
 
 ### Linux & MacOS Instructions
-1. Download from source or git clone repo
-2. Run `cmake . && cmake --build .`
-3. Copy `bin/iocodded64` to your `callofduty` installation
-4. Copy `bin/main/icgame64.so` to your `callofduty/main`
+
+#### Required Packages
+
+- git
+- build-essential
+- cmake
+- libncurses-dev
+
+#### Process
+
+1. Download source or `git clone` from GitHub:
+    ```bash
+    git clone http://github.com/thecheeseman/iocod.git
+    ```
+
+    Or if you want the latest development version, then use:
+    ```bash
+    git clone --branch develop https://github.com/thecheeseman/iocod.git
+    ```
+2. Build process
+    ```bash
+    cd iocod
+    mkdir build
+    cmake . -B build
+    cmake --build build 
+    ```
+3. If everything compiled OK, copy files from `build/staged/dedicated` to your
+installation folder.
 
 ### Windows Instructions
-1. Open Visual Studio 2019/2022 & import the CMake project
-2. Build from build menu
-3. Navigate to output directory
-4. Copy `bin\iocodded64.exe` to your `Call of Duty` folder
-5. Copy `bin\main\icgame64.dll` to your `Call of Duty\main` folder
+
+1. Download source from GitHub
+2. Open Visual Studio 2019/2022 & import the CMake project
+3. Build from build menu
+4. Navigate to output directory
+5. Copy `bin\iocodded64.exe` to your `Call of Duty` folder
+6. Copy `bin\main\icgame64.dll` to your `Call of Duty\main` folder
 
 ## License
 
