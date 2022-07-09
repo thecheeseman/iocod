@@ -25,6 +25,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
+struct meminfo {
+    void *ptr;
+    const char *filename;
+    const char *function;
+    int line;
+    size_t size;
+
+    struct meminfo *next;
+    struct meminfo *prev;
+};
+
+extern struct meminfo *mem_list;
+
+extern bool atexit_setup;
+void meminfo_print_leaks(void);
+struct meminfo *meminfo_add(struct meminfo *info, void *ptr, size_t size,
+                            const char *filename, const char *function, 
+                            int line);
+void meminfo_edit(int pos, size_t bytes);
+int meminfo_inlist(const char *filename, int line);
+
 #define	HUNK_MAGIC	0x89537892
 #define	HUNK_FREE_MAGIC	0x895
 #define PAD(base, alignment) (((base)+(alignment)-1) & ~((alignment)-1))

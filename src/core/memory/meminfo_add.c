@@ -20,24 +20,26 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
-#include <stdlib.h>
+#include "memory_local.h"
 
-static inline void ic_out_of_memory_error(void)
+struct meminfo *meminfo_add(struct meminfo *info, void *ptr, size_t size, 
+                            const char *filename, const char *function, 
+                            int line)
 {
-    perror(_("OUT OF MEMORY ERROR"));
-    exit(0);
-}
+    struct meminfo *new_info = malloc(sizeof(struct meminfo));
+    if (new_info == NULL)
+        return NULL;
 
-IC_PUBLIC 
-void *ic_realloc(void *oldptr, size_t size)
-{
-    if (oldptr == NULL)
-        return ic_malloc(size);
+    new_info->ptr = ptr;
+    new_info->size = size;
+    new_info->filename = filename;
+    new_info->function = function;
+    new_info->line = line;
+    new_info->next = info;
+    new_info->prev = NULL;
 
-    void *ptr = realloc(oldptr, size ? size : 1);
-    if (ptr == NULL)
-        ic_out_of_memory_error();
+    if (info != NULL)
+        info->prev = new_info;
 
-    return ptr;
+    return new_info;
 }

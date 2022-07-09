@@ -85,7 +85,11 @@ void hunk_clear_temp_high(void);
 */
 IC_MALLOC
 IC_PUBLIC
-void *ic_malloc(size_t size);
+void *_ic_malloc(size_t size, const char *filename, const char *function, 
+                 int line);
+
+#define ic_malloc(size) \
+    _ic_malloc(size, __FILENAME__, __func__, __LINE__)
 
 /**
  * @brief "Safer" library replacement for `free`.
@@ -95,7 +99,9 @@ void *ic_malloc(size_t size);
  * @param[in] ptr memory to free
 */
 IC_PUBLIC
-void ic_free(void *ptr);
+void _ic_free(void *ptr);
+
+#define ic_free(ptr) _ic_free(ptr)
 
 /**
  * @brief "Safer" library replacement for `calloc`.
@@ -108,7 +114,11 @@ void ic_free(void *ptr);
 */
 IC_MALLOC
 IC_PUBLIC
-void *ic_calloc(size_t count, size_t size);
+void *_ic_calloc(size_t count, size_t size, const char *filename, 
+                 const char *function, int line);
+
+#define ic_calloc(count, size) \
+    _ic_calloc(count, size, __FILENAME__, __func__, __LINE__)
 
 /**
  * @brief "Safer" library replacement for `realloc`.
@@ -122,7 +132,7 @@ void *ic_calloc(size_t count, size_t size);
  * @param[in] size new size of memory
 */
 IC_PUBLIC
-void *ic_realloc(void *oldptr, size_t size);
+void *_ic_realloc(void *oldptr, size_t size);
 
 /** @} */
 
