@@ -31,6 +31,7 @@ foreach (subdir
     events
     fs
     log
+    memory
     metrics
     network
     parse

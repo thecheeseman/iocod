@@ -32,7 +32,48 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @{
  */
 
-#define hunk_init()
+//#define hunk_init()
+IC_PUBLIC
+void hunk_init(void);
+
+IC_PUBLIC
+void hunk_shutdown(void);
+
+IC_PUBLIC
+void hunk_clear(void);
+
+IC_PUBLIC
+void hunk_clear_to_start(void);
+
+IC_PUBLIC
+void *hunk_alloc_align(size_t size, size_t align);
+
+IC_PUBLIC
+void *hunk_alloc(size_t size);
+
+IC_PUBLIC
+void *hunk_alloc_low_align(size_t size, size_t align);
+
+IC_PUBLIC
+void *hunk_alloc_low(size_t size);
+
+IC_PUBLIC
+void *hunk_alloc_temp(size_t size);
+
+IC_PUBLIC
+void *hunk_alloc_temp_high(size_t size);
+
+IC_PUBLIC
+void *hunk_realloc_temp(size_t size);
+
+IC_PUBLIC
+void hunk_free_temp(void *buf);
+
+IC_PUBLIC
+void hunk_clear_temp(void);
+
+IC_PUBLIC
+void hunk_clear_temp_high(void);
 
 /**
  * @brief "Safer" library replacement for `malloc`.

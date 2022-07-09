@@ -226,6 +226,7 @@ void com_shutdown(void)
     cl_disconnect(true);
     cl_shutdown_all();
     sv_shutdown();
+    hunk_shutdown();
     cmd_shutdown();
     cv_shutdown();
 }
