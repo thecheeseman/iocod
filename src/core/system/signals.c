@@ -66,7 +66,7 @@ void sys_signal_handler(int signal)
             goto quit;
     } else {
         if (caught) {
-            log_warn(_("Double signal fault: received %d (%s), ""exiting...\n"),
+            log_warn(_("Double signal fault: received %d (%s), ""exiting..."),
                      signal, sigtext);
         } else {
             caught = true;
@@ -77,11 +77,11 @@ void sys_signal_handler(int signal)
     }
 
 quit:
-    log_error(_("Signal %d (%s) caught, terminating...\n"), signal, sigtext);
+    log_error(_("Signal %d (%s) caught, terminating..."), signal, sigtext);
 
     // dump backtrace
     if (signal == SIGSEGV) {
-        log_error(_("Check crash.log for details\n"));
+        log_error(_("Check crash.log for details"));
         sys_backtrace();
     }
 

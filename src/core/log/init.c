@@ -78,7 +78,7 @@ void log_init(void)
     }
         
     log_banner();
-    log_debug(_("Log file opened\n"));
+    log_debug(_("Log file opened"));
 }
 
 /*
@@ -87,7 +87,7 @@ void log_init(void)
 IC_PUBLIC
 void log_shutdown(void)
 {
-    log_debug(_("Log file closed\n"));
+    log_debug(_("Log file closed"));
     log_banner();
 
     // flush before close
