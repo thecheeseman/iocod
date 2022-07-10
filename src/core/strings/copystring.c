@@ -21,23 +21,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "iocod.h"
-#include <stdlib.h>
 
-static inline void ic_out_of_memory_error(void)
+IC_PUBLIC
+char *copy_string(const char *in)
 {
-    perror(_("OUT OF MEMORY ERROR"));
-    exit(0);
-}
-
-IC_PUBLIC 
-void *ic_realloc(void *oldptr, size_t size)
-{
-    if (oldptr == NULL)
-        return ic_malloc(size);
-
-    void *ptr = realloc(oldptr, size ? size : 1);
-    if (ptr == NULL)
-        ic_out_of_memory_error();
-
-    return ptr;
+    size_t len = strlen(in) + 1;
+    char *out = ic_calloc(len, 1);
+    strcpy(out, in);
+    return out;
 }

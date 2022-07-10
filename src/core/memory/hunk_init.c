@@ -66,12 +66,10 @@ void hunk_init(void)
     hunk_clear();
 
     cmd_add("meminfo", hunk_meminfo_f);
-
-    void *test = ic_malloc(240);
 }
 
 IC_PUBLIC
 void hunk_shutdown(void)
 {
-    // ic_free(hunk_data_loc);
+    ic_free(hunk_data_loc);
 }

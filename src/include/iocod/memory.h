@@ -132,7 +132,11 @@ void *_ic_calloc(size_t count, size_t size, const char *filename,
  * @param[in] size new size of memory
 */
 IC_PUBLIC
-void *_ic_realloc(void *oldptr, size_t size);
+void *_ic_realloc(void *oldptr, size_t size, const char *filename, 
+                  const char *function, int line);
+
+#define ic_realloc(old, size) \
+    _ic_realloc(old, size, __FILENAME__, __func__, __LINE__)
 
 /** @} */
 

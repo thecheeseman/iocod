@@ -44,6 +44,6 @@ void *_ic_calloc(size_t count, size_t size, const char *filename,
         ic_free(ptr);
         return NULL;
     }
-
+    
     return ptr;
 }

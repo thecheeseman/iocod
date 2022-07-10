@@ -22,56 +22,44 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "memory_local.h"
 
-IC_PUBLIC
-void _ic_free(void *ptr)
+IC_PUBLIC 
+void *_ic_realloc(void *oldptr, size_t size, const char *filename, 
+                  const char *function, int line)
 {
-    if (ptr == NULL)
-        return;
-    
-    struct meminfo *tmp = mem_list;
-    struct meminfo *tofree = NULL;
-    struct meminfo *prev = NULL;
+    if (oldptr == NULL)
+        return ic_malloc(size);
 
-    if (tmp->ptr == ptr) {
-        tofree = tmp;
-        mem_list = tmp->next;
-        free(tofree->ptr);
-        free(tofree);
-
-        if (mem_list != NULL)
-            mem_list->prev = NULL;
-
-        ptr = NULL; /* MEM01-C */
-        return;
+    void *ptr = realloc(oldptr, size ? size : 1);
+    if (ptr == NULL) {
+        ic_fatal(_("out of memory"));
+        return NULL;
     }
 
+    if (!atexit_setup) {
+        atexit_setup = true;
+        atexit(meminfo_print_leaks);
+    }
+
+    // find old pointer and update
+    struct meminfo *tmp = mem_list;
     while (tmp != NULL) {
-        if (tmp->ptr == ptr) {
-            tofree = tmp;
-            tmp = tmp->next;
-            prev = tofree->prev;
-
-            if (prev != NULL)
-                prev->next = tmp;
-
-            if (tmp != NULL)
-                tmp->prev = prev;
-
-            free(tofree->ptr);
-
-            if (tofree == mem_list)
-                mem_list = NULL;
-
-            free(tofree);
-            
-            ptr = NULL; /* MEM01-C */
-            return;
+        if (tmp->ptr == oldptr) {
+            tmp->ptr = ptr;
+            tmp->size = size;
+            tmp->filename = filename;
+            tmp->function = function;
+            tmp->line = line;
+            return ptr;
         }
-
         tmp = tmp->next;
     }
+    
+    // this should not happen
+    mem_list = meminfo_add(mem_list, ptr, size, filename, function, line);
+    if (mem_list == NULL) {
+        ic_free(ptr);
+        return NULL;
+    }
 
-    // this pointer was not allocated by ic_malloc etc
-    free(ptr);
-    ptr = NULL;
+    return ptr;
 }

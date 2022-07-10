@@ -237,6 +237,9 @@ IC_PRINTF_FORMAT(3, 4)
 IC_NON_NULL(1)
 ssize_t snprintfz(char *dest, size_t size, const char *fmt, ...);
 
+IC_PUBLIC
+char *copy_string(const char *in);
+
 /** @} */
 
 #endif /* IC_STRING_H */
