@@ -94,7 +94,7 @@ static void get_processor_info(FILE *out)
     memset(&osvi, 0, sizeof(OSVERSIONINFOEX));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
-    GetVersionEx((LPOSVERSIONINFOA) &osvi);
+    GetVersionExW((LPOSVERSIONINFOW) &osvi);
 
     fprintf(out, "System:         Windows\n");
     fprintf(out, "Release:        %d.%d build %d\n",
@@ -124,8 +124,10 @@ static void get_processor_info(FILE *out)
     }
 
     if (osvi.wServicePackMajor != 0) {
+        char version[256] = { 0 };
+        utf16_shorten(osvi.szCSDVersion, version);
         fprintf(out, " SP %d.%d (%s)", osvi.wServicePackMajor,
-                osvi.wServicePackMinor, osvi.szCSDVersion);
+                osvi.wServicePackMinor, version);
     }
 
     fprintf(out, "\n");
@@ -151,12 +153,15 @@ static void get_processor_info(FILE *out)
         break;
     }
 
-    char buf[256];
-    DWORD bufsize = sizeof(buf);
-    if (!GetComputerName(buf, &bufsize))
+    char buf[256] = { 0 };
+    wchar_t wbuf[256] = { 0 };
+    DWORD bufsize = sizeof(wbuf);
+    if (!GetComputerNameW(wbuf, &bufsize)) {
         fprintf(out, "Domain:         \n");
-    else
+    } else {
+        utf16_shorten(wbuf, buf);
         fprintf(out, "Domain:         %s\n", buf);
+    }
 
     fprintf(out, "Processors:     %d\n", sysinfo.dwNumberOfProcessors);
     #else
@@ -289,14 +294,14 @@ void sys_backtrace(void)
     get_memory_info(out);
     fprintf(out, "----------------------------------------\n");
 
-    #define STACK_SIZE 63 // needed for XP
+    #define STACK_SIZE 60 // needed for XP
     void *stack[STACK_SIZE];
 
     #ifdef IC_PLATFORM_WINDOWS
     HANDLE process = GetCurrentProcess();
 
     SymInitialize(process, NULL, TRUE);
-    unsigned short frames = CaptureStackBackTrace(0, STACK_SIZE, stack, NULL);
+    unsigned short frames = RtlCaptureStackBackTrace(0, STACK_SIZE, stack, NULL);
 
     fprintf(out, "CaptureStackBackTrace() returned %u frames\n", frames);
 

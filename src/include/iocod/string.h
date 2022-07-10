@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod/platform.h"
 #include "iocod/types.h"
 #include <string.h>
+#include <wchar.h>
 
 /**
  * @defgroup string_lib String Library
@@ -239,6 +240,24 @@ ssize_t snprintfz(char *dest, size_t size, const char *fmt, ...);
 
 IC_PUBLIC
 char *copy_string(const char *in);
+
+IC_PUBLIC
+const char *utf8_decode(const char *text, int *codepoint);
+
+IC_PUBLIC
+char *utf8_encode(char *text, int codepoint);
+
+IC_PUBLIC
+const wchar_t *utf16_decode(const wchar_t *text, int *codepoint);
+
+IC_PUBLIC
+wchar_t *utf16_encode(wchar_t *text, int codepoint);
+
+IC_PUBLIC
+void utf8_widen(const char *in, wchar_t *out);
+
+IC_PUBLIC
+void utf16_shorten(const wchar_t *in, char *out);
 
 /** @} */
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
 ================================================================================
 iocod
 Copyright (C) 2022 thecheeseman
@@ -47,8 +47,16 @@ void sys_error(const char *err, ...)
     ic_print_header("", 40, '*');
 
     #ifdef IC_PLATFORM_WINDOWS
-    MessageBox(NULL, va(_("An unrecoverable error has occured: %s"), str),
-               _("Unrecoverable Error"), MB_OK | MB_ICONERROR);
+    wchar_t wstr[1024] = { 0 };
+    wchar_t title[128] = { 0 };
+    wchar_t prompt[128] = { 0 };
+    wchar_t wmsg[1024] = { 0 };
+
+    utf8_widen(_("An unrecoverable error has occurred: %s"), prompt);
+    utf8_widen(_("Unrecoverable Error"), title);
+    utf8_widen(str, wstr);
+    _snwprintf(wmsg, sizeof(wmsg), prompt, wstr);
+    MessageBoxW(NULL, wmsg, title, MB_OK | MB_ICONERROR);
     #endif
 
     sys_exit(IC_TERMINATE);

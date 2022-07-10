@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "iocod/platform.h"
+#include "iocod/string.h"
 
 #ifdef IC_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
@@ -34,11 +35,12 @@ IC_PUBLIC
 char *sys_get_current_user(void)
 {
     #ifdef IC_PLATFORM_WINDOWS
-    static char username[256];
-    unsigned long size = sizeof(username);
+    static wchar_t wusername[256] = { 0 };
+    static char username[256] = { 0 };
+    unsigned long size = sizeof(wusername);
 
-    if (!GetUserName(username, &size))
-        strncpy(username, "player", sizeof(username));
+    GetUserNameW(wusername, &size);
+    utf16_shorten(wusername, username);
 
     if (username[0] == '\0')
         strncpy(username, "player", sizeof(username));

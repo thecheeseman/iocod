@@ -49,6 +49,8 @@ if (IC_PLATFORM_MSVC)
     add_compile_options(/wd4305) # truncation from 'double' to 'float'
     add_compile_options(/wd4996) # unsafe functions strcpy etc
 
+    add_compile_definitions(UNICODE _UNICODE)
+
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         # instead of add_compile_options()
         # because this produces warning D9025

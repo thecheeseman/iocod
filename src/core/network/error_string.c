@@ -25,11 +25,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifdef IC_PLATFORM_WINDOWS
 static char *get_wsa_error_string(int code)
 {
-    static char msg[4096];
+    static wchar_t wmsg[1024] = { 0 };
+    static char msg[1024] = { 0 };
 
-    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+    FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                   NULL, code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  msg, sizeof(msg), NULL);
+                  wmsg, sizeof(wmsg), NULL);
+
+    utf16_shorten(wmsg, msg);
 
     if (*msg == '\0')
         snprintf(msg, sizeof(msg), "WSAGetLastError: %d", code);

@@ -59,16 +59,18 @@ char *sys_library_error(void)
     // system error codes
     #ifdef IC_PLATFORM_WINDOWS
     DWORD err = GetLastError();
-    static char msg[1024];
+    static wchar_t wmsg[1024] = { 0 };
+    static char msg[1024] = { 0 };
 
-    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
-                  NULL,
-                  err,
-                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  msg,
-                  sizeof(msg),
-                  NULL);
+    FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM,
+                   NULL,
+                   err,
+                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                   wmsg,
+                   sizeof(wmsg),
+                   NULL);
 
+    utf16_shorten(wmsg, msg);
     return msg;
     #else
     return dlerror();
@@ -86,13 +88,15 @@ bool sys_library_load(const char *path, void **handle)
     }
 
     // append system extension if not provided
-    char newpath[PATH_MAX];
+    char newpath[PATH_MAX] = { 0 };
     strncpyz(newpath, path, sizeof(newpath));
     ic_append_extension(newpath, sizeof(newpath), "." IC_PLATFORM_DLL);
 
     // load library
     #ifdef IC_PLATFORM_WINDOWS
-    *handle = (void *) LoadLibrary(newpath);
+    wchar_t wpath[PATH_MAX] = { 0 };
+    utf8_widen(newpath, wpath);
+    *handle = (void *) LoadLibraryW(wpath);
     #else
     *handle = dlopen(newpath, RTLD_NOW);
     #endif

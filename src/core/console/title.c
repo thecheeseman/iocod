@@ -26,7 +26,9 @@ IC_PUBLIC
 void con_set_title(const char *title)
 {
     #ifdef IC_PLATFORM_WINDOWS
-    SetConsoleTitle(title);
+    wchar_t wtitle[256] = { 0 };
+    utf8_widen(title, wtitle);
+    SetConsoleTitleW(wtitle);
     #else
     // xterm allows for OSC escape sequences,
     // so if we're a compatible xterm, let's do it

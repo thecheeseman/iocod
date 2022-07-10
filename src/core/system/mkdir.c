@@ -33,7 +33,10 @@ IC_PUBLIC
 bool sys_mkdir(const char *path)
 {
     #ifdef IC_PLATFORM_WINDOWS
-    if (!CreateDirectory(path, NULL)) {
+    wchar_t wpath[PATH_MAX] = { 0 };
+    utf8_widen(path, wpath);
+
+    if (!CreateDirectoryW(wpath, NULL)) {
         if (GetLastError() != ERROR_ALREADY_EXISTS)
             return false;
     }

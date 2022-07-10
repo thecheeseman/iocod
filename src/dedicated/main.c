@@ -24,6 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <signal.h>
 #include <float.h>
 #include <stdlib.h>
+#include <locale.h>
 
 static void print_gpl(void)
 {
@@ -64,6 +65,14 @@ static void concat_args(int argc, char *argv[], size_t size, char *cmdline)
 IC_PUBLIC
 int main(int argc, char *argv[])
 {
+    #ifdef IC_PLATFORM_WINDOWS
+    setlocale(LC_ALL, ".UTF-8");
+    #else
+    setlocale(LC_ALL, "C.UTF-8");
+    #endif
+
+    fprintf(stderr, "%s\n", setlocale(LC_ALL, NULL));
+
     // setup signals
     sys_setup_signal_handler();
 
