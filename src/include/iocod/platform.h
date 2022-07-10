@@ -620,12 +620,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * @since 0.110.0
  */
-#if defined IC_PLATFORM_STD_C11
+#if IC_MSVC_VERSION_CHECK(13, 10, 0)
+#define IC_NO_RETURN __declspec(noreturn)
+#elif defined IC_PLATFORM_STD_C11
 #define IC_NO_RETURN _Noreturn
 #elif IC_HAS_ATTRIBUTE(noreturn) || IC_GCC_VERSION_CHECK(3, 2, 0)
 #define IC_NO_RETURN __attribute__((__noreturn__))
-#elif IC_MSVC_VERSION_CHECK(13, 10, 0)
-#define IC_NO_RETURN __declspec(noreturn)
 #else
 #define IC_NO_RETURN
 #endif

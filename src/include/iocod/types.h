@@ -24,6 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define IOCOD_TYPES_H
 
 #include "iocod/platform.h"
+#include <inttypes.h>
 
 #ifdef IC_PLATFORM_WINDOWS
 #if IC_PLATFORM_64BIT
