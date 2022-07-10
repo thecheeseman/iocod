@@ -71,8 +71,6 @@ int main(int argc, char *argv[])
     setlocale(LC_ALL, "C.UTF-8");
     #endif
 
-    fprintf(stderr, "%s\n", setlocale(LC_ALL, NULL));
-
     // setup signals
     sys_setup_signal_handler();
 

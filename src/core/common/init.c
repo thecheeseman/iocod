@@ -142,7 +142,7 @@ void com_init(char *cmdline)
     ic_printf(IC_VERSION_STRING_FULL " " IC_PLATFORM_STRING "\n");
 
     if (setjmp(abortframe))
-        sys_error("Error occurred during init");
+        sys_error(_("Error occurred during initialization"));
 
     //
     // general init
