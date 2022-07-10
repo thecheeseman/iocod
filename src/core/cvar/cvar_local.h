@@ -25,9 +25,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
+#define FILE_HASH_SIZE 256
+
 extern struct cvar *cvars;
+extern struct cvar indexes[MAX_CVARS];
 extern size_t num_indexes;
-extern struct cvar *hashtable[MAX_CVARS];
+extern struct cvar *hashtable[FILE_HASH_SIZE];
 extern struct cvar *sv_console_lockout;
 extern struct cvar *com_sv_running;
 extern struct cvar *cv_cheats;

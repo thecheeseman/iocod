@@ -228,5 +228,4 @@ void com_shutdown(void)
     sv_shutdown();
     hunk_shutdown();
     cmd_shutdown();
-    cv_shutdown();
 }

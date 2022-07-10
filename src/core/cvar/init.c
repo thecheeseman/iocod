@@ -64,6 +64,7 @@ void cv_init(void)
 IC_PUBLIC
 void cv_shutdown(void)
 {
+    #if 0
     struct cvar *head = cvars;
     struct cvar *v;
 
@@ -76,5 +77,16 @@ void cv_shutdown(void)
         ic_free(v->latched_string);
         ic_free(v->reset_string);
         ic_free(v->description);
+    }
+    #endif
+
+    for (int i = 0; i < MAX_CVARS; i++) {
+        struct cvar *cv = &indexes[i];
+
+        ic_free(cv->name);
+        ic_free(cv->string);
+        ic_free(cv->latched_string);
+        ic_free(cv->reset_string);
+        ic_free(cv->description);
     }
 }

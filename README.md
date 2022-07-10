@@ -165,7 +165,6 @@ and testing. Check the [roadmap](#roadmap) for more details about the timeline.
 - git
 - build-essential
 - cmake
-- libncurses-dev
 
 #### Process
 

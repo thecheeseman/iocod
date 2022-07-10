@@ -56,7 +56,10 @@ static void color_print(const char *msg)
                                         color_to_attrib(COLOR_WHITE));
                 fputs(IC_PLATFORM_NEWLINE, stderr);
                 #else
-                fputs("\033[0m" IC_PLATFORM_NEWLINE, stderr);
+                if (config_console_colors())
+                    fputs("\033[0m" IC_PLATFORM_NEWLINE, stderr);
+                else
+                    fputs(IC_PLATFORM_NEWLINE, stderr);
                 #endif
                 msg++;
             } else {
@@ -66,9 +69,11 @@ static void color_print(const char *msg)
                 SetConsoleTextAttribute(console.hout,
                                         color_to_attrib(colorn));
                 #else
-                fputs("\033[", stderr);
-                fputs(color_to_ascii_code(colorn), stderr);
-                fputs("m", stderr);
+                if (config_console_colors()) {
+                    fputs("\033[", stderr);
+                    fputs(color_to_ascii_code(colorn), stderr);
+                    fputs("m", stderr);
+                }
                 #endif
                 
                 msg += 2;

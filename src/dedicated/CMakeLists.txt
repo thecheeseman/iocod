@@ -68,7 +68,7 @@ if (IC_PLATFORM_WINDOWS)
 
     target_compile_definitions(iocod_dedicated PUBLIC PSAPI_VERSION=1)
 else()
-    target_link_libraries(iocod_dedicated tinfo m pthread)
+    target_link_libraries(iocod_dedicated m pthread)
 endif()
 
 set_target_properties(iocod_dedicated PROPERTIES

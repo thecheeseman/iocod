@@ -24,6 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <signal.h>
 
 #ifndef IC_PLATFORM_WINDOWS
+#define NO_LEAKS
 #include <term.h>
 #endif
 
@@ -139,16 +140,9 @@ void con_init(void)
 
     // setupterm will auto exit if there's an error
     console.term = getenv("TERM");
-    setupterm(console.term, STDOUT_FILENO, (int *) 0);
 
-    // not foolproof, but an easy check
-    if (config_initialized() && config_console_colors()) {
-        if (tigetnum("colors") > 0)
-            console.ansi_color = true;
-    }
-
-    console.num_lines = tigetnum("lines");
-    console.num_columns = tigetnum("cols");
+    if (config_initialized() && config_console_colors())
+        console.ansi_color = true;
 
     // ignore tty in/tty out signals
     // if the process is running non-interactively these can turn into
@@ -216,7 +210,5 @@ void con_shutdown(void)
 
     // restore blocking to stdin reads
     fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL, 0) & ~O_NONBLOCK);
-
-    del_curterm(cur_term);
 }
 #endif

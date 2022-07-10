@@ -104,7 +104,7 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
 
     /* handle message */
     char msg[LOG_MAX_PRINT];
-    va_list argptr;
+    va_list argptr = { 0 };
     va_start(argptr, fmt);
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
@@ -126,10 +126,16 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
         fflush(iclog.fp);
     }
 
+    const char *color = color_prefix[level];
+    #ifndef IC_PLATFORM_WINDOWS
+    if (!config_console_colors())
+        color = "";
+    #endif
+
     /* echo to stdout */
     if (iclog.echo_stdout) {
         con_print(va("%s%s%s%s", 
-                     color_prefix[level],
+                     color,
                      stdout_prefix[level], 
                      msg,
                      (!has_newline && iclog.auto_lf)

@@ -28,9 +28,10 @@ IC_NO_RETURN
 void sys_exit(int code)
 {
     net_shutdown();
-    config_shutdown();
+    cv_shutdown();
     log_shutdown();
     con_shutdown();
+    config_shutdown();
 
     exit(code);
 }

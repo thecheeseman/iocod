@@ -27,9 +27,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 struct cvar *cvars;
 
-static struct cvar indexes[MAX_CVARS];
+struct cvar indexes[MAX_CVARS];
 size_t num_indexes = 0;
-struct cvar *hashtable[MAX_CVARS];
+struct cvar *hashtable[FILE_HASH_SIZE];
 
 int cv_modified_flags = 0;
 
@@ -51,7 +51,7 @@ static long cv_hash(const char *name)
         i++;
     }
 
-    hash &= (MAX_VMCVAR_STRING_LEN - 1);
+    hash &= (FILE_HASH_SIZE - 1);
     return hash;
 }
 
@@ -64,7 +64,7 @@ struct cvar *cv_find(const char *name)
     }
 
     long hash = cv_hash(name);
-    if (hash >= MAX_CVARS || hash <= 0) {
+    if (hash >= FILE_HASH_SIZE || hash <= 0) {
         log_trace(_("Bad hash %ld for name '%s'\n"), hash, name);
         return NULL;
     }
@@ -94,23 +94,23 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
         v->flags &= ~CV_USER_CREATED;
 
         ic_free(v->reset_string);
-        v->reset_string = strdup(value);
+        v->reset_string = copy_string(value);
 
         if (flags & CV_ROM) {
             ic_free(v->latched_string);
-            v->latched_string = strdup(value);
+            v->latched_string = copy_string(value);
         }
     }
 
     v->flags |= flags;
 
     /* only allow one non-empty reset string without a warning */
-    if (v->reset_string[0] != '\0') {
+    if (v->reset_string[0] == '\0') {
         /* none yet */
         ic_free(v->reset_string);
 
-        v->reset_string = strdup(value);
-    } else if (*value != '\0' && strcmp(v->reset_string, value) != 0) {
+        v->reset_string = copy_string(value);
+    } else if (value[0] != '\0' && strcmp(v->reset_string, value) != 0) {
         log_warn(_("Cvar '%s' given initial values: '%s' and '%s'"),
                  name, v->reset_string, value);
     }
@@ -139,20 +139,20 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
 /*
  * create a cvar.
  */
-static struct cvar *create_cvar(size_t index, const char *name, const char *value,
-                                enum cv_flags flags)
+static struct cvar *create_cvar(size_t index, const char *name, 
+                                const char *value, enum cv_flags flags)
 {
     struct cvar *v = &indexes[index];
 
     if (index >= num_indexes)
         num_indexes = index + 1;
 
-    v->name = strdup(name);
+    v->name = copy_string(name);
     v->flags = flags;
     cv_modified_flags |= v->flags;
 
-    v->string = strdup(value);
-    v->reset_string = strdup(value);
+    v->string = copy_string(value);
+    v->reset_string = copy_string(value);
     v->value = (cv_float) strtod(value, NULL);
     v->integer = (cv_int) strtol(value, NULL, 10);
 
