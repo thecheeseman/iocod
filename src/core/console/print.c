@@ -93,6 +93,13 @@ void con_print(const char *msg)
     if (msg == NULL || *msg == '\0')
         return;
 
+    // we can potentially call ic_printf before con_init
+    // so make sure we always see these messages
+    if (!console.initialized) {
+        fputs(msg, stderr);
+        return;
+    }
+
     con_hide();
 
     color_print(msg);

@@ -32,20 +32,9 @@ static void com_setenv_f(struct cmd *self)
 
     if (argc > 2) {
         char *value = cmd_args_from(2);
-
-        #ifdef IC_PLATFORM_WINDOWS
-        if (value != NULL && *value != '\0')
-            _putenv(va("%s=%s", name, value));
-        else
-            _putenv(va("%s=", name));
-        #else
-        if (value != NULL && *value != '\0')
-            setenv(name, value, 1);
-        else
-            unsetenv(name);
-        #endif
+        sys_setenv(name, value);
     } else {
-        char *env = getenv(name);
+        char *env = sys_getenv(name);
 
         if (env != NULL)
             ic_printf("%s = %s\n", name, env);

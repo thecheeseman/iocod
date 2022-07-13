@@ -144,6 +144,7 @@ iocod includes
 #include "iocod/console.h"
 #include "iocod/cvar.h"
 #include "iocod/events.h"
+#include "iocod/fs.h"
 #include "iocod/log.h"
 #include "iocod/memory.h"
 #include "iocod/metrics.h"
@@ -153,6 +154,7 @@ iocod includes
 #include "iocod/shared.h"
 #include "iocod/string.h"
 #include "iocod/system.h"
+#include "iocod/threads.h"
 
 /*
 ================================================================================

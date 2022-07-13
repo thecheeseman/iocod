@@ -75,11 +75,7 @@ struct logger {
 
 extern struct logger iclog;
 
-#ifdef IC_PLATFORM_WINDOWS
-extern CRITICAL_SECTION log_mutex;
-#else
-extern pthread_mutex_t log_mutex;
-#endif
+thread_mutex_t log_mutex;
 
 /*
  * These cross-platform time utilities from https://github.com/yksz/c-logger
@@ -102,21 +98,6 @@ struct tm *localtime_r(const time_t *timep, struct tm *result);
 */
 void log_get_timestamp(const struct timeval *time, char *timestamp,
                        size_t size);
-
-/**
- * @brief Lock the mutex for thread safety.
- */
-void log_lock(void);
-
-/**
- * @brief Unlock the mutex.
- */
-void log_unlock(void);
-
-/**
- * @brief Return the current thread id.
- */
-intptr_t log_current_thread_id(void);
 
 /** @} */
 

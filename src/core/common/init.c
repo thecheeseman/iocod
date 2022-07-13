@@ -155,8 +155,8 @@ void com_init(char *cmdline)
     cmd_init();
 
     // override anything from the config files with command line arguments
-    startup_variable(NULL);
-    startup_variable("developer");
+    com_startup_variable(NULL);
+    com_startup_variable("developer");
 
     cl_init_key_commands();
     // fs_init();
@@ -180,7 +180,7 @@ void com_init(char *cmdline)
     // not sure if this needs to be implemented
 
     // startup variable again
-    startup_variable(NULL);
+    com_startup_variable(NULL);
 
     // seh_update_language_info();
     hunk_init();

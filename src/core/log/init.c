@@ -35,11 +35,7 @@ struct logger iclog = {
     .buffer = NULL,
 };
 
-#ifdef IC_PLATFORM_WINDOWS
-CRITICAL_SECTION log_mutex;
-#else
-pthread_mutex_t log_mutex;
-#endif
+thread_mutex_t log_mutex;
 
 /*
  * Log init.
@@ -47,14 +43,7 @@ pthread_mutex_t log_mutex;
 IC_PUBLIC
 void log_init(void)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    InitializeCriticalSection(&log_mutex);
-    #else
-    if (pthread_mutex_init(&log_mutex, NULL) != 0) {
-        ic_error(_("Mutex init failed\n"));
-        return;
-    }
-    #endif
+    thread_mutex_init(&log_mutex);
 
     iclog.fp = fopen(iclog.path, "ab");
     if (iclog.fp == NULL) {
@@ -96,11 +85,7 @@ void log_shutdown(void)
     fclose(iclog.fp);
     iclog.fp = NULL;
 
-    #ifdef IC_PLATFORM_WINDOWS
-    DeleteCriticalSection(&log_mutex);
-    #else
-    pthread_mutex_destroy(&log_mutex);
-    #endif
+    thread_mutex_terminate(&log_mutex);
 }
 
 /*

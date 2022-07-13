@@ -66,7 +66,8 @@ void parse_command_line(char *cmdline)
     }
 }
 
-void startup_variable(const char *match)
+IC_PUBLIC
+void com_startup_variable(const char *match)
 {
     for (int i = 0; i < num_console_lines; i++) {
         cmd_tokenize_string(console_lines[i]);
@@ -86,6 +87,20 @@ void startup_variable(const char *match)
                 cv_get(s, cmd_args_from(2), CV_USER_CREATED);
         }
     }
+}
+
+IC_PUBLIC
+void com_startup_variables(int count, ...)
+{
+    va_list ap;
+    va_start(ap, count);
+
+    for (int i = 0; i < count; i++) { 
+        char *arg = va_arg(ap, char *);
+        com_startup_variable(arg);
+    }
+
+    va_end(ap);
 }
 
 bool add_startup_commands(void)

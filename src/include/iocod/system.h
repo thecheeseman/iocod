@@ -238,4 +238,32 @@ void sys_error(const char *err, ...);
 IC_PUBLIC
 void sys_sleep(int msec);
 
+/**
+ * @brief Set environment variable @p name with value @p value. If @p value is
+ * NULL, then this will attempt to unset the variable.
+ * 
+ * @param[in] name name of environment variable
+ * @param[in] value value of environment variable, or NULL to unset
+ * @return true if success, false otherwise
+*/
+IC_PUBLIC
+bool sys_setenv(const char *name, const char *value);
+
+/**
+ * @brief Get environment variable.
+ * @param[in] name name of environment variable
+ * @return value of environment variable, or NULL if not set
+*/
+IC_PUBLIC
+char *sys_getenv(const char *name);
+
+/**
+ * @brief Get @p len random bytes from the system.
+ * @param[in] len number of bytes to get
+ * @param[out] buf buffer to store random bytes
+ * @return true if success, false otherwise
+*/
+IC_PUBLIC
+bool sys_random_bytes(size_t len, void *buf);
+
 #endif /* IC_SYSTEM_H */

@@ -80,8 +80,8 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
     char timestamp[LOG_MAX_TIMESTAMP];
     log_get_timestamp(&iclog.now, timestamp, sizeof(timestamp));
 
-    intptr_t threadid = log_current_thread_id();
-    log_lock();
+    intptr_t threadid = (intptr_t) thread_current_thread_id();
+    thread_mutex_lock(&log_mutex);
 
     /*
         https://github.com/yksz/c-logger
@@ -143,7 +143,7 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
                                     // con_print() will replace \n with it
     }
 
-    log_unlock();
+    thread_mutex_unlock(&log_mutex);
 
     return printed;
 }

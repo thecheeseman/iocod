@@ -24,9 +24,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdlib.h>
 
+/*
+PRINTF_ALL,
+PRINTF_CONSOLE,
+PRINTF_WARNING,
+PRINTF_LOGONLY
+*/
+
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
-void ic_printf(const char *fmt, ...)
+IC_PRINTF_FORMAT(2, 3)
+void _ic_printf(enum printf_type type, const char *fmt, ...)
 {
     char msg[MAX_PRINT_MSG];
 
@@ -35,9 +42,11 @@ void ic_printf(const char *fmt, ...)
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
 
-    if (!con_initialized())
-        fputs(msg, stderr);
-    else
+    if (type == PRINTF_ALL)
+        log_print(msg);
+    else if (type == PRINTF_WARNING)
+        log_warn(msg);
+    else if (type == PRINTF_CONSOLE)
         con_print(msg);
 
     // TODO: log stuff

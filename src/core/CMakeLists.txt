@@ -29,7 +29,7 @@ foreach (subdir
     console
     cvar
     events
-    fs
+    # fs
     log
     memory
     metrics
@@ -38,7 +38,8 @@ foreach (subdir
     server
     shared
     strings
-    system)
+    system
+    threads)
     file(GLOB sources "${subdir}/*.c")
     list(APPEND IC_CORE_SRCS ${sources})
 endforeach()

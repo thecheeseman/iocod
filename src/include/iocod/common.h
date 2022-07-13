@@ -78,6 +78,34 @@ bool com_filter_path(char *filter, char *name, bool casesensitive);
 IC_PUBLIC
 char *com_string_contains(char *str1, char *str2, bool casesensitive);
 
+IC_PUBLIC
+void com_startup_variable(const char *match);
+
+IC_PUBLIC
+void com_startup_variables(int count, ...);
+
+enum printf_type {
+    /**
+     * @brief Print message to iocod log, game log, and console.
+    */
+    PRINTF_ALL,
+
+    /**
+     * @brief Print message to game log and console only.
+    */
+    PRINTF_CONSOLE,
+
+    /**
+     * @brief Call to log_warn(), game log, and console.
+    */
+    PRINTF_WARNING,
+
+    /**
+     * @brief Only log to game log.
+    */
+    PRINTF_LOGONLY
+};
+
 /**
  * @brief Printf wrapper that allows direct output to console.
  *
@@ -92,10 +120,11 @@ char *com_string_contains(char *str1, char *str2, bool casesensitive);
  * @see ic_warning
  */
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
-void ic_printf(const char *fmt, ...);
+IC_PRINTF_FORMAT(2, 3)
+void _ic_printf(enum printf_type type, const char *fmt, ...);
 
-#define ic_warning(...) ic_printf(__VA_ARGS__)
+#define ic_printf(...) _ic_printf(PRINTF_CONSOLE, __VA_ARGS__)
+#define ic_warning(...) _ic_printf(PRINTF_WARNING, __VA_ARGS__)
 
 IC_PUBLIC
 void ic_print_header(const char *text, size_t size, char sep);
