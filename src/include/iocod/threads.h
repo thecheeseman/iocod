@@ -23,6 +23,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_THREADS_H
 #define IOCOD_THREADS_H
 
+/* 
+    borrowed from Mattias Gustavsson's libraries
+    https://github.com/mattiasgustavsson/libs/blob/main/thread.h
+*/
+
 #include "iocod/platform.h"
 #include "iocod/types.h"
 
