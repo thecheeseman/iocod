@@ -55,7 +55,7 @@ void thread_signal_init(thread_signal_t *signal)
     #else
     pthread_mutex_init(&_internal->mutex, NULL);
     pthread_cond_init(&_internal->condition, NULL);
-    internal->value = 0;
+    _internal->value = 0;
     #endif
 }
 
@@ -120,7 +120,7 @@ bool thread_signal_wait(thread_signal_t *signal, int timeout)
     LeaveCriticalSection(&_internal->mutex);
     return !timedout;
     #else
-    struct timespec ts;
+    struct timespec ts = { 0 };
     if (timeout >= 0) {
         struct timeval tv;
         gettimeofday(&tv, NULL);

@@ -6,6 +6,7 @@ macro(check_headers)
     check_symbol_exists(strndup "string.h" HAVE_STRNDUP)
     check_symbol_exists(strlwr "string.h" HAVE_STRLWR)
     check_symbol_exists(strupr "string.h" HAVE_STRUPR)
+    check_symbol_exists(strrev "string.h" HAVE_STRREV)
 
     check_include_files(strings.h HAVE_STRINGS_H)
     if (HAVE_STRINGS_H)

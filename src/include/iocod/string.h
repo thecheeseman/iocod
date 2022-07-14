@@ -171,7 +171,6 @@ int _ic_strncasecmp(const char *s1, const char *s2, size_t n);
  * Only defined if the platform does not have a builtin `strcasecmp`.
  * @note On Windows this is defined as `_stricmp`.
  */
-
 /**
  * @def strncasecmp
  * @brief Redirect to `_ic_strncasecmp()`.
@@ -195,6 +194,30 @@ int _ic_strncasecmp(const char *s1, const char *s2, size_t n);
 #define strncasecmp _ic_strncasecmp
 #endif
 #endif /* IC_PLATFORM_WINDOWS */
+
+/**
+ * @brief Reverse string @p str in place.
+ * @param[in,out] str string to reverse
+ * @return pointer to the reversed string
+ */
+IC_PUBLIC
+IC_NON_NULL(1)
+char *_ic_strrev(char *str);
+
+/**
+ * @def strrev 
+ * @brief Redirect to `_ic_strrev()`.
+ * 
+ * @note On Windows this is _strrev.
+ */
+#ifdef IC_PLATFORM_WINDOWS
+#undef strrev
+#define strrev _strrev
+#else
+#if !defined HAVE_STRREV
+#define strrev _ic_strrev
+#endif
+#endif
 
 /**
  * @brief `strncpy` replacement which always ensures a trailing '\0'.

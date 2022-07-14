@@ -47,10 +47,10 @@ threadptr_t thread_create(int (*function)(void *), void *data, const char *name,
     #else
     pthread_t thread;
 
-    if (pthread_create(&thread, NULL, function, data) != 0)
+    if (pthread_create(&thread, NULL, (void *(*)(void *)) function, data) != 0)
         return NULL;
 
-    #ifndef IC_PLATFORM_MACOS
+    #if 0
     if (name != NULL)
         pthread_setname_np(thread, name);
     #endif

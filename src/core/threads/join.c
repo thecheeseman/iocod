@@ -33,6 +33,6 @@ int thread_join(threadptr_t thread)
     #else
     void *ret;
     pthread_join((pthread_t) thread, &ret);
-    return (int) ret;
+    return (int) (intptr_t) ret;
     #endif
 }

@@ -20,14 +20,26 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "threads_local.h"
+#include "iocod.h"
 
+#if !defined HAVE_STRREV
 IC_PUBLIC
-void thread_exit(int code)
+IC_NON_NULL(1)
+char *_ic_strrev(char *str)
 {
-    #ifdef IC_PLATFORM_WINDOWS
-    ExitThread((DWORD) code);
-    #else
-    pthread_exit((void *)(intptr_t) code);
+    #if !defined IC_GNUC_VERSION
+    if (str == NULL)
+        return NULL;
     #endif
+
+    char *p1;
+    char *p2;
+    for (p1 = str, p2 = str + (strlen(str) - 1); p2 > p1; p1++, p2--) {
+        char t = *p1;
+        *p1 = *p2;
+        *p2 = t;
+    }
+
+    return str;
 }
+#endif

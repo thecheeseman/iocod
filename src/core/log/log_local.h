@@ -75,7 +75,7 @@ struct logger {
 
 extern struct logger iclog;
 
-thread_mutex_t log_mutex;
+extern thread_mutex_t log_mutex;
 
 /*
  * These cross-platform time utilities from https://github.com/yksz/c-logger

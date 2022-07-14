@@ -25,6 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifdef IC_PLATFORM_WINDOWS
 #define PSAPI_VERSION 1
 #include <windows.h>
+#include <winnt.h>
 #include <dbghelp.h>
 #include <psapi.h>
 #else

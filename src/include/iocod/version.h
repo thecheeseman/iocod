@@ -34,7 +34,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @brief Current version string. Used by CMake to populate all version
  * related macros.
  */
-#define IC_VERSION_STRING "0.190.0-dev"
+#define IC_VERSION_STRING "0.194.0-dev"
 #define IC_VERSION_DATE __DATE__
 #define IC_VERSION_STRING_FULL "iocod " IC_VERSION_STRING " (" IC_VERSION_DATE ")"
 
