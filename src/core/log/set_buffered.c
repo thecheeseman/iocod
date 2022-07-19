@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "log_local.h"
 
 IC_PUBLIC
-void log_set_buffered(bool buffered, int buffer_size)
+void log_set_buffered(qbool buffered, int buffer_size)
 {
     iclog.buffered = buffered;
     iclog.buffer_size = buffer_size;

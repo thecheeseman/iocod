@@ -42,7 +42,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @return true if the console is initialized, false otherwise.
  */
 IC_PUBLIC
-bool con_initialized(void);
+qbool con_initialized(void);
 
 /**
  * @brief Initialize console. Sets up input and output processing, color 
@@ -85,11 +85,11 @@ void con_print(const char *msg);
 #define stdin_is_atty(v)
 #else
 IC_PUBLIC
-bool stdin_is_atty(void);
+qbool stdin_is_atty(void);
 #endif
 
 IC_PUBLIC
-bool con_colors(void);
+qbool con_colors(void);
 
 /** @} */
 

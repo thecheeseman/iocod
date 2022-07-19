@@ -24,14 +24,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <ctype.h>
 
 IC_PUBLIC
-bool com_filter(char *filter, char *name, bool casesensitive)
+qbool com_filter(char *filter, char *name, qbool casesensitive)
 {
     char buf[MAX_TOKEN_CHARS] = { 0 };
     char *ptr;
     int i;
 
     while (*filter != '\0') {
-        bool found;
+        qbool found;
 
         if (*filter == '*') {
             filter++;
@@ -114,7 +114,7 @@ bool com_filter(char *filter, char *name, bool casesensitive)
 }
 
 IC_PUBLIC
-bool com_filter_path(char *filter, char *name, bool casesensitive)
+qbool com_filter_path(char *filter, char *name, qbool casesensitive)
 {
     size_t i;
     char new_filter[PATH_MAX] = { 0 };

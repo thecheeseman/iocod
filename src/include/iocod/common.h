@@ -62,10 +62,10 @@ IC_PUBLIC
 void com_frame(void);
 
 IC_PUBLIC
-bool com_filter(char *filter, char *name, bool casesensitive);
+qbool com_filter(char *filter, char *name, qbool casesensitive);
 
 IC_PUBLIC
-bool com_filter_path(char *filter, char *name, bool casesensitive);
+qbool com_filter_path(char *filter, char *name, qbool casesensitive);
 
 /**
  * @brief Check if the given string @p str1 contains @p str2.
@@ -76,7 +76,7 @@ bool com_filter_path(char *filter, char *name, bool casesensitive);
  * pointer to the last matching character of the string
 */
 IC_PUBLIC
-char *com_string_contains(char *str1, char *str2, bool casesensitive);
+char *com_string_contains(char *str1, char *str2, qbool casesensitive);
 
 IC_PUBLIC
 void com_startup_variable(const char *match);

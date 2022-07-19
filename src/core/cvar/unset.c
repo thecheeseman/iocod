@@ -57,10 +57,8 @@ struct cvar *cv_unset(struct cvar *cv)
     return next;
 }
 
-void cv_unset_f(struct cmd *self)
+void cv_unset_f(void)
 {
-    UNUSED_PARAM(self);
-
     struct cvar *cv = cv_find(cmd_argv(1));
     if (cv == NULL)
         return;

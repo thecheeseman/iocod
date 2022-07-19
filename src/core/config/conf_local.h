@@ -118,28 +118,28 @@ char *conf_error_string(void);
  * @param[in] cfg config file
  * @return true if success, false otherwise
 */
-bool conf_load(struct conf *cfg);
+qbool conf_load(struct conf *cfg);
 
 /**
  * @brief Set config's defaults. Allocates memory if necessary for strings.
  * @param[in] cfg config file
  * @return true if success, false otherwise
 */
-bool conf_set_defaults(struct conf *cfg);
+qbool conf_set_defaults(struct conf *cfg);
 
 /**
  * @brief Write defaults out to config file if it doesn't exist.
  * @param[in] cfg config file
  * @return true if success, false otherwise
 */
-bool conf_write_defaults(struct conf *cfg);
+qbool conf_write_defaults(struct conf *cfg);
 
 /**
  * @brief Parse loaded config data into the config structure.
  * @param[in] cfg config file
  * @return true if success, false otherwise
 */
-bool conf_parse(struct conf *cfg);
+qbool conf_parse(struct conf *cfg);
 
 /** @} */
 

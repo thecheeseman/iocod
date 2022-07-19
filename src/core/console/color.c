@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <ctype.h>
 #include "con_local.h"
 
-bool color_string(const char *p)
+qbool color_string(const char *p)
 {
     if (p == NULL || p[0] != '^' || p[1] == '\0')
         return false;
@@ -93,7 +93,7 @@ char *color_to_ascii_code(enum q3color color)
 }
 
 IC_PUBLIC
-bool con_colors(void)
+qbool con_colors(void)
 {
     return console.ansi_color;
 }

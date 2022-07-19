@@ -28,7 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 void log_banner(void)
 {
-    bool oldstdout = iclog.echo_stdout;
+    qbool oldstdout = iclog.echo_stdout;
     iclog.echo_stdout = false;
 
     iclog.hide_next_source = true;

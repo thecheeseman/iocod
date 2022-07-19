@@ -27,7 +27,7 @@ union cv_value {
     cv_int i;
 };
 
-static union cv_value get_value(const char *name, bool f)
+static union cv_value get_value(const char *name, qbool f)
 {
     union cv_value u = { 0 };
 

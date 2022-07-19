@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod/types.h"
 #include <inttypes.h>
 
-static bool timebase_init = false;
+static qbool timebase_init = false;
 
 #ifdef IC_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN

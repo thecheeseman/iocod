@@ -37,7 +37,7 @@ struct confopt *conf_get_opt(struct conf *cfg, const char *name)
 }
 
 IC_PUBLIC
-bool conf_get_bool(struct conf *cfg, const char *name)
+qbool conf_get_bool(struct conf *cfg, const char *name)
 {
     struct confopt *opt = conf_get_opt(cfg, name);
     if (opt == NULL || opt->type != CONF_BOOL)

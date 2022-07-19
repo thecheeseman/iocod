@@ -56,7 +56,7 @@ struct conf *conf_init(const char *filename, struct confopt *kv, int options)
 }
 
 IC_PUBLIC
-bool conf_shutdown(struct conf *cfg)
+qbool conf_shutdown(struct conf *cfg)
 {
     if (cfg == NULL)
         return true; // already closed

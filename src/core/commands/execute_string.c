@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 static void cmd_call(struct cmd *cmd)
 {
-    bool printhelp = false;
+    qbool printhelp = false;
 
     // min args
     if (cmd->argc_min > 0 && (cmd_argc() - 1) < cmd->argc_min) {
@@ -58,11 +58,11 @@ static void cmd_call(struct cmd *cmd)
     }
 
     // call it
-    cmd->function(cmd);
+    cmd->function();
 }
 
 IC_PUBLIC
-bool cmd_execute_string(const char *text)
+qbool cmd_execute_string(const char *text)
 {
     cmd_tokenize_string(text);
     if (cmd_argc() == 0)

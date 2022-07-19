@@ -83,7 +83,7 @@ char *va(const char *fmt, ...);
  * are specified
  */
 IC_PUBLIC
-bool ic_append_extension(char *path, size_t size, const char *ext);
+qbool ic_append_extension(char *path, size_t size, const char *ext);
 
 /**
  * @brief Remove a key/value pair from an info string.
@@ -94,7 +94,7 @@ bool ic_append_extension(char *path, size_t size, const char *ext);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool if_remove_key(char *s, const char *key);
+qbool if_remove_key(char *s, const char *key);
 
 /**
  * @brief Remove a key/value pair from a big info string.
@@ -105,7 +105,7 @@ bool if_remove_key(char *s, const char *key);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool ifbig_remove_key(char *s, const char *key);
+qbool ifbig_remove_key(char *s, const char *key);
 
 /**
  * @brief Change or add a key/value pair to an info string.
@@ -117,7 +117,7 @@ bool ifbig_remove_key(char *s, const char *key);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool if_set_value_for_key(char *s, const char *key, const char *value);
+qbool if_set_value_for_key(char *s, const char *key, const char *value);
 
 /**
  * @brief Change or add a key/value pair to a big info string.
@@ -129,7 +129,7 @@ bool if_set_value_for_key(char *s, const char *key, const char *value);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool ifbig_set_value_for_key(char *s, const char *key, const char *value);
+qbool ifbig_set_value_for_key(char *s, const char *key, const char *value);
 
 IC_PUBLIC
 /**

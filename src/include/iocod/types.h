@@ -25,6 +25,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod/platform.h"
 #include <inttypes.h>
+#include <sys/types.h>
+
+/**
+ * @defgroup common_types Common Types
+ * @brief Various common types used throughout the project.
+ * @{
+ */
+
+/**
+ * @brief Kernel shorthands
+ * @{
+ */
+typedef int8_t      s8;
+typedef uint8_t     u8;
+typedef int16_t     s16;
+typedef uint16_t    u16;
+typedef int32_t     s32;
+typedef uint32_t    u32;
+typedef int64_t     s64;
+typedef uint64_t    u64;
+/** @} */
 
 #ifdef IC_PLATFORM_WINDOWS
 #if IC_PLATFORM_64BIT
@@ -32,17 +53,6 @@ typedef long long ssize_t;
 #else
 typedef long ssize_t;
 #endif
-#else
-#include <sys/types.h>
-#endif
-
-/**
- * @defgroup common_types Common Types
- * @brief Various common types used throughout the project.
- * @{
- */
-#ifdef bool
-#undef bool
 #endif
 
 /**
@@ -50,14 +60,13 @@ typedef long ssize_t;
  *
  * `bool` must always be the same size as `int` for compatibility (structure
  * field sizes must match), therefore we _cannot_ use `<stdbool.h>`
- * @{
 */
-typedef int _boolean;
-#define bool _boolean
-/** @} */
+typedef int qbool;
 
+#ifndef __cplusplus
 #define false 0
 #define true  1
+#endif
 
 /**
  * @brief Shorthand for `unsigned char`.
@@ -73,7 +82,7 @@ typedef unsigned char byte;
  * in the original source). In the future this may mean a hash of a given file,
  * rather than just meaning 'nth open file' as it currently does.
 */
-typedef size_t filehandle;
+typedef int filehandle;
 
 /**
  * @typedef float vec_t

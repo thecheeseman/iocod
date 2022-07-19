@@ -65,7 +65,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef IC_PLATFORM_WINDOWS
 extern WSADATA winsockdata;
-extern bool winsock_init;
+extern qbool winsock_init;
 
 typedef SOCKET socket_t;
 typedef unsigned short sa_family_t;
@@ -146,7 +146,7 @@ void net_open_ip(void);
  * @param[out] addr    converted `sockaddr` structure
  * @return true if successful, false otherwise
 */
-bool net_string_to_sockaddr(const char *s, sa_family_t family,
+qbool net_string_to_sockaddr(const char *s, sa_family_t family,
                             socklen_t addrlen, struct sockaddr *addr);
 
 /**
@@ -181,7 +181,7 @@ void net_event(fd_set *fdr);
  * @param[out] msg     message buffer
  * @return true if successful, false otherwise
 */
-bool net_get_packet(struct netadr *net_from, fd_set *fdr, struct netmsg *msg);
+qbool net_get_packet(struct netadr *net_from, fd_set *fdr, struct netmsg *msg);
 
 /* This is based on the Adaptive Huffman algorithm described in Sayood's Data
  * Compression book.  The ranks are not actually stored, but implicitly defined

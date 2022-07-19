@@ -27,10 +27,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define fs_printf(f, s, ...) ic_printf(s, __VA_ARGS__)
 
 IC_PUBLIC
-bool cv_write_defaults(filehandle f)
+qbool cv_write_defaults(filehandle f)
 {
-    UNUSED_PARAM(f);
-
     for (struct cvar *v = cvars; v != NULL; v = v->next) {
         /* don't write cd key */
         if (strcasecmp(v->name, "cl_cdkey") == 0)
@@ -51,10 +49,8 @@ bool cv_write_defaults(filehandle f)
 }
 
 IC_PUBLIC
-bool cv_write_variables(filehandle f)
+qbool cv_write_variables(filehandle f)
 {
-    UNUSED_PARAM(f);
-
     for (struct cvar *v = cvars; v != NULL; v = v->next) {
         /* don't write cd key */
         if (strcasecmp(v->name, "cl_cdkey") == 0)

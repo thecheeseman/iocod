@@ -23,10 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "com_local.h"
 #include <stdlib.h>
 
-static void com_setenv_f(struct cmd *self)
+static void com_setenv_f(void)
 {
-    UNUSED_PARAM(self);
-
     int argc = cmd_argc();
     char *name = cmd_argv(1);
 
@@ -43,27 +41,21 @@ static void com_setenv_f(struct cmd *self)
     }
 }
 
-static void com_error_f(struct cmd *self)
+static void com_error_f(void)
 {
-    UNUSED_PARAM(self);
-
     if (cmd_argc() == 2)
         ic_fatal("FATAL ERROR TEST");
     else
         ic_error("ERROR TEST");
 }
 
-static void com_crash_f(struct cmd *self)
+static void com_crash_f(void)
 {
-    UNUSED_PARAM(self);
-
     *(volatile int *) 0 = 0x12345678;
 }
 
-static void com_freeze_f(struct cmd *self)
+static void com_freeze_f(void)
 {
-    UNUSED_PARAM(self);
-
     float s = strtod(cmd_argv(1), NULL);
 
     int start = com_milliseconds();
@@ -74,15 +66,15 @@ static void com_freeze_f(struct cmd *self)
     }
 }
 
-static void com_quit_f(struct cmd *self)
+static void com_quit_f(void)
 {
-    UNUSED_PARAM(self);
-
     // TODO: handle errors here
     if (!error_entered) {
         // sv shutdown
         // cl shutdown
+        hunk_clear_to_start();
         com_shutdown();
+        fs_shutdown(true);
     }
 
     sys_quit();

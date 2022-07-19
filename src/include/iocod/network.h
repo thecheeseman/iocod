@@ -35,9 +35,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 struct netmsg {
-    bool allow_overflow;
-    bool overflowed;
-    bool oob;
+    qbool allow_overflow;
+    qbool overflowed;
+    qbool oob;
 
     byte *data;
 
@@ -155,7 +155,7 @@ void net_show_ip(void);
  * @return true if address is a local address, false otherwise
 */
 IC_PUBLIC
-bool net_is_lan_address(struct netadr addr);
+qbool net_is_lan_address(struct netadr addr);
 
 IC_PUBLIC
 void net_sleep(int msec);
@@ -168,7 +168,7 @@ void net_sleep(int msec);
  * @return true if packet was sent, false otherwise
 */
 IC_PUBLIC
-bool net_send_packet(int length, const void *data, struct netadr to);
+qbool net_send_packet(int length, const void *data, struct netadr to);
 
 /** @} */
 

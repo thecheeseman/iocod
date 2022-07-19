@@ -31,13 +31,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 struct console_data console;
 
 IC_PUBLIC
-bool con_initialized(void)
+qbool con_initialized(void)
 {
     return console.initialized;
 }
 
 #ifdef IC_PLATFORM_WINDOWS
-static BOOL WINAPI con_sigint(DWORD sig)
+static qbool WINAPI con_sigint(DWORD sig)
 {
     switch (sig) {
     case CTRL_C_EVENT:
@@ -121,10 +121,10 @@ static void con_sigcont(int signum)
 }
 
 IC_PUBLIC
-bool stdin_is_atty(void)
+qbool stdin_is_atty(void)
 {
-    bool atty = isatty(STDIN_FILENO);
-    bool dumbterm = false;
+    qbool atty = isatty(STDIN_FILENO);
+    qbool dumbterm = false;
 
     if (console.term == NULL || strcmp(console.term, "raw") == 0 ||
         strcmp(console.term, "dumb") == 0)

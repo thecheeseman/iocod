@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "conf_local.h"
 
-static bool end_of_script(struct conf *cfg, bool crossline)
+static qbool end_of_script(struct conf *cfg, qbool crossline)
 {
     if (!crossline) {
         conf_set_error(CONF_ERR_INCOMPLETE, cfg->script_line);
@@ -34,7 +34,7 @@ static bool end_of_script(struct conf *cfg, bool crossline)
     return false;
 }
 
-static bool get_token(struct conf *cfg, bool crossline)
+static qbool get_token(struct conf *cfg, qbool crossline)
 {
     if (cfg->script_p >= cfg->end_p)
         return end_of_script(cfg, crossline);
@@ -109,7 +109,7 @@ skipspace:
     return true;
 }
 
-bool conf_parse(struct conf *cfg)
+qbool conf_parse(struct conf *cfg)
 {
     while (!cfg->end) {
         // out of tokens
@@ -119,7 +119,7 @@ bool conf_parse(struct conf *cfg)
         char optname[MAX_TOKEN_CHARS];
         strncpyz(optname, cfg->token, sizeof(optname));
 
-        bool valid = false;
+        qbool valid = false;
         struct confopt *opt;
         for (opt = cfg->options; opt->type != CONF_END; opt++) {
             // skip blanks, comments, headers

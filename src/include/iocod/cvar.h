@@ -170,7 +170,7 @@ struct cvar {
     /**
      * @brief Set each time the cvar is modified.
     */
-    bool modified;
+    qbool modified;
 
     /**
      * @brief Number of total times this cvar has been changed.
@@ -317,7 +317,7 @@ void cv_shutdown(void);
  * @return NULL if failed, or pointer to a @ref cvar structure otherwise
 */
 IC_PUBLIC
-struct cvar *cv_set2(const char *name, const char *value, bool force);
+struct cvar *cv_set2(const char *name, const char *value, qbool force);
 
 /**
  * @brief Set a cvar with the given string value, always forcing the value
@@ -432,7 +432,7 @@ void cv_get_string_buffer(const char *name, char *buf, size_t size);
  * @return false if string contains '\' or '"' or ';' chars, true otherwise
 */
 IC_PUBLIC
-bool cv_validate_string(const char *s);
+qbool cv_validate_string(const char *s);
 
 /**
  * @brief Return a cvar's floating point value.
@@ -467,7 +467,7 @@ cv_int cv_get_integer(const char *name);
  * @return true if successful, false otherwise
  */
 IC_PUBLIC
-bool cv_write_defaults(filehandle f);
+qbool cv_write_defaults(filehandle f);
 
 /**
  * @brief Write archived cvar variables to a given file. Only cvars with the
@@ -478,10 +478,10 @@ bool cv_write_defaults(filehandle f);
  * @return true if successful, false otherwise
  */
 IC_PUBLIC
-bool cv_write_variables(filehandle f);
+qbool cv_write_variables(filehandle f);
 
 IC_PUBLIC
-bool cv_command(void);
+qbool cv_command(void);
 
 IC_PUBLIC
 void cv_print(struct cvar *cv);

@@ -33,7 +33,7 @@ static const char *punctuation[] = {
 extern struct parse_info *pi;
 
 /* roll forward until we encounter a non-whitespace char */
-static char *skip_whitespace(char *data, bool *new_lines)
+static char *skip_whitespace(char *data, qbool *new_lines)
 {
     char c;
     while ((c = *data) <= ' ') {
@@ -54,7 +54,7 @@ static char *skip_whitespace(char *data, bool *new_lines)
 }
 
 IC_DIAGNOSTIC_DISABLE_UNUSED_FUNCTION
-static char *parse_ext2(char **data_p, bool line_breaks)
+static char *parse_ext2(char **data_p, qbool line_breaks)
 {
     char *c = *data_p;
 
@@ -72,7 +72,7 @@ static char *parse_ext2(char **data_p, bool line_breaks)
     return NULL;
 }
 
-static char *parse_ext(char **data_p, bool line_breaks)
+static char *parse_ext(char **data_p, qbool line_breaks)
 {
     if (data_p == NULL) {
         ic_error("NULL data_p");
@@ -93,7 +93,7 @@ static char *parse_ext(char **data_p, bool line_breaks)
     pi->buf_p = *data_p;
 
     /* skip any leading whitespace or comments */
-    bool new_lines = false;
+    qbool new_lines = false;
     char c;
     while (true) {
         data = skip_whitespace(data, &new_lines);
@@ -301,7 +301,7 @@ char *ps_parse_on_line(char **buf_p)
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-void ps_match_token(char **buf_p, char *match, bool warning)
+void ps_match_token(char **buf_p, char *match, qbool warning)
 {
     char *token = ps_parse(buf_p);
 

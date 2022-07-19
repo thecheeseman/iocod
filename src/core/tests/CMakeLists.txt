@@ -18,7 +18,7 @@
 
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(core_tests C)
+project(core_tests C CXX)
 
 include(CTest)
 add_custom_target(check 

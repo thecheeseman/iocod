@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "conf_local.h"
 
-bool conf_set_defaults(struct conf *cfg)
+qbool conf_set_defaults(struct conf *cfg)
 {
     for (struct confopt *opt = cfg->options; opt->type != CONF_END; opt++) {
         switch (opt->type) {

@@ -29,7 +29,7 @@ foreach (subdir
     console
     cvar
     events
-    # fs
+    fs
     log
     memory
     metrics

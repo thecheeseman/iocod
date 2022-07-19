@@ -266,7 +266,7 @@ char *config_console_language(void)
 }
 
 IC_PUBLIC
-bool config_console_colors(void)
+qbool config_console_colors(void)
 {
     struct confopt *opt = conf_get_opt(icconf, "color_console");
 
@@ -277,7 +277,7 @@ bool config_console_colors(void)
 }
 
 IC_PUBLIC
-bool config_log_buffered(void)
+qbool config_log_buffered(void)
 {
     struct confopt *opt = conf_get_opt(icconf, "log_buffered");
 
@@ -312,7 +312,7 @@ void config_init(void)
 }
 
 IC_PUBLIC
-bool config_initialized(void)
+qbool config_initialized(void)
 {
     return (icconf != NULL);
 }

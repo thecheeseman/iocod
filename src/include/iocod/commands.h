@@ -52,7 +52,7 @@ void cbuf_init(void);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cbuf_add_text(const char *text);
+qbool cbuf_add_text(const char *text);
 
 /**
  * @brief Add the given @p text to the command buffer and immediately execute.
@@ -63,7 +63,7 @@ bool cbuf_add_text(const char *text);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cbuf_add_execute(const char *text);
+qbool cbuf_add_execute(const char *text);
 
 /**
  * @brief Insert the given @p text immediately after the current command. Will
@@ -72,7 +72,7 @@ bool cbuf_add_execute(const char *text);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cbuf_insert_text(const char *text);
+qbool cbuf_insert_text(const char *text);
 
 /**
  * @brief Execute the given @p text at @p when time.
@@ -81,7 +81,7 @@ bool cbuf_insert_text(const char *text);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cbuf_execute_text(int when, const char *text);
+qbool cbuf_execute_text(int when, const char *text);
 
 /**
  * @brief Execute whatever is currently in the command buffer up to a `\n`
@@ -89,7 +89,7 @@ bool cbuf_execute_text(int when, const char *text);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cbuf_execute(void);
+qbool cbuf_execute(void);
 
 /**
  * @brief Command function structure.
@@ -108,7 +108,7 @@ struct cmd {
     /**
      * @brief Function to call when the command is executed.
     */
-    void (*function)(struct cmd *);
+    void (*function)(void);
 
     unsigned int argc_min;
     unsigned int argc_max;
@@ -190,7 +190,7 @@ void cmd_args_buffer(size_t buflen, char *buf);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cmd_execute_string(const char *text);
+qbool cmd_execute_string(const char *text);
 
 /**
  * @brief Breaks up the command line into argument tokens.
@@ -206,10 +206,10 @@ void cmd_tokenize_string(const char *text_in);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cmd_add(const char *name, void (*function)(struct cmd *));
+qbool cmd_add(const char *name, void (*function)(void));
 
 IC_PUBLIC
-bool cmd_add2(const char *name, void (*function)(struct cmd *), int min,
+qbool cmd_add2(const char *name, void (*function)(void), int min,
               int max, const char *usage, const char *description);
 
 /**
@@ -218,7 +218,7 @@ bool cmd_add2(const char *name, void (*function)(struct cmd *), int min,
  * @return true on success, false on failure
 */
 IC_PUBLIC
-bool cmd_remove(const char *name);
+qbool cmd_remove(const char *name);
 
 /**
  * @brief Find the given @p name command.

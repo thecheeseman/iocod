@@ -43,10 +43,8 @@ void cv_print(struct cvar *cv)
         ic_printf(_("Description: %s\n"), cv->description);
 }
 
-void cv_print_f(struct cmd *self)
+void cv_print_f(void)
 {
-    UNUSED_PARAM(self);
-
     char *name = cmd_argv(1);
     struct cvar *cv = cv_find(name);
 

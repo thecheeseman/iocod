@@ -49,7 +49,7 @@ static void parse_args(int argc, char *argv[])
 static void concat_args(int argc, char *argv[], size_t size, char *cmdline)
 {
     for (int i = 1; i < argc; i++) {
-        bool spaces = (strchr(argv[i], ' ') != NULL);
+        qbool spaces = (strchr(argv[i], ' ') != NULL);
         if (spaces)
             strncatz(cmdline, size, "\"");
 

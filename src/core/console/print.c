@@ -28,8 +28,8 @@ static void color_print(const char *msg)
     int length = 0;
 
     while (*msg != '\0') {
-        bool newline = (*msg == '\n');
-        bool color = color_string(msg);
+        qbool newline = (*msg == '\n');
+        qbool color = color_string(msg);
         console.on = newline;
 
         if (!color && !newline) {

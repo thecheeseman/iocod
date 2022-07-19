@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar_local.h"
 
 IC_PUBLIC
-bool cv_command(void)
+qbool cv_command(void)
 {
     struct cvar *cv = cv_find(cmd_argv(0));
     if (cv == NULL)

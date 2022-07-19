@@ -44,7 +44,7 @@ struct parse_info {
     size_t old_lines;               /**< used to save line number for 
                                          line crossing */
 
-    bool unget_token;               /**< if true, will jump back one token */
+    qbool unget_token;               /**< if true, will jump back one token */
 
     char *buf_p;                    /**< pointer to actual data */
     char parse_file[256];           /**< file name */
@@ -120,7 +120,7 @@ char *ps_parse_on_line(char **buf_p);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-void ps_match_token(char **buf_p, char *match, bool warning);
+void ps_match_token(char **buf_p, char *match, qbool warning);
 
 /**
  * @brief Skip an entire braced section. Automatically handles any nested 

@@ -36,6 +36,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_H
 #define IOCOD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* always include config.h */
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -208,5 +212,9 @@ SAL stuff
 /* utilities for function marking */
 #define INCOMPLETE
 #define NOT_WORKING
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* IOCOD_H */

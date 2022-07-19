@@ -83,7 +83,7 @@ void cv_get_string_buffer(const char *name, char *buf, size_t size)
 }
 
 IC_PUBLIC
-bool cv_validate_string(const char *s)
+qbool cv_validate_string(const char *s)
 {
     if (s == NULL || strchr(s, '\\') || strchr(s, '\"') || strchr(s, ';'))
         return false;

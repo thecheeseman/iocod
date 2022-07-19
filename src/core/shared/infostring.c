@@ -27,7 +27,7 @@ static const char illegal_chars[] = { '\\', ';', '\"', '\0' };
 /*
  * Check if the given string contains illegal chars.
  */
-static bool contains_illegal_chars(const char *str)
+static qbool contains_illegal_chars(const char *str)
 {
     for (int i = 0; illegal_chars[i] != '\0'; i++) {
         if (strchr(str, illegal_chars[i]) != NULL) {
@@ -45,7 +45,7 @@ static bool contains_illegal_chars(const char *str)
  * copy/paste version for infostring/biginfostring
  */
 IC_NON_NULL(1, 2, 4, 5)
-static bool _if_remove_key(char *s, const char *key, size_t size,
+static qbool _if_remove_key(char *s, const char *key, size_t size,
                            char *pkey, char *value)
 {
     if (strlen(s) >= size) {
@@ -99,7 +99,7 @@ static bool _if_remove_key(char *s, const char *key, size_t size,
  * copy/paste version for infostring/biginfostring
  */
 IC_NON_NULL(1, 2, 3, 5)
-static bool _if_set_value_for_key(char *s, const char *key, const char *value,
+static qbool _if_set_value_for_key(char *s, const char *key, const char *value,
                                   size_t size, char *newif)
 {
     if (strlen(s) >= size) {
@@ -131,7 +131,7 @@ static bool _if_set_value_for_key(char *s, const char *key, const char *value,
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool if_remove_key(char *s, const char *key)
+qbool if_remove_key(char *s, const char *key)
 {
     char pkey[MAX_INFO_STRING];
     char value[MAX_INFO_STRING];
@@ -141,12 +141,12 @@ bool if_remove_key(char *s, const char *key)
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool ifbig_remove_key(char *s, const char *key)
+qbool ifbig_remove_key(char *s, const char *key)
 {
     char *pkey = ic_calloc(sizeof(char), INFO_STRING_BIG);
     char *value = ic_calloc(sizeof(char), INFO_STRING_BIG);
 
-    bool ret = _if_remove_key(s, key, INFO_STRING_BIG, pkey, value);
+    qbool ret = _if_remove_key(s, key, INFO_STRING_BIG, pkey, value);
 
     ic_free(pkey);
     ic_free(value);
@@ -156,7 +156,7 @@ bool ifbig_remove_key(char *s, const char *key)
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool if_set_value_for_key(char *s, const char *key, const char *value)
+qbool if_set_value_for_key(char *s, const char *key, const char *value)
 {
     char newif[MAX_INFO_STRING];
 
@@ -165,7 +165,7 @@ bool if_set_value_for_key(char *s, const char *key, const char *value)
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-bool ifbig_set_value_for_key(char *s, const char *key, const char *value)
+qbool ifbig_set_value_for_key(char *s, const char *key, const char *value)
 {
     char newif[INFO_STRING_BIG];
 

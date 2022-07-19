@@ -137,7 +137,7 @@ void metric_cleanup(void)
 }
 
 #if 0
-static bool timebase_init = false;
+static qbool timebase_init = false;
 
 #ifdef IC_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN

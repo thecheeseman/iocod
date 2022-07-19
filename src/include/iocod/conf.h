@@ -284,7 +284,7 @@ struct conf {
     char *end_p;
     int line;
     int script_line;
-    bool end;
+    qbool end;
     char token[MAX_CONFIG_TOKEN];
     // internal stuff that doesn't need documenting
 };
@@ -308,7 +308,7 @@ struct conf *conf_init(const char *filename, struct confopt *kv, int options);
  * @return true if success, false if failure
  */
 IC_PUBLIC
-bool conf_shutdown(struct conf *cfg);
+qbool conf_shutdown(struct conf *cfg);
 
 /**
  * @brief Dump all loaded config opts/values to stdout.
@@ -336,7 +336,7 @@ struct confopt *conf_get_opt(struct conf *cfg, const char *name);
  * @return value of key (if exists), otherwise default value for type
  */
 IC_PUBLIC
-bool conf_get_bool(struct conf *cfg, const char *name);
+qbool conf_get_bool(struct conf *cfg, const char *name);
 
 /**
  * @brief Get a config integer.
@@ -377,7 +377,7 @@ char *conf_get_string(struct conf *cfg, const char *name);
  * @return true if success, false otherwise
  */
 IC_PUBLIC
-bool conf_set_bool(struct conf *cfg, const char *name, bool value);
+qbool conf_set_bool(struct conf *cfg, const char *name, qbool value);
 
 /**
  * @brief Set a config integer.
@@ -388,7 +388,7 @@ bool conf_set_bool(struct conf *cfg, const char *name, bool value);
  * @return true if success, false otherwise
  */
 IC_PUBLIC
-bool conf_set_int(struct conf *cfg, const char *name, conf_int value);
+qbool conf_set_int(struct conf *cfg, const char *name, conf_int value);
 
 /**
  * @brief Set a config float.
@@ -399,7 +399,7 @@ bool conf_set_int(struct conf *cfg, const char *name, conf_int value);
  * @return true if success, false otherwise
  */
 IC_PUBLIC
-bool conf_set_float(struct conf *cfg, const char *name, conf_float value);
+qbool conf_set_float(struct conf *cfg, const char *name, conf_float value);
 
 /**
  * @brief Set a config string. Will automatically deallocate old string
@@ -411,7 +411,7 @@ bool conf_set_float(struct conf *cfg, const char *name, conf_float value);
  * @return true if success, false otherwise
  */
 IC_PUBLIC
-bool conf_set_string(struct conf *cfg, const char *name, char *value);
+qbool conf_set_string(struct conf *cfg, const char *name, char *value);
 
 /**
  * @brief Initialize iocod config.
@@ -447,10 +447,10 @@ IC_PUBLIC
 char *config_console_language(void);
 
 IC_PUBLIC
-bool config_console_colors(void);
+qbool config_console_colors(void);
 
 IC_PUBLIC
-bool config_log_buffered(void);
+qbool config_log_buffered(void);
 
 IC_PUBLIC
 int config_log_buffer_size(void);
@@ -460,7 +460,7 @@ int config_log_buffer_size(void);
  * @return true if it is, false otherwise
  */
 IC_PUBLIC
-bool config_initialized(void);
+qbool config_initialized(void);
 
 /** @} */
 

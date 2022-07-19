@@ -58,14 +58,14 @@ struct logger {
 
     enum log_level level;   /**< log level */
 
-    bool echo_stdout;       /**< echo messages to stdout */
-    bool auto_lf;           /**< automatically add lf to output */
-    bool hide_next_source;  /**< hide next message's source */
+    qbool echo_stdout;       /**< echo messages to stdout */
+    qbool auto_lf;           /**< automatically add lf to output */
+    qbool hide_next_source;  /**< hide next message's source */
 
     FILE *fp;               /**< file */
     size_t size;            /**< size of bytes written */
 
-    bool buffered;
+    qbool buffered;
     size_t last_flush;
     int buffer_size;        /**< size of buffer before flushing */
     char *buffer;

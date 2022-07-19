@@ -30,7 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 IC_PUBLIC
-bool sys_mkdir(const char *path)
+qbool sys_mkdir(const char *path)
 {
     #ifdef IC_PLATFORM_WINDOWS
     wchar_t wpath[PATH_MAX] = { 0 };

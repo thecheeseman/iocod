@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "memory_local.h"
 
-bool atexit_setup = false;
+qbool atexit_setup = false;
 struct meminfo *mem_list = NULL;
 
 IC_MALLOC

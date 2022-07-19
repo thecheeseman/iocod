@@ -35,7 +35,7 @@ static struct addrinfo *search_addrinfo(struct addrinfo *hints,
     return NULL;
 }
 
-bool net_string_to_sockaddr(const char *s, sa_family_t family,
+qbool net_string_to_sockaddr(const char *s, sa_family_t family,
                             socklen_t addrlen, struct sockaddr *addr)
 {
     struct addrinfo hints;
@@ -45,7 +45,7 @@ bool net_string_to_sockaddr(const char *s, sa_family_t family,
 
     hints.ai_family = family;
     hints.ai_socktype = SOCK_DGRAM;
-    bool ret = false;
+    qbool ret = false;
 
     struct addrinfo *result = NULL;
     if (getaddrinfo(s, NULL, &hints, &result) != 0) {

@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "net_local.h"
 
-bool msg_initialized = false;
+qbool msg_initialized = false;
 huffman_t msg_huffman;
 
 void init_huffman(void);

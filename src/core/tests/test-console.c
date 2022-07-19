@@ -1,7 +1,7 @@
 #include "ic_test.h"
 #include <signal.h>
 
-bool quit = false;
+qbool quit = false;
 void handle_interrupt(int sig)
 {
     UNUSED_PARAM(sig);

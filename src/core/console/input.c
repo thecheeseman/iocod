@@ -54,7 +54,7 @@ char *con_input(void)
 
         WORD key = buf[i].Event.KeyEvent.wVirtualKeyCode;
 
-        bool breakout = true;
+        qbool breakout = true;
         switch (key) {
         case VK_RETURN:
             newline = i;

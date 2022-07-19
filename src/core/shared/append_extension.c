@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 IC_PUBLIC
-bool ic_append_extension(char *path, size_t size, const char *ext)
+qbool ic_append_extension(char *path, size_t size, const char *ext)
 {
     if (path == NULL || size == 0 || ext == NULL)
         return false;

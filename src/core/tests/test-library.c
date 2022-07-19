@@ -5,7 +5,7 @@
 int TEST_MAIN()
 {
     void *handle;
-    bool result;
+    qbool result;
 
     // verify handling of NULL paths
     result = sys_library_load(NULL, &handle);

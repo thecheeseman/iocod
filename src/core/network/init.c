@@ -33,13 +33,13 @@ struct cvar *net_port6;
 
 #ifdef IC_PLATFORM_WINDOWS
 WSADATA winsockdata = { 0 };
-bool winsock_init = false;
+qbool winsock_init = false;
 #endif
 
-static bool networking_enabled = false;
+static qbool networking_enabled = false;
 
 // ioq3
-static bool net_update_cvars(void)
+static qbool net_update_cvars(void)
 {
     int modified = 0;
 
@@ -56,7 +56,7 @@ static bool net_update_cvars(void)
     UPDATE(net_port6, va("%i", PORT_SERVER), CV_LATCH);
     #undef UPDATE_M
 
-    static bool firsttime = true;
+    static qbool firsttime = true;
     if (firsttime) {
         firsttime = false;
 
@@ -72,11 +72,11 @@ static bool net_update_cvars(void)
 }
 
 // ioq3
-static void net_config(bool enable)
+static void net_config(qbool enable)
 {
-    bool modified = net_update_cvars();
-    bool start;
-    bool stop;
+    qbool modified = net_update_cvars();
+    qbool start;
+    qbool stop;
 
     // shouldn't be possible on dedicated but ok
     if (net_enabled->integer == 0)

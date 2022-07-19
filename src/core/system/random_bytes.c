@@ -33,7 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 #ifdef IC_PLATFORM_WINDOWS
-static inline bool random_bytes_windows(size_t len, void *buf)
+static inline qbool random_bytes_windows(size_t len, void *buf)
 {
     HCRYPTPROV prov = { 0 };
 
@@ -53,13 +53,13 @@ static inline bool random_bytes_windows(size_t len, void *buf)
 #else
 /* Linux glibc 2.24 or greater supports this syscall */
 #ifdef SYS_getrandom
-static inline bool random_bytes_getrandom(size_t len, void *buf)
+static inline qbool random_bytes_getrandom(size_t len, void *buf)
 {
     return (syscall(SYS_getrandom, buf, len, 0) == 0);
 }
 #else
 /* otherwise we can just read from urandom */
-static inline bool random_bytes_dev_random(size_t len, void *buf)
+static inline qbool random_bytes_dev_random(size_t len, void *buf)
 {
     FILE *fp = fopen("/dev/urandom", "r");
     if (fp == NULL)
@@ -76,7 +76,7 @@ static inline bool random_bytes_dev_random(size_t len, void *buf)
 #endif
 
 IC_PUBLIC
-bool sys_random_bytes(size_t len, void *buf)
+qbool sys_random_bytes(size_t len, void *buf)
 {
     #ifdef IC_PLATFORM_WINDOWS
     return random_bytes_windows(len, buf);

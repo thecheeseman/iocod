@@ -20,29 +20,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "ev_local.h"
+#include "iocod.h"
+
+#ifdef IC_PLATFORM_WINDOWS
+#include <ShlObj.h>
+#endif
+
+static char homepath[MAX_OSPATH] = { 0 };
 
 IC_PUBLIC
-void ev_push(struct sys_event *event)
+char *sys_default_homepath(void)
 {
-    struct sys_event *ev =
-        &pushed_events[pushed_events_head & (MASK_PUSHED_EVENTS)];
+    if (*homepath == '\0') {
+        #ifdef IC_PLATFORM_WINDOWS
+        wchar_t wpath[MAX_OSPATH] = { 0 };
 
-    static qbool warned = false;
-    if (pushed_events_head - pushed_events_tail >= MAX_PUSHED_EVENTS) {
-        // avoid duplicate warnings
-        if (!warned) {
-            log_warn(_("Pushed events overflow\n"));
-            warned = true;
+        if (SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, wpath) == S_OK) {
+            char path[MAX_OSPATH] = { 0 };
+
+            utf16_shorten(wpath, path);
+            snprintf(homepath, sizeof(homepath), "%s\\iocod", path);
         }
-
-        ic_free(ev->ptr);
-
-        pushed_events_tail++;
-    } else {
-        warned = false;
+        #else
+        char *p;
+        if ((p = getenv("HOME")) != NULL) {
+            #ifdef IC_PLATFORM_MACOS
+            snprintf(homepath, sizeof(homepath),
+                        "%s/Library/Application Support/.iocod", p);
+            #else
+            snprintf(homepath, sizeof(homepath), "%s/.iocod", p);
+            #endif
+        }
+        #endif
     }
 
-    *ev = *event;
-    pushed_events_head++;
+    return homepath;
 }

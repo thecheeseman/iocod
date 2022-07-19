@@ -93,18 +93,18 @@ void thread_signal_raise(thread_signal_t *signal)
 }
 
 IC_PUBLIC
-bool thread_signal_wait(thread_signal_t *signal, int timeout)
+qbool thread_signal_wait(thread_signal_t *signal, int timeout)
 {
     struct thread_internal_signal_t *_internal = 
         (struct thread_internal_signal_t *) signal;
 
     #ifdef IC_PLATFORM_WINDOWS
-    bool timedout = false;
+    qbool timedout = false;
 
     EnterCriticalSection(&_internal->mutex);
 
     while (_internal->value == 0) {
-        bool res = SleepConditionVariableCS(&_internal->condition, 
+        qbool res = SleepConditionVariableCS(&_internal->condition, 
                                             &_internal->mutex, 
                                             timeout < 0 ? INFINITE : timeout);
         
@@ -130,7 +130,7 @@ bool thread_signal_wait(thread_signal_t *signal, int timeout)
         ts.tv_nsec %= (1000 * 1000 * 1000);
     }
 
-    bool timedout = false;
+    qbool timedout = false;
     pthread_mutex_lock(&_internal->mutex);
     while (_internal->value == 0) {
         if (timeout < 0) {

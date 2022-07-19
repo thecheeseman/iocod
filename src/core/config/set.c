@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "conf_local.h"
 
 IC_PUBLIC
-bool conf_set_bool(struct conf *cfg, const char *name, bool value)
+qbool conf_set_bool(struct conf *cfg, const char *name, qbool value)
 {
     struct confopt *opt = conf_get_opt(cfg, name);
     if (opt == NULL || opt->type != CONF_BOOL)
@@ -34,7 +34,7 @@ bool conf_set_bool(struct conf *cfg, const char *name, bool value)
 }
 
 IC_PUBLIC
-bool conf_set_int(struct conf *cfg, const char *name, conf_int value)
+qbool conf_set_int(struct conf *cfg, const char *name, conf_int value)
 {
     struct confopt *opt = conf_get_opt(cfg, name);
     if (opt == NULL || opt->type != CONF_INT)
@@ -45,7 +45,7 @@ bool conf_set_int(struct conf *cfg, const char *name, conf_int value)
 }
 
 IC_PUBLIC
-bool conf_set_float(struct conf *cfg, const char *name, conf_float value)
+qbool conf_set_float(struct conf *cfg, const char *name, conf_float value)
 {
     struct confopt *opt = conf_get_opt(cfg, name);
     if (opt == NULL || opt->type != CONF_FLOAT)
@@ -56,7 +56,7 @@ bool conf_set_float(struct conf *cfg, const char *name, conf_float value)
 }
 
 IC_PUBLIC
-bool conf_set_string(struct conf *cfg, const char *name, char *value)
+qbool conf_set_string(struct conf *cfg, const char *name, char *value)
 {
     struct confopt *opt = conf_get_opt(cfg, name);
     if (opt == NULL || opt->type != CONF_STRING)

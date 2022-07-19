@@ -41,7 +41,7 @@ void conf_dump_options(struct conf *cfg)
 
     for (struct confopt *opt = cfg->options; opt->type != CONF_END; opt++) {
         char value[256];
-        bool print_name = true;
+        qbool print_name = true;
 
         switch (opt->type) {
         case CONF_HEADER:

@@ -94,7 +94,7 @@ void log_set_level(enum log_level new_level);
  * @param[in] echo set to true if log should print to stdout
  */
 IC_PUBLIC
-void log_echo_stdout(bool echo);
+void log_echo_stdout(qbool echo);
 
 /**
  * @brief Change if the log should automatically add newlines to messages.
@@ -102,10 +102,10 @@ void log_echo_stdout(bool echo);
  * @param[in] lf set to true if log should add newlines automatically
 */
 IC_PUBLIC
-void log_auto_lf(bool lf);
+void log_auto_lf(qbool lf);
 
 IC_PUBLIC
-void log_set_buffered(bool buffered, int buffer_size);
+void log_set_buffered(qbool buffered, int buffer_size);
 
 /**
  * @brief Print to log.

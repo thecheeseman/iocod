@@ -23,6 +23,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_FS_H
 #define IOCOD_FS_H
 
+#include "iocod/platform.h"
+#include "iocod/types.h"
+
 #define BASEGAME "main"
 #define DEFAULTCFG "default_mp.cfg"
 
@@ -30,5 +33,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 IC_PUBLIC
 void fs_init(void);
+
+IC_PUBLIC
+void fs_shutdown(qbool a);
 
 #endif /* IOCOD_FS_H */

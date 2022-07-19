@@ -40,7 +40,7 @@ void cbuf_init(void)
 }
 
 IC_PUBLIC
-bool cbuf_add_text(const char *text)
+qbool cbuf_add_text(const char *text)
 {
     size_t l = strlen(text);
     if (cmd_text.cursize + l >= cmd_text.maxsize) {
@@ -55,7 +55,7 @@ bool cbuf_add_text(const char *text)
 }
 
 IC_PUBLIC
-bool cbuf_add_execute(const char *text)
+qbool cbuf_add_execute(const char *text)
 {
     cbuf_execute_text(EXEC_NOW, text);
     cbuf_execute();
@@ -64,7 +64,7 @@ bool cbuf_add_execute(const char *text)
 }
 
 IC_PUBLIC
-bool cbuf_insert_text(const char *text)
+qbool cbuf_insert_text(const char *text)
 {
     size_t len = strlen(text) + 1;
     if (len + cmd_text.cursize > cmd_text.maxsize) {
@@ -86,7 +86,7 @@ bool cbuf_insert_text(const char *text)
 }
 
 IC_PUBLIC
-bool cbuf_execute_text(int when, const char *text)
+qbool cbuf_execute_text(int when, const char *text)
 {
     switch (when) {
     case EXEC_NOW:
@@ -135,7 +135,7 @@ static size_t check_for_breaks(char *text)
 }
 
 IC_PUBLIC
-bool cbuf_execute(void)
+qbool cbuf_execute(void)
 {
     while (cmd_text.cursize) {
         if (cmd_wait > 0) {

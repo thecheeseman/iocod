@@ -109,7 +109,7 @@ size_t log_lprintf(enum log_level level, const char *func, const char *file,
     vsnprintf(msg, sizeof(msg), fmt, argptr);
     va_end(argptr);
 
-    bool has_newline = (msg[strlen(msg) - 1] == '\n');
+    qbool has_newline = (msg[strlen(msg) - 1] == '\n');
 
     if ((size = fprintf(iclog.fp, "%s%s", msg,
                         (!has_newline && iclog.auto_lf) 

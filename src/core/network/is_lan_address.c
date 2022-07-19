@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "net_local.h"
 
 IC_PUBLIC
-bool net_is_lan_address(struct netadr addr)
+qbool net_is_lan_address(struct netadr addr)
 {
     if (addr.type == NA_LOOPBACK)
         return true;
@@ -76,7 +76,7 @@ bool net_is_lan_address(struct netadr addr)
                 addrsize = sizeof(addr.ip6);
             }
 
-            bool differed = false;
+            qbool differed = false;
             for (int run = 0; run < addrsize; run++) {
                 if ((compare_ip[run] & compare_mask[run]) !=
                     (compare_adr[run] & compare_mask[run])) {

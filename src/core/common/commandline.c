@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 int num_console_lines;
 char *console_lines[MAX_CONSOLE_LINES];
 
-bool safe_mode(void)
+qbool safe_mode(void)
 {
     for (int i = 0; i < num_console_lines; i++) {
         cmd_tokenize_string(console_lines[i]);
@@ -46,7 +46,7 @@ void parse_command_line(char *cmdline)
     console_lines[0] = cmdline;
     num_console_lines = 1;
 
-    bool inquote = false;
+    qbool inquote = false;
     while (*cmdline) {
         if (*cmdline == '"')
             inquote = !inquote;
@@ -103,9 +103,9 @@ void com_startup_variables(int count, ...)
     va_end(ap);
 }
 
-bool add_startup_commands(void)
+qbool add_startup_commands(void)
 {
-    bool added = false;
+    qbool added = false;
     for (int i = 0; i < num_console_lines; i++) {
         if (console_lines[i] == NULL || *console_lines[i] == '\0')
             continue;

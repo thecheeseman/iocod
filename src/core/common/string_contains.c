@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <ctype.h>
 
 IC_PUBLIC
-char *com_string_contains(char *str1, char *str2, bool casesensitive)
+char *com_string_contains(char *str1, char *str2, qbool casesensitive)
 {
     size_t len, i, j;
 

@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cmd_local.h"
 
 IC_PUBLIC
-bool cmd_add2(const char *name, void (*function)(struct cmd *), int min,
+qbool cmd_add2(const char *name, void (*function)(void), int min,
               int max, const char *usage, const char *description)
 {
     if (cmd_find(name)) {
@@ -55,7 +55,7 @@ bool cmd_add2(const char *name, void (*function)(struct cmd *), int min,
 }
 
 IC_PUBLIC
-bool cmd_add(const char *name, void (*function)(struct cmd *))
+qbool cmd_add(const char *name, void (*function)(void))
 {
     return cmd_add2(name, function, 0, 0, NULL, NULL);
 }

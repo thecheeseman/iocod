@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "net_local.h"
 
 IC_PUBLIC
-bool net_send_packet(int length, const void *data, struct netadr to)
+qbool net_send_packet(int length, const void *data, struct netadr to)
 {
     if (to.type != NA_BROADCAST && to.type != NA_IP && to.type != NA_IP6) {
         ic_error(_("bad address type"));

@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar_local.h"
 
 static struct cvar *update_cvar(struct cvar *v, const char *name,
-                                const char *value, bool force)
+                                const char *value, qbool force)
 {
     cv_modified_flags |= v->flags;
 
@@ -91,7 +91,7 @@ out:
 }
 
 IC_PUBLIC
-struct cvar *cv_set2(const char *name, const char *value, bool force)
+struct cvar *cv_set2(const char *name, const char *value, qbool force)
 {
     log_debug(_("Cvar set %s '%s'"), name, value);
 
@@ -151,14 +151,12 @@ struct cvar *cv_set_integer(const char *name, cv_int value)
     return cv_set_string(name, v);
 }
 
-void cv_set_f(struct cmd *self)
+void cv_set_f(void)
 {
-    UNUSED_PARAM(self);
-
     char *cmd = cmd_argv(0);
 
     if (cmd_argc() == 2) {
-        cv_print_f(self); // just print it
+        cv_print_f(); // just print it
         return;
     }
 

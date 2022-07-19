@@ -17,7 +17,7 @@ int TEST_MAIN()
     struct conf *cfg = conf_init("test.conf", opts, 0);
 
     // test getting values
-    bool test_bool = conf_get_bool(cfg, "test_bool");
+    qbool test_bool = conf_get_bool(cfg, "test_bool");
     IC_ASSERT(test_bool);
 
     conf_int i = conf_get_int(cfg, "int");

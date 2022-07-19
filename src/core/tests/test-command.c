@@ -1,24 +1,19 @@
 #include "ic_test.h"
 
-void echo(struct cmd *self)
+void echo(void)
 {
-    UNUSED_PARAM(self);
-
     con_print(va("%s\n", cmd_args()));
 }
 
-void quit(struct cmd *self)
+void quit(void)
 {
-    UNUSED_PARAM(self);
     con_print("see ya\n");
 
     sys_quit();
 }
 
-void set_cv(struct cmd *self)
-{
-    UNUSED_PARAM(self);
-    
+void set_cv(void)
+{   
     uint32_t argc = cmd_argc();
     if (argc < 2) {
         con_print("usage: cv_set <name> <value>\n");

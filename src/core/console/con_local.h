@@ -77,12 +77,12 @@ struct console_data {
     enum q3color bgcolor;
     enum q3color textcolor;
 
-    bool initialized;
+    qbool initialized;
 
     /**
      * @brief Flag if the tty console is currently on.
     */
-    bool on;
+    qbool on;
 
     /**
      * @brief ANSI color support.
@@ -90,7 +90,7 @@ struct console_data {
      * On Windows, this is via the ENABLE_VIRTUAL_TERMINAL_PROCESSING console
      * mode.
     */
-    bool ansi_color;
+    qbool ansi_color;
 
     int num_lines;
     int num_columns;
@@ -115,7 +115,7 @@ struct console_data {
     /**
      * @brief Flag if the console is currently in non-interactive mode.
     */
-    bool stdin_active;
+    qbool stdin_active;
 
     /**
      * @brief Termios data
@@ -158,7 +158,7 @@ void con_show(void);
 void con_set_bg_color(enum q3color color);
 void con_set_text_color(enum q3color color);
 
-bool color_string(const char *p);
+qbool color_string(const char *p);
 char *color_to_ascii_code(enum q3color color);
 
 #ifdef IC_PLATFORM_WINDOWS

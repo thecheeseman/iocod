@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "com_local.h"
 
 jmp_buf abortframe;
-bool fully_initialized = false;
+qbool fully_initialized = false;
 
 struct cvar *com_busy_wait;
 struct cvar *com_dedicated;
@@ -159,7 +159,7 @@ void com_init(char *cmdline)
     com_startup_variable("developer");
 
     cl_init_key_commands();
-    // fs_init();
+    fs_init();
     // com_init_journaling();
 
     //

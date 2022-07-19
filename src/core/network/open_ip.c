@@ -174,7 +174,7 @@ static void open_ipv6_socket(void)
         return;
     }
 
-    bool ipv6support = false;
+    qbool ipv6support = false;
     for (int i = 0; i < ret; i++) {
         if (info[i].iAddressFamily == AF_INET6) {
             ipv6support = true;

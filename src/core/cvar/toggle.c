@@ -22,10 +22,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cvar_local.h"
 
-void cv_toggle_f(struct cmd *self)
+void cv_toggle_f(void)
 {
-    UNUSED_PARAM(self);
-
     unsigned int argc = cmd_argc();
 
     if (argc == 2) {

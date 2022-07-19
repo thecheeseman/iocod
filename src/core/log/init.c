@@ -92,7 +92,7 @@ void log_shutdown(void)
  * Set log stdout.
  */
 IC_PUBLIC
-void log_echo_stdout(bool echo)
+void log_echo_stdout(qbool echo)
 {
     IC_ASSERT((echo == true) || (echo == false));
 
@@ -108,7 +108,7 @@ void log_echo_stdout(bool echo)
  * Set auto lf.
  */
 IC_PUBLIC
-void log_auto_lf(bool lf)
+void log_auto_lf(qbool lf)
 {
     IC_ASSERT((lf == true) || (lf == false));
 

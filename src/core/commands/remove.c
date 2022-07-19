@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cmd_local.h"
 
 IC_PUBLIC
-bool cmd_remove(const char *name)
+qbool cmd_remove(const char *name)
 {
     struct cmd *cmd;
     struct cmd **back = &cmd_functions;

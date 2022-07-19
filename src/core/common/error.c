@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "com_local.h"
 
-bool error_entered = false;
+qbool error_entered = false;
 char error_message[MAX_PRINT_MSG];
 
 IC_PUBLIC

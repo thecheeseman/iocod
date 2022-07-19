@@ -34,7 +34,7 @@ IC_PUBLIC
 char *sys_cwd(void);
 
 IC_PUBLIC
-bool sys_mkdir(const char *path);
+qbool sys_mkdir(const char *path);
 
 IC_PUBLIC
 char *sys_get_current_user(void);
@@ -53,7 +53,7 @@ char *sys_library_error(void);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-bool sys_library_load(const char *path, void **handle);
+qbool sys_library_load(const char *path, void **handle);
 
 /**
  * @brief Close a system library.
@@ -61,7 +61,7 @@ bool sys_library_load(const char *path, void **handle);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-bool sys_library_close(void *handle);
+qbool sys_library_close(void *handle);
 
 /**
  * @brief Load a given @p symbol in a library module @p handle
@@ -74,7 +74,7 @@ bool sys_library_close(void *handle);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-bool sys_library_load_symbol(void *handle, const char *fn, void **symbol);
+qbool sys_library_load_symbol(void *handle, const char *fn, void **symbol);
 
 /**
  * @brief Get current milliseconds since application began.
@@ -247,7 +247,7 @@ void sys_sleep(int msec);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-bool sys_setenv(const char *name, const char *value);
+qbool sys_setenv(const char *name, const char *value);
 
 /**
  * @brief Get environment variable.
@@ -264,6 +264,9 @@ char *sys_getenv(const char *name);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-bool sys_random_bytes(size_t len, void *buf);
+qbool sys_random_bytes(size_t len, void *buf);
+
+IC_PUBLIC
+char *sys_default_homepath(void);
 
 #endif /* IC_SYSTEM_H */

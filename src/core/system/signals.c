@@ -45,8 +45,8 @@ size_t signal_str_size = ARRAY_SIZE(signal_str);
 IC_PUBLIC
 void sys_signal_handler(int signal)
 {
-    static bool caught = false;
-    static bool caught_sigint = false;
+    static qbool caught = false;
+    static qbool caught_sigint = false;
     static int last_sigint = 0;
 
     const char *sigtext = NULL;

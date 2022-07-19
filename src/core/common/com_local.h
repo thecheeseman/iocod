@@ -27,9 +27,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <setjmp.h>
 
 extern jmp_buf abortframe;
-extern bool error_entered;
+extern qbool error_entered;
 extern int com_frame_time;
-extern bool fully_initialized;
+extern qbool fully_initialized;
 
 /**
  * @brief Add common commands to the command system.
@@ -38,9 +38,9 @@ void add_common_commands(void);
 
 void parse_command_line(char *cmdline);
 void startup_variable(const char *match);
-bool add_startup_commands(void);
+qbool add_startup_commands(void);
 
-bool safe_mode(void);
+qbool safe_mode(void);
 
 /**
  * @brief Set up random seed with a system-defined seed, or time(NULL) if

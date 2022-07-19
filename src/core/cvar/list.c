@@ -22,10 +22,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cvar_local.h"
 
-void cv_list_f(struct cmd *self)
+void cv_list_f(void)
 {
-    UNUSED_PARAM(self);
-
     char *match = NULL;
     if (cmd_argc() > 1)
         match = cmd_argv(1);

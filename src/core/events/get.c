@@ -41,7 +41,7 @@ static struct sys_event get_event(void)
     #ifdef IC_PLATFORM_WINDOWS
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-        BOOL ret = GetMessage(&msg, NULL, 0, 0);
+        qbool ret = GetMessage(&msg, NULL, 0, 0);
 
         if (ret == -1)
             sys_handle_error_exit(__func__);

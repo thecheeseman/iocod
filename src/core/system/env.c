@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 
 IC_PUBLIC
-bool sys_setenv(const char *name, const char *value)
+qbool sys_setenv(const char *name, const char *value)
 {
     #ifdef IC_PLATFORM_WINDOWS
     if (value != NULL && *value != '\0')

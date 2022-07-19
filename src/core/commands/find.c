@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 IC_PUBLIC
 struct cmd *cmd_find(const char *name)
-{
+{   
     struct cmd *cmd;
     for (cmd = cmd_functions; cmd != NULL; cmd = cmd->next) {
         if (strcasecmp(cmd->name, name) == 0)

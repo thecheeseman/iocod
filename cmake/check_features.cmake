@@ -1,5 +1,78 @@
 macro(check_features)
+    #
+    # C Standards
+    # require C11 or later
+    #
+    list(FIND CMAKE_C_COMPILE_FEATURES "c_std_11" HAS_C11)
+    if (NOT HAS_C11)
+        status(SEND_ERROR "C11 required")
+    endif()
+
+    if (${CMAKE_VERSION} VERSION_GREATER "3.21.0")
+        list(FIND CMAKE_C_COMPILE_FEATURES "c_std_17" HAS_C17)
+        list(FIND CMAKE_C_COMPILE_FEATURES "c_std_23" HAS_C23)
+
+        if (HAS_C23)
+            set(CMAKE_C_STANDARD 23)
+            message(STATUS "C Standard detected: C23")
+        elseif(HAS_C17)
+            set(CMAKE_C_STANDARD 17)
+            message(STATUS "C Standard detected: C17")
+        endif()
+    endif()
+    
+    if (NOT CMAKE_C_STANDARD)
+        set(CMAKE_C_STANDARD 11)
+        message(STATUS "C Standard detected: C11")
+    endif()
+
+    set(CMAKE_C_STANDARD_REQUIRED TRUE)
+    set(CMAKE_C_EXTENSIONS TRUE)
+
+    #
+    # C++ Standards
+    # require C++11 or later
+    #
+    list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_11" HAS_CXX11)
+    if (NOT HAS_CXX11)
+        status(SEND_ERROR "C++11 required")
+    endif()
+    
+    #if (${CMAKE_VERSION} VERSION_GREATER "3.20.0")
+    #    list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_23" HAS_CXX23)
+
+    #    if (HAS_CXX23)
+    #        set(CMAKE_CXX_STANDARD 23)
+    #        message(STATUS "CXX Standard detected: C++23")
+    #    endif()
+    #endif()
+
+    if (NOT CMAKE_CXX_STANDARD)
+        list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_20" HAS_CXX20)
+        list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_17" HAS_CXX17)
+        list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_14" HAS_CXX14)
+
+        if (HAS_CXX20)
+            set(CMAKE_CXX_STANDARD 20)
+            message(STATUS "CXX Standard detected: C++20")
+        elseif (HAS_CXX17)
+            set(CMAKE_CXX_STANDARD 17)
+            message(STATUS "CXX Standard detected: C++17")
+        elseif (HAS_CXX14)
+            set(CMAKE_CXX_STANDARD 14)
+            message(STATUS "CXX Standard detected: C++14")
+        else()
+            set(CMAKE_CXX_STANDARD 11)
+            message(STATUS "CXX Standard detected: C++11")
+        endif()
+    endif()
+
+    set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+    set(CMAKE_CXX_EXTENSIONS TRUE)
+
+    #
     # gather system information
+    #
     cmake_host_system_information(RESULT _64bit QUERY IS_64BIT)
     cmake_host_system_information(RESULT _arch QUERY OS_PLATFORM)
 
@@ -34,7 +107,9 @@ macro(check_features)
     endif()
     message(DEBUG "Building on ${IC_PLATFORM_OS}")
 
+    #
     # arch
+    #
     set(IC_PLATFORM_AMD64 FALSE CACHE BOOL "amd64")
     set(IC_PLATFORM_X86 FALSE CACHE BOOL "x86")
     set(IC_PLATFORM_ARM32 FALSE CACHE BOOL "arm32")
@@ -83,7 +158,9 @@ macro(check_features)
     endif()
     message(DEBUG "Building binaries for ${IC_PLATFORM_ARCH}")
 
+    #
     # compiler
+    #
     set(IC_PLATFORM_COMPILER ${CMAKE_C_COMPILER_ID} CACHE STRING "Compiler")
     string(TOLOWER ${IC_PLATFORM_COMPILER} IC_PLATFORM_COMPILER)
     set(IC_PLATFORM_COMPILER_VERSION ${CMAKE_C_COMPILER_VERSION} CACHE STRING "Compiler version")
@@ -118,7 +195,9 @@ macro(check_features)
 
     # debug flags
 
+    #
     # endianness
+    #
     set(IC_PLATFORM_LITTLE_ENDIAN FALSE CACHE BOOL "Little-endian system")
     set(IC_PLATFORM_BIG_ENDIAN FALSE CACHE BOOL "Big-endian system")
 

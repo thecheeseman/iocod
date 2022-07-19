@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include "conf_local.h"
 
-bool conf_load(struct conf *cfg)
+qbool conf_load(struct conf *cfg)
 {
     if (cfg == NULL) {
         conf_set_error(CONF_ERR_NULL_CFG);

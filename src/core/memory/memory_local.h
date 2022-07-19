@@ -37,7 +37,7 @@ struct meminfo {
 };
 
 extern struct meminfo *mem_list;
-extern bool atexit_setup;
+extern qbool atexit_setup;
 
 void meminfo_print_leaks(void);
 struct meminfo *meminfo_add(struct meminfo *info, void *ptr, size_t size,

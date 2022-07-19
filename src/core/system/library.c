@@ -78,7 +78,7 @@ char *sys_library_error(void)
 }
 
 IC_PUBLIC
-bool sys_library_load(const char *path, void **handle)
+qbool sys_library_load(const char *path, void **handle)
 {
     *handle = NULL;
 
@@ -105,7 +105,7 @@ bool sys_library_load(const char *path, void **handle)
 }
 
 IC_PUBLIC
-bool sys_library_close(void *handle)
+qbool sys_library_close(void *handle)
 {
     #ifdef IC_PLATFORM_WINDOWS
     return FreeLibrary((HMODULE) handle);
@@ -115,7 +115,7 @@ bool sys_library_close(void *handle)
 }
 
 IC_PUBLIC
-bool sys_library_load_symbol(void *handle, const char *fn, void **symbol)
+qbool sys_library_load_symbol(void *handle, const char *fn, void **symbol)
 {
     *symbol = NULL;
 

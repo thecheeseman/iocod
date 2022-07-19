@@ -119,6 +119,6 @@ IC_PUBLIC
 void thread_signal_raise(thread_signal_t *signal);
 
 IC_PUBLIC
-bool thread_signal_wait(thread_signal_t *signal, int timeout);
+qbool thread_signal_wait(thread_signal_t *signal, int timeout);
 
 #endif /* IOCOD_THREADS_H */

@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cmd_local.h"
 #include <stdlib.h>
 
-struct cmd *cmd_functions;
+struct cmd *cmd_functions = NULL;
+qbool cmd_initialized = false;
 
 static void cmd_echo_f(struct cmd *self)
 {
@@ -133,4 +134,6 @@ void cmd_shutdown(void)
         ic_free(cmd->description);
         ic_free(cmd);
     }
+
+    cmd_functions = NULL;
 }

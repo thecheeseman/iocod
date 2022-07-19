@@ -38,7 +38,7 @@ static void print_header(FILE *fp, char *header)
     fprintf(fp, "%s", IC_PLATFORM_NEWLINE);
 }
 
-bool conf_write_defaults(struct conf *cfg)
+qbool conf_write_defaults(struct conf *cfg)
 {
     struct stat st;
     if (stat(cfg->filename, &st) == 0)

@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 IC_PUBLIC
-bool ic_bit_check(const int arr[], int num)
+qbool ic_bit_check(const int arr[], int num)
 {
     int i = 0;
     while (num > 31) {
