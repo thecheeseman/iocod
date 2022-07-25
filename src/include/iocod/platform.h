@@ -36,6 +36,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod/version.h"
 
+#ifdef __cplusplus
+#define IC_BEGIN_C_DECLS extern "C" {
+#define IC_END_C_DECLS }
+#define IC_C_DECL extern "C"
+#else
+#define IC_BEGIN_C_DECLS
+#define IC_END_C_DECLS
+#define IC_C_DECL
+#endif
+
 /**
  * @def IC_PLATFORM_COMPILER
  * @brief A string containing the name of the compiler used. This is defined

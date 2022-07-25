@@ -36,14 +36,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_H
 #define IOCOD_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/*
+================================================================================
+Platform utilities
+================================================================================
+*/
 
-/* always include config.h */
-#if defined HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "iocod/platform.h"
+#include "iocod/platform_endianness.h"
+
+//
+// c++
+//
+IC_BEGIN_C_DECLS
 
 #include <errno.h>
 #include <stdarg.h>
@@ -113,17 +118,6 @@ General useful macros / utils
 #define IC_CONCAT3_EX(a, b, c)  a ## b ## c
 #define IC_CONCAT3(a, b, c)     IC_CONCAT3_EX(a, b, c)
 /** @} */
-
-#include "iocod/version.h"
-
-/*
-================================================================================
-Platform utilities
-================================================================================
-*/
-
-#include "iocod/platform.h"
-#include "iocod/platform_endianness.h"
 
 /*
 ================================================================================
@@ -213,8 +207,9 @@ SAL stuff
 #define INCOMPLETE
 #define NOT_WORKING
 
-#ifdef __cplusplus
-}
-#endif
+//
+// c++
+//
+IC_END_C_DECLS
 
 #endif /* IOCOD_H */

@@ -18,31 +18,13 @@
 
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(iocod_core LANGUAGES C)
+project(iocod_core LANGUAGES C CXX)
 
-file(GLOB IC_CORE_SRCS "*.c")
-
-foreach (subdir
-    commands
-    common
-    config
-    console
-    cvar
-    events
-    fs
-    log
-    memory
-    metrics
-    network
-    parse
-    server
-    shared
-    strings
-    system
-    threads)
-    file(GLOB sources "${subdir}/*.c")
-    list(APPEND IC_CORE_SRCS ${sources})
-endforeach()
+# this isn't the best way to do this
+# since CMake doesn't recommend using GLOB/CONFIGURE_DEPENDS
+# but it works on my system and it's easier than doing it manually
+file(GLOB_RECURSE IC_CORE_SRCS CONFIGURE_DEPENDS "*.c" "*.cc")
+list(FILTER IC_CORE_SRCS EXCLUDE REGEX ".+tests\/.+")
 
 if (IC_PLATFORM_MSVC)
     # always silence these warnings

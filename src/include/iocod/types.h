@@ -25,6 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod/platform.h"
 #include <inttypes.h>
+#include <stdint.h>
 #include <sys/types.h>
 
 /**
@@ -34,16 +35,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
- * @brief Kernel shorthands
+ * @brief Kernel/Rust shorthands
  * @{
  */
-typedef int8_t      s8;
+typedef int8_t      i8;
 typedef uint8_t     u8;
-typedef int16_t     s16;
+typedef int16_t     i16;
 typedef uint16_t    u16;
-typedef int32_t     s32;
+typedef int32_t     i32;
 typedef uint32_t    u32;
-typedef int64_t     s64;
+typedef int64_t     i64;
 typedef uint64_t    u64;
 /** @} */
 

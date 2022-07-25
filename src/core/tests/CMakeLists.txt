@@ -80,10 +80,11 @@ list(APPEND SPECIAL_TESTS
     "test-library"
 )
 
-file(GLOB TEST_SRCS "*.c")
+file(GLOB TEST_SRCS CONFIGURE_DEPENDS "*.c" "*.cc")
 foreach (_test IN LISTS TEST_SRCS)
     # strip file path to get clean test name
     get_filename_component(_name ${_test} NAME)
+    string(REPLACE "*.cc" "" _name ${_name})
     string(REPLACE ".c" "" _name ${_name})
 
     set(_skip FALSE)

@@ -153,7 +153,7 @@ and testing. Check the [roadmap](#roadmap) for more details about the timeline.
 
 ### General Requirements
 
-- A compatible C11 compiler
+- A compatible C11/C++11 compiler
     - [GCC][gcc]/[Clang][clang] - any version since about 2012 will do
     - [MSVC][msvc] - version 19.28 at a minimum (Visual Studio 2019 16.8)
 - [CMake][cmake] 3.14 or greater
