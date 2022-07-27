@@ -54,7 +54,8 @@ enum q3color {
  * @return formatted string
  */
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
+IC_PRINTF_FORMAT(1, 2, fmt)
+IC_RETURNS_STRING
 char *va(const char *fmt, ...);
 
 #define MAX_INFO_STRING 1024

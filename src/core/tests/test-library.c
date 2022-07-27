@@ -2,6 +2,8 @@
 
 #include "iocod.h"
 
+IC_SILENCE_WARNING(-Wnonnull)
+
 int TEST_MAIN()
 {
     void *handle;

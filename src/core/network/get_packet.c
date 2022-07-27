@@ -24,11 +24,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 qbool net_get_packet(struct netadr *net_from, fd_set *fdr, struct netmsg *msg)
 {
-    for (int protocol = 0; protocol < 2; protocol++) {
+    for (int proto = 0; proto < 2; proto++) {
         socket_t sock = INVALID_SOCKET;
-        if (protocol == 0)
+        if (proto == 0)
             sock = ip_socket;
-        else if (protocol == 1)
+        else if (proto == 1)
             sock = ip6_socket;
 
         if (sock != INVALID_SOCKET && FD_ISSET(sock, fdr)) {

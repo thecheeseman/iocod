@@ -64,7 +64,8 @@ void con_shutdown(void);
  * @param[in] title new title for the console window
 */
 IC_PUBLIC
-void con_set_title(const char *title);
+IC_NON_NULL(1)
+void con_set_title(_In_z_ const char *title);
 
 /**
  * @brief Get the latest console input.
@@ -79,7 +80,8 @@ char *con_input(void);
  * @param[in] msg message to print
 */
 IC_PUBLIC
-void con_print(const char *msg);
+IC_NON_NULL(1)
+void con_print(_In_z_ const char *msg);
 
 #ifdef IC_PLATFORM_WINDOWS
 #define stdin_is_atty(v)

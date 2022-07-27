@@ -24,17 +24,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(3, 4)
 IC_NON_NULL(1)
-ssize_t snprintfz(char *dest, size_t size, const char *fmt, ...)
+IC_PRINTF_FORMAT(3, 4, fmt)
+ssize_t snprintfz(_Out_writes_z_(size) char *dest,
+                  size_t size,
+                  const char *fmt, ...)
 {
-    #if !defined IC_GNUC_VERSION
-    if (dest == NULL || fmt == NULL)
-        return -1;
-    #endif
-
-    if (size == 0)
-        return -1;
+    IC_ASSERT(size > 0);
 
     va_list argptr;
     va_start(argptr, fmt);

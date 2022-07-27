@@ -54,5 +54,6 @@ IC_PUBLIC
 IC_NON_NULL(2)
 void cv_infostring_buffer(enum cv_flags mask, char *buf, size_t size)
 {
+    IC_ASSERT(buf != NULL);
     strncpyz(buf, cv_infostring(mask), size);
 }

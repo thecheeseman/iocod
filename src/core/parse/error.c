@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 extern struct parse_info *pi;
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
+IC_PRINTF_FORMAT(1, 2, fmt)
 void ps_script_warning(const char *fmt, ...)
 {
     va_list argptr;
@@ -39,7 +39,7 @@ void ps_script_warning(const char *fmt, ...)
 }
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
+IC_PRINTF_FORMAT(1, 2, fmt)
 void ps_script_error(const char *fmt, ...)
 {
     va_list argptr;

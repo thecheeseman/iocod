@@ -20,8 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod/platform.h"
-#include "iocod/string.h"
+#include "iocod.h"
 
 #ifdef IC_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
@@ -32,6 +31,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *sys_get_current_user(void)
 {
     #ifdef IC_PLATFORM_WINDOWS

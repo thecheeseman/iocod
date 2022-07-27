@@ -135,7 +135,8 @@ static void init_common_cvars(void)
 }
 
 IC_PUBLIC
-void com_init(char *cmdline)
+IC_NON_NULL(1)
+void com_init(_In_z_ char *cmdline)
 {
     metric_begin();
     ic_print_header("Common", 40, '-');

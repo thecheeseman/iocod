@@ -29,13 +29,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define MAX_VA_STRING 8192
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
+IC_PRINTF_FORMAT(1, 2, fmt)
+IC_RETURNS_STRING
 char *va(const char *fmt, ...)
 {
     va_list argptr;
 
-    static char buf[MAX_VA_STRING];
-    static char str[MAX_VA_STRING]; /* in case va is called by nested funcs */
+    static char buf[MAX_VA_STRING] = {0};
+    static char str[MAX_VA_STRING] = {0}; 
+    /* in case va is called by nested funcs */
+    
     static size_t index = 0;
 
     va_start(argptr, fmt);

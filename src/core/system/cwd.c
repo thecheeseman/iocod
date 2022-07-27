@@ -20,7 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod/platform.h"
+#include "iocod.h"
 
 #ifdef IC_PLATFORM_WINDOWS
 #include <direct.h>
@@ -33,9 +33,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *sys_cwd(void)
 {
-    static char cwd[PATH_MAX];
+    static char cwd[PATH_MAX] = { 0 };
     
     #ifdef IC_PLATFORM_WINDOWS
     if (_getcwd(cwd, sizeof(cwd) - 1) == NULL)

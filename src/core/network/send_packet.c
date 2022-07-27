@@ -23,12 +23,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "net_local.h"
 
 IC_PUBLIC
-qbool net_send_packet(int length, const void *data, struct netadr to)
+IC_NON_NULL(2)
+qbool net_send_packet(int length, 
+                      _In_ const void *data, 
+                      struct netadr to)
 {
-    if (to.type != NA_BROADCAST && to.type != NA_IP && to.type != NA_IP6) {
-        ic_error(_("bad address type"));
-        return false;
-    }
+    IC_ASSERT(to.type == NA_BROADCAST || to.type == NA_IP || to.type == NA_IP6);
 
     if ((ip_socket == INVALID_SOCKET && to.type == NA_IP) ||
         (ip6_socket == INVALID_SOCKET && to.type == NA_IP6)) {

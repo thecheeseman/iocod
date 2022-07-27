@@ -25,13 +25,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strupr(char *s1)
+IC_RETURNS_STRING
+char *_ic_strupr(_In_z_ char *s1)
 {
-    #if !defined IC_GNUC_VERSION
-    if (s1 == NULL)
-        return NULL;
-    #endif
-
     char *s = s1;
     while (*s) {
         *s = toupper(*s);

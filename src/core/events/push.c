@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "ev_local.h"
 
 IC_PUBLIC
-void ev_push(struct sys_event *event)
+IC_NON_NULL(1)
+void ev_push(_In_ struct sys_event *event)
 {
     struct sys_event *ev =
         &pushed_events[pushed_events_head & (MASK_PUSHED_EVENTS)];

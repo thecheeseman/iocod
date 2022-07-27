@@ -23,12 +23,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar_local.h"
 
 IC_PUBLIC
-char *cv_clear_foreign_chars(const char *value)
+IC_RETURNS_STRING
+char *cv_clear_foreign_chars(_In_opt_z_ const char *value)
 {
     if (value == NULL)
         return "";
 
-    static char clean[MAX_VMCVAR_STRING_LEN]; /* should this be larger? */
+    static char clean[MAX_VMCVAR_STRING_LEN] = { 0 }; 
+    /* should this be larger? */
 
     int j = 0;
     for (int i = 0; value[i] != '\0'; i++) {
@@ -42,12 +44,9 @@ char *cv_clear_foreign_chars(const char *value)
     return clean;
 }
 
-static char *get_string(const char *name)
+static char *get_string(_In_z_ const char *name)
 {
-    if (name == NULL || *name == '\0') {
-        log_trace(_("Got NULL value for parameter 'name'\n"));
-        return NULL;
-    }
+    IC_ASSERT(name != NULL && *name != '\0');
 
     struct cvar *v = cv_find(name);
     if (v == NULL) {
@@ -59,8 +58,9 @@ static char *get_string(const char *name)
 }
 
 IC_PUBLIC
+IC_RETURNS_STRING
 IC_NON_NULL(1)
-char *cv_get_string(const char *name)
+char *cv_get_string(_In_z_ const char *name)
 {
     char *str = get_string(name);
 
@@ -72,7 +72,9 @@ char *cv_get_string(const char *name)
 
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-void cv_get_string_buffer(const char *name, char *buf, size_t size)
+void cv_get_string_buffer(_In_z_ const char *name,
+                          _Out_writes_z_(size) char *buf,
+                          size_t size)
 {
     char *str = get_string(name);
 
@@ -83,7 +85,7 @@ void cv_get_string_buffer(const char *name, char *buf, size_t size)
 }
 
 IC_PUBLIC
-qbool cv_validate_string(const char *s)
+qbool cv_validate_string(_In_opt_z_ const char *s)
 {
     if (s == NULL || strchr(s, '\\') || strchr(s, '\"') || strchr(s, ';'))
         return false;

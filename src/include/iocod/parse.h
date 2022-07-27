@@ -63,7 +63,7 @@ struct parse_info {
  * @param[in] ... varargs
 */
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
+IC_PRINTF_FORMAT(1, 2, fmt)
 void ps_script_warning(const char *fmt, ...);
 
 /**
@@ -73,7 +73,7 @@ void ps_script_warning(const char *fmt, ...);
  * @param[in] ... varargs
 */
 IC_PUBLIC
-IC_PRINTF_FORMAT(1, 2)
+IC_PRINTF_FORMAT(1, 2, fmt)
 void ps_script_error(const char *fmt, ...);
 
 /*

@@ -23,10 +23,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "conf_local.h"
 
 IC_PUBLIC
-struct conf *conf_init(const char *filename, struct confopt *kv, int options)
+IC_NON_NULL(1, 2)
+conf_t *conf_init(_In_z_ const char *filename,
+                  _In_ struct confopt *kv,
+                  int options)
 {
     UNUSED_PARAM(options);
-
+    #if 0
     if (filename == NULL) {
         conf_set_error(CONF_ERR_NULL_FILENAME);
         ic_error("%s", conf_error_string());
@@ -38,7 +41,7 @@ struct conf *conf_init(const char *filename, struct confopt *kv, int options)
         ic_error("%s", conf_error_string());
         return NULL;
     }
-
+    #endif
     struct conf *cfg = ic_calloc(1, sizeof(struct conf));
     cfg->filename = strdup(filename);
     cfg->options = kv;

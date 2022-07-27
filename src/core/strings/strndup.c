@@ -24,13 +24,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strndup(const char *s, size_t n)
+char *_ic_strndup(_In_z_ const char *s, 
+                  size_t n)
 {
-    #if !defined IC_GNUC_VERSION
-    if (s == NULL)
-        return NULL;
-    #endif
-
     size_t len = strnlen(s, n);
     char *new = ic_malloc(len + 1);
 

@@ -36,7 +36,7 @@ extern qbool fully_initialized;
 */
 void add_common_commands(void);
 
-void parse_command_line(char *cmdline);
+void parse_command_line(_In_z_ char *cmdline);
 void startup_variable(const char *match);
 qbool add_startup_commands(void);
 

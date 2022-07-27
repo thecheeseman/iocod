@@ -45,6 +45,9 @@ threadptr_t thread_create(int (*function)(void *), void *data, const char *name,
 
     return (threadptr_t) handle;
     #else
+    UNUSED_PARAM(name);
+    UNUSED_PARAM(stack_size);
+    
     pthread_t thread;
 
     if (pthread_create(&thread, NULL, (void *(*)(void *)) function, data) != 0)

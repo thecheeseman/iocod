@@ -26,7 +26,7 @@ qbool error_entered = false;
 char error_message[MAX_PRINT_MSG];
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(5, 6)
+IC_PRINTF_FORMAT(5, 6, fmt)
 void _ic_error(enum errcode code, const char *filename, const char *function,
                const int line, const char *fmt, ...)
 {

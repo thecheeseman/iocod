@@ -33,11 +33,17 @@ void sys_exit(int code)
     con_shutdown();
     config_shutdown();
 
+    core_active = false;
+    core_quit = true;
+
     exit(code);
 }
 
 IC_PUBLIC
 void sys_quit(void)
 {
+    core_active = false;
+    core_quit = true;
+
     sys_exit(IC_OK);
 }

@@ -29,6 +29,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 qbool cv_write_defaults(filehandle f)
 {
+    UNUSED_PARAM(f);
+    
     for (struct cvar *v = cvars; v != NULL; v = v->next) {
         /* don't write cd key */
         if (strcasecmp(v->name, "cl_cdkey") == 0)
@@ -51,6 +53,8 @@ qbool cv_write_defaults(filehandle f)
 IC_PUBLIC
 qbool cv_write_variables(filehandle f)
 {
+    UNUSED_PARAM(f);
+    
     for (struct cvar *v = cvars; v != NULL; v = v->next) {
         /* don't write cd key */
         if (strcasecmp(v->name, "cl_cdkey") == 0)

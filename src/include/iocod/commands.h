@@ -23,8 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_COMMANDS_H
 #define IC_COMMANDS_H
 
-#include "iocod/platform.h"
-#include "iocod/types.h"
+#include "iocod.h"
 
 /**
  * @defgroup commands Commands
@@ -52,7 +51,8 @@ void cbuf_init(void);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-qbool cbuf_add_text(const char *text);
+IC_NON_NULL(1)
+qbool cbuf_add_text(_In_z_ const char *text);
 
 /**
  * @brief Add the given @p text to the command buffer and immediately execute.
@@ -63,7 +63,8 @@ qbool cbuf_add_text(const char *text);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-qbool cbuf_add_execute(const char *text);
+IC_NON_NULL(1)
+qbool cbuf_add_execute(_In_z_ const char *text);
 
 /**
  * @brief Insert the given @p text immediately after the current command. Will
@@ -72,7 +73,8 @@ qbool cbuf_add_execute(const char *text);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-qbool cbuf_insert_text(const char *text);
+IC_NON_NULL(1)
+qbool cbuf_insert_text(_In_z_ const char *text);
 
 /**
  * @brief Execute the given @p text at @p when time.
@@ -81,7 +83,9 @@ qbool cbuf_insert_text(const char *text);
  * @return true on success, false on failure
 */
 IC_PUBLIC
-qbool cbuf_execute_text(int when, const char *text);
+IC_NON_NULL(2)
+qbool cbuf_execute_text(int when, 
+                        _In_z_ const char *text);
 
 /**
  * @brief Execute whatever is currently in the command buffer up to a `\n`
@@ -144,6 +148,7 @@ unsigned int cmd_argc(void);
  * @return the argument or "" if @p arg is out of range
 */
 IC_PUBLIC
+IC_RETURNS_STRING
 char *cmd_argv(unsigned int arg);
 
 /**
@@ -153,7 +158,10 @@ char *cmd_argv(unsigned int arg);
  * @param[out] buf    the buffer to store the argument in
 */
 IC_PUBLIC
-void cmd_argv_buffer(unsigned int arg, size_t buflen, char *buf);
+IC_NON_NULL(3)
+void cmd_argv_buffer(unsigned int arg, 
+                     size_t buflen, 
+                     _Out_writes_z_(buflen) char *buf);
 
 /**
  * @brief Get all command line arguments as a single string from starting 
@@ -163,6 +171,7 @@ void cmd_argv_buffer(unsigned int arg, size_t buflen, char *buf);
  * out of range
 */
 IC_PUBLIC
+IC_RETURNS_STRING
 char *cmd_args_from(unsigned int arg);
 
 /**
@@ -172,6 +181,7 @@ char *cmd_args_from(unsigned int arg);
  * arguments
 */
 IC_PUBLIC
+IC_RETURNS_STRING
 char *cmd_args(void);
 
 /**
@@ -181,7 +191,9 @@ char *cmd_args(void);
  * @param[out] buf    the buffer to store the arguments in
 */
 IC_PUBLIC
-void cmd_args_buffer(size_t buflen, char *buf);
+IC_NON_NULL(2)
+void cmd_args_buffer(size_t buflen, 
+                     _Out_writes_z_(buflen) char *buf);
 
 /**
  * @brief Parse a single line of text into arguments and executes as if it was
@@ -210,7 +222,7 @@ qbool cmd_add(const char *name, void (*function)(void));
 
 IC_PUBLIC
 qbool cmd_add2(const char *name, void (*function)(void), int min,
-              int max, const char *usage, const char *description);
+               int max, const char *usage, const char *description);
 
 /**
  * @brief Remove the given @p name command from the command list.

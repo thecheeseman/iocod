@@ -23,8 +23,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "ev_local.h"
 
 IC_PUBLIC
-void ev_queue(int time, enum sys_event_type type, int value, int value2,
-              int ptr_length, void *ptr)
+void ev_queue(int time,
+              enum sys_event_type type,
+              int value,
+              int value2,
+              int ptr_length,
+              _In_opt_ void *ptr)
 {
     struct sys_event *ev = &event_queue[event_head & MASK_QUEUED_EVENTS];
 

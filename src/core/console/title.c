@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "con_local.h"
 
 IC_PUBLIC
-void con_set_title(const char *title)
+IC_NON_NULL(1)
+void con_set_title(_In_z_ const char *title)
 {
     #ifdef IC_PLATFORM_WINDOWS
     wchar_t wtitle[256] = { 0 };

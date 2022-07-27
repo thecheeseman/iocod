@@ -22,16 +22,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "iocod.h"
 
-#if !defined HAVE_STRREV
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strrev(char *str)
+IC_RETURNS_STRING
+char *_ic_strrev(_In_z_ char *str)
 {
-    #if !defined IC_GNUC_VERSION
-    if (str == NULL)
-        return NULL;
-    #endif
-
     char *p1;
     char *p2;
     for (p1 = str, p2 = str + (strlen(str) - 1); p2 > p1; p1++, p2--) {
@@ -42,4 +37,3 @@ char *_ic_strrev(char *str)
 
     return str;
 }
-#endif

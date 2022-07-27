@@ -91,8 +91,12 @@ out:
 }
 
 IC_PUBLIC
-struct cvar *cv_set2(const char *name, const char *value, qbool force)
+IC_NON_NULL(1)
+cvar_t *cv_set2(_In_z_ const char *name,
+                _In_opt_z_ const char *value,
+                qbool force)
 {
+    IC_ASSERT(name != NULL);
     log_debug(_("Cvar set %s '%s'"), name, value);
 
     if (!cv_validate_string(name)) {
@@ -122,19 +126,25 @@ struct cvar *cv_set2(const char *name, const char *value, qbool force)
 }
 
 IC_PUBLIC
-struct cvar *cv_set_string(const char *name, const char *value)
+IC_NON_NULL(1)
+cvar_t *cv_set_string(_In_z_ const char *name,
+                      _In_opt_z_ const char *value)
 {
     return cv_set2(name, value, true);
 }
 
 IC_PUBLIC
-struct cvar *cv_set_string_latched(const char *name, const char *value)
+IC_NON_NULL(1)
+cvar_t *cv_set_string_latched(_In_z_ const char *name, 
+                              _In_opt_z_ const char *value)
 {
     return cv_set2(name, value, false);
 }
 
 IC_PUBLIC
-struct cvar *cv_set_value(const char *name, cv_float value)
+IC_NON_NULL(1)
+cvar_t *cv_set_value(_In_z_ const char *name, 
+                     cv_float value)
 {
     char v[64];
 
@@ -143,7 +153,9 @@ struct cvar *cv_set_value(const char *name, cv_float value)
 }
 
 IC_PUBLIC
-struct cvar *cv_set_integer(const char *name, cv_int value)
+IC_NON_NULL(1)
+cvar_t *cv_set_integer(_In_z_ const char *name, 
+                       cv_int value)
 {
     char v[64];
 
@@ -188,13 +200,13 @@ void cv_set_f(void)
 }
 
 IC_PUBLIC
-void cv_set_description(struct cvar *cv, const char *desc)
+IC_NON_NULL(1, 2)
+void cv_set_description(_In_ cvar_t *cv, 
+                        _In_z_ const char *desc)
 {
-    if (desc == NULL || *desc == '\0')
-        return;
+    IC_ASSERT(cv != NULL);
+    IC_ASSERT(desc != NULL);
 
-    if (cv->description != NULL)
-        ic_free(cv->description);
-
+    ic_free(cv->description);
     cv->description = strdup(desc);
 }

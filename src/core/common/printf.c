@@ -32,7 +32,7 @@ PRINTF_LOGONLY
 */
 
 IC_PUBLIC
-IC_PRINTF_FORMAT(2, 3)
+IC_PRINTF_FORMAT(2, 3, fmt)
 void _ic_printf(enum printf_type type, const char *fmt, ...)
 {
     char msg[MAX_PRINT_MSG];

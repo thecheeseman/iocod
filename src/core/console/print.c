@@ -88,11 +88,11 @@ static void color_print(const char *msg)
 }
 
 IC_PUBLIC
-void con_print(const char *msg)
+IC_NON_NULL(1)
+void con_print(_In_z_ const char *msg)
 {
-    if (msg == NULL || *msg == '\0')
-        return;
-
+    IC_ASSERT(msg != NULL);
+    
     // we can potentially call ic_printf before con_init
     // so make sure we always see these messages
     if (!console.initialized) {

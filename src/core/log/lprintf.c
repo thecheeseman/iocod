@@ -62,7 +62,7 @@ static const char *color_prefix[] = {
  * Log print.
  */
 IC_PUBLIC
-IC_PRINTF_FORMAT(5, 6)
+IC_PRINTF_FORMAT(5, 6, fmt)
 size_t log_lprintf(enum log_level level, const char *func, const char *file,
                    int line, const char *fmt, ...)
 {

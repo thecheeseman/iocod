@@ -23,10 +23,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 IC_PUBLIC
-char *copy_string(const char *in)
+char *copy_string(_In_z_ const char *in)
 {
     size_t len = strlen(in) + 1;
     char *out = ic_calloc(len, 1);
+    if (out == NULL)
+        return NULL;
+    
     strcpy(out, in);
     return out;
 }

@@ -31,6 +31,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 IC_PUBLIC
+IC_PRINTF_FORMAT(1, 2, err)
 void sys_error(const char *err, ...)
 {
     va_list argptr;

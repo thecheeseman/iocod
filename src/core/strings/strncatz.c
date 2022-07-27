@@ -24,16 +24,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 IC_PUBLIC
 IC_NON_NULL(1, 3)
-void strncatz(char *dest, size_t size, const char *src)
+void strncatz(_Out_writes_z_(size) char *dest,
+              size_t size,
+              _In_z_ const char *src)
 {
-    #if !defined IC_GNUC_VERSION
-    if (dest == NULL || src == NULL)
-        return;
-    #endif
-
+    IC_ASSERT(size > 0);
     size_t l1 = strlen(dest);
-    if (l1 >= size)
-        return; // com_error(ERR_FATAL, "strncatz: already overflowed");
+    IC_ASSERT(size > l1);
 
     strncpyz(dest + l1, src, size - l1);
 }

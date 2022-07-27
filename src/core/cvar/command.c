@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 IC_PUBLIC
 qbool cv_command(void)
 {
-    struct cvar *cv = cv_find(cmd_argv(0));
+    cvar_t *cv = cv_find(cmd_argv(0));
     if (cv == NULL)
         return false;
 

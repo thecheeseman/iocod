@@ -103,6 +103,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif /* _MSC_VER */
 #endif
 
+// include for sal stuff
+#ifdef IC_PLATFORM_MSVC
+#include <sal.h>
+#endif
+
 /**
  * @def IC_GNUC_VERSION
  * @brief Defined if we are using a GNUC compatible compiler. 
@@ -603,24 +608,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #endif
 
 /**
- * @def IC_WARN_UNUSED_RESULT
- * @brief This attribute allows compatible compilers to generate a warning 
- * if the returned result of the function is ignored.
- * 
- * @note On GNUC this is defined as `__attribute__((__warn_unused_result__))`.
- * @note On MSVC this is defined as the SAL annotation `_Check_return_`.
- * 
- * @since 0.110.0
- */
-#if IC_HAS_ATTRIBUTE(warn_unused_result) || IC_GCC_VERSION_CHECK(3, 4, 0)
-#define IC_WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
-#elif defined _Check_return_
-#define IC_WARN_UNUSED_RESULT _Check_return_
-#else
-#define IC_WARN_UNUSED_RESULT
-#endif
-
-/**
  * @def IC_NO_RETURN
  * @brief This attribute tells compatible compilers that the given function will 
  * never return (i.e. _must_ exit) and allows them to optimise based on that.
@@ -710,37 +697,6 @@ IC_SILENCE_WARNING(-Wvariadic-macros)
 IC_DIAGNOSTIC_POP
 
 /**
- * @def IC_PRINTF_FORMAT
- * @brief This attribute tells the compiler to check the arguments for 
- consistency with `printf`-style formatted strings. 
- * 
- * @param idx starting index of the format specifier
- * @param first starting index of the varargs
- * 
- * For example:
- * @code
- *  IC_PRINTF_FORMAT(2, 3)
- *  void print_error(int code, const char *fmt, ...);
- * @endcode
- * 
- * @note This feature is only available on compatible GNUC compilers, where it
- * is defined as `__attribute__((format(printf, idx, first)))`.
- * 
- * @since 0.110.0
- */
-#if defined __MINGW32__ && IC_GCC_HAS_ATTRIBUTE(format, 4, 4, 0) && \
-    !defined __USE_MINGW_ASNI_STDIO
-#define IC_PRINTF_FORMAT(idx, first) __attribute__((format(ms_printf, idx, first)))
-#elif defined __MINGW32__ && IC_GCC_HAS_ATTRIBUTE(format, 4, 4, 0) && \
-    defined __USE_MINGW_ASNI_STDIO
-#define IC_PRINTF_FORMAT(idx, first) __attribute__((format(gnu_printf, idx, first)))
-#elif IC_HAS_ATTRIBUTE(format) || IC_GCC_VERSION_CHECK(3, 1, 0)
-#define IC_PRINTF_FORMAT(idx, first) __attribute__((format(printf, idx, first)))
-#else
-#define IC_PRINTF_FORMAT(idx, first)
-#endif
-
-/**
  * @def IC_MALLOC
  * @brief The malloc attribute is used to tell the compiler that a function may 
  * be treated as if any non-NULL pointer it returns cannot alias any other 
@@ -815,24 +771,6 @@ IC_DIAGNOSTIC_POP
 #define IC_FALLTHROUGH do {} while (0)
 #endif
 #define fallthrough IC_FALLTHROUGH
-
-/**
- * @def IC_RETURNS_NON_NULL
- * @brief This attribute allows compilers to better optimise functions knowing
- * that they will never return NULL.
- * 
- * @note On GNUC this is defined as `__attribute__((__returns_nonnull__)`.
- * @note On MSVC this is defined with the SAL annotation `_Ret_notnull_`.
- * 
- * @since 0.110.0
- */
-#if IC_HAS_ATTRIBUTE(returns_nonnull) || IC_GCC_VERSION_CHECK(4, 9, 0)  
-#define IC_RETURNS_NON_NULL __attribute__((__returns_nonnull__))
-#elif defined _Ret_notnull_
-#define IC_RETURNS_NON_NULL _Ret_notnull_
-#else
-#define IC_RETURNS_NON_NULL
-#endif
 
 /**
  * @def IC_DIAGNOSTIC_DISABLE_UNKNOWN_PRAGMAS
@@ -913,6 +851,24 @@ IC_SILENCE_WARNING(4068)
 #define IC_UNUSED __attribute__((unused))
 #else
 #define IC_UNUSED
+#endif
+
+/**
+ * @def IC_PURE
+ * @brief Tell GCC that this function is pure, i.e. it has no side effects.
+ */
+/**
+ * @def IC_CONST
+ * @brief Tell GCC that this function is pure, i.e. it has no side effects.
+ * 
+ * Const functions cannot examine pointer data.
+ */
+#ifdef IC_PLATFORM_GCC
+#define IC_PURE __attribute__((pure))
+#define IC_CONST __attribute__((const))
+#else
+#define IC_PURE
+#define IC_CONST
 #endif
 
 /**

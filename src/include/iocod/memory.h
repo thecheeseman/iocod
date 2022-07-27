@@ -85,7 +85,9 @@ void hunk_clear_temp_high(void);
 */
 IC_MALLOC
 IC_PUBLIC
-void *_ic_malloc(size_t size, const char *filename, const char *function, 
+void *_ic_malloc(size_t size, 
+                 const char *filename, 
+                 const char *function, 
                  int line);
 
 #define ic_malloc(size) \

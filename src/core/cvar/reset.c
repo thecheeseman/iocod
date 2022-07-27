@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar_local.h"
 
 IC_PUBLIC
-struct cvar *cv_reset(const char *name)
+IC_NON_NULL(1)
+cvar_t *cv_reset(_In_z_ const char *name)
 {
     return cv_set2(name, NULL, false);
 }

@@ -23,9 +23,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "net_local.h"
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *net_address_to_string(struct netadr addr)
 {
-    static char s[MAX_ADDR_STRING];
+    static char s[MAX_ADDR_STRING] = { 0 };
 
     switch (addr.type) {
     case NA_LOOPBACK:
@@ -55,9 +56,10 @@ char *net_address_to_string(struct netadr addr)
 }
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *net_address_to_string_port(struct netadr addr)
 {
-    static char s[MAX_ADDR_STRING];
+    static char s[MAX_ADDR_STRING] = { 0 };
 
     switch (addr.type) {
     case NA_IP:

@@ -20,8 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod/platform.h"
-#include "iocod/types.h"
+#include "iocod.h"
 
 #ifdef IC_PLATFORM_WINDOWS
 #include <windows.h>
@@ -76,7 +75,9 @@ static inline qbool random_bytes_dev_random(size_t len, void *buf)
 #endif
 
 IC_PUBLIC
-qbool sys_random_bytes(size_t len, void *buf)
+IC_NON_NULL(2)
+qbool sys_random_bytes(size_t len, 
+                       _Out_writes_(len) void *buf)
 {
     #ifdef IC_PLATFORM_WINDOWS
     return random_bytes_windows(len, buf);

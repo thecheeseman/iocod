@@ -27,13 +27,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #define FILE_HASH_SIZE 256
 
-extern struct cvar *cvars;
-extern struct cvar indexes[MAX_CVARS];
+extern cvar_t *cvars;
+extern cvar_t indexes[MAX_CVARS];
 extern size_t num_indexes;
-extern struct cvar *hashtable[FILE_HASH_SIZE];
-extern struct cvar *sv_console_lockout;
-extern struct cvar *com_sv_running;
-extern struct cvar *cv_cheats;
+extern cvar_t *hashtable[FILE_HASH_SIZE];
+extern cvar_t *sv_console_lockout;
+extern cvar_t *com_sv_running;
+extern cvar_t *cv_cheats;
 
 void cv_list_f(void);
 void cv_print_f(void);

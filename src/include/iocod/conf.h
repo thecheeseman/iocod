@@ -262,7 +262,7 @@ struct confopt {
 /**
  * @brief Config.
 */
-struct conf {
+typedef struct conf {
     /**
      * @brief Filename.
     */
@@ -287,7 +287,7 @@ struct conf {
     qbool end;
     char token[MAX_CONFIG_TOKEN];
     // internal stuff that doesn't need documenting
-};
+} conf_t;
 
 /**
  * @brief Initialize a config file.
@@ -298,7 +298,10 @@ struct conf {
  * @return NULL on failure, otherwise pointer to new config
  */
 IC_PUBLIC
-struct conf *conf_init(const char *filename, struct confopt *kv, int options);
+IC_NON_NULL(1, 2)
+conf_t *conf_init(_In_z_ const char *filename,
+                  _In_ struct confopt *kv,
+                  int options);
 
 /**
  * @brief Shutdown config file. Automatically frees any dynamically allocated

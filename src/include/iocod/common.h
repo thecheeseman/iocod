@@ -50,7 +50,8 @@ extern struct cvar *com_viewlog;
 extern struct cvar *protocol;
 
 IC_PUBLIC
-void com_init(char *cmdline);
+IC_NON_NULL(1)
+void com_init(_In_z_ char *cmdline); // cmdline is modified by parse_command_line()
 
 IC_PUBLIC
 int com_milliseconds(void);
@@ -62,10 +63,16 @@ IC_PUBLIC
 void com_frame(void);
 
 IC_PUBLIC
-qbool com_filter(char *filter, char *name, qbool casesensitive);
+IC_NON_NULL(1, 2)
+qbool com_filter(_In_z_ const char *filter,
+                 _In_z_ const char *name,
+                 qbool casesensitive);
 
 IC_PUBLIC
-qbool com_filter_path(char *filter, char *name, qbool casesensitive);
+IC_NON_NULL(1, 2)
+qbool com_filter_path(_In_z_ const char *filter, 
+                      _In_z_ const char *name, 
+                      qbool casesensitive);
 
 /**
  * @brief Check if the given string @p str1 contains @p str2.
@@ -76,10 +83,13 @@ qbool com_filter_path(char *filter, char *name, qbool casesensitive);
  * pointer to the last matching character of the string
 */
 IC_PUBLIC
-char *com_string_contains(char *str1, char *str2, qbool casesensitive);
+IC_NON_NULL(1, 2)
+const char *com_string_contains(_In_z_ const char *str1,
+                                _In_z_ const char *str2,
+                                qbool casesensitive);
 
 IC_PUBLIC
-void com_startup_variable(const char *match);
+void com_startup_variable(_In_ const char *match);
 
 IC_PUBLIC
 void com_startup_variables(int count, ...);
@@ -120,7 +130,7 @@ enum printf_type {
  * @see ic_warning
  */
 IC_PUBLIC
-IC_PRINTF_FORMAT(2, 3)
+IC_PRINTF_FORMAT(2, 3, fmt)
 void _ic_printf(enum printf_type type, const char *fmt, ...);
 
 #define ic_printf(...) _ic_printf(PRINTF_CONSOLE, __VA_ARGS__)
@@ -156,7 +166,7 @@ enum errcode {
  * @see ic_error_fatal
  */
 IC_PUBLIC
-IC_PRINTF_FORMAT(5, 6)
+IC_PRINTF_FORMAT(5, 6, fmt)
 void _ic_error(enum errcode code, const char *filename, const char *function,
                const int line, const char *fmt, ...);
 

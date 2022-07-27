@@ -23,8 +23,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar_local.h"
 
 IC_PUBLIC
-void cv_print(struct cvar *cv)
+IC_NON_NULL(1)
+void cv_print(_In_ cvar_t *cv)
 {
+    IC_ASSERT(cv != NULL);
     ic_printf(_("\"%s\" is set to: \"%s^7\""), cv->name, cv->string);
 
     if ((cv->flags & CV_ROM) == 0) {

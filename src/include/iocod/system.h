@@ -23,20 +23,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_SYSTEM_H
 #define IC_SYSTEM_H
 
-#include "iocod/platform.h"
-#include "iocod/types.h"
+#include "iocod.h"
 #include <inttypes.h>
 
 IC_PUBLIC
 void sys_init(void);
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *sys_cwd(void);
 
 IC_PUBLIC
-qbool sys_mkdir(const char *path);
+IC_NON_NULL(1)
+qbool sys_mkdir(_In_z_ const char *path);
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *sys_get_current_user(void);
 
 /**
@@ -44,6 +46,7 @@ char *sys_get_current_user(void);
  * @return NULL-terminated string containing error message, otherwise NULL
 */
 IC_PUBLIC
+IC_RETURNS_STRING
 char *sys_library_error(void);
 
 /**
@@ -53,7 +56,9 @@ char *sys_library_error(void);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-qbool sys_library_load(const char *path, void **handle);
+IC_NON_NULL(1)
+qbool sys_library_load(_In_z_ const char *path,
+                       _Out_ void **handle);
 
 /**
  * @brief Close a system library.
@@ -74,7 +79,10 @@ qbool sys_library_close(void *handle);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-qbool sys_library_load_symbol(void *handle, const char *fn, void **symbol);
+IC_NON_NULL(2)
+qbool sys_library_load_symbol(_In_ void *handle,
+                              _In_z_ const char *fn,
+                              _Out_ void **symbol);
 
 /**
  * @brief Get current milliseconds since application began.
@@ -233,6 +241,7 @@ IC_PUBLIC
 enum system_type sys_system_type(void);
 
 IC_PUBLIC
+IC_PRINTF_FORMAT(1, 2, err)
 void sys_error(const char *err, ...);
 
 IC_PUBLIC
@@ -247,7 +256,9 @@ void sys_sleep(int msec);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-qbool sys_setenv(const char *name, const char *value);
+IC_NON_NULL(1)
+qbool sys_setenv(_In_z_ const char *name,
+                 _In_opt_z_ const char *value);
 
 /**
  * @brief Get environment variable.
@@ -255,7 +266,8 @@ qbool sys_setenv(const char *name, const char *value);
  * @return value of environment variable, or NULL if not set
 */
 IC_PUBLIC
-char *sys_getenv(const char *name);
+IC_NON_NULL(1)
+char *sys_getenv(_In_z_ const char *name);
 
 /**
  * @brief Get @p len random bytes from the system.
@@ -264,7 +276,9 @@ char *sys_getenv(const char *name);
  * @return true if success, false otherwise
 */
 IC_PUBLIC
-qbool sys_random_bytes(size_t len, void *buf);
+IC_NON_NULL(2)
+qbool sys_random_bytes(size_t len,
+                       _Out_writes_(len) void *buf);
 
 IC_PUBLIC
 char *sys_default_homepath(void);

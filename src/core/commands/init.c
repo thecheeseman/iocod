@@ -26,27 +26,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 struct cmd *cmd_functions = NULL;
 qbool cmd_initialized = false;
 
-static void cmd_echo_f(struct cmd *self)
+static void cmd_echo_f(void)
 {
-    UNUSED_PARAM(self);
-
     ic_printf("%s\n", cmd_args());
 }
 
-static void cmd_exec_f(struct cmd *self)
+static void cmd_exec_f(void)
 {
-    UNUSED_PARAM(self);
+
 }
 
-static void cmd_help_f(struct cmd *self)
+static void cmd_help_f(void)
 {
-    UNUSED_PARAM(self);
+
 }
 
-static void cmd_list_f(struct cmd *self)
+static void cmd_list_f(void)
 {
-    UNUSED_PARAM(self);
-
     char *match = NULL;
 
     if (cmd_argc() > 1)
@@ -65,20 +61,16 @@ static void cmd_list_f(struct cmd *self)
     ic_printf(_("%i commands\n"), num_cmds);
 }
 
-static void cmd_vstr_f(struct cmd *self)
+static void cmd_vstr_f(void)
 {
-    UNUSED_PARAM(self);
-
     char *v = cv_get_string(cmd_argv(1));
     cbuf_insert_text(va("%s\n", v));
 }
 
 size_t cmd_wait = 0;
 
-static void cmd_wait_f(struct cmd *self)
+static void cmd_wait_f(void)
 {
-    UNUSED_PARAM(self);
-
     if (cmd_argc() == 2) {
         long wait = strtol(cmd_argv(1), NULL, 10);
 

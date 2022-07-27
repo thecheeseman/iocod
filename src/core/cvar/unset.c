@@ -23,9 +23,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cvar_local.h"
 
 IC_PUBLIC
-struct cvar *cv_unset(struct cvar *cv)
+IC_NON_NULL(1)
+cvar_t *cv_unset(_In_ cvar_t *cv)
 {
-    struct cvar *next = cv->next;
+    IC_ASSERT(cv != NULL);
+    cvar_t *next = cv->next;
 
     // note what types of cvars have been modified
     cv_modified_flags |= cv->flags;

@@ -25,23 +25,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "cvar_local.h"
 
-struct cvar *cvars;
+cvar_t *cvars;
 
-struct cvar indexes[MAX_CVARS];
+cvar_t indexes[MAX_CVARS];
 size_t num_indexes = 0;
-struct cvar *hashtable[FILE_HASH_SIZE];
+cvar_t *hashtable[FILE_HASH_SIZE];
 
 int cv_modified_flags = 0;
 
 /*
  * Return a hash for a given cvar name.
  */
-static long cv_hash(const char *name)
+IC_PURE
+IC_NON_NULL(1)
+static long cv_hash(_In_z_ const char *name)
 {
+    IC_ASSERT(name != NULL && *name != '\0');
+    #if 0
     if (name == NULL || *name == '\0') {
-        log_warn(_("Got NULL value for parameter 'name'\n"));
+        log_trace(_("Got NULL value for parameter 'name'\n"));
         return -1;
     }
+    #endif
 
     long hash = 0;
     long i = 0;
@@ -56,14 +61,19 @@ static long cv_hash(const char *name)
 }
 
 IC_PUBLIC
-struct cvar *cv_find(const char *name)
+IC_NON_NULL(1)
+cvar_t *cv_find(_In_z_ const char *name)
 {
+    IC_ASSERT(name != NULL && *name != '\0');
+    #if 0
     if (name == NULL || *name == '\0') {
         log_trace(_("Got NULL value for parameter 'name'\n"));
         return NULL;
     }
+    #endif
 
     long hash = cv_hash(name);
+    IC_ASSERT(hash < FILE_HASH_SIZE &&hash >= 0);
     if (hash >= FILE_HASH_SIZE || hash <= 0) {
         log_trace(_("Bad hash %ld for name '%s'\n"), hash, name);
         return NULL;
@@ -83,8 +93,10 @@ struct cvar *cv_find(const char *name)
 /*
  * update cvar flags / reset strings etc.
  */
-static void update_cvar(struct cvar *v, const char *name, const char *value,
-                        enum cv_flags flags)
+static void update_cvar(_In_ cvar_t *v,
+                        _In_z_ const char *name,
+                        _In_z_ const char *value,
+                        _In_ enum cv_flags flags)
 {
     /*
         if the C code is now specifying a variable that the user already
@@ -139,10 +151,12 @@ static void update_cvar(struct cvar *v, const char *name, const char *value,
 /*
  * create a cvar.
  */
-static struct cvar *create_cvar(size_t index, const char *name, 
-                                const char *value, enum cv_flags flags)
+static cvar_t *create_cvar(_In_ size_t index,
+                           _In_z_ const char *name,
+                           _In_z_ const char *value,
+                           _In_ enum cv_flags flags)
 {
-    struct cvar *v = &indexes[index];
+    cvar_t *v = &indexes[index];
 
     if (index >= num_indexes)
         num_indexes = index + 1;
@@ -183,12 +197,13 @@ static struct cvar *create_cvar(size_t index, const char *name,
 }
 
 IC_PUBLIC
-struct cvar *cv_get(const char *name, const char *value, enum cv_flags flags)
+IC_NON_NULL(1, 2)
+cvar_t *cv_get(_In_z_ const char *name,
+               _In_z_ const char *value,
+               enum cv_flags flags)
 {
-    if (name == NULL || value == NULL) {
-        log_error(_("Got NULL value for parameter 'value'"));
-        return NULL;
-    }
+    IC_ASSERT(name != NULL);
+    IC_ASSERT(value != NULL);
 
     if (!cv_validate_string(name)) {
         log_error(_("Invalid cvar name '%s'"), name);

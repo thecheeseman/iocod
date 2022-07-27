@@ -24,7 +24,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 
 IC_PUBLIC
-qbool sys_setenv(const char *name, const char *value)
+IC_NON_NULL(1)
+qbool sys_setenv(_In_z_ const char *name, 
+                 _In_opt_z_ const char *value)
 {
     #ifdef IC_PLATFORM_WINDOWS
     if (value != NULL && *value != '\0')
@@ -40,7 +42,8 @@ qbool sys_setenv(const char *name, const char *value)
 }
 
 IC_PUBLIC
-char *sys_getenv(const char *name)
+IC_NON_NULL(1)
+char *sys_getenv(_In_z_ const char *name)
 {
     return getenv(name);
 }

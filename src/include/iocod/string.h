@@ -23,8 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_STRING_H
 #define IC_STRING_H
 
-#include "iocod/platform.h"
-#include "iocod/types.h"
+#include "iocod.h"
 #include <string.h>
 #include <wchar.h>
 
@@ -44,7 +43,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strdup(const char *s);
+char *_ic_strdup(_In_z_ const char *s);
 
 /**
  * @def strdup
@@ -68,7 +67,8 @@ char *_ic_strdup(const char *s);
  */
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strndup(const char *s, size_t n);
+char *_ic_strndup(_In_z_ const char *s, 
+                  size_t n);
 
 /**
  * @def strndup
@@ -93,7 +93,8 @@ char *_ic_strndup(const char *s, size_t n);
  */
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strlwr(char *s);
+IC_RETURNS_STRING
+char *_ic_strlwr(_In_z_ char *s);
 
 /**
  * @def strlwr
@@ -118,7 +119,8 @@ char *_ic_strlwr(char *s);
  */
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strupr(char *s);
+IC_RETURNS_STRING
+char *_ic_strupr(_In_z_ char *s1);
 
 /**
  * @def strupr
@@ -148,7 +150,8 @@ char *_ic_strupr(char *s);
  */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-int _ic_strcasecmp(const char *s1, const char *s2);
+int _ic_strcasecmp(_In_z_ const char *s1,
+                   _In_z_ const char *s2);
 
 /**
  * @brief Case-insensitive string comparison of at least `n` bytes.
@@ -162,7 +165,9 @@ int _ic_strcasecmp(const char *s1, const char *s2);
  */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-int _ic_strncasecmp(const char *s1, const char *s2, size_t n);
+int _ic_strncasecmp(_In_z_ const char *s1, 
+                    _In_z_ const char *s2, 
+                    size_t n);
 
 /**
  * @def strcasecmp
@@ -202,7 +207,8 @@ int _ic_strncasecmp(const char *s1, const char *s2, size_t n);
  */
 IC_PUBLIC
 IC_NON_NULL(1)
-char *_ic_strrev(char *str);
+IC_RETURNS_STRING
+char *_ic_strrev(_In_z_ char *str);
 
 /**
  * @def strrev 
@@ -228,7 +234,9 @@ char *_ic_strrev(char *str);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 2)
-void strncpyz(char *dest, const char *src, size_t destsize);
+void strncpyz(_Out_writes_z_(destsize) char *dest, 
+              _In_z_ const char *src, 
+              size_t destsize);
 
 /**
  * @brief `strcat` replacement which always ensures there is a trailing '\0'.
@@ -239,7 +247,9 @@ void strncpyz(char *dest, const char *src, size_t destsize);
 */
 IC_PUBLIC
 IC_NON_NULL(1, 3)
-void strncatz(char *dest, size_t size, const char *src);
+void strncatz(_Out_writes_z_(size) char *dest, 
+              size_t size, 
+              _In_z_ const char *src);
 
 /**
  * @brief `snprintf` replacement which always ensures there is a trailing '\0'.
@@ -257,30 +267,42 @@ void strncatz(char *dest, size_t size, const char *src);
  * @return -1 if error, non-negative number otherwise
 */
 IC_PUBLIC
-IC_PRINTF_FORMAT(3, 4)
 IC_NON_NULL(1)
-ssize_t snprintfz(char *dest, size_t size, const char *fmt, ...);
+IC_PRINTF_FORMAT(3, 4, fmt)
+ssize_t snprintfz(_Out_writes_z_(size) char *dest, 
+                  size_t size, 
+                  const char *fmt, ...);
 
 IC_PUBLIC
-char *copy_string(const char *in);
+char *copy_string(_In_z_ const char *in);
 
 IC_PUBLIC
-const char *utf8_decode(const char *text, int *codepoint);
+IC_RETURNS_STRING
+const char *utf8_decode(_In_z_ const char *text,
+                        _Out_ int *codepoint);
 
 IC_PUBLIC
-char *utf8_encode(char *text, int codepoint);
+IC_RETURNS_STRING
+char *utf8_encode(_In_z_ char *text, 
+                  int codepoint);
 
 IC_PUBLIC
-const wchar_t *utf16_decode(const wchar_t *text, int *codepoint);
+IC_RETURNS_STRING
+const wchar_t *utf16_decode(_In_z_ const wchar_t *text, 
+                            _Out_ int *codepoint);
 
 IC_PUBLIC
-wchar_t *utf16_encode(wchar_t *text, int codepoint);
+IC_RETURNS_STRING
+wchar_t *utf16_encode(_In_z_ wchar_t *text,
+                      int codepoint);
 
 IC_PUBLIC
-void utf8_widen(const char *in, wchar_t *out);
+void utf8_widen(_In_z_ const char *in, 
+                _Out_ wchar_t *out);
 
 IC_PUBLIC
-void utf16_shorten(const wchar_t *in, char *out);
+void utf16_shorten(_In_z_ const wchar_t *in, 
+                   _Out_ char *out);
 
 /** @} */
 

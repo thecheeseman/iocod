@@ -32,6 +32,7 @@ unsigned int cmd_argc(void)
 }
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *cmd_argv(unsigned int arg)
 {
     if (arg < argc)
@@ -41,13 +42,19 @@ char *cmd_argv(unsigned int arg)
 }
 
 IC_PUBLIC
-void cmd_argv_buffer(unsigned int arg, size_t buflen, char *buf)
+IC_NON_NULL(3)
+void cmd_argv_buffer(unsigned int arg,
+                     size_t buflen,
+                     _Out_writes_z_(buflen) char *buf)
 {
-    if (buf != NULL && buflen > 0)
-        strncpyz(buf, cmd_argv(arg), buflen);
+    IC_ASSERT(buf != NULL);
+    IC_ASSERT(buflen > 0);
+
+    strncpyz(buf, cmd_argv(arg), buflen);
 }
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *cmd_args_from(unsigned int arg)
 {
     static char args[MAX_STRING_CHARS] = { 0 };
@@ -63,14 +70,19 @@ char *cmd_args_from(unsigned int arg)
 }
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *cmd_args(void)
 {
     return cmd_args_from(1);
 }
 
 IC_PUBLIC
-void cmd_args_buffer(size_t buflen, char *buf)
+IC_NON_NULL(2)
+void cmd_args_buffer(size_t buflen,
+                     _Out_writes_z_(buflen) char *buf)
 {
-    if (buf != NULL && buflen > 0)
-        strncpyz(buf, cmd_args(), buflen);
+    IC_ASSERT(buf != NULL);
+    IC_ASSERT(buflen > 0);
+    
+    strncpyz(buf, cmd_args(), buflen);
 }

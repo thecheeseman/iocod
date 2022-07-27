@@ -38,12 +38,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /*
 ================================================================================
-Platform utilities
+Platform/utilities
 ================================================================================
 */
 
 #include "iocod/platform.h"
 #include "iocod/platform_endianness.h"
+#include "iocod/sal.h"
+#include "iocod/utils.h"
+#include "iocod/types.h" 
+
+/*
+================================================================================
+Standard library
+================================================================================
+*/
 
 //
 // c++
@@ -57,76 +66,6 @@ IC_BEGIN_C_DECLS
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-
-/*
-================================================================================
-General useful macros / utils
-================================================================================
-*/
-
-/* gettext style strings for later */
-#define _(str) (str)
-#define N_(str) str
-
-/**
- * @def ARRAY_SIZE
- * @brief Determine size of a given array at compile-time. From `<kernel.h>`
- */
-#define ARRAY_SIZE(x)       (sizeof(x) / sizeof((x)[0]))
-
-/**
- * @def FIELD_SIZEOF
- * @brief Determine the size of a given field in a given struct.
- *
- * From `<kernel.h>`
- *
- * Example:
- * @code
- * struct coolstruct {
- *     size_t field1;
- * };
- *
- * int size = FIELD_SIZEOF(struct coolstruct, field1); // 4 on 32-bit, 8 on 64-bit
- * @endcode
- */
-#define FIELD_SIZEOF(t, f)  (sizeof(((t*)0)->f))
-
-/** 
- * @defgroup stringmacros String Macros 
- * @brief Useful string macros for stringifying or concatenation.
- * @{ 
- */
-
-/**
- * @def IC_STRINGIFY
- * @brief Stringify.
- */
-#define IC_STRINGIFY_EX(x)      #x
-#define IC_STRINGIFY(x)         IC_STRINGIFY_EX(x)
-
-/**
- * @def IC_CONCAT
- * @brief Concatenate two things.
- */
-#define IC_CONCAT_EX(a, b)      a ## b
-#define IC_CONCAT(a, b)         IC_CONCAT_EX(a, b)
-
-/**
- * @def IC_CONCAT3
- * @brief Concatenate three things.
- */
-#define IC_CONCAT3_EX(a, b, c)  a ## b ## c
-#define IC_CONCAT3(a, b, c)     IC_CONCAT3_EX(a, b, c)
-/** @} */
-
-/*
-================================================================================
-Common types
-================================================================================
-*/
-
-// must be included before any other shared includes
-#include "iocod/types.h" 
 
 /*
 ================================================================================
@@ -154,58 +93,18 @@ iocod includes
 #include "iocod/system.h"
 #include "iocod/threads.h"
 
-/*
-================================================================================
-SAL stuff
-================================================================================
-*/
+//
+extern qbool core_active;
+extern qbool core_quit;
 
-/* from nvim source, for unused variables */
-#ifndef UNUSED
-#if defined HAVE_ATTRIBUTE_UNUSED 
-#define UNUSED __attribute__((unused))
-#else 
-#if defined __has_attribute
-#if __has_attribute(unused)
-#define UNUSED __attribute__((unused))
-#endif /* __has_attribute(unused) */
-#endif /* defined __has_attribute */
-#endif /* HAVE_ATTRIBUTE_UNUSED */
-#ifndef UNUSED
-#define UNUSED
-#endif /* UNUSED */
-#endif
+IC_PUBLIC
+void core_init(int argc, char *argv[]);
 
-/* based on above, but for deprecated features */
-#ifndef DEPRECATED
-#if defined HAVE_ATTRIBUTE_DEPRECATED
-#define DEPRECATED __attribute__((deprecated))
-#else
-#if defined __has_attribute
-#if __has_attribute(deprecated)
-#define DEPRECATED __attribute__((deprecated))
-#endif /* __has_attribute(deprecated) */
-#endif /* defined __has_attribute */
-#endif /* HAVE_ATTRIBUTE_DEPRECATED */
-#ifndef DEPRECATED
-#define DEPRECATED
-#endif /* DEPRECATED */
-#endif
+IC_PUBLIC
+void core_run(void);
 
-/**
- * @def UNUSED_PARAM
- * @brief Mark a parameter as unused in function body. Effectively silences
- * compiler warnings about unused parameters.
- */
-#define UNUSED_PARAM(x) (void)(x)
-
-#define IN
-#define OUT
-#define OPTIONAL
-
-/* utilities for function marking */
-#define INCOMPLETE
-#define NOT_WORKING
+IC_PUBLIC
+void core_shutdown(void);
 
 //
 // c++

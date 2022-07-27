@@ -46,6 +46,7 @@ static char *errtext[] = {
 static int localerr = -1;
 
 IC_PUBLIC
+IC_RETURNS_STRING
 char *sys_library_error(void)
 {
     // handle local error codes first
@@ -78,14 +79,18 @@ char *sys_library_error(void)
 }
 
 IC_PUBLIC
-qbool sys_library_load(const char *path, void **handle)
+IC_NON_NULL(1)
+qbool sys_library_load(_In_z_ const char *path, 
+                       _Out_ void **handle)
 {
     *handle = NULL;
 
+    #if 0
     if (path == NULL) {
         localerr = ERR_NULL_PATH;
         return false;
     }
+    #endif
 
     // append system extension if not provided
     char newpath[PATH_MAX] = { 0 };
@@ -115,7 +120,10 @@ qbool sys_library_close(void *handle)
 }
 
 IC_PUBLIC
-qbool sys_library_load_symbol(void *handle, const char *fn, void **symbol)
+IC_NON_NULL(2)
+qbool sys_library_load_symbol(_In_ void *handle, 
+                              _In_z_ const char *fn, 
+                              _Out_ void **symbol)
 {
     *symbol = NULL;
 
@@ -124,10 +132,12 @@ qbool sys_library_load_symbol(void *handle, const char *fn, void **symbol)
         return false;
     }
 
+    #if 0
     if (fn == NULL) {
         localerr = ERR_NULL_FUNCTION;
         return false;
     }
+    #endif
 
     #ifdef IC_PLATFORM_WINDOWS
     *symbol = (void *) GetProcAddress((HMODULE) handle, fn);

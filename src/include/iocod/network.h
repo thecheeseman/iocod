@@ -23,8 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_NETWORK_H
 #define IC_NETWORK_H
 
-#include "iocod/platform.h"
-#include "iocod/types.h"
+#include "iocod.h"
 
 /**
  * @defgroup network Network
@@ -112,6 +111,7 @@ void net_restart(void);
  * @return NULL-terminated string containing the address
 */
 IC_PUBLIC
+IC_RETURNS_STRING
 char *net_address_to_string(struct netadr addr);
 
 /**
@@ -126,6 +126,7 @@ char *net_address_to_string(struct netadr addr);
  * @return NULL-terminated string containing the address and port
 */
 IC_PUBLIC
+IC_RETURNS_STRING
 char *net_address_to_string_port(struct netadr addr);
 
 /**
@@ -168,7 +169,10 @@ void net_sleep(int msec);
  * @return true if packet was sent, false otherwise
 */
 IC_PUBLIC
-qbool net_send_packet(int length, const void *data, struct netadr to);
+IC_NON_NULL(2)
+qbool net_send_packet(int length,
+                      _In_ const void *data,
+                      struct netadr to);
 
 /** @} */
 

@@ -23,7 +23,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 IC_PUBLIC
-const char *utf8_decode(const char *text, int *codepoint)
+IC_RETURNS_STRING
+const char *utf8_decode(_In_z_ const char *text, 
+                        _Out_ int *codepoint)
 {
     unsigned char c = *text++;
 
@@ -64,7 +66,9 @@ const char *utf8_decode(const char *text, int *codepoint)
 }
 
 IC_PUBLIC
-char *utf8_encode(char *text, int codepoint)
+IC_RETURNS_STRING
+char *utf8_encode(_In_z_ char *text,
+                  int codepoint)
 {
     if (codepoint < 0 || codepoint > 0x10ffff)
         codepoint = 0xfffd;
@@ -90,7 +94,9 @@ char *utf8_encode(char *text, int codepoint)
 }
 
 IC_PUBLIC
-const wchar_t *utf16_decode(const wchar_t *text, int *codepoint)
+IC_RETURNS_STRING
+const wchar_t *utf16_decode(_In_z_ const wchar_t *text,
+                            _Out_ int *codepoint)
 {
     int in = *text++;
     if (in < 0xd800 || in > 0xdfff) 
@@ -103,7 +109,9 @@ const wchar_t *utf16_decode(const wchar_t *text, int *codepoint)
 }
 
 IC_PUBLIC
-wchar_t *utf16_encode(wchar_t *text, int codepoint)
+IC_RETURNS_STRING
+wchar_t *utf16_encode(_In_z_ wchar_t *text, 
+                      int codepoint)
 {
     if (codepoint < 0x10000) {
         *text++ = codepoint;
@@ -117,7 +125,8 @@ wchar_t *utf16_encode(wchar_t *text, int codepoint)
 }
 
 IC_PUBLIC
-void utf8_widen(const char *in, wchar_t *out)
+void utf8_widen(_In_z_ const char *in, 
+                _Out_ wchar_t *out)
 {
     int codepoint;
 
@@ -128,7 +137,8 @@ void utf8_widen(const char *in, wchar_t *out)
 }
 
 IC_PUBLIC
-void utf16_shorten(const wchar_t *in, char *out)
+void utf16_shorten(_In_z_ const wchar_t *in, 
+                   _Out_ char *out)
 {
     int codepoint;
     

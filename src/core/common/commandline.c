@@ -41,13 +41,13 @@ qbool safe_mode(void)
     return false;
 }
 
-void parse_command_line(char *cmdline)
+void parse_command_line(_In_z_ char *cmdline)
 {
     console_lines[0] = cmdline;
     num_console_lines = 1;
 
     qbool inquote = false;
-    while (*cmdline) {
+    while (*cmdline != '\0') {
         if (*cmdline == '"')
             inquote = !inquote;
 
@@ -67,7 +67,7 @@ void parse_command_line(char *cmdline)
 }
 
 IC_PUBLIC
-void com_startup_variable(const char *match)
+void com_startup_variable(_In_ const char *match)
 {
     for (int i = 0; i < num_console_lines; i++) {
         cmd_tokenize_string(console_lines[i]);
