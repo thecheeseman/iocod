@@ -20,13 +20,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "fs_local.h"
 
-int main(int argc, char *argv[])
+void replace_separators(char *path)
 {
-    core_init(argc, argv);
-    core_run();
-    core_shutdown();
-    
-    IC_UNREACHABLE_RETURN(0);
+    for (char *s = path; *s != '\0'; s++) {
+        if (*s == '/' || *s == '\\')
+            *s = PATH_SEP;
+    }
 }

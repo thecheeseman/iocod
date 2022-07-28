@@ -45,7 +45,7 @@ static int modify_msec(int msec)
     int clamptime = 5000;
     if (com_dedicated->integer > 0) {
         if (com_sv_running->integer > 0 && msec > 500)
-            ic_printf(_("Hitch warning: %i msec frame ime\n"), msec);
+            ic_printf(_("Hitch warning: %i msec frame time\n"), msec);
     } else {
         if (com_sv_running->integer > 0)
             clamptime = 200; // clients

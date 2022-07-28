@@ -20,39 +20,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "fs_local.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <ShlObj.h>
-#endif
-
-static char homepath[MAX_OSPATH] = { 0 };
-
-IC_PUBLIC
-char *sys_default_homepath(void)
+IC_NON_NULL(1, 3, 4)
+void fs_build_ospath(_In_z_ const char *base, 
+                     _In_opt_z_ const char *game, 
+                     _In_z_ const char *path,
+                     _Out_ char *out, 
+                     int a)
 {
-    if (*homepath == '\0') {
-        #ifdef IC_PLATFORM_WINDOWS
-        wchar_t wpath[MAX_OSPATH] = { 0 };
+    if (game == NULL || *game == '\0')
+        game = fs_gamedir;
 
-        if (SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, wpath) == S_OK) {
-            char path[MAX_OSPATH] = { 0 };
+    size_t baselen = strlen(base);
+    size_t gamelen = strlen(game);
+    size_t pathlen = strlen(path);
 
-            utf16_shorten(wpath, path);
-            snprintf(homepath, sizeof(homepath), "%s\\iocod", path);
+    if (baselen + gamelen + pathlen + 2 > MAX_OSPATH) {
+        if (a != 0) {
+            *out = '\0';
+            return;
         }
-        #else
-        char *p;
-        if ((p = getenv("HOME")) != NULL) {
-            #ifdef IC_PLATFORM_MACOS
-            snprintf(homepath, sizeof(homepath),
-                        "%s/Library/Application Support/iocod", p);
-            #else
-            snprintf(homepath, sizeof(homepath), "%s/.iocod", p);
-            #endif
-        }
-        #endif
+
+        ic_fatal(_("OS Path length exceeded\n"));
     }
 
-    return homepath;
+    memcpy(out, base, baselen);
+    out[baselen] = '/';
+    memcpy(out + baselen + 1, game, gamelen);
+    out[baselen + gamelen + 1] = '/';
+    memcpy(out + baselen + gamelen + 2, path, pathlen + 1);
+    replace_separators(out);
 }

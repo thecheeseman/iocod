@@ -23,18 +23,61 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IOCOD_FS_H
 #define IOCOD_FS_H
 
-#include "iocod/platform.h"
-#include "iocod/types.h"
+#include "iocod.h"
 
-#define BASEGAME "main"
-#define DEFAULTCFG "default_mp.cfg"
+/**
+ * @defgroup filesystem Filesystem
+ * @brief File system module.
+ * 
+ * @{
+ */
 
-#define MAX_OSPATH 256
+extern cvar_t *cl_language;
+
+#define BASEGAME    "main"
+#define DEFAULTCFG  "default_mp.cfg"
+
+/**
+ * @def MAX_OSPATH
+ * @brief Maximum length of an OS path string.
+ * 
+ * @note This is lower than both Windows/Linux's MAX_PATH/PATH_MAX, but 
+ * realistically will be sufficient unless we're running in a ton of 
+ * subdirectories.
+ */
+#define MAX_OSPATH          256
+
+/**
+ * @def MAX_OSPATHW
+ * @brief Maximum length of an OS path wide string (Windows only).
+ */
+#define MAX_OSPATHW         512
+
+/**
+ * @def MAX_PAK_FILES
+ * @brief Maximum number of pk3 files.
+ */
+#define MAX_PAK_FILES       1024
+
+/**
+ * @def MAX_PAK_HASH_SIZE
+ * @brief Maximum number of files in any given pk3 file.
+ */
+#define MAX_PAK_HASH_SIZE   4096
+
+/**
+ * @def MAX_FOUND_FILES
+ * @brief Maximum number of files that can be found in a directory via
+ * @ref sys_list_files().
+ */
+#define MAX_FOUND_FILES     4096
 
 IC_PUBLIC
 void fs_init(void);
 
 IC_PUBLIC
 void fs_shutdown(qbool a);
+
+/** @} */
 
 #endif /* IOCOD_FS_H */

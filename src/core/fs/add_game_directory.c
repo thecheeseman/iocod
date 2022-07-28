@@ -20,13 +20,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "fs_local.h"
 
-int main(int argc, char *argv[])
+IC_NON_NULL(1, 2)
+void add_game_directory(_In_z_ const char *path,
+                        _In_z_ const char *dir)
 {
-    core_init(argc, argv);
-    core_run();
-    core_shutdown();
-    
-    IC_UNREACHABLE_RETURN(0);
+    char newdir[MAX_OSPATH] = { 0 };
+    strncpyz(newdir, dir, sizeof(newdir));
+    strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+
+    searchpath_t *sp = (searchpath_t *) ic_malloc(sizeof(searchpath_t));
+    sp->next = NULL;
+    sp->pack = NULL;
+    sp->dir = (directory_t *) ic_calloc(sizeof(directory_t), 1);
+    strncpyz(sp->dir->path, path, sizeof(sp->dir->path));
+    strncpyz(sp->dir->game, newdir, sizeof(sp->dir->game));
+
+    add_search_path(sp);
+    find_pack_files(path, newdir);
 }

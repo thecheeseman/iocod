@@ -23,6 +23,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_PLATFORM_ENDIANNESS_H
 #define IC_PLATFORM_ENDIANNESS_H
 
+/**
+ * @addtogroup platform
+ * 
+ * @{
+ */
+
 /* always include config.h */
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -50,7 +56,9 @@ extern float float_swap(const float *f);
  */
 
 #if defined IC_PLATFORM_LITTLE_ENDIAN && defined IC_PLATFORM_BIG_ENDIAN
+#if !defined __DOXYGEN__
 #error "Platform endianness defined as both little and big"
+#endif
 #elif defined IC_PLATFORM_LITTLE_ENDIAN
 #define copy_little_short(dest, src) memcpy(dest, src, 2);
 #define copy_little_long(dest, src)  memcpy(dest, src, 4);
@@ -72,5 +80,7 @@ extern float float_swap(const float *f);
 #else
 #error "Platform endianness not defined"
 #endif
+
+/** @} */
 
 #endif /* IC_PLATFORM_ENDIANNESS_H */

@@ -21,8 +21,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /**
- * @defgroup platform Platform Macros
- * @brief Macros for platform and compiler detection, features, attributes, etc.
+ * @defgroup platform Platform
+ * @brief Utilities for platform/compiler detection, features, attributes, etc.
+ * 
  * @{
  */
 
@@ -1077,7 +1078,8 @@ IC_SILENCE_WARNING(4068)
 #define IC_GCC_VERSION  0
 #define IC_MSVC_VERSION 0
 
-#define IC_PLATFORM_LITTLE_ENDIAN // doxygen is little endian obviously
+#define IC_PLATFORM_LITTLE_ENDIAN   // doxygen is little endian obviously
+#define IC_PLATFORM_BIG_ENDIAN      // doxygen is big endian obviously
 
 #else
 #ifndef IC_PLATFORM_ARCH

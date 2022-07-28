@@ -28,11 +28,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * @defgroup memory Memory
- * @brief Library replacement memory functions.
+ * @brief Memory module. Contains functions for alloc/dealloc heap and hunk
+ * memory.
+ * 
  * @{
  */
 
-//#define hunk_init()
 IC_PUBLIC
 void hunk_init(void);
 
@@ -80,8 +81,15 @@ void hunk_clear_temp_high(void);
 
  * Always allocates at least 1 byte of memory, and will fatally exit if
  * unable to allocate the memory requested.
+ * 
+ * This function is part of a rudimentary memory leak detection system. Make
+ * sure all calls to `ic_malloc` are free'd accordingly with `ic_free`.
  *
- * @param[in] size size in bytes to allocate
+ * @param[in] size     size in bytes to allocate
+ * @param[in] filename filename of the calling function
+ * @param[in] function name of the calling function
+ * @param[in] line     line number of the calling function
+ * @return pointer to allocated memory or NULL if failed
 */
 IC_MALLOC
 IC_PUBLIC
@@ -90,6 +98,11 @@ void *_ic_malloc(size_t size,
                  const char *function, 
                  int line);
 
+/**
+ * @def ic_malloc
+ * @brief Wrapper for @ref _ic_malloc that automatically inserts the
+ * calling function name, and filename/line number for debug purposes.
+ */
 #define ic_malloc(size) \
     _ic_malloc(size, __FILENAME__, __func__, __LINE__)
 
@@ -103,6 +116,10 @@ void *_ic_malloc(size_t size,
 IC_PUBLIC
 void _ic_free(void *ptr);
 
+/**
+ * @def ic_free
+ * @brief Wrapper for @ref _ic_free.
+ */
 #define ic_free(ptr) _ic_free(ptr)
 
 /**
@@ -110,15 +127,27 @@ void _ic_free(void *ptr);
  *
  * Always checks that we allocate at least 1 element of size 1. Will fatally
  * exit if unable to allocate the memory requested.
+ * 
+ * This function is part of a rudimentary memory leak detection system. Make
+ * sure all calls to `ic_calloc` are free'd accordingly with `ic_free`.
  *
- * @param[in] count number of elements to allocate
- * @param[in] size size of each element
+ * @param[in] count    number of elements to allocate
+ * @param[in] size     size of each element
+ * @param[in] filename filename of the calling function
+ * @param[in] function name of the calling function
+ * @param[in] line     line number of the calling function
+ * @return pointer to allocated memory or NULL if failed
 */
 IC_MALLOC
 IC_PUBLIC
 void *_ic_calloc(size_t count, size_t size, const char *filename, 
                  const char *function, int line);
 
+/**
+ * @def ic_calloc
+ * @brief Wrapper for @ref _ic_calloc that automatically inserts the
+ * calling function name, and filename/line number for debug purposes.
+ */
 #define ic_calloc(count, size) \
     _ic_calloc(count, size, __FILENAME__, __func__, __LINE__)
 
@@ -129,14 +158,26 @@ void *_ic_calloc(size_t count, size_t size, const char *filename,
  * is NULL, will automatically allocate new memory instead of reallocating.
  * Always makes sure to allocate memory of at least 1 byte. Will fatally exit
  * if it cannot reallocate memory.
+ * 
+ * This function is part of a rudimentary memory leak detection system. Make
+ * sure all calls to `ic_realloc` are free'd accordingly with `ic_free`.
  *
- * @param[in] oldptr old memory to reallocate
- * @param[in] size new size of memory
+ * @param[in] oldptr   old memory to reallocate
+ * @param[in] size     new size of memory
+ * @param[in] filename filename of the calling function
+ * @param[in] function name of the calling function
+ * @param[in] line     line number of the calling function
+ * @return pointer to allocated memory or NULL if failed
 */
 IC_PUBLIC
 void *_ic_realloc(void *oldptr, size_t size, const char *filename, 
                   const char *function, int line);
 
+/**
+ * @def ic_realloc
+ * @brief Wrapper for @ref _ic_realloc that automatically inserts the
+ * calling function name, and filename/line number for debug purposes.
+ */
 #define ic_realloc(old, size) \
     _ic_realloc(old, size, __FILENAME__, __func__, __LINE__)
 

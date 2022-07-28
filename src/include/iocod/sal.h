@@ -23,7 +23,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_SAL_H
 #define IC_SAL_H
 
-/* SAL stuff */
+/**
+ * @addtogroup platform
+ *
+ * @{
+ */
+
+/*
+ * SAL stuff
+ * ignored in Doxygen
+ */
 #ifdef IC_PLATFORM_MSVC
 #include <sal.h>
 #endif
@@ -65,17 +74,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * @brief This attribute tells the compiler to check the arguments for
  consistency with `printf`-style formatted strings.
  *
- * @param idx starting index of the format specifier
+ * @param idx   starting index of the format specifier
  * @param first starting index of the varargs
+ * @param var   format variable (for MSVC)
  *
  * For example:
  * @code
- *  IC_PRINTF_FORMAT(2, 3)
+ *  IC_PRINTF_FORMAT(2, 3, fmt)
  *  void print_error(int code, const char *fmt, ...);
  * @endcode
  *
- * @note This feature is only available on compatible GNUC compilers, where it
- * is defined as `__attribute__((format(printf, idx, first)))`.
+ * @note On GNUC compilers, this is defined as 
+ * `__attribute__((format(printf, idx, first)))`.
+ * @note On MSVC this is defined as with the SAL annotation 
+ * `_At_(var, _Printf_format_string_)`
  *
  * @since 0.110.0
  */
@@ -129,12 +141,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define IC_RETURNS_NON_NULL
 #endif
 
+/**
+ * @def IC_RETURNS_STRING
+ * @brief Microsoft-specific annotation to indicate that the function returns a
+ * string.
+ * @since 0.205.0
+ */
 #ifdef _Ret_z_
 #define IC_RETURNS_STRING _Ret_z_
 #else
 #define IC_RETURNS_STRING
 #endif
-
 
 /**
  * @def UNUSED_PARAM
@@ -146,5 +163,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 /* utilities for function marking */
 #define INCOMPLETE
 #define NOT_WORKING
+
+/** @} */
 
 #endif /* IC_SAL_H */

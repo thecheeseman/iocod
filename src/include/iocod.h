@@ -82,6 +82,7 @@ iocod includes
 #include "iocod/cvar.h"
 #include "iocod/events.h"
 #include "iocod/fs.h"
+#include "iocod/localized.h"
 #include "iocod/log.h"
 #include "iocod/memory.h"
 #include "iocod/metrics.h"
@@ -94,9 +95,6 @@ iocod includes
 #include "iocod/threads.h"
 
 //
-extern qbool core_active;
-extern qbool core_quit;
-
 IC_PUBLIC
 void core_init(int argc, char *argv[]);
 

@@ -20,39 +20,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
+#ifndef IOCOD_LOCALIZED_H
+#define IOCOD_LOCALIZED_H
+
 #include "iocod.h"
 
-#ifdef IC_PLATFORM_WINDOWS
-#include <ShlObj.h>
-#endif
-
-static char homepath[MAX_OSPATH] = { 0 };
+IC_PUBLIC
+void lz_print_available_languages(void);
 
 IC_PUBLIC
-char *sys_default_homepath(void)
-{
-    if (*homepath == '\0') {
-        #ifdef IC_PLATFORM_WINDOWS
-        wchar_t wpath[MAX_OSPATH] = { 0 };
+u32 lz_current_language(void);
 
-        if (SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, wpath) == S_OK) {
-            char path[MAX_OSPATH] = { 0 };
+IC_PUBLIC
+IC_NON_NULL(1)
+qbool lz_get_language_index(_In_z_ const char *language,
+                            _Out_ u32 *language_id);
 
-            utf16_shorten(wpath, path);
-            snprintf(homepath, sizeof(homepath), "%s\\iocod", path);
-        }
-        #else
-        char *p;
-        if ((p = getenv("HOME")) != NULL) {
-            #ifdef IC_PLATFORM_MACOS
-            snprintf(homepath, sizeof(homepath),
-                        "%s/Library/Application Support/iocod", p);
-            #else
-            snprintf(homepath, sizeof(homepath), "%s/.iocod", p);
-            #endif
-        }
-        #endif
-    }
+IC_PUBLIC
+IC_RETURNS_STRING
+const char *lz_get_language_name(u32 language);
 
-    return homepath;
-}
+IC_PUBLIC
+IC_RETURNS_STRING
+IC_NON_NULL(1)
+char *lz_get_pak_language(_In_z_ const char *pak_name);
+
+#endif /* IOCOD_LOCALIZED_H */

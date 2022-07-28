@@ -20,13 +20,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "fs_local.h"
 
-int main(int argc, char *argv[])
+void fs_set_restrictions(void)
 {
-    core_init(argc, argv);
-    core_run();
-    core_shutdown();
-    
-    IC_UNREACHABLE_RETURN(0);
+    if (fs_restrict->integer == 0)
+        return;
+
+    //cv_set("fs_restrict", 1);
+    cv_set_integer("fs_restrict", 1);
+
+    ic_printf(_("\nRunning in restricted demo mode\n"));
+    fs_shutdown(false);
+    fs_startup(BASEGAME);
+
+    // check pak0 checksum
 }

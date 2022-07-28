@@ -26,17 +26,46 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 #include <inttypes.h>
 
+/**
+ * @file   system.h
+ * @author thecheeseman
+ *
+ */
+
+/**
+ * @defgroup system System
+ * @brief System interface module.
+ * 
+ * @{
+ */
+
+/**
+ * @brief Initialize system.
+ */
 IC_PUBLIC
 void sys_init(void);
 
+/**
+ * @brief Get the current working directory.
+ * @return current working directory, or NULL if failed
+*/
 IC_PUBLIC
 IC_RETURNS_STRING
 char *sys_cwd(void);
 
+/**
+ * @brief Make the directory @p path.
+ * @param[in] path path to make
+ * @return true if success, false otherwise
+*/
 IC_PUBLIC
 IC_NON_NULL(1)
 qbool sys_mkdir(_In_z_ const char *path);
 
+/**
+ * @brief Get the name of the current system user.
+ * @return current user name, or "player" if failed
+*/
 IC_PUBLIC
 IC_RETURNS_STRING
 char *sys_get_current_user(void);
@@ -185,6 +214,9 @@ void sys_platform_init();
 #define sys_is_windows() false
 #endif
 
+/**
+ * @brief Supported system types.
+*/
 enum system_type {
     /**
      * @brief Generic Linux.
@@ -240,10 +272,27 @@ enum system_type {
 IC_PUBLIC
 enum system_type sys_system_type(void);
 
+/**
+ * @brief Produce a fatal error.
+ * @param[in] err error message
+ * @param ...
+*/
 IC_PUBLIC
 IC_PRINTF_FORMAT(1, 2, err)
 void sys_error(const char *err, ...);
 
+/**
+ * @brief Get the last error string.
+ * @return NULL-terminated string containing error message, otherwise NULL
+*/
+IC_PUBLIC
+IC_RETURNS_STRING
+char *sys_error_string(void);
+
+/**
+ * @brief Sleep until the next input is received, with @p msec msec timeout.
+ * @param[in] msec milliseconds to wait
+*/
 IC_PUBLIC
 void sys_sleep(int msec);
 
@@ -280,7 +329,66 @@ IC_NON_NULL(2)
 qbool sys_random_bytes(size_t len,
                        _Out_writes_(len) void *buf);
 
+/**
+ * @brief Get the default home path for the current system.
+ * 
+ * On Windows, this will try to access the default `%AppData%\iocod` folder, 
+ * usually something similar to `C:\Users\user\AppData\Roaming\iocod`. 
+ * 
+ * On Linux, this defaults to `~/.iocod`.
+ * 
+ * On MacOS, this defaults to `~/Library/Application Support/iocod`.
+ * 
+ * @return NULL-terminated string containing home path, otherwise blank
+*/
 IC_PUBLIC
 char *sys_default_homepath(void);
+
+/**
+ * @brief Check if the given @p path has any files.
+ * @param[in] path path to check
+ * @return true if path has files, false otherwise
+*/
+IC_PUBLIC
+IC_NON_NULL(1)
+qbool sys_directory_has_contents(_In_z_ const char *path);
+
+/**
+ * @brief Get a list of all the files in the given @p directory.
+ * 
+ * List returned is a NULL-terminated char * array.
+ * Last element is always NULL.
+ * 
+ * Example to get all pk3 files:
+ * 
+ * @code
+ * u32 num_files;
+ * char **pk3s = sys_list_files(path, ".pk3", NULL, false, &num_files);
+ * @endcode
+ * 
+ * @param[in]  directory   path to directory to get files from
+ * @param[in]  extension   extension to filter files, or "" for all types
+ * @param[in]  filter      file filter, or NULL for none (default)
+ * @param[in]  want_subs   true to include subdirectories, false otherwise
+ * @param[out] total_files number of files found
+ * @return list of files, or NULL if failed
+*/
+IC_PUBLIC
+IC_NON_NULL(1, 5)
+char **sys_list_files(_In_z_ const char *directory,
+                      _In_opt_z_ const char *extension,
+                      _In_opt_z_ const char *filter,
+                      qbool want_subs,
+                      _Out_ u32 *total_files);
+
+/**
+ * @brief Free the file list returned by @ref sys_list_files.
+ * @param[in] list list to free
+*/
+IC_PUBLIC
+IC_NON_NULL(1)
+void sys_free_file_list(_In_ char **list);
+
+/** @} */
 
 #endif /* IC_SYSTEM_H */

@@ -26,9 +26,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <locale.h>
 
-qbool core_active = true;
-qbool core_quit = false;
-
 static void print_gpl(void)
 {
     ic_printf("iocod copyright (C) 2022 thecheeseman\n"
@@ -100,13 +97,20 @@ void core_init(int argc, char *argv[])
 IC_PUBLIC
 void core_run(void)
 {
-    while (core_active) {
+    while (true) {
         com_frame();
     }
+
+    // sys_exit will never allow this to be reached
+    IC_UNREACHABLE();
 }
 
 IC_PUBLIC
 void core_shutdown(void)
 {
-    
+    net_shutdown();
+    cv_shutdown();
+    log_shutdown();
+    con_shutdown();
+    config_shutdown();
 }

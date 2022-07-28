@@ -23,36 +23,40 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 
 #ifdef IC_PLATFORM_WINDOWS
-#include <ShlObj.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif
 
-static char homepath[MAX_OSPATH] = { 0 };
+#ifdef IC_PLATFORM_WINDOWS
+static char *get_error_string(int code)
+{
+    static wchar_t wmsg[1024] = { 0 };
+    static char msg[1024] = { 0 };
+
+    FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                   NULL, code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                   wmsg, sizeof(wmsg), NULL);
+
+    utf16_shorten(wmsg, msg);
+
+    if (*msg == '\0')
+        snprintf(msg, sizeof(msg), "WSAGetLastError: %d", code);
+
+    return msg;
+}
+#endif
 
 IC_PUBLIC
-char *sys_default_homepath(void)
+IC_RETURNS_STRING
+char *sys_error_string(void)
 {
-    if (*homepath == '\0') {
-        #ifdef IC_PLATFORM_WINDOWS
-        wchar_t wpath[MAX_OSPATH] = { 0 };
+    int code;
 
-        if (SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, wpath) == S_OK) {
-            char path[MAX_OSPATH] = { 0 };
-
-            utf16_shorten(wpath, path);
-            snprintf(homepath, sizeof(homepath), "%s\\iocod", path);
-        }
-        #else
-        char *p;
-        if ((p = getenv("HOME")) != NULL) {
-            #ifdef IC_PLATFORM_MACOS
-            snprintf(homepath, sizeof(homepath),
-                        "%s/Library/Application Support/iocod", p);
-            #else
-            snprintf(homepath, sizeof(homepath), "%s/.iocod", p);
-            #endif
-        }
-        #endif
-    }
-
-    return homepath;
+    #ifdef IC_PLATFORM_WINDOWS
+    code = GetLastError();
+    return get_error_string(code);
+    #else
+    code = errno;
+    return strerror(code);
+    #endif
 }

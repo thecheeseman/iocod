@@ -20,13 +20,26 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ================================================================================
 */
 
-#include "iocod.h"
+#include "fs_local.h"
 
-int main(int argc, char *argv[])
+IC_NON_NULL(1)
+void add_search_path(_In_ searchpath_t *sp)
 {
-    core_init(argc, argv);
-    core_run();
-    core_shutdown();
-    
-    IC_UNREACHABLE_RETURN(0);
+    if (!sp->localized || fs_searchpaths == NULL) {
+        sp->next = fs_searchpaths;
+        fs_searchpaths = sp;
+    } else {
+        searchpath_t *a = fs_searchpaths;
+        searchpath_t *b;
+
+        do {
+            b = a;
+            a = b->next;
+            if (a == NULL)
+                break;
+        } while (a->localized == 0);
+
+        sp->next = a;
+        b->next = sp;
+    }
 }

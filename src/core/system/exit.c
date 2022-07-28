@@ -27,23 +27,12 @@ IC_PUBLIC
 IC_NO_RETURN
 void sys_exit(int code)
 {
-    net_shutdown();
-    cv_shutdown();
-    log_shutdown();
-    con_shutdown();
-    config_shutdown();
-
-    core_active = false;
-    core_quit = true;
-
+    core_shutdown();
     exit(code);
 }
 
 IC_PUBLIC
 void sys_quit(void)
 {
-    core_active = false;
-    core_quit = true;
-
     sys_exit(IC_OK);
 }

@@ -16,6 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_subdirectory("core")
-add_subdirectory("miniz")
-add_subdirectory("dedicated")
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+
+project(miniz LANGUAGES C CXX)
+
+include_directories("${STAGED_INSTALL_PREFIX}/include")
+include_directories("../include")
+include_directories(${PROJECT_BINARY_DIR})
+link_directories("${STAGED_INSTALL_PREFIX}/lib")
+
+add_library(miniz STATIC "miniz.c")
+
+set_target_properties(miniz PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/lib"
+)
+

@@ -36,7 +36,7 @@ void sys_handle_error_exit(const char *function)
     LPVOID lpDisplayBuf = NULL;
     DWORD dw = GetLastError();
 
-    FormatMessage(
+    FormatMessageW(
         FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -51,11 +51,11 @@ void sys_handle_error_exit(const char *function)
                                        (lstrlen((LPCTSTR) lpMsgBuf) +
                                         lstrlen((LPCTSTR) function) + 40) *
                                        sizeof(TCHAR));
-    StringCchPrintf((LPTSTR) lpDisplayBuf,
-                    LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-                    TEXT("%s failed with error %d: %s"),
-                    function, dw, lpMsgBuf);
-    MessageBox(NULL, (LPCTSTR) lpDisplayBuf, TEXT("Error"), MB_OK);
+    StringCchPrintfW((LPTSTR) lpDisplayBuf,
+                     LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+                     TEXT("%s failed with error %d: %s"),
+                     function, dw, lpMsgBuf);
+    MessageBoxW(NULL, (LPCTSTR) lpDisplayBuf, TEXT("Error"), MB_OK);
 
     LocalFree(lpMsgBuf);
     LocalFree(lpDisplayBuf);
