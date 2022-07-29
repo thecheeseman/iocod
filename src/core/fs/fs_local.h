@@ -26,11 +26,33 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "iocod.h"
 #include "miniz/miniz.h"
 
+#define FS_GENERAL_REF  0x01
+#define FS_UI_REF       0x02
+#define FS_CGAME_REF    0x04
+#define FS_QAGAME_REF   0x08
+
+// these are identical to q3
+// qagame_mp_x86.dll
+#define SYS_DLLNAME_QAGAME_SHIFT 6
+#define SYS_DLLNAME_QAGAME "wgmgskesve~><4jrr"
+
+// cgame_mp_x86.dll
+#define SYS_DLLNAME_CGAME_SHIFT 2
+#define SYS_DLLNAME_CGAME "eicogaoraz:80fnn"
+
+// ui_mp_x86.dll
+#define SYS_DLLNAME_UI_SHIFT 5
+#define SYS_DLLNAME_UI "zndrud}=;3iqq"
+
 typedef struct packed_file {
     char *name;
 
-    u64 pos;
-    u64 len;
+    u32 index;
+    i64 offset;
+    i64 size;
+    i64 size_uncompressed;
+
+    mz_zip_archive_file_stat stat;
 
     struct packed_file *next;
 } packed_file_t;
@@ -47,6 +69,8 @@ typedef struct {
     i32 pure_checksum;
     u32 num_files;
     u32 hash_size;
+
+    i32 referenced;
 
     packed_file_t **hash_table;
     packed_file_t *build_buffer;
@@ -67,6 +91,33 @@ typedef struct searchpath {
     u8 language;
 } searchpath_t;
 
+union qfile_gu {
+    FILE *o;
+    mz_zip_archive *z;
+};
+
+struct qfile_u {
+    union qfile_gu file;
+    qbool unique;
+};
+
+typedef struct {
+    struct qfile_u handle;
+    qbool handle_sync;
+
+    u64 offset;
+    u64 size;
+    u64 zip_offset;
+    qbool zipfile;
+    qbool streamed;
+
+    char name[MAX_OSPATH];
+} filehandle_data_t;
+
+#define MAX_FILE_HANDLES 1024
+
+extern filehandle_data_t fs_handle[MAX_FILE_HANDLES];
+
 extern searchpath_t *fs_searchpaths;
 extern u32 fs_packed_files;
 
@@ -82,6 +133,42 @@ extern cvar_t *fs_homepath;
 extern cvar_t *fs_gamedirvar;
 extern cvar_t *fs_restrict;
 extern cvar_t *fs_ignore_localized;
+
+IC_NON_NULL(1, 2)
+FILE *fs_fopen(_In_z_ const char *path,
+               _In_z_ const char *mode);
+
+/**
+ * @brief Get the next available filehandle.
+ * @return filehandle or 0 if failed
+*/
+filehandle handle_for_file();
+
+/**
+ * @brief Get the FILE pointer for a given @p f filehandle.
+ * @param[in] f filehandle
+ * @return FILE pointer or NULL if failed
+*/
+FILE *file_for_handle(filehandle f);
+
+IC_NON_NULL(1)
+i64 fs_filep_length(_In_ FILE *handle);
+
+/**
+ * @brief Get the length of a given @p f filehandle.
+ * @param[in] f filehandle
+ * @return length of the file or -1 if failed
+*/
+i64 fs_file_length(filehandle f);
+
+IC_NON_NULL(1, 2)
+int filename_compare(_In_z_ const char *s1,
+                     _In_z_ const char *s2);
+
+IC_NON_NULL(1, 2)
+qbool extension_match(_In_z_ const char *filename,
+                      _In_z_ const char *ext,
+                      size_t namelen);
 
 /**
  * @brief Replace path separator in @p path with matching OS preference. 
@@ -116,6 +203,35 @@ void find_pack_files(_In_z_ const char *path,
 IC_NON_NULL(1)
 pack_t *fs_load_zip(_In_z_ const char *zipfile);
 
-void fs_display_path(qbool a);
+void fs_display_path(qbool skip_localized);
+
+IC_NON_NULL(1)
+u32 hash_filename(_In_z_ const char *filename,
+                  u32 hash_size);
+
+/**
+ * @brief Determine if we should use a given searchpath. Always allows
+ * non-localized searchpaths. For localized searchpaths, only match if we're
+ * the current language and cvar `fs_ignoreLocalized` is set to 0.
+ * 
+ * @param[in] sp searchpath to check
+ * @return true if we should use this searchpath, false otherwise
+*/
+IC_NON_NULL(1)
+qbool use_localized_searchpath(_In_ searchpath_t *sp);
+
+/**
+ * @brief Open a file for reading.
+ *
+ * @param[in]  filename the name of the file to open
+ * @param[in]  unique
+ * @param[out] file     filehandle, or NULL to check if the file exists only
+ * @return size of file, or if @p NULL, true or false if the file exists
+*/
+IC_PUBLIC
+IC_NON_NULL(1)
+i64 fs_fopen_file_read(_In_z_ const char *filename,
+                       qbool unique,
+                       _Out_opt_ filehandle *file);
 
 #endif /* FS_LOCAL_H */

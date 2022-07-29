@@ -24,13 +24,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 cvar_t *cl_language;
 
+filehandle_data_t fs_handle[MAX_FILE_HANDLES];
+
 char last_valid_base[MAX_OSPATH];
 char last_valid_game[MAX_OSPATH];
 
 IC_PUBLIC
 void fs_init(void)
-{
+{   
     ic_print_header("filesystem", 20, '-');
+    metric_begin();
     
     com_startup_variables(8, "fs_cdpath", "fs_basepath", "fs_homepath", 
                           "fs_game", "fs_copyfiles", "fs_restrict", 
@@ -45,22 +48,22 @@ void fs_init(void)
     // seh update language info
 
     fs_set_restrictions();
-    #if 0
+
     if (fs_read_file(DEFAULTCFG, NULL) <= 0) {
         ic_fatal(_("Couldn't load %s. Make sure iocod is run from "
                    "the correct folder."), DEFAULTCFG);
     }
-    #endif
 
     strncpyz(last_valid_base, fs_basepath->string, sizeof(last_valid_base));
     strncpyz(last_valid_game, fs_gamedirvar->string, sizeof(last_valid_game));
 
+    metric_end();
     ic_print_header("", 20, '-');
 }
 
 static void shutdown_searchpaths(void)
 {
-    searchpath_t *next;
+    searchpath_t *next = NULL;
     for (searchpath_t *sp = fs_searchpaths; sp != NULL; sp = next) {
         if (sp->pack != NULL) {
             mz_zip_reader_end(sp->pack->handle);

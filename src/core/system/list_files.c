@@ -143,7 +143,7 @@ static void list_find_files(_In_ struct file_list *list)
         }
 
         // wtf
-        if (*list->extension != NULL &&
+        if (*(list->extension) != NULL &&
             ((strlen(d->d_name) < strlen(list->extension)) ||
              strcasecmp(d->d_name + strlen(d->d_name) -
                         strlen(list->extension), list->extension))) {
@@ -156,7 +156,7 @@ static void list_find_files(_In_ struct file_list *list)
         list_add_file(list, d->d_name);
     }
 
-    closedir(fdir);
+    closedir(list->fdir);
     #endif
 }
 
@@ -165,7 +165,9 @@ static void list_filtered_files(_In_ struct file_list *list,
                                 _In_z_ const char *basedir,
                                 _In_z_ const char *subdir)
 {
-
+    UNUSED_PARAM(list);
+    UNUSED_PARAM(basedir);
+    UNUSED_PARAM(subdir);
 }
 
 IC_PUBLIC

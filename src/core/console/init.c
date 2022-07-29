@@ -36,6 +36,8 @@ qbool con_initialized(void)
     return console.initialized;
 }
 
+extern void sys_signal_handler(int signal);
+
 #ifdef IC_PLATFORM_WINDOWS
 static qbool WINAPI con_sigint(DWORD sig)
 {

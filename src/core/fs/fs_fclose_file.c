@@ -22,20 +22,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "fs_local.h"
 
-IC_NON_NULL(1, 2)
-void add_game_directory(_In_z_ const char *path,
-                        _In_z_ const char *dir)
+IC_PUBLIC
+void fs_fclose_file(filehandle f)
 {
-    char newdir[MAX_OSPATH] = { 0 };
-    strncpyz(newdir, dir, sizeof(newdir));
-    strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+    filehandle_data_t *handle = &fs_handle[f];
 
-    searchpath_t *sp = (searchpath_t *) ic_calloc(sizeof(searchpath_t), 1);
-    sp->dir = (directory_t *) ic_calloc(sizeof(directory_t), 1);
+    if (handle->zipfile) {
+        // only close unique handles
+        // these are if you specify fs_fopen_read() with unique = true
+        // otherwise, the filesystem will close the regular pk3 handles
+        // at fs_shutdown
+        if (handle->handle.unique) {
+            mz_zip_reader_end(handle->handle.file.z);
+            ic_free(handle->handle.file.z);
+        }
+    } else {
+        if (handle->handle.file.o)
+            fclose(handle->handle.file.o);
+    }
 
-    strncpyz(sp->dir->path, path, sizeof(sp->dir->path));
-    strncpyz(sp->dir->game, newdir, sizeof(sp->dir->game));
-
-    add_search_path(sp);
-    find_pack_files(path, newdir);
+    memset(handle, 0, sizeof(*handle));
 }

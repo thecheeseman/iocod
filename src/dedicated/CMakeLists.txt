@@ -59,8 +59,8 @@ else()
     add_executable(iocod_dedicated ${DED_SRCS})
 endif()
 
-add_dependencies(iocod_dedicated iocod_core miniz)
-target_link_libraries(iocod_dedicated iocod_core miniz)
+add_dependencies(iocod_dedicated iocod_core)
+target_link_libraries(iocod_dedicated iocod_core)
 
 if (IC_PLATFORM_WINDOWS)
     target_link_options(iocod_dedicated BEFORE PUBLIC "/SUBSYSTEM:CONSOLE,5.01")

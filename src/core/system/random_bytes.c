@@ -54,7 +54,10 @@ static inline qbool random_bytes_windows(size_t len, void *buf)
 #ifdef SYS_getrandom
 static inline qbool random_bytes_getrandom(size_t len, void *buf)
 {
-    return (syscall(SYS_getrandom, buf, len, 0) == 0);
+    long ret = syscall(SYS_getrandom, buf, len, 0);
+    ic_printf("syscall returned %d\n", ret);
+
+    return (ret == 0);
 }
 #else
 /* otherwise we can just read from urandom */

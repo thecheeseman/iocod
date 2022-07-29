@@ -138,8 +138,8 @@ IC_PUBLIC
 IC_NON_NULL(1)
 void com_init(_In_z_ char *cmdline)
 {
-    metric_begin();
     ic_print_header("Common", 40, '-');
+    metric_begin();
     ic_printf(IC_VERSION_STRING_FULL " " IC_PLATFORM_STRING "\n");
 
     if (setjmp(abortframe))
@@ -216,9 +216,8 @@ void com_init(_In_z_ char *cmdline)
 
     fully_initialized = true;
 
-    ic_print_header("Common", 40, '-');
-
     metric_end();
+    ic_print_header("Common", 40, '-');
 }
 
 IC_PUBLIC

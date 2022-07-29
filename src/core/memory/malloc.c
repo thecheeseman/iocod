@@ -26,8 +26,11 @@ qbool atexit_setup = false;
 struct meminfo *mem_list = NULL;
 
 IC_MALLOC
+IC_NON_NULL(2, 3)
 IC_PUBLIC
-void *_ic_malloc(size_t size, const char *filename, const char *function, 
+void *_ic_malloc(size_t size, 
+                 _In_z_ const char *filename, 
+                 _In_z_ const char *function, 
                  int line)
 {
     void *ptr = malloc(size > 0 ? size : 1);

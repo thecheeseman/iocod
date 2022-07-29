@@ -27,6 +27,13 @@ IC_PUBLIC
 IC_NO_RETURN
 void sys_exit(int code)
 {
+    // some error
+    if (code != IC_OK) {
+        hunk_clear_to_start();
+        com_shutdown();
+        fs_shutdown(true);
+    }
+    
     core_shutdown();
     exit(code);
 }

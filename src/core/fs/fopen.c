@@ -22,20 +22,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "fs_local.h"
 
+#ifndef IC_PLATFORM_WINDOWS
+#include <sys/stat.h>
+#endif
+
 IC_NON_NULL(1, 2)
-void add_game_directory(_In_z_ const char *path,
-                        _In_z_ const char *dir)
+FILE *fs_fopen(_In_z_ const char *path,
+               _In_z_ const char *mode)
 {
-    char newdir[MAX_OSPATH] = { 0 };
-    strncpyz(newdir, dir, sizeof(newdir));
-    strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+    #ifdef IC_PLATFORM_WINDOWS
+    size_t len = strlen(path);
+    if (len == 0 || path[len - 1] == ' ' || path[len - 1] == '.')
+        return NULL;
+    #else
+    struct stat buf;
 
-    searchpath_t *sp = (searchpath_t *) ic_calloc(sizeof(searchpath_t), 1);
-    sp->dir = (directory_t *) ic_calloc(sizeof(directory_t), 1);
+    if (stat(path, &buf) == 0 && S_ISDIR(buf.st_mode))
+        return NULL;
+    #endif
 
-    strncpyz(sp->dir->path, path, sizeof(sp->dir->path));
-    strncpyz(sp->dir->game, newdir, sizeof(sp->dir->game));
-
-    add_search_path(sp);
-    find_pack_files(path, newdir);
+    return fopen(path, mode);
 }

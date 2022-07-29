@@ -61,6 +61,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define _Out_
 #endif
 
+#ifndef _Out_opt_
+#define _Out_opt_
+#endif
+
 #ifndef _Out_writes_
 #define _Out_writes_(size)
 #endif

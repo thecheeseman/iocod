@@ -23,9 +23,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "memory_local.h"
 
 IC_MALLOC
+IC_NON_NULL(3, 4)
 IC_PUBLIC
-void *_ic_calloc(size_t count, size_t size, const char *filename,
-                 const char *function, int line)
+void *_ic_calloc(size_t count,
+                 size_t size,
+                 _In_z_ const char *filename,
+                 _In_z_ const char *function,
+                 int line)
 {
     void *ptr = calloc(count > 0 ? count : 1, size > 0 ? size : 1);
     if (ptr == NULL) {

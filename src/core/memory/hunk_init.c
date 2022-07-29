@@ -66,6 +66,7 @@ void hunk_init(void)
     hunk_clear();
 
     cmd_add("meminfo", hunk_meminfo_f);
+    cmd_add("heapinfo", heapinfo_f);
 }
 
 IC_PUBLIC

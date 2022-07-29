@@ -61,9 +61,28 @@ extern cvar_t *cl_language;
 
 /**
  * @def MAX_PAK_HASH_SIZE
- * @brief Maximum number of files in any given pk3 file.
+ * @brief Maximum number of hash table entries per pk3 file.
+ * 
+ * For the 9 stock 1.1 pk3s (localized_english0-1 + pak0-6)
+ * 29625 total files = average of 3292 files per pk3
+ * 
+ * Size     memory usage
+ * 4096     27334608 bytes
+ * 2048     17831888 bytes
+ * 1024      9517008 bytes
+ * 
+ * With a random assortment of pk3s from my mods folder (48 pk3s)
+ * 43852 total files = average of 914 files per pk3
+ * 
+ * Size     memory usage
+ * 4096     50792176 bytes
+ * 2048     38913776 bytes
+ * 1024     24659696 bytes
+ * 
+ * Realistically on newer system RAM usage isn't really a problem, so 
+ * maybe upping this value can increase lookup performance.
  */
-#define MAX_PAK_HASH_SIZE   4096
+#define MAX_PAK_HASH_SIZE   1024
 
 /**
  * @def MAX_FOUND_FILES
@@ -77,6 +96,22 @@ void fs_init(void);
 
 IC_PUBLIC
 void fs_shutdown(qbool a);
+
+IC_PUBLIC
+void fs_fclose_file(filehandle handle);
+
+/**
+ * @brief Load file at @p path, reading contents into @p buffer. If checking
+ * for file existence, set @p buffer to NULL. 
+ * 
+ * @param[in] path    path to file
+ * @param[out] buffer buffer to load file into, or NULL to get the size
+ * @return size of file, or -1 on error
+*/
+IC_PUBLIC
+IC_NON_NULL(1)
+i64 fs_read_file(_In_z_ const char *path,
+                 _Out_opt_ void **buffer);
 
 /** @} */
 

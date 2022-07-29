@@ -75,7 +75,7 @@ IC_PUBLIC
 IC_RETURNS_STRING
 const char *lz_get_language_name(u32 language)
 {
-    if (language >= 0 && language < localized_language_count)
+    if (language < localized_language_count)
         return localized_languages[language];
 
     return "english";
@@ -87,7 +87,7 @@ IC_NON_NULL(1)
 char *lz_get_pak_language(_In_z_ const char *pak_name)
 {
     static int id = 0;
-    static char paks[2][MAX_OSPATH];
+    static char paks[2][MAX_OSPATH] = { 0 };
 
     id ^= 1;
 

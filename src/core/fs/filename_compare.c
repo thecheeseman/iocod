@@ -23,19 +23,33 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "fs_local.h"
 
 IC_NON_NULL(1, 2)
-void add_game_directory(_In_z_ const char *path,
-                        _In_z_ const char *dir)
+int filename_compare(_In_z_ const char *s1, 
+                     _In_z_ const char *s2)
 {
-    char newdir[MAX_OSPATH] = { 0 };
-    strncpyz(newdir, dir, sizeof(newdir));
-    strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+    int c1 = 0;
+    int c2 = 0;
 
-    searchpath_t *sp = (searchpath_t *) ic_calloc(sizeof(searchpath_t), 1);
-    sp->dir = (directory_t *) ic_calloc(sizeof(directory_t), 1);
+    do {
+        c1 = *s1++;
+        c2 = *s2++;
 
-    strncpyz(sp->dir->path, path, sizeof(sp->dir->path));
-    strncpyz(sp->dir->game, newdir, sizeof(sp->dir->game));
+        if (c1 >= 'a' && c1 <= 'z')
+            c1 -= ('a' - 'A');
+        if (c2 >= 'a' && c2 <= 'z')
+            c2 -= ('a' - 'A');
 
-    add_search_path(sp);
-    find_pack_files(path, newdir);
+        if (c1 == '\\' || c1 == ':')
+            c1 = '/';
+        if (c2 == '\\' || c2 == ':')
+            c2 = '/';
+
+        if (c1 < c2)
+            return -1;      // strings not equal
+
+        if (c1 > c2)
+            return 1;
+
+    } while (c1);
+
+    return 0;       // strings are equal
 }

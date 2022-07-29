@@ -82,5 +82,6 @@ extern size_t hunk_allocated;
 
 char *bytes_human_readable(size_t size);
 void hunk_meminfo_f(void);
+void heapinfo_f(void);
 
 #endif /* MEMORY_LOCAL_H */

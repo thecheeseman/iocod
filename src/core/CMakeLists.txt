@@ -59,4 +59,4 @@ set_target_properties(iocod_core PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/lib"
 )
 
-add_subdirectory("tests")
+#add_subdirectory("tests")

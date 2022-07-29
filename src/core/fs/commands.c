@@ -22,11 +22,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "fs_local.h"
 
-void fs_display_path(qbool a)
+void fs_display_path(qbool skip_localized)
 {
-    UNUSED_PARAM(a);
-    
-    char *language = lz_get_language_name(lz_current_language());
+    const char *language = lz_get_language_name(lz_current_language());
     ic_printf(_("Current language: %s\n"), language);
     
     if (fs_ignore_localized->integer != 0)
@@ -34,11 +32,16 @@ void fs_display_path(qbool a)
 
     ic_printf(_("Current search path:\n"));
     for (searchpath_t *s = fs_searchpaths; s != NULL; s = s->next) {
+        // skip alternative localized packs if they're not our 
+        // current language
+        if (skip_localized && !use_localized_searchpath(s))
+            continue;
+
         if (s->pack != NULL) {
             ic_printf("%s (%d files)\n", s->pack->filename, s->pack->num_files);
 
             if (s->localized) {
-                char *packlang = lz_get_language_name(s->language);
+                const char *packlang = lz_get_language_name(s->language);
                 ic_printf(_("    localized assets pak file for %s\n"), packlang);
             }
         } else {

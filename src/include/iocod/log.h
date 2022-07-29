@@ -23,18 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef IC_LOG_H
 #define IC_LOG_H
 
-#include "iocod/platform.h"
-#include "iocod/types.h"
-
-#ifndef __FILENAME__
-#ifdef IC_PLATFORM_WINDOWS
-#define __FILENAME__ \
-    (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
-#else
-#define __FILENAME__ \
-    (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-#endif 
-#endif
+#include "iocod.h"
 
 /**
  * @defgroup log Logging

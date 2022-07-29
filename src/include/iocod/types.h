@@ -75,15 +75,9 @@ typedef int qbool;
 typedef unsigned char byte;
 
 /**
- * @typedef size_t filehandle
- * @brief File handle reference.
- *
- * Strictly speaking, since we probably are never going to handle more than
- * a couple thousand files at a time, `int` sound be fine here (as it was
- * in the original source). In the future this may mean a hash of a given file,
- * rather than just meaning 'nth open file' as it currently does.
+ * @brief Filehandles.
 */
-typedef int filehandle;
+typedef u16 filehandle;
 
 /**
  * @typedef float vec_t

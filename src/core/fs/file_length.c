@@ -22,20 +22,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "fs_local.h"
 
-IC_NON_NULL(1, 2)
-void add_game_directory(_In_z_ const char *path,
-                        _In_z_ const char *dir)
+IC_NON_NULL(1)
+i64 fs_filep_length(_In_ FILE *handle)
 {
-    char newdir[MAX_OSPATH] = { 0 };
-    strncpyz(newdir, dir, sizeof(newdir));
-    strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+    long pos = ftell(handle);
+    fseek(handle, 0, SEEK_END);
+    long end = ftell(handle);
+    fseek(handle, pos, SEEK_SET);
 
-    searchpath_t *sp = (searchpath_t *) ic_calloc(sizeof(searchpath_t), 1);
-    sp->dir = (directory_t *) ic_calloc(sizeof(directory_t), 1);
+    return end;
+}
 
-    strncpyz(sp->dir->path, path, sizeof(sp->dir->path));
-    strncpyz(sp->dir->game, newdir, sizeof(sp->dir->game));
-
-    add_search_path(sp);
-    find_pack_files(path, newdir);
+i64 fs_file_length(filehandle f)
+{
+    FILE *handle = file_for_handle(f);
+    if (handle == NULL)
+        return -1;
+        
+    return fs_filep_length(handle);
 }

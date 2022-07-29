@@ -92,10 +92,11 @@ void hunk_clear_temp_high(void);
  * @return pointer to allocated memory or NULL if failed
 */
 IC_MALLOC
+IC_NON_NULL(2, 3)
 IC_PUBLIC
-void *_ic_malloc(size_t size, 
-                 const char *filename, 
-                 const char *function, 
+void *_ic_malloc(size_t size,
+                 _In_z_ const char *filename,
+                 _In_z_ const char *function,
                  int line);
 
 /**
@@ -139,9 +140,13 @@ void _ic_free(void *ptr);
  * @return pointer to allocated memory or NULL if failed
 */
 IC_MALLOC
+IC_NON_NULL(3, 4)
 IC_PUBLIC
-void *_ic_calloc(size_t count, size_t size, const char *filename, 
-                 const char *function, int line);
+void *_ic_calloc(size_t count, 
+                 size_t size, 
+                 _In_z_ const char *filename, 
+                 _In_z_ const char *function, 
+                 int line);
 
 /**
  * @def ic_calloc
@@ -169,9 +174,14 @@ void *_ic_calloc(size_t count, size_t size, const char *filename,
  * @param[in] line     line number of the calling function
  * @return pointer to allocated memory or NULL if failed
 */
+IC_MALLOC
+IC_NON_NULL(3, 4)
 IC_PUBLIC
-void *_ic_realloc(void *oldptr, size_t size, const char *filename, 
-                  const char *function, int line);
+void *_ic_realloc(void *oldptr, 
+                  size_t size, 
+                  _In_z_ const char *filename, 
+                  _In_z_ const char *function, 
+                  int line);
 
 /**
  * @def ic_realloc

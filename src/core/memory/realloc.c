@@ -22,9 +22,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "memory_local.h"
 
-IC_PUBLIC 
-void *_ic_realloc(void *oldptr, size_t size, const char *filename, 
-                  const char *function, int line)
+IC_MALLOC
+IC_NON_NULL(3, 4)
+IC_PUBLIC
+void *_ic_realloc(void *oldptr,
+                  size_t size,
+                  _In_z_ const char *filename,
+                  _In_z_ const char *function,
+                  int line)
 {
     if (oldptr == NULL)
         return ic_malloc(size);

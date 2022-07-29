@@ -22,20 +22,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "fs_local.h"
 
-IC_NON_NULL(1, 2)
-void add_game_directory(_In_z_ const char *path,
-                        _In_z_ const char *dir)
+IC_NON_NULL(1)
+qbool use_localized_searchpath(_In_ searchpath_t *sp)
 {
-    char newdir[MAX_OSPATH] = { 0 };
-    strncpyz(newdir, dir, sizeof(newdir));
-    strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+    // always allow non-localized packs
+    if (!sp->localized)
+        return true;
 
-    searchpath_t *sp = (searchpath_t *) ic_calloc(sizeof(searchpath_t), 1);
-    sp->dir = (directory_t *) ic_calloc(sizeof(directory_t), 1);
+    // for localized packs:
+    // are we ignoring all of them? 
+    if (fs_ignore_localized->integer != 0)
+        return false;
 
-    strncpyz(sp->dir->path, path, sizeof(sp->dir->path));
-    strncpyz(sp->dir->game, newdir, sizeof(sp->dir->game));
+    // if we're not ignoring them, only match if we're the current language
+    if (sp->language == lz_current_language())
+        return true;
 
-    add_search_path(sp);
-    find_pack_files(path, newdir);
+    return false;
 }

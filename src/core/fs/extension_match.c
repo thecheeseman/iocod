@@ -23,19 +23,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "fs_local.h"
 
 IC_NON_NULL(1, 2)
-void add_game_directory(_In_z_ const char *path,
-                        _In_z_ const char *dir)
+qbool extension_match(_In_z_ const char *filename, 
+                      _In_z_ const char *ext,
+                      size_t namelen)
 {
-    char newdir[MAX_OSPATH] = { 0 };
-    strncpyz(newdir, dir, sizeof(newdir));
-    strncpyz(fs_gamedir, newdir, sizeof(fs_gamedir));
+    size_t extlen = strlen(ext);
 
-    searchpath_t *sp = (searchpath_t *) ic_calloc(sizeof(searchpath_t), 1);
-    sp->dir = (directory_t *) ic_calloc(sizeof(directory_t), 1);
+    if (extlen > namelen)
+        return false;
 
-    strncpyz(sp->dir->path, path, sizeof(sp->dir->path));
-    strncpyz(sp->dir->game, newdir, sizeof(sp->dir->game));
-
-    add_search_path(sp);
-    find_pack_files(path, newdir);
+    filename += namelen - extlen;
+    return (strcasecmp(filename, ext) == 0);
 }

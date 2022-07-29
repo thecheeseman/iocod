@@ -22,42 +22,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "fs_local.h"
 
-static int path_compare(const char *s1, const char *s2)
-{
-    int c1 = 0;
-    int c2 = 0;
-
-    do {
-        c1 = *s1++;
-        c2 = *s2++;
-
-        if (c1 >= 'a' && c1 <= 'z')
-            c1 -= ('a' - 'A');
-        if (c2 >= 'a' && c2 <= 'z')
-            c2 -= ('a' - 'A');
-
-        if (c1 == '\\' || c1 == ':')
-            c1 = '/';
-        if (c2 == '\\' || c2 == ':')
-            c2 = '/';
-
-        if (c1 < c2)
-            return -1;      // strings not equal
-
-        if (c1 > c2)
-            return 1;
-
-    } while (c1);
-
-    return 0;       // strings are equal
-}
-
 static int pak_sort(const void *a, const void *b)
 {
     char *aa = *(char **) a;
     char *bb = *(char **) b;
 
-    return path_compare(aa, bb);
+    return filename_compare(aa, bb);
 }
 
 static qbool valid_localized_pak(_In_z_ const char *path,

@@ -168,14 +168,6 @@ IC_PUBLIC
 void sys_quit(void);
 
 /**
- * @brief Signal handler. We want to handle most useful signals, especially
- * SIGSEGV and SIGINT as those are the most likely.
- * @param signal signal number
-*/
-IC_PUBLIC
-void sys_signal_handler(int signal);
-
-/**
  * @brief Set up signal handling for errors.
 */
 IC_PUBLIC

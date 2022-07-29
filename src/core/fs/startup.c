@@ -32,7 +32,7 @@ cvar_t *fs_restrict;
 cvar_t *fs_ignore_localized;
 
 searchpath_t *fs_searchpaths = NULL;
-extern u32 fs_packed_files = 0;
+u32 fs_packed_files = 0;
 
 char fs_gamedir[MAX_OSPATH];
 

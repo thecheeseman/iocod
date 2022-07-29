@@ -21,37 +21,103 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "iocod.h"
+
+#ifdef IC_PLATFORM_WINDOWS
 #include <signal.h>
+#else
+#include <sys/signal.h>
+#include <err.h>
+#endif
 
-static const char *signal_str[] = {
-    [SIGABRT] = "abnormal termination",
-    [SIGFPE] = "floating-point error",
-    [SIGINT] = "interrupt request",
-    [SIGILL] = "illegal instruction",
-    [SIGSEGV] = "illegal storage access",
-    [SIGTERM] = "termination request",
+#ifdef IC_PLATFORM_WINDOWS
+static const char *get_signal_text(int sig)
+#else
+static const char *get_signal_text(int sig, siginfo_t *siginfo, void *context)
+#endif
+{
+    switch (sig) {
+    case SIGSEGV:
+        return "SIGSEGV: illegal storage access";
+    case SIGABRT:
+        return "SIGABRT: abnormal termination";
+    case SIGINT:
+        return "SIGINT: interrupt request";
+    case SIGTERM:
+        return "SIGTERM: termination request";
+    case SIGFPE:
+        #ifdef IC_PLATFORM_WINDOWS
+        return "SIGFPE: floating-point error";
+        #else
+        switch (siginfo->si_code) {
+        case FPE_INTDIV:
+            return "SIGFPE: integer divide by zero";
+        case FPE_INTOVF:
+            return "SIGFPE: integer overflow";
+        case FPE_FLTDIV:
+            return "SIGFPE: floating-point divide by zero";
+        case FPE_FLTOVF:
+            return "SIGFPE: floating-point overflow";
+        case FPE_FLTUND:
+            return "SIGFPE: floating-point underflow";
+        case FPE_FLTRES:
+            return "SIGFPE: floating-point inexact result";
+        case FPE_FLTINV:
+            return "SIGFPE: floating-point invalid operation";
+        case FPE_FLTSUB:
+            return "SIGFPE: subscript out of range";
+        default:
+            return "SIGFPE: arithmetic exception";
+        }
+        break;
+        #endif
+    case SIGILL:
+        #ifdef IC_PLATFORM_WINDOWS
+        return "SIGILL: illegal instruction";
+        #else
+        switch (siginfo->si_code) {
+        case ILL_ILLOPC:
+            return "SIGILL: illegal opcode";
+        case ILL_ILLOPN:
+            return "SIGILL: illegal operand";
+        case ILL_ILLADR:
+            return "SIGILL: illegal addressing mode";
+        case ILL_ILLTRP:
+            return "SIGILL: illegal trap";
+        case ILL_PRVOPC:
+            return "SIGILL: privileged opcode";
+        case ILL_PRVREG:
+            return "SIGILL: privileged register";
+        case ILL_COPROC:
+            return "SIGILL: coprocessor error";
+        case ILL_BADSTK:
+            return "SIGILL: internal stack error";
+        default:
+            return "SIGILL: illegal instruction";
+        }
+        break;
+        #endif
+    default:
+        return NULL;
+    }
+}
 
-    #ifndef IC_PLATFORM_WINDOWS
-    [SIGBUS] = "bus error",
-    [SIGHUP] = "hangup",
-    [SIGQUIT] = "quit",
-    [SIGTRAP] = "trace trap",
-    #endif
-
-    // [SIGKILL] = "killed", // can't be handled by any process anyway
-};
-size_t signal_str_size = ARRAY_SIZE(signal_str);
-
-IC_PUBLIC
+#ifdef IC_PLATFORM_WINDOWS
+// on Windows this is non-static cause we need it on con_init() to set up
+// proper SIGINT handling
 void sys_signal_handler(int signal)
+#else
+static void sys_signal_handler(int signal, siginfo_t *siginfo, void *context)
+#endif
 {
     static qbool caught = false;
     static qbool caught_sigint = false;
     static int last_sigint = 0;
 
-    const char *sigtext = NULL;
-    if (signal <= (int) signal_str_size && signal > 0 && signal_str[signal] != NULL)
-        sigtext = signal_str[signal];
+    #ifdef IC_PLATFORM_WINDOWS
+    const char *sigtext = get_signal_text(signal);
+    #else
+    const char *sigtext = get_signal_text(signal, siginfo, context);
+    #endif
 
     if (signal == SIGINT) {
         if (!caught_sigint || sys_milliseconds() - last_sigint > 3000) {
@@ -96,6 +162,7 @@ quit:
 IC_PUBLIC
 void sys_setup_signal_handler(void)
 {
+    #ifdef IC_PLATFORM_WINDOWS
     signal(SIGILL, sys_signal_handler);
     signal(SIGFPE, sys_signal_handler);
     signal(SIGSEGV, sys_signal_handler);
@@ -106,16 +173,42 @@ void sys_setup_signal_handler(void)
     // SIGINT is not supported for any Win32 application. 
     // When a CTRL+C interrupt occurs, Win32 operating systems 
     // generate a new thread to specifically handle that interrupt.
-    #ifndef IC_PLATFORM_WINDOWS
-    signal(SIGINT, sys_signal_handler);
-    #endif
+    #else
+    uint8_t altstack[SIGSTKSZ];
+    {
+        stack_t ss = { 0 };
+        ss.ss_sp = (void *) altstack;
+        ss.ss_size = SIGSTKSZ;
+        ss.ss_flags = 0;
 
-    // other *nix signals
-    #ifndef IC_PLATFORM_WINDOWS
-    signal(SIGHUP, sys_signal_handler);
-    signal(SIGQUIT, sys_signal_handler);
-    signal(SIGTRAP, sys_signal_handler);
-    signal(SIGIOT, sys_signal_handler);
-    signal(SIGBUS, sys_signal_handler);
+        if (sigaltstack(&ss, NULL) != 0)
+            err(1, "sigaltstack");
+    }
+
+    {
+        struct sigaction sig_action;
+        sig_action.sa_sigaction = sys_signal_handler;
+        sigemptyset(&sig_action.sa_mask);
+
+        sig_action.sa_flags = SA_SIGINFO | SA_ONSTACK;
+
+        if (sigaction(SIGSEGV, &sig_action, NULL) != 0)
+            err(1, "sigaction");
+
+        if (sigaction(SIGFPE, &sig_action, NULL) != 0)
+            err(1, "sigaction");
+
+        if (sigaction(SIGINT, &sig_action, NULL) != 0)
+            err(1, "sigaction");
+
+        if (sigaction(SIGILL, &sig_action, NULL) != 0)
+            err(1, "sigaction");
+
+        if (sigaction(SIGTERM, &sig_action, NULL) != 0)
+            err(1, "sigaction");
+
+        if (sigaction(SIGABRT, &sig_action, NULL) != 0)
+            err(1, "sigaction");
+    }
     #endif
 }

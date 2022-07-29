@@ -65,7 +65,7 @@ void meminfo_print_leaks(void)
 
         sum += tmp->size;
         tmp = tmp->next;
-        // ic_free(prev);
+        ic_free(prev);
         blocks++;
     }
     fprintf(out, "---- ---------------- ------------ ----------------------\n");

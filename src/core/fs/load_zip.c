@@ -21,34 +21,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "fs_local.h"
-#include <ctype.h>
 
-u32 hash_filename(const char *filename, u32 hash_size)
-{
-    u32 hash = 0;
-    u32 i = 0;
-    while (filename[i] != '\0') {
-        char c = tolower(filename[i]);
-
-        if (c == '.')
-            break;
-
-        if (c == '\\' || c == '/')
-            c = '/';
-
-        hash += (long) (c) * (i + 119);
-        i++;
-    }
-
-    hash = (hash ^ (hash >> 10) ^ (hash >> 20));
-    hash &= (hash_size - 1);
-    return hash;
-}
+extern u32 total_hash_collisions;
 
 IC_NON_NULL(1)
 pack_t *fs_load_zip(_In_z_ const char *filename)
 {
-    mz_zip_archive *zip = ic_calloc(1, sizeof(*zip));
+    mz_zip_archive *zip = ic_malloc(sizeof(*zip));
+    mz_zip_zero_struct(zip);
+    
     if (zip == NULL) {
         ic_error("YIKES");
         return NULL;
@@ -56,8 +37,16 @@ pack_t *fs_load_zip(_In_z_ const char *filename)
 
     mz_bool success = mz_zip_reader_init_file(zip, filename, 0);
     if (!success) {
-        ic_error("unable to open file: %s\n", filename);
         ic_free(zip);
+
+        if (zip->m_last_error == MZ_ZIP_NOT_AN_ARCHIVE) {
+            // don't trigger a fatal error here
+            ic_warning(_("Archive '%s' is not a valid pk3\n"), filename);
+        } else {
+            ic_error(_("Unable to open pk3 file '%s': %s\n"), filename,
+                     mz_zip_get_error_string(zip->m_last_error));
+        }
+        
         return NULL;
     }
 
@@ -69,7 +58,8 @@ pack_t *fs_load_zip(_In_z_ const char *filename)
         mz_zip_archive_file_stat stat;
 
         if (!mz_zip_reader_file_stat(zip, i, &stat)) {
-            ic_error("unable to stat file: %s\n", filename);
+            ic_error("unable to stat file %s: %s\n", filename,
+                     mz_zip_get_error_string(zip->m_last_error));
             mz_zip_reader_end(zip);
             ic_free(zip);
             return NULL;
@@ -116,13 +106,18 @@ pack_t *fs_load_zip(_In_z_ const char *filename)
     for (u32 i = 0; i < num_files; i++) {
         mz_zip_archive_file_stat stat;
         char fname[MAX_OSPATH] = { 0 };
+        memset(&fname, 0, sizeof(fname));
 
         if (!mz_zip_reader_file_stat(zip, i, &stat)) {
-            ic_error("unable to stat file: %s\n", filename);
+            ic_error("unable to stat file %s: %s\n", filename,
+                     mz_zip_get_error_string(zip->m_last_error));
             mz_zip_reader_end(zip);
             ic_free(zip);
             return NULL;
         }
+
+        if (stat.m_is_directory)
+            continue;
 
         strncpyz(fname, stat.m_filename, sizeof(fname));
         strlwr(fname);
@@ -133,8 +128,12 @@ pack_t *fs_load_zip(_In_z_ const char *filename)
         strcpy(buf[i].name, fname);
         name_ptr += strlen(fname) + 1;
 
-        buf[i].pos = stat.m_central_dir_ofs;
-        buf[i].len = stat.m_comp_size;
+        memcpy(&buf[i].stat, &stat, sizeof(mz_zip_archive_file_stat));
+
+        buf[i].offset = stat.m_central_dir_ofs;
+        buf[i].size = stat.m_comp_size;
+        buf[i].size_uncompressed = stat.m_uncomp_size;
+        buf[i].index = stat.m_file_index;
         buf[i].next = pak->hash_table[hash];
         pak->hash_table[hash] = &buf[i];
     }

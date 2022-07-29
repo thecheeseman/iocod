@@ -22,6 +22,48 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "memory_local.h"
 
+static void heapinfo(qbool verbose)
+{
+    struct meminfo *tmp = mem_list;
+    struct meminfo *prev = NULL;
+    size_t sum = 0;
+    int blocks = 0;
+
+    while (tmp != NULL) {
+        prev = tmp;
+
+        sum += tmp->size;
+        tmp = tmp->next;
+        blocks++;
+    }
+
+    ic_printf("  %s total heap allocated in %d blocks\n",
+              bytes_human_readable(sum), blocks);
+
+    if (verbose) {
+        ic_printf("\n#### address          size         filename:function:line\n");
+        ic_printf("---- ---------------- ------------ ----------------------\n");
+
+        tmp = mem_list;
+        blocks = 0;
+        while (tmp != NULL) {
+            prev = tmp;
+
+            ic_printf("%4d %16p %12zu %s:%s:%d\n", blocks, tmp->ptr, tmp->size,
+                    tmp->filename, tmp->function, tmp->line);
+
+            tmp = tmp->next;
+            blocks++;
+        }
+        ic_printf("---- ---------------- ------------ ----------------------\n");
+    }
+}
+
+void heapinfo_f(void)
+{
+    heapinfo(true);
+}
+
 void hunk_meminfo_f(void)
 {
     ic_printf("Meminfo:\n");
@@ -41,4 +83,6 @@ void hunk_meminfo_f(void)
 
     ic_printf("  %s total hunk in use\n",
               bytes_human_readable(hunk_low.permanent + hunk_high.permanent));
+
+    heapinfo(false);
 }
