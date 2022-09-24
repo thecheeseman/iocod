@@ -1,0 +1,5 @@
+if (IOCOD_PLATFORM_WINDOWS)
+    target_sources(iocod PRIVATE "platform_windows.cc")
+else()
+    target_sources(iocod PRIVATE "platform_linux.cc")
+endif()

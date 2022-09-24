@@ -1,20 +1,21 @@
-# iocod
-# Copyright (C) 2022 thecheeseman
-# 
-# This file is part of the iocod GPL source code.
-# 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#set(IOCOD_DX_TARGET 11)
+#target_include_directories(iocod PUBLIC "" "imgui" "include")
+#add_subdirectory("csv")
+#add_subdirectory("imgui")
+#add_subdirectory("application")
+#add_subdirectory("core")
+#add_subdirectory("platform")
+#add_subdirectory("system")
+#target_sources(iocod PRIVATE "precompiled/precompiled.cc")
+#target_precompile_headers(iocod PRIVATE "precompiled/precompiled.h")
 
-add_subdirectory("core")
-add_subdirectory("dedicated")
+target_sources(iocod PRIVATE "iocod.cxx")
+#target_precompile_headers(iocod PRIVATE "iocod.h")
+
+target_include_directories(iocod PUBLIC "" "include")
+add_subdirectory("cvar")
+add_subdirectory("engine")
+add_subdirectory("plugins")
+add_subdirectory("system")
+add_subdirectory("misc")
+target_sources(iocod PRIVATE "main.cxx")

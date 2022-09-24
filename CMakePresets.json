@@ -80,7 +80,6 @@
                 "rhs": "Darwin"
             },
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang",
                 "CMAKE_MAKE_PROGRAM": "/usr/local/bin/ninja"
             },
             "vendor": {
@@ -119,7 +118,6 @@
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl.exe",
                 "CMAKE_CXX_COMPILER": "cl.exe"
             },
             "condition": {
@@ -134,10 +132,6 @@
             "inherits": "windows-base",
             "architecture": {
                 "value": "x64",
-                "strategy": "external"
-            },
-            "toolset": {
-                "value": "v141,host=x64",
                 "strategy": "external"
             },
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
@@ -156,10 +150,12 @@
                 "value": "x86",
                 "strategy": "external"
             },
+/*
             "toolset": {
                 "value": "v141,host=x86",
                 "strategy": "external"
             },
+*/
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD64": {

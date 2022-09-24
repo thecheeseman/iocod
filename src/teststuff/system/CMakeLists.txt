@@ -1,0 +1,5 @@
+if (IOCOD_PLATFORM_WINDOWS)
+    add_subdirectory("windows")
+else()
+    add_subdirectory("linux")
+endif()

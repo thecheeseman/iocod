@@ -1,0 +1,11 @@
+include(ProcessorCount)
+ProcessorCount(N)
+    
+if (NOT N EQUAL 0)
+    if (MSVC)
+        message(STATUS "Using ${N} threads for compilation")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP${N}" CACHE STRING "" FORCE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP${N}" CACHE STRING "" FORCE)
+    else()
+    endif()
+endif()
