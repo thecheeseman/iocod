@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2023 thecheeseman
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Generated files
+*.d
+*.o
+*.obj
+*.elf
+*.map
+*.exp
+*.gch
+*.pch
+*.a
+*.so
+*.so.*
+
+# Visual Studio / VSCode files
+.vs/
+.vscode/
+*.code-workspace
+compile_commands.json
+
+# output
+build/
+
+Doxyfile
+Doxyfile.bak
+
+# ignore sqlite/curl headers
+# these are only stored locally because visual studo is stupid
+# and does not want to give intellisense for sqlite/curl
+include/sqlite3.h
+include/sqlite3ext.h
+include/curl
