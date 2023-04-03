@@ -1,0 +1,46 @@
+{
+    "version": 2,
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "generator": "Ninja"
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "inherits": "base"
+        },
+        {
+            "name": "debug-sanitizer",
+            "displayName": "Debug (sanitizer)",
+            "inherits": "debug",
+            "cacheVariables": {
+                "ENABLE_SANITIZE_ADDRESS": true,
+                "ENABLE_SANITIZE_UNDEFINED": true
+            }
+        },
+        {
+            "name": "debug-tests",
+            "displayName": "Debug w/ Tests",
+            "inherits": "debug",
+            "cacheVariables": {
+                "BUILD_TESTS": true
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "ENABLE_INTERPROCEDURAL_OPTIMIZATION": true
+            }
+        }
+    ]
+}
