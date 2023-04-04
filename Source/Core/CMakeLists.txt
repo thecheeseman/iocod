@@ -4,6 +4,7 @@
 
 set(CORE_SOURCES
     Assert.cpp
+    Version.cpp
 )
 list(TRANSFORM CORE_SOURCES PREPEND "Source/")
 

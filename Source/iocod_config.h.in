@@ -1,0 +1,12 @@
+// SPDX-FileCopyrightText: 2023 thecheeseman
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#ifndef IOCOD_CONFIG_H
+#define IOCOD_CONFIG_H
+
+#define IOCOD_GIT_BRANCH "@GIT_BRANCH@"
+#define IOCOD_GIT_COMMIT_HASH "@GIT_COMMIT_HASH@"
+#define IOCOD_GIT_COMMIT_COUNT @GIT_COMMIT_COUNT@
+
+#endif // IOCOD_CONFIG_H

@@ -74,11 +74,12 @@ add_library(iocod_includes INTERFACE)
 target_include_directories(iocod_includes INTERFACE
     "${CMAKE_SOURCE_DIR}/Include"
     "${CMAKE_SOURCE_DIR}/Source/Core/Include"
-    "${STAGED_INSTALL_PREFIX}"
+    "${STAGED_INSTALL_PREFIX}/Include"
 )
 
 #
 # projects
 #
-add_subdirectory("Source/Core")
-add_subdirectory("Source/Hook")
+include(iocodGetGitCommitInfo)
+
+add_subdirectory("Source")
