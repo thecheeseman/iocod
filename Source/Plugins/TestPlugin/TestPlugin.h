@@ -10,6 +10,6 @@
 extern PluginInterface interface;
 
 PLUGIN_EXPORT PluginInfo* PluginInitialize(GetInterfacePtr get_interface);
-PLUGIN_EXPORT int PluginShutdown(void);
+PLUGIN_EXPORT void PluginShutdown(void);
 
 #endif // TEST_PLUGIN_H

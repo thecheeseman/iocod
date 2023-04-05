@@ -21,6 +21,31 @@ extern "C" {
                          PLUGIN_API_VERSION_PATCH)
 
 /// @brief Plugin interface for iocod plugins.
+///
+/// @details This structure should be defined locally in the plugin and passed
+/// to the get_interface function pointer during PluginInitialize. The api and
+/// size fields must be set by the plugin prior to calling get_interface. The
+/// process looks something like this:
+///
+/// @code
+/// PluginInterface interface;
+/// PLUGIN_EXPORT PluginInfo* PluginInitialize(GetInterfacePtr get_interface)
+/// {
+///     interface.api = PLUGIN_API_VERSION;
+///     interface.size = sizeof(PluginInterface);
+///     get_interface(&interface);
+///     ...
+/// }
+/// @endcode
+///
+/// By setting api and size, the plugin is telling iocod what version of the
+/// plugin requires. The system can then fill in the rest of the API fields
+/// with the correct function pointers.
+///
+/// The example code is recommended if you just want to use the latest API
+/// whenever your plugin is compiled. If you need a specific version, you can
+/// always encode that with the IOCOD_VERSION_ENCODE macro and the specific
+/// size of the PluginInterface struct at that time.
 typedef struct {
     //
     // defined by plugin before initialization
@@ -38,26 +63,29 @@ typedef struct {
     void (*log)(const char* message);
 } PluginInterface;
 
+/// @brief Plugin information structure.
 typedef struct {
-    uint32_t version;
-    const char* name;
-    const char* author;
-    const char* description;
+    uint32_t version;        ///< Plugin version
+    const char* name;        ///< Long name of plugin
+    const char* author;      ///< Author
+    const char* description; ///< Preferably a single-line description
 } PluginInfo;
 
-enum {
-    PLUGIN_OK,
-    PLUGIN_FAILED
-};
-
+/// @brief Function pointer for getting plugin API interface.
 typedef void (*GetInterfacePtr)(PluginInterface* plugin_interface);
-typedef PluginInfo* (*PluginInitializePtr)(GetInterfacePtr get_interface);
-typedef int (*PluginShutdownPtr)(void);
 
+/// @brief Plugin initialization function pointer.
+typedef PluginInfo* (*PluginInitializePtr)(GetInterfacePtr get_interface);
+
+/// @brief Plugin shutdown function pointer.
+typedef void (*PluginShutdownPtr)(void);
+
+/// @def PLUGIN_EXPORT
+/// @brief Attribute to make exported plugin functions visible to the linker.
 #ifdef __cplusplus
-#define PLUGIN_EXPORT extern "C" IOCOD_EXPORT
+    #define PLUGIN_EXPORT extern "C" IOCOD_EXPORT
 #else
-#define PLUGIN_EXPORT IOCOD_EXPORT
+    #define PLUGIN_EXPORT IOCOD_EXPORT
 #endif
 
 #ifdef __cplusplus
