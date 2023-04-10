@@ -44,4 +44,11 @@ message(STATUS "Build ScriptMySQL plugin: ${BUILD_PLUGIN_MYSQL}")
 option(BUILD_PLUGIN_SQLITE3 "Build ScriptSQLite3 plugin" OFF)
 message(STATUS "Build ScriptSQLite3 plugin: ${BUILD_PLUGIN_SQLITE3}")
 
+option(BUILD_32BIT "Build 32-bit" OFF)
+message(STATUS "Build 32-bit: ${BUILD_32BIT}")
+
 list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+if (BUILD_32BIT AND APPLE)
+    message(FATAL_ERROR "32-bit builds are not supported on macOS")
+endif()

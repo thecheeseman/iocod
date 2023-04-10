@@ -50,7 +50,7 @@ extern "C" void IOCOD_CONSTRUCTOR _iocod_preload()
 
     const std::intptr_t OFFSET_LIBC_START_MAIN = 0x804a698;
     *reinterpret_cast<int*>(OFFSET_LIBC_START_MAIN) =
-        reinterpret_cast<int>(_iocod_main);
+        reinterpret_cast<std::intptr_t>(_iocod_main);
 }
 
 // --------------------------------

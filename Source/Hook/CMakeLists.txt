@@ -2,6 +2,11 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+if (NOT BUILD_32BIT)
+    message(STATUS "Skipping 32-bit hook build (BUILD_32BIT=OFF)")
+    return()
+endif()
+
 set(HOOK_SOURCES
     LDPreload.cpp
     Main.cpp

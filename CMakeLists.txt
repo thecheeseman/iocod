@@ -23,10 +23,13 @@ include(SetStandards)
 #
 # options
 #
-add_compile_options(-m32 -fPIC) # TODO: optionally enable this for just hook builds
-add_link_options(-m32 -fPIC)    # TODO: optionally enable this for just hook builds
-
 include(iocodOptions)
+
+if (BUILD_32BIT)
+    add_compile_options(-m32 -fPIC) # TODO: optionally enable this for just hook builds
+    add_link_options(-m32 -fPIC)    # TODO: optionally enable this for just hook builds
+endif()
+
 add_library(iocod_options INTERFACE)
 EnableInterproceduralOptimization(iocod_options)
 EnableSanitizers(iocod_options)
