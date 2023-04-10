@@ -52,6 +52,14 @@ extern "C" {
 void _iocod_report_assertion_failure(const char* filename, int line,
                                      const char* function, const char* message);
 
+/// @def IOCOD_STATIC_ASSERT
+/// @brief Wrapper around static_assert/_Static_assert.
+#ifdef __cplusplus
+#define IOCOD_STATIC_ASSERT(condition, message) static_assert(condition, message)
+#else
+#define IOCOD_STATIC_ASSERT(condition, message) _Static_assert(condition, message)
+#endif
+
 #ifdef __cplusplus
 }
 #endif
