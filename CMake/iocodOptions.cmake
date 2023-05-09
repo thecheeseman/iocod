@@ -47,6 +47,9 @@ message(STATUS "Build ScriptSQLite3 plugin: ${BUILD_PLUGIN_SQLITE3}")
 option(BUILD_32BIT "Build 32-bit" OFF)
 message(STATUS "Build 32-bit: ${BUILD_32BIT}")
 
+option(USE_MOLD_LINKER "Use mold as linker instead of system default" OFF)
+message(STATUS "Use mold linker: ${USE_MOLD_LINKER}")
+
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 
 if (BUILD_32BIT AND APPLE)

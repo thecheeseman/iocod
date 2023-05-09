@@ -38,25 +38,53 @@ if (ENABLE_UNITY_BUILD)
     set_target_properties(iocod_options PROPERTIES UNITY_BUILD ON)
 endif()
 
-target_link_options(iocod_options INTERFACE
-    $<$<CONFIG:Debug>:-g -O0>
-    $<$<CONFIG:Release>:-O2>
-    $<$<CONFIG:RelWithDebInfo>:-g -O2>
-    $<$<CONFIG:MinSizeRel>:-Os>
-    $<$<CXX_COMPILER_ID:Clang>:-fno-inline> # Clang over-inlines some important things
-                                            # causing segfaults... TODO: fix this
-    -fno-omit-frame-pointer
-    -ffast-math
-    -fvisibility=hidden
-    -fvisibility-inlines-hidden
-)
+if (UNIX OR APPLE)
+    target_link_options(iocod_options INTERFACE
+        $<$<CONFIG:Debug>:-g -O0>
+        $<$<CONFIG:Release>:-O2>
+        $<$<CONFIG:RelWithDebInfo>:-g -O2>
+        $<$<CONFIG:MinSizeRel>:-Os>
+        $<$<CXX_COMPILER_ID:Clang>:-fno-inline> # Clang over-inlines some important things
+                                                # causing segfaults... TODO: fix this
+        -fno-omit-frame-pointer
+        -ffast-math
+        -fvisibility=hidden
+        -fvisibility-inlines-hidden
+    )
 
-target_compile_options(iocod_options INTERFACE
-    -fno-omit-frame-pointer
-    -ffast-math
-    -fvisibility=hidden
-    -fvisibility-inlines-hidden
-)
+    target_compile_options(iocod_options INTERFACE
+        -fno-omit-frame-pointer
+        -ffast-math
+        -fvisibility=hidden
+        -fvisibility-inlines-hidden
+    )
+elseif (MSVC)
+    target_link_options(iocod_options INTERFACE
+        $<$<CONFIG:Debug>:/Og /Od /Zi>
+        $<$<CONFIG:Release>:/O2>
+        $<$<CONFIG:RelWithDebInfo>:/O2 /Zi>
+        $<$<CONFIG:MinSizeRel>:/Os>
+
+        /Zc:__cplusplus                         # report the correct C++ standard
+        /Zc:__STDC__                            # report the correct C standard
+        /Zc:char8_t                             # enable char8_t, the new C++20 char type
+    )
+endif()
+
+if (USE_MOLD_LINKER)
+    if (UNIX or APPLE)
+        include(CheckLinkerFlag)
+        check_linker_flag(CXX fuse-ld=mold _use_mold)
+
+        if (_use_mold)
+            target_link_options(iocod_options INTERFACE -fuse-ld=mold)
+        else()
+            message(WARNING "Cannot specify custom linker, using default")
+        endif()
+    else()
+        message(WARNING "Cannot specify custom linker, using default")
+    endif()
+endif()
 
 #
 # warnings
