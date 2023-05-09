@@ -6,6 +6,7 @@
 
 include_guard()
 
+if (0)
 if (CMAKE_GENERATOR MATCHES ".*Makefile.*" OR CMAKE_GENERATOR MATCHES ".*Ninja.*")
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -15,4 +16,5 @@ if (CMAKE_GENERATOR MATCHES ".*Makefile.*" OR CMAKE_GENERATOR MATCHES ".*Ninja.*
         SYMBOLIC
     )
     message(TRACE "Created symbolic link to compile_commands.json")
+endif()
 endif()

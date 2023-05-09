@@ -1,46 +1,134 @@
 {
-    "version": 2,
+    "version": 3,
     "configurePresets": [
+        // base
         {
             "name": "base",
             "hidden": true,
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+            }
+        },
+        
+        // base OS presets
+        {
+            "name": "win64-base",
+            "hidden": true,
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "cl.exe"
             },
-            "generator": "Ninja"
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
         },
         {
-            "name": "debug",
-            "displayName": "Debug",
-            "inherits": "base"
+            "name": "linux64-base",
+            "hidden": true,
+            "inherits": "base",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+
+        // base build type presets
+        {
+            "name": "build-base",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ENABLE_INTERPROCEDURAL_OPTIMIZATION": true
+            }
         },
         {
-            "name": "debug-sanitizer",
-            "displayName": "Debug (sanitizer)",
-            "inherits": "debug",
+            "name": "debug-base",
+            "hidden": true,
+            "inherits": "build-base"
+        },
+        {
+            "name": "debug-sanitizer-base",
+            "hidden": true,
+            "inherits": "debug-base",
             "cacheVariables": {
                 "ENABLE_SANITIZE_ADDRESS": true,
                 "ENABLE_SANITIZE_UNDEFINED": true
             }
         },
         {
-            "name": "debug-tests",
-            "displayName": "Debug w/ Tests",
-            "inherits": "debug",
+            "name": "debug-tests-base",
+            "hidden": true,
+            "inherits": "debug-base",
             "cacheVariables": {
                 "BUILD_TESTS": true
             }
         },
         {
-            "name": "release",
-            "displayName": "Release",
-            "inherits": "base",
+            "name": "release-base",
+            "hidden": true,
+            "inherits": "build-base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "ENABLE_INTERPROCEDURAL_OPTIMIZATION": true
+                "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+
+        // win64 presets
+        {
+            "name": "win64-debug",
+            "displayName": "win64 (debug)",
+            "inherits": [ "debug-base", "win64-base" ]
+        },
+        {
+            "name": "win64-debug-sanitizer",
+            "displayName": "win64 (debug-sanitizer)",
+            "inherits": [ "debug-sanitizer-base", "win64-base" ],
+            "cacheVariables": {
+                "ENABLE_SANITIZE_UNDEFINED": false
+            }
+        },
+        {
+            "name": "win64-debug-tests",
+            "displayName": "win64 (debug-tests)",
+            "inherits": [ "debug-tests-base", "win64-base" ]
+        },
+        {
+            "name": "win64-release",
+            "displayName": "win64 (release)",
+            "inherits": [ "release-base", "win64-base" ]
+        },
+
+        // linux64 presets
+        {
+            "name": "linux64-debug",
+            "displayName": "linux64 (debug)",
+            "inherits": [ "debug-base", "linux64-base" ]
+        },
+        {
+            "name": "linux64-debug-sanitizer",
+            "displayName": "linux64 (debug-sanitizer)",
+            "inherits": [ "debug-sanitizer-base", "linux64-base" ],
+            "cacheVariables": {
+                "ENABLE_SANITIZE_UNDEFINED": false
+            }
+        },
+        {
+            "name": "linux64-debug-tests",
+            "displayName": "linux64 (debug-tests)",
+            "inherits": [ "debug-tests-base", "linux64-base" ]
+        },
+        {
+            "name": "linux64-release",
+            "displayName": "linux64 (release)",
+            "inherits": [ "release-base", "linux64-base" ]
         }
     ]
 }
