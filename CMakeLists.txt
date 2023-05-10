@@ -65,6 +65,8 @@ elseif (MSVC)
         $<$<CONFIG:RelWithDebInfo>:/O2 /Zi>
         $<$<CONFIG:MinSizeRel>:/Os>
 
+        /utf-8                                  # use UTF-8 for source and execution
+
         /Zc:__cplusplus                         # report the correct C++ standard
         /Zc:__STDC__                            # report the correct C standard
         /Zc:char8_t                             # enable char8_t, the new C++20 char type
