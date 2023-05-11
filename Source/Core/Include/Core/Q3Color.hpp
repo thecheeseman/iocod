@@ -5,6 +5,7 @@
 #ifndef Q3COLOR_HPP
 #define Q3COLOR_HPP
 
+// Q3-compatible colors
 enum class Q3Color {
     Black,
     Red,
@@ -15,7 +16,7 @@ enum class Q3Color {
     Magenta,
     White,
     Purple,
-    Rose
+    Rose,
 };
 
 /// @brief Checks if a string is a Quake3 color string (e.g. "^1").
@@ -34,16 +35,16 @@ inline bool IsQ3ColorString(const char* str) noexcept
 inline constexpr const char* Q3ColorToCode(Q3Color color) noexcept
 {
     const char* color_codes[] = {
-        "30", // Black
-        "31", // Red
-        "32", // Green
-        "33", // Yellow
-        "34", // Blue
-        "36", // Cyan
-        "35", // Magenta
-        "37", // White
-        "94", // Purple
-        "91", // Rose
+        "\033[30m", // Black
+        "\033[31m", // Red
+        "\033[32m", // Green
+        "\033[33m", // Yellow
+        "\033[34m", // Blue
+        "\033[36m", // Cyan
+        "\033[35m", // Magenta
+        "\033[37m", // White
+        "\033[94m", // Purple
+        "\033[91m", // Rose
     };
 
     return color_codes[static_cast<int>(color)];

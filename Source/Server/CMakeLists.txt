@@ -7,6 +7,16 @@ set(SERVER_SOURCES
     Console/Console.cpp
 )
 
+if (MSVC)
+    list(APPEND SERVER_SOURCES
+        Console/ConsoleWindows.cpp
+    )
+else()
+    list(APPEND SERVER_SOURCES
+        Console/ConsoleUnix.cpp
+    )
+endif()
+
 list(TRANSFORM SERVER_SOURCES PREPEND "Source/")
 
 #

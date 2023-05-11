@@ -2,96 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ConsoleLocal.hpp"
+#include <Console.hpp>
 
-#ifdef _WIN32
-ConsoleWindows console;
-#else
-ConsoleLinux console;
-#endif
-
-// ================================
-// Console::Initialize
-// ================================
-bool Console::Initialize() noexcept
-{
-#ifdef _WIN32
-    auto console_ctrl_handler = [](DWORD sig) -> BOOL {
-        switch (sig) {
-        case CTRL_C_EVENT:
-            // sys_signal_handler(SIGINT);
-            return TRUE;
-        case CTRL_CLOSE_EVENT:
-        case CTRL_BREAK_EVENT:
-        case CTRL_LOGOFF_EVENT:
-        case CTRL_SHUTDOWN_EVENT:
-            // sys_signal_handler(SIGTERM);
-            return TRUE;
-        default:
-            return FALSE;
-        }
-    };
-
-    if (SetConsoleCtrlHandler(console_ctrl_handler, TRUE) == FALSE)
-        return false;
-
-    if ((console.hin = GetStdHandle(STD_INPUT_HANDLE)) == INVALID_HANDLE_VALUE)
-        return false;
-
-    if ((console.hout = GetStdHandle(STD_OUTPUT_HANDLE)) == INVALID_HANDLE_VALUE)
-        return false;
-
-    GetConsoleMode(console.hin, &console.original_mode);
-    SetConsoleMode(console.hin,
-                   console.original_mode & ~ENABLE_MOUSE_INPUT); // enable mouse-wheel scrolling
-
-    DWORD mode = 0;
-    GetConsoleMode(console.hout, &mode);
-
-    mode |= ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    if (SetConsoleMode(console.hout, mode) == FALSE)
-        return false;
-
-    FlushConsoleInputBuffer(console.hin);
-
-    CONSOLE_SCREEN_BUFFER_INFO info;
-    GetConsoleScreenBufferInfo(console.hout, &info);
-    console.attributes = info.wAttributes;
-    console.bg_attributes = console.attributes & (BACKGROUND_BLUE | BACKGROUND_GREEN |
-                                                  BACKGROUND_RED | BACKGROUND_INTENSITY);
-
-    SetConsoleTextAttribute(console.hout, console.attributes);
-    SetConsoleTextAttribute(console.hout, Q3ColorToAttribute(Q3Color::White));
-#else
-
-#endif
-
-    buffer.fill(0);
-
-    return true;
-}
-
-// ================================
-// Console::Shutdown
-// ================================
-bool Console::Shutdown() noexcept
-{
-#ifdef _WIN32
-    SetConsoleMode(console.hin, console.original_mode);
-    SetConsoleTextAttribute(console.hout, console.attributes);
-
-    CloseHandle(console.hin);
-    CloseHandle(console.hout);
-#else
-
-#endif
-    return true;
-}
+// defined in OS-specific source files:
+// Initialize
+// Shutdown
+// GetInput
+// Back
+// Show
+// Hide
 
 // ================================
 // Console::Print
 // ================================
-void Console::Print(const std::string& text)
+void Console::Print(const std::string& text, bool manual_color)
 {
     static std::size_t overdue = 0;
 
@@ -100,9 +24,12 @@ void Console::Print(const std::string& text)
 
     Hide();
 
-    fputs(text.c_str(), stderr);
+    if (manual_color)
+        fputs(text.c_str(), stderr);
+    else
+        ColorPrint(text);
 
-    if (!console_on)
+    if (!console_on_)
         return;
 
     if (text.back() == '\n') {
@@ -123,8 +50,27 @@ void Console::Print(const std::string& text)
 void Console::DebugPrint([[maybe_unused]] const std::string& text)
 {
 #ifdef IOCOD_DEBUG
-    Print(text);
+    SetTextColor(VTColor::Cyan);
+    Print("DEBUG: " + text);
 #endif
+}
+
+// ================================
+// Console::Warn
+// ================================
+void Console::Warn(const std::string& text)
+{
+    SetTextColor(VTColor::BrightYellow);
+    Print("WARNING: " + text);
+}
+
+// ================================
+// Console::Error
+// ================================
+void Console::Error(const std::string& text)
+{
+    SetTextColor(VTColor::BrightWhite, VTColor::BrightRed);
+    Print("ERROR: " + text);
 }
 
 // ================================
@@ -134,162 +80,80 @@ void Console::Clear()
 {
     Hide();
 
-#ifdef _WIN32
-    COORD coord = {0, 0};
-    CONSOLE_SCREEN_BUFFER_INFO info;
-    GetConsoleScreenBufferInfo(console.hout, &info);
-    DWORD written = 0;
-    FillConsoleOutputCharacter(console.hout, ' ', info.dwSize.X * info.dwSize.Y, coord, &written);
-    FillConsoleOutputAttribute(console.hout, console.attributes, info.dwSize.X * info.dwSize.Y,
-                               coord,
-                               &written);
-    SetConsoleCursorPosition(console.hout, coord);
-#else
     fputs("\033c", stderr);
-#endif
 
     Show();
 }
 
 // ================================
-// Console::GetInput
+// Console::SetTextColor
 // ================================
-std::string Console::GetInput() noexcept
+void Console::SetTextColor(VTColor foreground, VTColor background)
 {
-    return {};
-}
+    foreground_ = foreground;
+    background_ = background;
 
-#ifdef _WIN32
-static DWORD color_attributes[] = {
-    0,
-    FOREGROUND_RED,
-    FOREGROUND_GREEN,
-    FOREGROUND_RED | FOREGROUND_GREEN,
-    FOREGROUND_BLUE,
-    FOREGROUND_GREEN | FOREGROUND_BLUE,
-    FOREGROUND_RED | FOREGROUND_BLUE,
-    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
-    FOREGROUND_RED | FOREGROUND_BLUE, // console doesn't support these colors
-    FOREGROUND_RED                    // so we just reuse the same ones
-};
-
-WORD Q3ColorToAttribute(Q3Color color) noexcept
-{
-    WORD attribute = color_attributes[static_cast<int>(color)];
-    attribute |= console.bg_attributes;
-    return attribute;
-}
-#endif
-
-// ================================
-// Console::Back
-// ================================
-void Console::Back()
-{
-#ifndef _WIN32
-    char key = '\b';
-    write(STDOUT_FILENO, &key, 1);
-    key = ' ';
-    write(STDOUT_FILENO, &key, 1);
-    key = '\b';
-    write(STDOUT_FILENO, &key, 1);
-#endif
+    fputs(VTForeColorCode(foreground_), stderr);
+    fputs(VTBackColorCode(background_), stderr);
 }
 
 // ================================
-// Console::Show
+// Console::SetTitle
 // ================================
-void Console::Show()
+void Console::SetTitle(const std::string& title)
 {
-    if (!console_on)
-        return;
+    fputs("\033]0;", stderr);
+    fputs(title.c_str(), stderr);
+    fputs("\007", stderr);
+}
 
-#ifdef _WIN32
-    CONSOLE_SCREEN_BUFFER_INFO info{};
-    GetConsoleScreenBufferInfo(console.hout, &info);
+// ================================
+// Console::ColorPrint
+// ================================
+void Console::ColorPrint(const std::string& text)
+{
+    std::array<char, MAX_EDIT_LINE> buffer{};
+    std::size_t buffer_index = 0;
 
-    SMALL_RECT write_area = {0, 0, 0, 0};
-    write_area.Left = 0;
-    write_area.Top = info.dwCursorPosition.Y;
-    write_area.Bottom = info.dwCursorPosition.Y;
-    write_area.Right = MAX_EDIT_LINE;
+    for (std::size_t i = 0; i < text.size(); i++) {
+        bool new_line = text[i] == '\n';
+        bool color = IsQ3ColorString(&text[i]);
 
-    DWORD attribute = Q3ColorToAttribute(Q3Color::White);
+        console_on_ = new_line;
 
-    CHAR_INFO line[MAX_EDIT_LINE] = {0};
-    for (std::size_t i = 0; i < MAX_EDIT_LINE; i++) {
-        if (i < console.line_length) {
-            // TODO: color support
-            line[i].Char.AsciiChar = buffer[i];
-        } else {
-            line[i].Char.AsciiChar = ' ';
+        if (!color && !new_line) {
+            if (buffer_index >= MAX_EDIT_LINE - 1)
+                break;
+
+            buffer[buffer_index++] = text[i];
+            continue;
         }
 
-        line[i].Attributes = attribute;
+        if (color || new_line) {
+            if (buffer_index > 0) {
+                buffer[buffer_index] = '\0';
+                fputs(buffer.data(), stderr);
+                buffer.fill(0);
+                buffer_index = 0;
+            }
+
+            if (new_line) {
+                SetTextColor(VTColor::White);
+                fputs("\n", stderr);
+            } else {
+                if (text.length() < i + 2)
+                    break;
+
+                int color_num = static_cast<int>(text[i + 1] - '0');
+                SetTextColor(Q3ColorToVTColor(static_cast<Q3Color>(color_num)));
+                i++;
+            }
+        }
     }
 
-    COORD write_size = {MAX_EDIT_LINE, 1};
-    COORD write_pos = {0, 0};
-
-    if (console.line_length > info.srWindow.Right) {
-        WriteConsoleOutput(console.hout, line + (console.line_length - info.srWindow.Right),
-                           write_size,
-                           write_pos,
-                           &write_area);
-    } else {
-        WriteConsoleOutput(console.hout, line, write_size, write_pos, &write_area);
+    if (buffer_index) {
+        buffer[buffer_index] = '\0';
+        fputs(buffer.data(), stderr);
     }
-
-    COORD cursor = {0, 0};
-    cursor.Y = info.dwCursorPosition.Y;
-    cursor.X = console.cursor_pos < console.line_length    ? console.cursor_pos
-               : console.line_length > info.srWindow.Right ? info.srWindow.Right
-                                                           : console.line_length;
-
-    SetConsoleCursorPosition(console.hout, cursor);
-#else
-    assert(hide > 0);
-    hide--;
-    if (hide > 0)
-        return;
-
-    write(STDOUT_FILENO, PROMPT, strlen(PROMPT));
-
-    if (cursor > 0) {
-        for (std::size_t i = 0; i < cursor; i++)
-            write(STDOUT_FILENO, &buffer[i], 1);
-    }
-#endif
 }
 
-// ================================
-// Console::Hide
-// ================================
-void Console::Hide() noexcept
-{
-#ifdef _WIN32
-    const std::size_t length = console.line_length;
-
-    console.line_length = 0;
-    Show();
-    console.line_length = length;
-#else
-    if (!console_on)
-        return;
-
-    if (hide > 0) {
-        hide++;
-        return;
-    }
-
-    if (cursor > 0) {
-        for (std::size_t i = 0; i < cursor; i++)
-            Back();
-    }
-
-    for (std::size_t i = strlen(PROMPT); i > 0; i--)
-        Back();
-
-    hide++;
-#endif
-}
