@@ -5,6 +5,7 @@
 set(CORE_SOURCES
     Assert.cpp
     Plugin.cpp
+    SharedLibrary.cpp
 )
 list(TRANSFORM CORE_SOURCES PREPEND "Source/")
 
@@ -12,7 +13,7 @@ list(TRANSFORM CORE_SOURCES PREPEND "Source/")
 # Core library
 #
 add_library(iocodcore STATIC ${CORE_SOURCES})
-target_link_libraries(iocodcore PRIVATE PRIVATE iocod_options iocod_warnings iocod_includes)
+target_link_libraries(iocodcore PRIVATE iocod_options iocod_warnings iocod_includes)
 
 # remove the "lib" prefix from the library name
 set_target_properties(iocodcore PROPERTIES
@@ -21,3 +22,10 @@ set_target_properties(iocodcore PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}"
     RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}"
 )
+
+#
+# Tests
+#
+if (BUILD_TESTS)
+    add_subdirectory(Tests)
+endif()

@@ -15,9 +15,9 @@ static HANDLE handle_out = nullptr;
 static DWORD original_mode = 0;
 static std::size_t line_length_ = 0;
 
-// ================================
+// --------------------------------
 // Console::Initialize
-// ================================
+// --------------------------------
 bool Console::Initialize() noexcept
 {
     auto console_ctrl_handler = [](DWORD sig) -> BOOL {
@@ -69,9 +69,9 @@ bool Console::Initialize() noexcept
     return true;
 }
 
-// ================================
+// --------------------------------
 // Console::Shutdown
-// ================================
+// --------------------------------
 bool Console::Shutdown() noexcept
 {
     SetConsoleMode(handle_in, original_mode);
@@ -82,9 +82,9 @@ bool Console::Shutdown() noexcept
     return true;
 }
 
-// ================================
+// --------------------------------
 // Console::GetInput
-// ================================
+// --------------------------------
 std::string Console::GetInput() noexcept
 {
     DWORD events = 0;
@@ -210,14 +210,14 @@ std::string Console::GetInput() noexcept
     return line;
 }
 
-// ================================
+// --------------------------------
 // Console::Back
-// ================================
+// --------------------------------
 void Console::Back() {}
 
-// ================================
+// --------------------------------
 // Console::Show
-// ================================
+// --------------------------------
 void Console::Show()
 {
     if (!console_on_)
@@ -264,9 +264,9 @@ void Console::Show()
     SetConsoleCursorPosition(handle_out, cursor);
 }
 
-// ================================
+// --------------------------------
 // Console::Hide
-// ================================
+// --------------------------------
 void Console::Hide()
 {
     const std::size_t length = line_length_;

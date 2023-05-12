@@ -12,9 +12,9 @@
 // Show
 // Hide
 
-// ================================
+// --------------------------------
 // Console::Print
-// ================================
+// --------------------------------
 void Console::Print(const std::string& text, bool manual_color)
 {
     static std::size_t overdue = 0;
@@ -44,9 +44,9 @@ void Console::Print(const std::string& text, bool manual_color)
     }
 }
 
-// ================================
+// --------------------------------
 // Console::DebugPrint
-// ================================
+// --------------------------------
 void Console::DebugPrint([[maybe_unused]] const std::string& text)
 {
 #ifdef IOCOD_DEBUG
@@ -55,27 +55,27 @@ void Console::DebugPrint([[maybe_unused]] const std::string& text)
 #endif
 }
 
-// ================================
+// --------------------------------
 // Console::Warn
-// ================================
+// --------------------------------
 void Console::Warn(const std::string& text)
 {
     SetTextColor(VTColor::BrightYellow);
     Print("WARNING: " + text);
 }
 
-// ================================
+// --------------------------------
 // Console::Error
-// ================================
+// --------------------------------
 void Console::Error(const std::string& text)
 {
     SetTextColor(VTColor::BrightWhite, VTColor::BrightRed);
     Print("ERROR: " + text);
 }
 
-// ================================
+// --------------------------------
 // Console::Clear
-// ================================
+// --------------------------------
 void Console::Clear()
 {
     Hide();
@@ -85,9 +85,9 @@ void Console::Clear()
     Show();
 }
 
-// ================================
+// --------------------------------
 // Console::SetTextColor
-// ================================
+// --------------------------------
 void Console::SetTextColor(VTColor foreground, VTColor background)
 {
     foreground_ = foreground;
@@ -97,9 +97,9 @@ void Console::SetTextColor(VTColor foreground, VTColor background)
     fputs(VTBackColorCode(background_), stderr);
 }
 
-// ================================
+// --------------------------------
 // Console::SetTitle
-// ================================
+// --------------------------------
 void Console::SetTitle(const std::string& title)
 {
     fputs("\033]0;", stderr);
@@ -107,9 +107,9 @@ void Console::SetTitle(const std::string& title)
     fputs("\007", stderr);
 }
 
-// ================================
+// --------------------------------
 // Console::ColorPrint
-// ================================
+// --------------------------------
 void Console::ColorPrint(const std::string& text)
 {
     std::array<char, MAX_EDIT_LINE> buffer{};

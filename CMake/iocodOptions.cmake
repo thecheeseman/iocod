@@ -32,7 +32,7 @@ message(STATUS "Enable unity build: ${ENABLE_UNITY_BUILD}")
 option(ENABLE_DOXYGEN "Enable doxygen" OFF)
 message(STATUS "Enable doxygen: ${ENABLE_DOXYGEN}")
 
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build tests" OFF)
 message(STATUS "Build tests: ${BUILD_TESTS}")
 
 option(BUILD_PLUGIN_CRYPTO "Build ScriptCrypto plugin" OFF)

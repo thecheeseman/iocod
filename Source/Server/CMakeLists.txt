@@ -23,7 +23,8 @@ list(TRANSFORM SERVER_SOURCES PREPEND "Source/")
 # Server executable
 #
 add_executable(iocodded ${SERVER_SOURCES})
-target_link_libraries(iocodded PRIVATE iocod_options iocod_warnings iocod_includes)
+add_dependencies(iocodded iocodcore)
+target_link_libraries(iocodded PRIVATE iocod_options iocod_warnings iocod_includes iocodcore)
 target_include_directories(iocodded PRIVATE "Source/" "Include/Server/")
 
 # remove the "lib" prefix from the library name

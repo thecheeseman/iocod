@@ -46,14 +46,17 @@
             "name": "build-base",
             "hidden": true,
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
                 "ENABLE_INTERPROCEDURAL_OPTIMIZATION": true
             }
         },
         {
             "name": "debug-base",
             "hidden": true,
-            "inherits": "build-base"
+            "inherits": "build-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTS": true
+            }
         },
         {
             "name": "debug-sanitizer-base",
@@ -62,14 +65,6 @@
             "cacheVariables": {
                 "ENABLE_SANITIZE_ADDRESS": true,
                 "ENABLE_SANITIZE_UNDEFINED": true
-            }
-        },
-        {
-            "name": "debug-tests-base",
-            "hidden": true,
-            "inherits": "debug-base",
-            "cacheVariables": {
-                "BUILD_TESTS": true
             }
         },
         {
@@ -92,13 +87,8 @@
             "displayName": "win64 (debug-sanitizer)",
             "inherits": [ "debug-sanitizer-base", "win64-base" ],
             "cacheVariables": {
-                "ENABLE_SANITIZE_UNDEFINED": false
+                "ENABLE_SANITIZE_UNDEFINED": false // Windows doesn't support this sanitizer
             }
-        },
-        {
-            "name": "win64-debug-tests",
-            "displayName": "win64 (debug-tests)",
-            "inherits": [ "debug-tests-base", "win64-base" ]
         },
         {
             "name": "win64-release",
@@ -119,11 +109,6 @@
             "cacheVariables": {
                 "ENABLE_SANITIZE_UNDEFINED": false
             }
-        },
-        {
-            "name": "linux64-debug-tests",
-            "displayName": "linux64 (debug-tests)",
-            "inherits": [ "debug-tests-base", "linux64-base" ]
         },
         {
             "name": "linux64-release",

@@ -6,6 +6,9 @@
 
 #include <Console.hpp>
 
+// --------------------------------
+// main
+// --------------------------------
 int main(int argc, char* argv[])
 {
     Console& console = Console::GetInstance();

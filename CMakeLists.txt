@@ -115,4 +115,5 @@ target_include_directories(iocod_includes INTERFACE
 #
 include(iocodGetGitCommitInfo)
 
+add_subdirectory("External")
 add_subdirectory("Source")
