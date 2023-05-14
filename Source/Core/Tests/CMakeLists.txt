@@ -28,4 +28,5 @@ function(AddCoreTest)
     )
 endfunction()
 
+AddCoreTest(NAME "test-narrow_cast" SOURCES "test-narrow_cast.cpp")
 AddCoreTest(NAME "Test-SharedLibrary" SOURCES "Test-SharedLibrary.cpp")

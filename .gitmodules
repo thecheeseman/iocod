@@ -1,3 +1,6 @@
 [submodule "External/Catch2"]
 	path = External/Catch2
 	url = https://github.com/catchorg/Catch2
+[submodule "External/expected-lite"]
+	path = External/expected-lite
+	url = https://github.com/martinmoene/expected-lite
