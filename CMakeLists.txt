@@ -39,7 +39,7 @@ if (ENABLE_UNITY_BUILD)
 endif()
 
 if (UNIX OR APPLE)
-    target_link_options(iocod_options INTERFACE
+    target_compile_options(iocod_options INTERFACE
         $<$<CONFIG:Debug>:-g -O0>
         $<$<CONFIG:Release>:-O2>
         $<$<CONFIG:RelWithDebInfo>:-g -O2>
@@ -52,24 +52,39 @@ if (UNIX OR APPLE)
         -fvisibility-inlines-hidden
     )
 
-    target_compile_options(iocod_options INTERFACE
+    target_link_options(iocod_options INTERFACE
         -fno-omit-frame-pointer
         -ffast-math
         -fvisibility=hidden
         -fvisibility-inlines-hidden
     )
+
+    target_compile_definitions(iocod_options INTERFACE
+        -D_GLIBCXX_ASSERTIONS
+        -D_FORTIFY_SOURCE=3
+    )
 elseif (MSVC)
-    target_link_options(iocod_options INTERFACE
-        $<$<CONFIG:Debug>:/Og /Od /Zi>
+    target_compile_options(iocod_options INTERFACE
+        $<$<CONFIG:Debug>:/Od /Zi>
         $<$<CONFIG:Release>:/O2>
         $<$<CONFIG:RelWithDebInfo>:/O2 /Zi>
         $<$<CONFIG:MinSizeRel>:/Os>
 
         /utf-8                                  # use UTF-8 for source and execution
 
+        /sdl                                    # enable additional security checks
+        /guard:cf                               # enable control flow guard
+
         /Zc:__cplusplus                         # report the correct C++ standard
         /Zc:__STDC__                            # report the correct C standard
         /Zc:char8_t                             # enable char8_t, the new C++20 char type
+    )
+    target_link_options(iocod_options INTERFACE
+        $<$<CONFIG:Debug>:/DEBUG:FASTLINK>
+
+        /DYNAMICBASE                            # enable ASLR
+        /CETCOMPAT                              # enable CET
+        /NXCOMPAT                               # enable DEP
     )
 endif()
 
