@@ -11,7 +11,7 @@ namespace iocod {
 /// @tparam Functor Type of the function object.
 /// Borrowed & modified from https://www.cppstories.com/2017/04/finalact/ / GSL
 template <typename Functor>
-class finally {
+class Finally {
 public:
     explicit finally(const Functor& f) noexcept
         : func_(f)
@@ -66,7 +66,7 @@ private:
 template <typename Functor>
 auto make_finally(Functor&& f) noexcept
 {
-    return finally<Functor>(std::forward<Functor>(f));
+    return Finally<Functor>(std::forward<Functor>(f));
 }
 
 } // namespace iocod

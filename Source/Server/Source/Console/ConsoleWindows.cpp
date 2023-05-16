@@ -10,6 +10,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+namespace iocod {
+
 static HANDLE handle_in = nullptr;
 static HANDLE handle_out = nullptr;
 static DWORD original_mode = 0;
@@ -275,3 +277,5 @@ void Console::Hide()
     Show();
     line_length_ = length;
 }
+
+} // namespace iocod

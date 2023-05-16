@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef IOCOD_STRINGIFY_H
-#define IOCOD_STRINGIFY_H
+#ifndef CORE_STRINGIFY_H
+#define CORE_STRINGIFY_H
 
 /// @def IOCOD_STRINGIFY
 /// @brief Stringifies a macro argument.
@@ -20,4 +20,4 @@
 #define IOCOD_CONCAT3_(a, b, c) a ## b ## c
 #define IOCOD_CONCAT3(a, b, c) IOCOD_CONCAT3_(a, b, c)
 
-#endif // IOCOD_STRINGIFY_H
+#endif // CORE_STRINGIFY_H

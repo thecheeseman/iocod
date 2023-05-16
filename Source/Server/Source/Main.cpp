@@ -11,6 +11,8 @@
 // --------------------------------
 int main(int argc, char* argv[])
 {
+    using namespace iocod;
+
     Console& console = Console::GetInstance();
     if (!console.Initialize())
         return 1;

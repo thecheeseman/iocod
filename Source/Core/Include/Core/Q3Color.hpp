@@ -5,6 +5,8 @@
 #ifndef Q3COLOR_HPP
 #define Q3COLOR_HPP
 
+namespace iocod {
+
 // Q3-compatible colors
 enum class Q3Color {
     Black,
@@ -49,5 +51,7 @@ inline constexpr const char* Q3ColorToCode(Q3Color color) noexcept
 
     return color_codes[static_cast<int>(color)];
 }
+
+} // namespace iocod
 
 #endif // Q3COLOR_HPP

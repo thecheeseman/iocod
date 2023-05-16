@@ -10,6 +10,8 @@
 
 #include <Core/Q3Color.hpp>
 
+namespace iocod {
+
 enum class VTColor {
     Black,
     Red,
@@ -142,5 +144,7 @@ private:
     void Show();
     void Hide();
 };
+
+} // namespace iocod
 
 #endif // CONSOLE_HPP

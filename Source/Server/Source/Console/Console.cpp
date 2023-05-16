@@ -4,6 +4,8 @@
 
 #include <Console.hpp>
 
+namespace iocod {
+
 // defined in OS-specific source files:
 // Initialize
 // Shutdown
@@ -156,4 +158,6 @@ void Console::ColorPrint(const std::string& text)
         fputs(buffer.data(), stderr);
     }
 }
+
+} // namespace iocod
 

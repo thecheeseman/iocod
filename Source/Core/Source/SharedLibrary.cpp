@@ -225,7 +225,7 @@ const char* shared_library_error_message(shared_library_t* library)
         return nullptr;
 
     static char error_message[1024]{0};
-    strncpy(error_message, reinterpret_cast<SharedLibrary*>(library)->GetLastErrorMessage().c_str(),
+    strncpy_s(error_message, reinterpret_cast<SharedLibrary*>(library)->GetLastErrorMessage().c_str(),
             sizeof(error_message));
     return error_message;
 }

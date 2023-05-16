@@ -15,6 +15,8 @@
 #define NO_LEAKS
 #include <term.h>
 
+namespace iocod {
+
 static struct termios tc;
 static std::size_t hide = 0;
 
@@ -103,3 +105,5 @@ void Console::Hide() noexcept
 
     hide++;
 }
+
+} // namespace iocod
