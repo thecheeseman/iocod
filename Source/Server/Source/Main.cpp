@@ -14,8 +14,11 @@ int main(int argc, char* argv[])
     using namespace iocod;
 
     Console& console = Console::GetInstance();
-    if (!console.Initialize())
+    auto [result, errormsg] = console.Initialize();
+    if (!result) {
+        fprintf(stderr, "Error initializing console: %s\n", errormsg.c_str());
         return 1;
+    }
 
     console.SetTitle("hello there");
     console.Print("hello there\n");

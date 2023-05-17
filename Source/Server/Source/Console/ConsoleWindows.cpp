@@ -17,10 +17,31 @@ static HANDLE handle_out = nullptr;
 static DWORD original_mode = 0;
 static std::size_t line_length_ = 0;
 
+namespace {
+
+std::string GetLastErrorAsString()
+{
+    DWORD error = GetLastError();
+    if (error == 0)
+        return std::string();
+
+    LPSTR buffer = nullptr;
+    size_t size = FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &buffer, 0, nullptr);
+
+    std::string message(buffer, size);
+    LocalFree(buffer);
+
+    return message;
+}
+
+} // namespace
+
 // --------------------------------
 // Console::Initialize
 // --------------------------------
-bool Console::Initialize() noexcept
+std::pair<bool, std::string> Console::Initialize() noexcept
 {
     auto console_ctrl_handler = [](DWORD sig) -> BOOL {
         switch (sig) {
@@ -39,19 +60,17 @@ bool Console::Initialize() noexcept
     };
 
     if (SetConsoleCtrlHandler(console_ctrl_handler, TRUE) == FALSE)
-        return false;
+        return {false, "failed to set console control handler: " + GetLastErrorAsString()};
 
     if ((handle_in = GetStdHandle(STD_INPUT_HANDLE)) == INVALID_HANDLE_VALUE)
-        return false;
+        return {false, "failed to get console input handle: " + GetLastErrorAsString()};
 
     if ((handle_out = GetStdHandle(STD_OUTPUT_HANDLE)) == INVALID_HANDLE_VALUE)
-        return false;
+        return {false, "failed to get console output handle: " + GetLastErrorAsString()};
 
     // utf-8 support
-    if (SetConsoleCP(CP_UTF8) == FALSE || SetConsoleOutputCP(CP_UTF8) == FALSE) {
-        fputs("Failed to set console code page to UTF-8\n", stderr);
-        return false;
-    }
+    if (SetConsoleCP(CP_UTF8) == FALSE || SetConsoleOutputCP(CP_UTF8) == FALSE)
+        return {false, "could not set console code page to UTF-8: " + GetLastErrorAsString()};
 
     // enable mouse-wheel scrolling
     GetConsoleMode(handle_in, &original_mode);
@@ -62,13 +81,13 @@ bool Console::Initialize() noexcept
     GetConsoleMode(handle_out, &mode);
     mode |= ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     if (SetConsoleMode(handle_out, mode) == FALSE)
-        return false;
+        return {false, "could not enable virtual terminal processing: " + GetLastErrorAsString()};
 
     FlushConsoleInputBuffer(handle_in);
 
     buffer_.fill(0);
 
-    return true;
+    return {true, ""};
 }
 
 // --------------------------------

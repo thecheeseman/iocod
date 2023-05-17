@@ -105,7 +105,7 @@ public:
     Console& operator=(const Console&) = delete;
     Console& operator=(Console&&) = delete;
 
-    bool Initialize() noexcept;
+    std::pair<bool, std::string> Initialize() noexcept;
     bool Shutdown() noexcept;
 
     void Print(const std::string& text, bool manual_color = false);

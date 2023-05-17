@@ -23,12 +23,12 @@ static std::size_t hide = 0;
 // --------------------------------
 // Console::Initialize
 // --------------------------------
-bool Console::Initialize() noexcept
+std::pair<bool, std::string> Console::Initialize() noexcept
 {
     // TODO
     buffer.fill(0);
 
-    return true;
+    return {true, ""};
 }
 
 // --------------------------------
