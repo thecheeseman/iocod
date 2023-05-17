@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <Core/SharedLibrary.h>
+#include <core/shared_library.h>
 
 #ifdef _WIN32
     #define WIN32_LEAN_AND_MEAN

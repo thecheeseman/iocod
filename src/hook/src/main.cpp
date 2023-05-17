@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Main.hpp"
+#include "main.hpp"
 #include <iostream>
 
 IOCOD_NODISCARD int _iocod_main(int argc, char* argv[], char* envp[]) noexcept

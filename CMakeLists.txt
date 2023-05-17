@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 project(iocod LANGUAGES C CXX)
 
 # disallow in-source builds
@@ -120,12 +120,12 @@ message(STATUS "Staged install prefix: ${STAGED_INSTALL_PREFIX}")
 #
 add_library(iocod_includes INTERFACE)
 target_include_directories(iocod_includes INTERFACE
-    "${CMAKE_SOURCE_DIR}/Include"
-    "${CMAKE_SOURCE_DIR}/Source/Core/Include"
-    "${STAGED_INSTALL_PREFIX}/Include"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/src/core/include"
+    "${STAGED_INSTALL_PREFIX}/include"
 
     # external
-    "${CMAKE_SOURCE_DIR}/External/expected-lite/include"
+    "${CMAKE_SOURCE_DIR}/external/expected-lite/include"
 )
 
 #
@@ -133,5 +133,5 @@ target_include_directories(iocod_includes INTERFACE
 #
 include(iocodGetGitCommitInfo)
 
-add_subdirectory("External")
-add_subdirectory("Source")
+add_subdirectory(external)
+add_subdirectory(src)

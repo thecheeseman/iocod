@@ -5,7 +5,7 @@
 #ifndef HOOK_MAIN_HPP
 #define HOOK_MAIN_HPP
 
-#include <Core/Platform.h>
+#include <core/platform.h>
 
 IOCOD_NODISCARD int _iocod_main(int argc, char* argv[], char* envp[]) noexcept;
 

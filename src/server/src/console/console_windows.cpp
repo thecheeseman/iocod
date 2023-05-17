@@ -5,10 +5,14 @@
 #include <iostream>
 #include <memory>
 
-#include <Console.hpp>
+#include <console.hpp>
+#include <core/narrow_cast.hpp>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+#undef min
+#undef max
 
 namespace iocod {
 
@@ -145,9 +149,6 @@ std::string Console::GetInput() noexcept
             break;
         case VK_LEFT:
             cursor_--;
-
-            if (cursor_ < 0)
-                cursor_ = 0;
             break;
         case VK_RIGHT:
             cursor_++;
@@ -277,10 +278,14 @@ void Console::Show()
     }
 
     COORD cursor = {0, 0};
+
+    const std::size_t x = cursor_ < line_length_               ? cursor_
+                          : line_length_ > info.srWindow.Right ? info.srWindow.Right
+                                                               : line_length_;
+
     cursor.Y = info.dwCursorPosition.Y;
-    cursor.X = cursor_ < line_length_               ? cursor_
-               : line_length_ > info.srWindow.Right ? info.srWindow.Right
-                                                    : static_cast<SHORT>(line_length_);
+    cursor.X = x > std::numeric_limits<short>::max() ? std::numeric_limits<short>::max()
+                                                     : static_cast<short>(x);
 
     SetConsoleCursorPosition(handle_out, cursor);
 }

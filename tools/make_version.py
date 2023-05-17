@@ -10,7 +10,7 @@
 import sys, re, string, os
 
 version_file = 'VERSION'
-header_file = 'Source/Core/Include/Core/Version.h'
+header_file = 'src/core/include/core/version.h'
 
 #
 # read version data from root file

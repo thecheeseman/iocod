@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "TestPlugin.h"
+#include "test_plugin.h"
 
 PluginInterface interface;
 static PluginInfo info = {.version = IOCOD_VERSION_ENCODE(1, 0, 0),

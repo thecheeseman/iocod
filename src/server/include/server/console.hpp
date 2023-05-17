@@ -8,7 +8,7 @@
 #include <array>
 #include <string>
 
-#include <Core/Q3Color.hpp>
+#include <core/q3color.hpp>
 
 namespace iocod {
 

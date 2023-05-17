@@ -5,7 +5,7 @@
 #ifndef CORE_PLATFORM_H
 #define CORE_PLATFORM_H
 
-#include <Core/Version.h>
+#include <core/version.h>
 
 /// @def IOCOD_ARCH
 /// @brief Architecture string.

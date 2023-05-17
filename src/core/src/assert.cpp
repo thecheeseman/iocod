@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <Core/Assert.h>
+#include <core/assert.h>
 #include <stdio.h>
 
 void _iocod_report_assertion_failure(const char* filename, int line,

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/External/Catch2/extras")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/Catch2/extras")
 
 enable_testing()
 include(CTest)
@@ -22,11 +22,11 @@ function(AddCoreTest)
 
     set_target_properties(${CORETEST_NAME} PROPERTIES
         PREFIX ""
-        ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/CoreTest"
-        LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/CoreTest"
-        RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/CoreTest"
+        ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/core-test"
+        LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/core-test"
+        RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/core-test"
     )
 endfunction()
 
 AddCoreTest(NAME "test-narrow_cast" SOURCES "test-narrow_cast.cpp")
-AddCoreTest(NAME "Test-SharedLibrary" SOURCES "Test-SharedLibrary.cpp")
+AddCoreTest(NAME "test-shared_library" SOURCES "test-shared_library.cpp")

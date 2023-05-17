@@ -2,16 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <Core/Plugin.h>
-#include <cstring>
+#include <core/plugin.h>
+
 #include <cstdio>
+#include <cstring>
 
 static void interface_log(const char* message)
 {
     printf("PluginInterface->log: %s\n", message);
 }
 
-void GetPluginInterface(PluginInterface* interface) 
+void GetPluginInterface(PluginInterface* interface)
 {
     if (interface == nullptr)
         return;

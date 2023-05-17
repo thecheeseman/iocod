@@ -5,7 +5,7 @@
 #ifndef TEST_PLUGIN_H
 #define TEST_PLUGIN_H
 
-#include <Core/Plugin.h>
+#include <core/plugin.h>
 
 extern PluginInterface interface;
 

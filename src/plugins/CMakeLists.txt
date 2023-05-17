@@ -46,10 +46,10 @@ function(add_plugin)
     
     set_target_properties(${PLUGIN_NAME} PROPERTIES
         PREFIX ""
-        ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/Plugins"
-        LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/Plugins"
-        RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/Plugins"
+        ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/plugins"
+        LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/plugins"
+        RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/plugins"
     )
 endfunction()
 
-add_plugin(NAME TestPlugin)
+add_plugin(NAME test_plugin)

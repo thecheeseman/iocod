@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 set(CORE_SOURCES
-    Assert.cpp
-    Plugin.cpp
-    SharedLibrary.cpp
+    assert.cpp
+    plugin.cpp
+    shared_library.cpp
 )
-list(TRANSFORM CORE_SOURCES PREPEND "Source/")
+list(TRANSFORM CORE_SOURCES PREPEND "src/")
 
 #
 # Core library
