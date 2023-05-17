@@ -107,7 +107,7 @@ def make_version():
 
 /// @def IOCOD_VERSION_DECODE_PATCH
 /// Decode the patch number from the full version value.
-#define IOCOD_VERSION_DECODE_PATCH(version) ((version) % 1000))
+#define IOCOD_VERSION_DECODE_PATCH(version) ((version) % 1000)
 
 #endif // CORE_VERSION_H
 """)
