@@ -12,7 +12,7 @@ indent_style = space
 indent_size = 4
 charset = utf-8
 max_line_length = 120
-guidelines = 80
+guidelines = 100
 guidelines_style = 0.5px dotted ff808080
 
 [Makefile]

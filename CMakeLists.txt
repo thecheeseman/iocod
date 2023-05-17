@@ -123,6 +123,9 @@ target_include_directories(iocod_includes INTERFACE
     "${CMAKE_SOURCE_DIR}/Include"
     "${CMAKE_SOURCE_DIR}/Source/Core/Include"
     "${STAGED_INSTALL_PREFIX}/Include"
+
+    # external
+    "${CMAKE_SOURCE_DIR}/External/expected-lite/include"
 )
 
 #
