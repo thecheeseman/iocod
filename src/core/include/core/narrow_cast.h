@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: MIT
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef CORE_NARROW_CAST_HPP
-#define CORE_NARROW_CAST_HPP
+#ifndef CORE_NARROW_CAST_H
+#define CORE_NARROW_CAST_H
 
 #include <exception>
 
@@ -51,4 +51,4 @@ constexpr T narrow(U u)
 
 } // namespace iocod
 
-#endif // CORE_NARROW_CAST_HPP
+#endif // CORE_NARROW_CAST_H

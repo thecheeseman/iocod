@@ -4,9 +4,25 @@
 
 set(CORE_SOURCES
     assert.cpp
+    command_system.cpp
     plugin.cpp
-    shared_library.cpp
+    string_utilities.cpp
+    system/console.cpp
+    system/shared_library.cpp
+    system/system.cpp
+    system/system_info.cpp
 )
+
+if (MSVC)
+    list(APPEND CORE_SOURCES
+        system/console_windows.cpp
+    )
+else()
+    list(APPEND CORE_SOURCES
+        system/console_unix.cpp
+    )
+endif()
+
 list(TRANSFORM CORE_SOURCES PREPEND "src/")
 
 #

@@ -122,6 +122,7 @@ add_library(iocod_includes INTERFACE)
 target_include_directories(iocod_includes INTERFACE
     "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_SOURCE_DIR}/src/core/include"
+    "${CMAKE_SOURCE_DIR}/src/game/include"
     "${STAGED_INSTALL_PREFIX}/include"
 
     # external

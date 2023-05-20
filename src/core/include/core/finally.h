@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef CORE_FINALLY_HPP
-#define CORE_FINALLY_HPP
+#ifndef CORE_FINALLY_H
+#define CORE_FINALLY_H
 
 namespace iocod {
 
@@ -11,7 +11,7 @@ namespace iocod {
 /// @tparam Functor Type of the function object.
 /// Borrowed & modified from https://www.cppstories.com/2017/04/finalact/ / GSL
 template <typename Functor>
-class Finally {
+class finally {
 public:
     explicit finally(const Functor& f) noexcept
         : func_(f)
@@ -66,9 +66,9 @@ private:
 template <typename Functor>
 auto make_finally(Functor&& f) noexcept
 {
-    return Finally<Functor>(std::forward<Functor>(f));
+    return finally<Functor>(std::forward<Functor>(f));
 }
 
 } // namespace iocod
 
-#endif // CORE_FINALLY_HPP
+#endif // CORE_FINALLY_H

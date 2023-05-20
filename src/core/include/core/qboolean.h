@@ -5,11 +5,13 @@
 #ifndef CORE_QBOOLEAN_H
 #define CORE_QBOOLEAN_H
 
-#pragma once
+namespace iocod {
 
 typedef enum {
     qfalse,
     qtrue
 } QBoolean;
+
+} // namespace iocod
 
 #endif // CORE_QBOOLEAN_H

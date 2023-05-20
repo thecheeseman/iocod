@@ -2,17 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <core/narrow_cast.h>
+
 #include <iostream>
 #include <memory>
 
-#include <console.hpp>
-#include <core/narrow_cast.hpp>
+#include "console.h"
 
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <windows.h>
-
-#undef min
-#undef max
 
 namespace iocod {
 

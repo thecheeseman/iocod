@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef CONSOLE_HPP
-#define CONSOLE_HPP
+#ifndef CORE_CONSOLE_CONSOLE_H
+#define CORE_CONSOLE_CONSOLE_H
+
+#include <core/q3color.h>
 
 #include <array>
 #include <string>
-
-#include <core/q3color.hpp>
 
 namespace iocod {
 
@@ -93,7 +93,6 @@ inline constexpr VTColor Q3ColorToVTColor(Q3Color color) noexcept
     return color_codes[static_cast<int>(color)];
 }
 
-/// Console interface for the server.
 class Console {
 public:
     Console() = default;
@@ -110,8 +109,8 @@ public:
 
     void Print(const std::string& text, bool manual_color = false);
     void DebugPrint(const std::string& text);
-    void Warn(const std::string& text);
-    void Error(const std::string& text);
+    void WarningPrint(const std::string& text);
+    void ErrorPrint(const std::string& text);
 
     void Clear();
 
@@ -119,12 +118,6 @@ public:
 
     void SetTextColor(VTColor foreground, VTColor background = VTColor::Black);
     void SetTitle(const std::string& title);
-
-    static Console& GetInstance() noexcept
-    {
-        static Console instance;
-        return instance;
-    }
 
 private:
     static constexpr const char PROMPT[] = "] ";
@@ -147,4 +140,4 @@ private:
 
 } // namespace iocod
 
-#endif // CONSOLE_HPP
+#endif // CORE_CONSOLE_CONSOLE_H

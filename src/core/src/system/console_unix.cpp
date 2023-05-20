@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <Core/Assert.h>
+#include <core/assert.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
@@ -10,7 +10,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include <Console.hpp>
+#include "console.h"
 
 #define NO_LEAKS
 #include <term.h>

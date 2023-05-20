@@ -4,18 +4,7 @@
 
 set(SERVER_SOURCES
     main.cpp
-    console/console.cpp
 )
-
-if (MSVC)
-    list(APPEND SERVER_SOURCES
-        console/console_windows.cpp
-    )
-else()
-    list(APPEND SERVER_SOURCES
-        console/console_unix.cpp
-    )
-endif()
 
 list(TRANSFORM SERVER_SOURCES PREPEND "src/")
 

@@ -5,9 +5,10 @@
 #ifndef CORE_SHARED_LIBRARY_H
 #define CORE_SHARED_LIBRARY_H
 
-#ifdef __cplusplus
-    #include <filesystem>
-    #include <string>
+#include <filesystem>
+#include <string>
+
+namespace iocod {
 
 class SharedLibrary final {
 public:
@@ -26,12 +27,7 @@ public:
     /// @brief Load the library.
     /// @param[in] library_path path to the shared library
     /// @return true if the library was loaded successfully
-    bool Load(const char* library_path) noexcept;
-
-    bool Load(const std::filesystem::path& library_path) noexcept
-    {
-        return Load(library_path.string().c_str());
-    }
+    bool Load(const std::filesystem::path& library_path) noexcept;
 
     /// @brief Unload the library.
     void Unload() noexcept;
@@ -54,13 +50,7 @@ public:
     template <typename T>
     inline T LoadSymbol(const std::string& name) noexcept
     {
-        return reinterpret_cast<T>(LoadVoidSymbol(name));
-    }
-
-    template <typename T>
-    inline T LoadSymbol(const char* symbol) noexcept
-    {
-        return reinterpret_cast<T>(LoadVoidSymbol(symbol));
+        return reinterpret_cast<T>(LoadVoidSymbol(name.c_str()));
     }
 
     void* LoadVoidSymbol(const char* symbol) noexcept;
@@ -76,54 +66,7 @@ private:
         last_error = error;
     }
 };
-#endif
 
-// ============================================================================
-// C API
-// ============================================================================
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct shared_library_t shared_library_t;
-
-/// @brief Create a new shared library object.
-/// @param[in] path path to the shared library, or NULL to create an empty object
-/// @return shared library object or NULL if failed
-shared_library_t* shared_library_create(const char* path);
-
-/// @brief Free a shared library object.
-/// @param[in] library shared library object
-void shared_library_free(shared_library_t* library);
-
-/// @brief Load a shared library.
-/// @param[in] library shared library object
-/// @param[in] path path to the shared library
-/// @return 1 if the library was loaded successfully, 0 otherwise
-int shared_library_load(shared_library_t* library, const char* path);
-
-/// @brief Check if a shared library is loaded.
-/// @param[in] library shared library object
-/// @return 1 if the library is loaded, 0 otherwise
-int shared_library_loaded(shared_library_t* library);
-
-/// @brief Unload a shared library.
-/// @param[in] library shared library object
-void shared_library_unload(shared_library_t* library);
-
-/// @brief Load a symbol from a shared library.
-/// @param[in] library shared library object
-/// @param[in] symbol name of the symbol
-/// @return pointer to the symbol or NULL if failed
-void* shared_library_load_symbol(shared_library_t* library, const char* symbol);
-
-/// @brief Get the last error message.
-/// @param[in] library shared library object
-/// @return last error message
-const char* shared_library_error_message(shared_library_t* library);
-
-#ifdef __cplusplus
-}
-#endif
+} // namespace iocod
 
 #endif // CORE_SHARED_LIBRARY_H

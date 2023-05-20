@@ -11,6 +11,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+namespace iocod {
 #endif
 
 #define PLUGIN_API_VERSION_MAJOR 1
@@ -90,6 +91,7 @@ typedef void (*PluginShutdownPtr)(void);
 
 #ifdef __cplusplus
 }
+} // namespace iocod
 #endif
 
 #endif // CORE_PLUGIN_H

@@ -153,7 +153,7 @@
     #endif
 #endif // IOCOD_COMPILER
 
-#ifdef IOCOD_MSVC
+#ifdef IOCOD_COMPILER_MSVC
     #define IOCOD_LOCAL
     #define IOCOD_EXPORT __declspec(dllexport)
     #define IOCOD_IMPORT __declspec(dllimport)

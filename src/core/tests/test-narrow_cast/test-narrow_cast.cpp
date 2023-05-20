@@ -5,7 +5,7 @@
 #include <complex>
 #include <limits>
 
-#include <core/narrow_cast.hpp>
+#include <core/narrow_cast.h>
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("narrow_cast", "[narrow_cast]")

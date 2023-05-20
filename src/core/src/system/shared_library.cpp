@@ -11,6 +11,8 @@
     #include <dlfcn.h>
 #endif
 
+namespace iocod {
+
 // --------------------------------
 // SharedLibrary::SharedLibrary
 // --------------------------------
@@ -53,7 +55,7 @@ bool SharedLibrary::Loaded() const noexcept
 // --------------------------------
 // SharedLibrary::Load
 // --------------------------------
-bool SharedLibrary::Load(const char* library_path) noexcept
+bool SharedLibrary::Load(const std::filesystem::path& library_path) noexcept
 {
     if (Loaded())
         Unload();
@@ -63,13 +65,13 @@ bool SharedLibrary::Load(const char* library_path) noexcept
 
 #ifdef _WIN32
     // TODO: support wide strings
-    handle = LoadLibraryA(library_path);
+    handle = LoadLibraryA(library_path.string().c_str());
 #else
-    handle = dlopen(library_path, RTLD_LAZY);
+    handle = dlopen(library_path.c_str(), RTLD_LAZY);
 #endif
 
     if (handle == nullptr) {
-        std::string message = "Failed to load library '" + std::string(library_path) + "': ";
+        std::string message = "Failed to load library '" + library_path.string() + "': ";
 
 #ifdef _WIN32
         LPSTR buffer = nullptr;
@@ -148,85 +150,4 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
     return addr;
 }
 
-// ============================================================================
-// C API
-// ============================================================================
-
-// --------------------------------
-// shared_library_create
-// --------------------------------
-shared_library_t* shared_library_create(const char* path)
-{
-    if (path != nullptr)
-        return reinterpret_cast<shared_library_t*>(new SharedLibrary(path));
-    else
-        return reinterpret_cast<shared_library_t*>(new SharedLibrary());
-}
-
-// --------------------------------
-// shared_library_free
-// --------------------------------
-void shared_library_free(shared_library_t* library)
-{
-    if (library != nullptr)
-        delete reinterpret_cast<SharedLibrary*>(library);
-}
-
-// --------------------------------
-// shared_library_load
-// --------------------------------
-int shared_library_load(shared_library_t* library, const char* path)
-{
-    if (library == nullptr)
-        return 0;
-
-    return reinterpret_cast<SharedLibrary*>(library)->Load(path);
-}
-
-// --------------------------------
-// shared_library_loaded
-// --------------------------------
-int shared_library_loaded(shared_library_t* library)
-{
-    if (library == nullptr)
-        return 0;
-
-    return reinterpret_cast<SharedLibrary*>(library)->Loaded();
-}
-
-// --------------------------------
-// shared_library_unload
-// --------------------------------
-void shared_library_unload(shared_library_t* library)
-{
-    if (library == nullptr)
-        return;
-
-    reinterpret_cast<SharedLibrary*>(library)->Unload();
-}
-
-// --------------------------------
-// shared_library_load_symbol
-// --------------------------------
-void* shared_library_load_symbol(shared_library_t* library, const char* symbol)
-{
-    if (library == nullptr)
-        return nullptr;
-
-    return reinterpret_cast<SharedLibrary*>(library)->LoadVoidSymbol(symbol);
-}
-
-// --------------------------------
-// shared_library_error_message
-// --------------------------------
-const char* shared_library_error_message(shared_library_t* library)
-{
-    if (library == nullptr)
-        return nullptr;
-
-    static char error_message[1024]{0};
-    strncpy_s(error_message, reinterpret_cast<SharedLibrary*>(library)->GetLastErrorMessage().c_str(),
-            sizeof(error_message));
-    return error_message;
-}
-// ============================================================================
+} // namespace iocod

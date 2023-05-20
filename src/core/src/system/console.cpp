@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <Console.hpp>
-
-namespace iocod {
+#include "console.h"
 
 // defined in OS-specific source files:
 // Initialize
@@ -13,6 +11,8 @@ namespace iocod {
 // Back
 // Show
 // Hide
+
+namespace iocod {
 
 // --------------------------------
 // Console::Print
@@ -49,18 +49,16 @@ void Console::Print(const std::string& text, bool manual_color)
 // --------------------------------
 // Console::DebugPrint
 // --------------------------------
-void Console::DebugPrint([[maybe_unused]] const std::string& text)
+void Console::DebugPrint(const std::string& text)
 {
-#ifdef IOCOD_DEBUG
     SetTextColor(VTColor::Cyan);
     Print("DEBUG: " + text);
-#endif
 }
 
 // --------------------------------
-// Console::Warn
+// Console::WarningPrint
 // --------------------------------
-void Console::Warn(const std::string& text)
+void Console::WarningPrint(const std::string& text)
 {
     SetTextColor(VTColor::BrightYellow);
     Print("WARNING: " + text);
@@ -69,7 +67,7 @@ void Console::Warn(const std::string& text)
 // --------------------------------
 // Console::Error
 // --------------------------------
-void Console::Error(const std::string& text)
+void Console::ErrorPrint(const std::string& text)
 {
     SetTextColor(VTColor::BrightWhite, VTColor::BrightRed);
     Print("ERROR: " + text);
@@ -119,7 +117,7 @@ void Console::ColorPrint(const std::string& text)
 
     for (std::size_t i = 0; i < text.size(); i++) {
         bool new_line = text[i] == '\n';
-        bool color = IsQ3ColorString(&text[i]);
+        bool color = iocod::IsQ3ColorString(&text[i]);
 
         console_on_ = new_line;
 
@@ -160,4 +158,3 @@ void Console::ColorPrint(const std::string& text)
 }
 
 } // namespace iocod
-

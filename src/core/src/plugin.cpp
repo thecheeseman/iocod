@@ -7,6 +7,8 @@
 #include <cstdio>
 #include <cstring>
 
+namespace iocod {
+
 static void interface_log(const char* message)
 {
     printf("PluginInterface->log: %s\n", message);
@@ -25,3 +27,5 @@ void GetPluginInterface(PluginInterface* interface)
 
     interface->log = interface_log;
 }
+
+} // namespace iocod

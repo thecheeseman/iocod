@@ -7,10 +7,7 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
 namespace iocod {
-#endif
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -25,9 +22,6 @@ typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
-#ifdef __cplusplus
-}
 } // namespace iocod
-#endif
 
 #endif // CORE_TYPES_H

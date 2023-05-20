@@ -5,10 +5,13 @@
 #include <core/assert.h>
 #include <stdio.h>
 
-void _iocod_report_assertion_failure(const char* filename, int line,
-                                     const char* function, const char* message)
+namespace iocod::detail {
+
+void iocod_report_assertion_failure(const char* filename, int line, const char* function,
+                                    const char* message)
 {
-    fprintf(stderr, "%s:%d internal check failed at %s: %s\n", filename, line,
-            function, message);
+    fprintf(stderr, "%s:%d internal check failed at %s: %s\n", filename, line, function, message);
     fflush(stderr);
 }
+
+} // namespace iocod::detail
