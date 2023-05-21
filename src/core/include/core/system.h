@@ -13,7 +13,7 @@
 
 namespace iocod {
 
-class IOCOD_EXPORT ISystem {
+class ISystem {
 public:
     virtual ~ISystem() = default;
 

@@ -18,7 +18,7 @@ enum class CommandExecutionType {
     Append
 };
 
-class IOCOD_EXPORT ICommandSystem {
+class ICommandSystem {
 public:
     virtual ~ICommandSystem() = default;
 

@@ -173,6 +173,12 @@
     #define IOCOD_DESTRUCTOR
 #endif
 
+#ifdef IOCOD_BUILD_DLL
+    #define IOCOD_API IOCOD_EXPORT
+#else
+    #define IOCOD_API IOCOD_IMPORT
+#endif
+
 /// @def IOCOD_VERSION_CHECK
 /// Check if the given compiler version matches or is newer.
 #define IOCOD_VERSION_CHECK(major, minor, patch) \
