@@ -38,7 +38,7 @@ if (ENABLE_UNITY_BUILD)
     set_target_properties(iocod_options PROPERTIES UNITY_BUILD ON)
 endif()
 
-if (UNIX OR APPLE)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(iocod_options INTERFACE
         $<$<CONFIG:Debug>:-g -O0>
         $<$<CONFIG:Release>:-O2>
@@ -86,21 +86,6 @@ elseif (MSVC)
         /CETCOMPAT                              # enable CET
         /NXCOMPAT                               # enable DEP
     )
-endif()
-
-if (USE_MOLD_LINKER)
-    if (UNIX or APPLE)
-        include(CheckLinkerFlag)
-        check_linker_flag(CXX fuse-ld=mold _use_mold)
-
-        if (_use_mold)
-            target_link_options(iocod_options INTERFACE -fuse-ld=mold)
-        else()
-            message(WARNING "Cannot specify custom linker, using default")
-        endif()
-    else()
-        message(WARNING "Cannot specify custom linker, using default")
-    endif()
 endif()
 
 #

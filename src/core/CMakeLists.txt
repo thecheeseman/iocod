@@ -30,6 +30,7 @@ list(TRANSFORM CORE_SOURCES PREPEND "src/")
 # Core library
 #
 add_library(iocodcore STATIC ${CORE_SOURCES})
+target_compile_definitions(iocodcore PRIVATE IOCOD_BUILD_DLL)
 target_link_libraries(iocodcore PRIVATE iocod_options iocod_warnings iocod_includes)
 
 # remove the "lib" prefix from the library name

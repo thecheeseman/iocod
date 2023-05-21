@@ -6,4 +6,4 @@ SPDX-License-Identifier: CC0-1.0
 
 # iocod core
 
-Core library and utilities for all iocod projects.
+Core content shared by client and server dlls.

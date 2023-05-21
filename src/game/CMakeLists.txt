@@ -8,7 +8,7 @@ set(GAME_SOURCES
 list(TRANSFORM GAME_SOURCES PREPEND "src/")
 
 #
-# Core library
+# Game library
 #
 add_library(iocodgame SHARED ${GAME_SOURCES})
 target_link_libraries(iocodgame PRIVATE iocod_options iocod_warnings iocod_includes)

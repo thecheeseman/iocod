@@ -6,6 +6,7 @@
 #define CORE_TYPES_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 namespace iocod {
 
@@ -21,6 +22,12 @@ typedef int64_t i64;
 
 typedef float f32;
 typedef double f64;
+
+// q3 types
+typedef float vec_t;
+typedef vec_t vec2_t[2];
+typedef vec_t vec3_t[3];
+typedef vec_t vec4_t[4];
 
 } // namespace iocod
 
