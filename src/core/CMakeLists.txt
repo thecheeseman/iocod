@@ -6,6 +6,7 @@ set(CORE_SOURCES
     assert.cpp
     command_system.cpp
     plugin.cpp
+    scoped_timer.cpp
     string_utilities.cpp
     system/console.cpp
     system/shared_library.cpp
