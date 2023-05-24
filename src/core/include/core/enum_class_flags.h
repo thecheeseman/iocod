@@ -42,6 +42,43 @@ typename std::enable_if_t<EnumFlag<E>::enabled, E> operator~(E rhs)
     return static_cast<E>(~static_cast<ut>(rhs));
 }
 
+template <typename E>
+typename std::enable_if_t<EnumFlag<E>::enabled, E&> operator|=(E& lhs, E rhs)
+{
+    using ut = std::underlying_type_t<E>;
+    lhs = static_cast<E>(static_cast<ut>(lhs) | static_cast<ut>(rhs));
+    return lhs;
+}
+
+template <typename E>
+typename std::enable_if_t<EnumFlag<E>::enabled, E&> operator&=(E& lhs, E rhs)
+{
+    using ut = std::underlying_type_t<E>;
+    lhs = static_cast<E>(static_cast<ut>(lhs) & static_cast<ut>(rhs));
+    return lhs;
+}
+
+template <typename E>
+typename std::enable_if_t<EnumFlag<E>::enabled, E&> operator^=(E& lhs, E rhs)
+{
+    using ut = std::underlying_type_t<E>;
+    lhs = static_cast<E>(static_cast<ut>(lhs) ^ static_cast<ut>(rhs));
+    return lhs;
+}
+
+template <typename E>
+typename std::enable_if_t<EnumFlag<E>::enabled, bool> HasEnumFlag(E lhs, E rhs)
+{
+    using ut = std::underlying_type_t<E>;
+    return (static_cast<ut>(lhs) & static_cast<ut>(rhs)) != 0;
+}
+
+#define ENUM_CLASS_FLAGS(Type)                \
+    template <>                               \
+    struct EnumFlag<Type> {                   \
+        static constexpr bool enabled = true; \
+    };
+
 } // namespace iocod
 
 #endif // CORE_ENUM_CLASS_FLAGS_H
