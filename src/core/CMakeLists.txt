@@ -32,6 +32,15 @@ list(TRANSFORM CORE_SOURCES PREPEND "src/")
 add_library(iocodcore STATIC ${CORE_SOURCES})
 target_compile_definitions(iocodcore PRIVATE IOCOD_BUILD_DLL)
 target_link_libraries(iocodcore PRIVATE iocod_options iocod_warnings iocod_includes)
+target_link_libraries(iocodcore PRIVATE fmt::fmt spdlog::spdlog)
+
+target_precompile_headers(iocodcore PUBLIC
+    <core/platform.h>
+    <core/types.h>
+    <string>
+    <unordered_map>
+    <vector>
+)
 
 # remove the "lib" prefix from the library name
 set_target_properties(iocodcore PROPERTIES
