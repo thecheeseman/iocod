@@ -12,6 +12,7 @@ set(CORE_SOURCES
     system/shared_library.cpp
     system/system.cpp
     system/system_info.cpp
+    vector.cpp
 )
 
 if (MSVC)
