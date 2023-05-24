@@ -5,29 +5,32 @@
 #ifndef CORE_TYPES_H
 #define CORE_TYPES_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <string>
 
 namespace iocod {
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
+using String = std::string;
 
-typedef int8_t i8;
-typedef int16_t i16;
-typedef int32_t i32;
-typedef int64_t i64;
+using u8 = uint8_t;
+using u16 = uint16_t;
+using u32 = uint32_t;
+using u64 = uint64_t;
 
-typedef float f32;
-typedef double f64;
+using i8 = int8_t;
+using i16 = int16_t;
+using i32 = int32_t;
+using i64 = int64_t;
+
+using f32 = float;
+using f64 = double;
 
 // q3 types
-typedef float vec_t;
-typedef vec_t vec2_t[2];
-typedef vec_t vec3_t[3];
-typedef vec_t vec4_t[4];
+using vec_t = float;
+using vec2_t = vec_t[2];
+using vec3_t = vec_t[3];
+using vec4_t = vec_t[4];
 
 // useful filesize literals
 inline consteval auto operator"" _KB(u64 value) -> u64
@@ -98,6 +101,11 @@ template <typename T>
 inline constexpr T BytesToTB(T x)
 {
     return (x >> 40);
+}
+
+inline consteval u8 Bit(u8 n)
+{
+    return (1 << n);
 }
 
 } // namespace iocod
