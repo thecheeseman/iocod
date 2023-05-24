@@ -11,7 +11,7 @@
 /// Always assert.
 #define IOCOD_ALWAYS_ASSERT(...)                         \
     do {                                                 \
-        if (!__VA_ARGS__) {                              \
+        if (__VA_ARGS__) {                              \
         } else {                                         \
             IOCOD_REPORT_ASSERTION_FAILURE(__VA_ARGS__); \
             IOCOD_ASSERT_TRAP();                         \
@@ -26,8 +26,10 @@
 /// @brief Asserts that the given expression is true.
 #ifdef IOCOD_DEBUG
     #define IOCOD_ASSERT(...) IOCOD_ALWAYS_ASSERT(__VA_ARGS__)
+    #define Assert(...)       IOCOD_ALWAYS_ASSERT(__VA_ARGS__)
 #else
     #define IOCOD_ASSERT(...) IOCOD_NEVER_ASSERT(__VA_ARGS__)
+    #define Assert(...)       IOCOD_NEVER_ASSERT(__VA_ARGS__)
 #endif
 
 #ifdef _MSC_VER
@@ -51,13 +53,5 @@ void iocod_report_assertion_failure(const char* filename, int line, const char* 
                                     const char* message);
 
 } // namespace iocod::detail
-
-/// @def IOCOD_STATIC_ASSERT
-/// @brief Wrapper around static_assert/_Static_assert.
-#ifdef __cplusplus
-    #define IOCOD_STATIC_ASSERT(condition, message) static_assert(condition, message)
-#else
-    #define IOCOD_STATIC_ASSERT(condition, message) _Static_assert(condition, message)
-#endif
 
 #endif // CORE_ASSERT_H
