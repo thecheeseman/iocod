@@ -13,8 +13,8 @@
 namespace iocod {
 
 namespace detail {
-struct case_insensitive {
-    struct comparison {
+struct CaseInsensitive {
+    struct Comparison {
         bool operator()(const std::string& lhs, const std::string& rhs) const
         {
             return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(),
@@ -24,7 +24,7 @@ struct case_insensitive {
         }
     };
 
-    struct hash {
+    struct Hash {
         std::size_t operator()(std::string str) const
         {
             std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
@@ -37,8 +37,8 @@ struct case_insensitive {
 } // namespace detail
 
 template <typename T, typename Key = std::string>
-using case_insensitive_map = std::unordered_map<Key, T, detail::case_insensitive::hash,
-                                                detail::case_insensitive::comparison>;
+using CaseInsensitiveMap =
+    std::unordered_map<Key, T, detail::CaseInsensitive::Hash, detail::CaseInsensitive::Comparison>;
 
 } // namespace iocod
 
