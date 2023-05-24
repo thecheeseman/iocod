@@ -29,6 +29,77 @@ typedef vec_t vec2_t[2];
 typedef vec_t vec3_t[3];
 typedef vec_t vec4_t[4];
 
+// useful filesize literals
+inline consteval auto operator"" _KB(u64 value) -> u64
+{
+    return value * 1024;
+}
+
+inline consteval auto operator"" _MB(u64 value) -> u64
+{
+    return value * 1024 * 1024;
+}
+
+inline consteval auto operator"" _GB(u64 value) -> u64
+{
+    return value * 1024 * 1024 * 1024;
+}
+
+// other useful utilities
+template <typename T>
+inline constexpr T Min(T a, T b)
+{
+    return (a < b) ? a : b;
+}
+
+template <typename T>
+inline constexpr T Max(T a, T b)
+{
+    return (a > b) ? a : b;
+}
+
+template <typename T>
+inline constexpr T Clamp(T a, T x, T b)
+{
+    return (x < a) ? a : (b < x) ? b : x;
+}
+
+template <typename T>
+inline constexpr T Pow2AlignUp(T x, T p)
+{
+    return ((x + (p - 1)) & ~(p - 1));
+}
+
+template <typename T>
+inline constexpr T Pow2AlignDown(T x, T p)
+{
+    return (x & ~(p - 1));
+}
+
+template <typename T>
+inline constexpr T BytesToKB(T x)
+{
+    return (x >> 10);
+}
+
+template <typename T>
+inline constexpr T BytesToMB(T x)
+{
+    return (x >> 20);
+}
+
+template <typename T>
+inline constexpr T BytesToGB(T x)
+{
+    return (x >> 30);
+}
+
+template <typename T>
+inline constexpr T BytesToTB(T x)
+{
+    return (x >> 40);
+}
+
 } // namespace iocod
 
 #endif // CORE_TYPES_H
