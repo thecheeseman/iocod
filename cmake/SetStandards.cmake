@@ -1,23 +1,15 @@
-# SPDX-FileCopyrightText: 2023 thecheeseman <thecheeseman@duck.com>
+# SPDX-FileCopyrightText: 2023 thecheeseman
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 #
 # C++ Standards
-# require C++17 or later
+# require C++20 or later
 #
 list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_20" HAS_CXX20)
 if (NOT HAS_CXX20)
-    list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_17" HAS_CXX17)
-    if (NOT HAS_CXX17)
-        message(SEND_ERROR "C++17 required at least")
-    endif()
+    message(SEND_ERROR "C++20 required")
 
-    message(WARNING "C++20 not supported, using C++17")
-    set(CMAKE_CXX_STANDARD 17)
-    set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-    set(CMAKE_CXX_EXTENSIONS FALSE)
-else()
     set(CMAKE_CXX_STANDARD 20)
     set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
     set(CMAKE_CXX_EXTENSIONS FALSE)
