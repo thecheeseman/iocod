@@ -5,8 +5,9 @@
 #ifndef CORE_SHARED_LIBRARY_H
 #define CORE_SHARED_LIBRARY_H
 
+#include <core/types.h>
+
 #include <filesystem>
-#include <string>
 
 namespace iocod {
 
@@ -38,7 +39,7 @@ public:
 
     /// @brief Get the last error, if any.
     /// @return const std::string last error
-    inline const std::string GetLastErrorMessage() const noexcept
+    inline const String GetLastErrorMessage() const noexcept
     {
         return last_error;
     }
@@ -48,7 +49,7 @@ public:
     /// @param[in] name name of the symbol
     /// @return T symbol or nullptr if failed
     template <typename T>
-    inline T LoadSymbol(const std::string& name) noexcept
+    inline T LoadSymbol(const String& name) noexcept
     {
         return reinterpret_cast<T>(LoadVoidSymbol(name.c_str()));
     }
@@ -59,9 +60,9 @@ private:
     void* handle = nullptr;
     bool loaded = false;
     std::filesystem::path path{};
-    std::string last_error{};
+    String last_error{};
 
-    inline void SetLastErrorMessage(const std::string& error) noexcept
+    inline void SetLastErrorMessage(const String& error) noexcept
     {
         last_error = error;
     }

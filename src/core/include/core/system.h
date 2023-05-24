@@ -24,53 +24,53 @@ public:
 
     virtual u64 Milliseconds() noexcept = 0;
 
-    virtual std::string GetConsoleInput() noexcept = 0;
+    virtual String GetConsoleInput() noexcept = 0;
     virtual void ClearConsole() noexcept = 0;
 
-    virtual void Print(const std::string& message) noexcept = 0;
-    virtual void DebugPrint(const std::string& message) noexcept = 0;
-    virtual void Warning(const std::string& message) noexcept = 0;
-    virtual void Error(const std::string& message) noexcept = 0;
+    virtual void Print(const String& message) noexcept = 0;
+    virtual void DebugPrint(const String& message) noexcept = 0;
+    virtual void Warning(const String& message) noexcept = 0;
+    virtual void Error(const String& message) noexcept = 0;
 
     virtual SystemInfo GetSystemInfo() = 0;
     virtual void PrintSystemInfo() = 0;
 
     //
-    static void LogTrace(const std::string& message);
-    static void LogDebug(const std::string& message);
-    static void LogInfo(const std::string& message);
-    static void LogWarn(const std::string& message);
-    static void LogError(const std::string& message);
+    static void LogTrace(const String& message);
+    static void LogDebug(const String& message);
+    static void LogInfo(const String& message);
+    static void LogWarn(const String& message);
+    static void LogError(const String& message);
 };
 
 extern ISystem* g_system;
 
 template <typename... Args>
-inline void LogTrace(const std::string& format, Args&&... args)
+inline void LogTrace(const String& format, Args&&... args)
 {
     ISystem::LogTrace(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogDebug(const std::string& format, Args&&... args)
+inline void LogDebug(const String& format, Args&&... args)
 {
     ISystem::LogDebug(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogInfo(const std::string& format, Args&&... args)
+inline void LogInfo(const String& format, Args&&... args)
 {
     ISystem::LogInfo(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogWarn(const std::string& format, Args&&... args)
+inline void LogWarn(const String& format, Args&&... args)
 {
     ISystem::LogWarn(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogError(const std::string& format, Args&&... args)
+inline void LogError(const String& format, Args&&... args)
 {
     ISystem::LogError(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }

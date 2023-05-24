@@ -17,7 +17,7 @@ namespace iocod {
 // --------------------------------
 // Console::Print
 // --------------------------------
-void Console::Print(const std::string& text, bool manual_color)
+void Console::Print(const String& text, bool manual_color)
 {
     static std::size_t overdue = 0;
 
@@ -49,7 +49,7 @@ void Console::Print(const std::string& text, bool manual_color)
 // --------------------------------
 // Console::DebugPrint
 // --------------------------------
-void Console::DebugPrint(const std::string& text)
+void Console::DebugPrint(const String& text)
 {
     SetTextColor(VTColor::Cyan);
     Print("DEBUG: " + text);
@@ -58,7 +58,7 @@ void Console::DebugPrint(const std::string& text)
 // --------------------------------
 // Console::WarningPrint
 // --------------------------------
-void Console::WarningPrint(const std::string& text)
+void Console::WarningPrint(const String& text)
 {
     SetTextColor(VTColor::BrightYellow);
     Print("WARNING: " + text);
@@ -67,7 +67,7 @@ void Console::WarningPrint(const std::string& text)
 // --------------------------------
 // Console::Error
 // --------------------------------
-void Console::ErrorPrint(const std::string& text)
+void Console::ErrorPrint(const String& text)
 {
     SetTextColor(VTColor::BrightWhite, VTColor::BrightRed);
     Print("ERROR: " + text);
@@ -100,7 +100,7 @@ void Console::SetTextColor(VTColor foreground, VTColor background)
 // --------------------------------
 // Console::SetTitle
 // --------------------------------
-void Console::SetTitle(const std::string& title)
+void Console::SetTitle(const String& title)
 {
     fputs("\033]0;", stderr);
     fputs(title.c_str(), stderr);
@@ -110,7 +110,7 @@ void Console::SetTitle(const std::string& title)
 // --------------------------------
 // Console::ColorPrint
 // --------------------------------
-void Console::ColorPrint(const std::string& text)
+void Console::ColorPrint(const String& text)
 {
     std::array<char, MAX_EDIT_LINE> buffer{};
     std::size_t buffer_index = 0;

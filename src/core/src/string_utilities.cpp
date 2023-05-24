@@ -18,9 +18,9 @@ namespace iocod::StringUtilities {
 // --------------------------------
 // StringUtilities::Capitalize
 // --------------------------------
-std::string Capitalize(const std::string& string)
+String Capitalize(const String& string)
 {
-    std::string result = string;
+    String result = string;
     if (!result.empty())
         result.front() = narrow_cast<char>(std::toupper(result.front()));
     return result;
@@ -29,7 +29,7 @@ std::string Capitalize(const std::string& string)
 // --------------------------------
 // StringUtilities::Clean
 // --------------------------------
-std::string Clean(const std::string& string)
+String Clean(const String& string)
 {
     return Replace(string, "[^ -~]", "");
 }
@@ -37,7 +37,7 @@ std::string Clean(const std::string& string)
 // --------------------------------
 // StringUtilities::CompareCaseInsensitive
 // --------------------------------
-bool CompareCaseInsensitive(const std::string& string1, const std::string& string2)
+bool CompareCaseInsensitive(const String& string1, const String& string2)
 {
     return ToLower(string1) == ToLower(string2);
 }
@@ -45,27 +45,27 @@ bool CompareCaseInsensitive(const std::string& string1, const std::string& strin
 // --------------------------------
 // StringUtilities::Contains
 // --------------------------------
-bool Contains(const std::string& string, const std::string& substring)
+bool Contains(const String& string, const String& substring)
 {
-    return string.find(substring) != std::string::npos;
+    return string.find(substring) != String::npos;
 }
 
-bool Contains(const std::string& string, const char character)
+bool Contains(const String& string, const char character)
 {
-    return Contains(string, std::string(1, character));
+    return Contains(string, String(1, character));
 }
 
 // --------------------------------
 // StringUtilities::EndsWith
 // --------------------------------
-bool EndsWith(const std::string& string, const std::string& substring)
+bool EndsWith(const String& string, const String& substring)
 {
     const auto start = string.size() - substring.size();
     const auto result = string.find(substring, start);
-    return (result == start) && (result != std::string::npos);
+    return (result == start) && (result != String::npos);
 }
 
-bool EndsWith(const std::string& string, const char character)
+bool EndsWith(const String& string, const char character)
 {
     return !string.empty() && (string.back() == character);
 }
@@ -73,9 +73,9 @@ bool EndsWith(const std::string& string, const char character)
 // --------------------------------
 // StringUtilities::Escape
 // --------------------------------
-std::string Escape(const std::string& string)
+String Escape(const String& string)
 {
-    std::unordered_map<char, std::string> escape_map = {
+    std::unordered_map<char, String> escape_map = {
         {'\a', "\\a" },
         {'\b', "\\b" },
         {'\f', "\\f" },
@@ -88,7 +88,7 @@ std::string Escape(const std::string& string)
         {'\"', "\\\""},
     };
 
-    std::string result;
+    String result;
     for (const char& c : string) {
         if (escape_map.find(c) != escape_map.end())
             result += escape_map[c];
@@ -102,7 +102,7 @@ std::string Escape(const std::string& string)
 // --------------------------------
 // StringUtilities::GetLines
 // --------------------------------
-std::vector<std::string> GetLines(const std::string& string)
+std::vector<String> GetLines(const String& string)
 {
     return Split(string, "\n\r");
 }
@@ -110,7 +110,7 @@ std::vector<std::string> GetLines(const std::string& string)
 // --------------------------------
 // StringUtilities::Replace
 // --------------------------------
-std::string Replace(const std::string& string, const std::string& from, const std::string& to)
+String Replace(const String& string, const String& from, const String& to)
 {
     const std::regex regex(from);
     return std::regex_replace(string, regex, to);
@@ -119,19 +119,19 @@ std::string Replace(const std::string& string, const std::string& from, const st
 // --------------------------------
 // StringUtilities::Split
 // --------------------------------
-std::vector<std::string> Split(const std::string& string, const std::string& delimiters)
+std::vector<String> Split(const String& string, const String& delimiters)
 {
     size_t start = 0;
     size_t end = string.find_first_of(delimiters);
 
-    std::vector<std::string> result;
+    std::vector<String> result;
 
-    while (end <= std::string::npos) {
-        const std::string token = string.substr(start, end - start);
+    while (end <= String::npos) {
+        const String token = string.substr(start, end - start);
         if (!token.empty())
             result.push_back(token);
 
-        if (end == std::string::npos)
+        if (end == String::npos)
             break;
 
         start = end + 1;
@@ -144,20 +144,20 @@ std::vector<std::string> Split(const std::string& string, const std::string& del
 // --------------------------------
 // StringUtilities::SplitString
 // --------------------------------
-std::vector<std::string> Split(const std::string& string, const char delimiter)
+std::vector<String> Split(const String& string, const char delimiter)
 {
-    return Split(string, std::string(1, delimiter));
+    return Split(string, String(1, delimiter));
 }
 
 // --------------------------------
 // StringUtilities::StartsWith
 // --------------------------------
-bool StartsWith(const std::string& string, const std::string& substring)
+bool StartsWith(const String& string, const String& substring)
 {
     return string.rfind(substring, 0) == 0;
 }
 
-bool StartsWith(const std::string& string, const char character)
+bool StartsWith(const String& string, const char character)
 {
     return !string.empty() && (string.front() == character);
 }
@@ -165,36 +165,38 @@ bool StartsWith(const std::string& string, const char character)
 // --------------------------------
 // StringUtilities::ToBool
 // --------------------------------
-bool ToBool(const std::string& string)
+bool ToBool(const String& string)
 {
-    const std::string lower = ToLower(string);
+    const String lower = ToLower(string);
     return lower == "true" || lower == "yes" || lower == "1";
 }
 
 // --------------------------------
 // StringUtilities::ToLower
 // --------------------------------
-std::string ToLower(const std::string& string)
+String ToLower(const String& string)
 {
-    std::string result = string;
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    String result = string;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](char c) { return narrow_cast<char>(std::tolower(c)); });
     return result;
 }
 
 // --------------------------------
 // StringUtilities::ToUpper
 // --------------------------------
-std::string ToUpper(const std::string& string)
+String ToUpper(const String& string)
 {
-    std::string result = string;
-    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    String result = string;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](char c) { return narrow_cast<char>(std::toupper(c)); });
     return result;
 }
 
 // --------------------------------
 // StringUtilities::Tokenize
 // --------------------------------
-std::vector<std::string> Tokenize(const std::string& string)
+std::vector<String> Tokenize(const String& string)
 {
     return Split(string, " \t\r\n");
 }
@@ -202,7 +204,7 @@ std::vector<std::string> Tokenize(const std::string& string)
 // --------------------------------
 // StringUtilities::Trim
 // --------------------------------
-void Trim(std::string& string)
+void Trim(String& string)
 {
     TrimLeft(string);
     TrimRight(string);
@@ -211,7 +213,7 @@ void Trim(std::string& string)
 // --------------------------------
 // StringUtilities::TrimCopy
 // --------------------------------
-std::string TrimCopy(std::string string)
+String TrimCopy(String string)
 {
     Trim(string);
     return string;
@@ -220,7 +222,7 @@ std::string TrimCopy(std::string string)
 // --------------------------------
 // StringUtilities::TrimLeft
 // --------------------------------
-void TrimLeft(std::string& string)
+void TrimLeft(String& string)
 {
     string.erase(string.begin(), std::find_if(string.begin(), string.end(),
                                               [](int ch) { return !std::isspace(ch); }));
@@ -229,7 +231,7 @@ void TrimLeft(std::string& string)
 // --------------------------------
 // StringUtilities::TrimLeftCopy
 // --------------------------------
-std::string TrimLeftCopy(std::string string)
+String TrimLeftCopy(String string)
 {
     TrimLeft(string);
     return string;
@@ -238,7 +240,7 @@ std::string TrimLeftCopy(std::string string)
 // --------------------------------
 // StringUtilities::TrimRight
 // --------------------------------
-void TrimRight(std::string& string)
+void TrimRight(String& string)
 {
     // clang-format off
     string.erase(std::find_if(string.rbegin(), string.rend(),
@@ -250,7 +252,7 @@ void TrimRight(std::string& string)
 // --------------------------------
 // StringUtilities::TrimRightCopy
 // --------------------------------
-std::string TrimRightCopy(std::string string)
+String TrimRightCopy(String string)
 {
     TrimRight(string);
     return string;
@@ -259,9 +261,9 @@ std::string TrimRightCopy(std::string string)
 // --------------------------------
 // StringUtilities::Unescape
 // --------------------------------
-std::string Unescape(const std::string& string)
+String Unescape(const String& string)
 {
-    std::unordered_map<std::string, char> unescape_map = {
+    std::unordered_map<String, char> unescape_map = {
         {"\\a",  '\a'},
         {"\\b",  '\b'},
         {"\\f",  '\f'},
@@ -274,10 +276,10 @@ std::string Unescape(const std::string& string)
         {"\\\"", '\"'},
     };
 
-    std::string result;
+    String result;
     for (size_t i = 0; i < string.size(); ++i) {
         if (string[i] == '\\') {
-            const std::string escape = string.substr(i, 2);
+            const String escape = string.substr(i, 2);
             if (unescape_map.find(escape) != unescape_map.end()) {
                 result += unescape_map[escape];
                 ++i;

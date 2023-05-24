@@ -6,9 +6,9 @@
 #define CORE_CONSOLE_CONSOLE_H
 
 #include <core/q3color.h>
+#include <core/types.h>
 
 #include <array>
-#include <string>
 
 namespace iocod {
 
@@ -104,20 +104,20 @@ public:
     Console& operator=(const Console&) = delete;
     Console& operator=(Console&&) = delete;
 
-    std::pair<bool, std::string> Initialize() noexcept;
+    std::pair<bool, String> Initialize() noexcept;
     bool Shutdown() noexcept;
 
-    void Print(const std::string& text, bool manual_color = false);
-    void DebugPrint(const std::string& text);
-    void WarningPrint(const std::string& text);
-    void ErrorPrint(const std::string& text);
+    void Print(const String& text, bool manual_color = false);
+    void DebugPrint(const String& text);
+    void WarningPrint(const String& text);
+    void ErrorPrint(const String& text);
 
     void Clear();
 
-    std::string GetInput() noexcept;
+    String GetInput() noexcept;
 
     void SetTextColor(VTColor foreground, VTColor background = VTColor::Black);
-    void SetTitle(const std::string& title);
+    void SetTitle(const String& title);
 
 private:
     static constexpr const char PROMPT[] = "] ";
@@ -131,7 +131,7 @@ private:
     VTColor foreground_ = VTColor::White;
     VTColor background_ = VTColor::Black;
 
-    void ColorPrint(const std::string& text);
+    void ColorPrint(const String& text);
 
     void Back();
     void Show();

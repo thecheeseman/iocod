@@ -15,7 +15,7 @@ using Seconds = std::chrono::seconds;
 
 namespace {
 
-std::string ConvertTime(Nanoseconds time)
+String ConvertTime(Nanoseconds time)
 {
     char fmt[64]{};
 
@@ -36,7 +36,7 @@ std::string ConvertTime(Nanoseconds time)
 void ScopedTimer::DumpToCSV()
 {
     static std::size_t counter = 0;
-    const std::string csvname = "scopedtimer" + std::to_string(counter++) + ".csv";
+    const String csvname = "scopedtimer" + std::to_string(counter++) + ".csv";
     std::ofstream file(csvname);
 
     file << "function,calls,total time,min time,max time,avg time,cps,file\n";

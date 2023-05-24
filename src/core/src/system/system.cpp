@@ -21,27 +21,27 @@ namespace iocod {
 
 std::shared_ptr<spdlog::logger> logger;
 
-void ISystem::LogTrace(const std::string& message)
+void ISystem::LogTrace(const String& message)
 {
     logger->trace(message);
 }
 
-void ISystem::LogDebug(const std::string& message)
+void ISystem::LogDebug(const String& message)
 {
     logger->debug(message);
 }
 
-void ISystem::LogInfo(const std::string& message)
+void ISystem::LogInfo(const String& message)
 {
     logger->info(message);
 }
 
-void ISystem::LogWarn(const std::string& message)
+void ISystem::LogWarn(const String& message)
 {
     logger->warn(message);
 }
 
-void ISystem::LogError(const std::string& message)
+void ISystem::LogError(const String& message)
 {
     logger->error(message);
     std::exit(1);
@@ -54,13 +54,13 @@ public:
 
     u64 Milliseconds() noexcept override;
 
-    std::string GetConsoleInput() noexcept override;
+    String GetConsoleInput() noexcept override;
     void ClearConsole() noexcept override;
 
-    void Print(const std::string& message) noexcept override;
-    void DebugPrint(const std::string& message) noexcept override;
-    void Warning(const std::string& message) noexcept override;
-    void Error(const std::string& message) noexcept override;
+    void Print(const String& message) noexcept override;
+    void DebugPrint(const String& message) noexcept override;
+    void Warning(const String& message) noexcept override;
+    void Error(const String& message) noexcept override;
 
     SystemInfo GetSystemInfo() override;
     void PrintSystemInfo() override;
@@ -161,7 +161,7 @@ u64 SystemLocal::Milliseconds() noexcept
 // --------------------------------
 // SystemLocal::GetConsoleInput
 // --------------------------------
-std::string SystemLocal::GetConsoleInput() noexcept
+String SystemLocal::GetConsoleInput() noexcept
 {
     return console.GetInput();
 }
@@ -177,7 +177,7 @@ void SystemLocal::ClearConsole() noexcept
 // --------------------------------
 // SystemLocal::Print
 // --------------------------------
-void SystemLocal::Print(const std::string& message) noexcept
+void SystemLocal::Print(const String& message) noexcept
 {
     console.Print(message);
 }
@@ -185,7 +185,7 @@ void SystemLocal::Print(const std::string& message) noexcept
 // --------------------------------
 // SystemLocal::DebugPrint
 // --------------------------------
-void SystemLocal::DebugPrint(const std::string& message) noexcept
+void SystemLocal::DebugPrint(const String& message) noexcept
 {
     console.DebugPrint(message);
 }
@@ -193,7 +193,7 @@ void SystemLocal::DebugPrint(const std::string& message) noexcept
 // --------------------------------
 // SystemLocal::Warning
 // --------------------------------
-void SystemLocal::Warning(const std::string& message) noexcept
+void SystemLocal::Warning(const String& message) noexcept
 {
     console.WarningPrint(message);
 }
@@ -201,7 +201,7 @@ void SystemLocal::Warning(const std::string& message) noexcept
 // --------------------------------
 // SystemLocal::Error
 // --------------------------------
-void SystemLocal::Error(const std::string& message) noexcept
+void SystemLocal::Error(const String& message) noexcept
 {
     console.ErrorPrint(message);
     // TODO: exit
@@ -220,7 +220,7 @@ SystemInfo SystemLocal::GetSystemInfo()
 // --------------------------------
 void SystemLocal::PrintSystemInfo()
 {
-    std::string output = "System Info:\n";
+    String output = "System Info:\n";
 
     auto human_readable = [](u64 bytes) {
         double size = static_cast<double>(bytes);
@@ -279,9 +279,9 @@ void SystemLocal::PrintSystemInfo()
 
 class Command_echo final : public IConsoleCommand {
 public:
-    void Execute(std::vector<std::string> args)
+    void Execute(std::vector<String> args)
     {
-        std::string output;
+        String output;
         for (const auto& arg : args)
             output += arg + " ";
 
@@ -291,7 +291,7 @@ public:
 
 class Command_clear final : public IConsoleCommand {
 public:
-    void Execute(std::vector<std::string> args)
+    void Execute(std::vector<String> args)
     {
         g_system->ClearConsole();
     }
@@ -299,7 +299,7 @@ public:
 
 class Command_quit final : public IConsoleCommand {
 public:
-    void Execute(std::vector<std::string> args)
+    void Execute(std::vector<String> args)
     {
         g_system->Print("See ya!\n");
         exit(0);
@@ -308,7 +308,7 @@ public:
 
 class Command_sysinfo final : public IConsoleCommand {
 private:
-    void Execute(std::vector<std::string> args)
+    void Execute(std::vector<String> args)
     {
         g_system->PrintSystemInfo();
     }

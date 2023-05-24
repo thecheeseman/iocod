@@ -71,7 +71,7 @@ bool SharedLibrary::Load(const std::filesystem::path& library_path) noexcept
 #endif
 
     if (handle == nullptr) {
-        std::string message = "Failed to load library '" + library_path.string() + "': ";
+        String message = "Failed to load library '" + library_path.string() + "': ";
 
 #ifdef _WIN32
         LPSTR buffer = nullptr;
@@ -116,7 +116,7 @@ void SharedLibrary::Unload() noexcept
 void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
 {
     if (!Loaded()) {
-        SetLastErrorMessage("Tried to load symbol '" + std::string(symbol) +
+        SetLastErrorMessage("Tried to load symbol '" + String(symbol) +
                             "' from an unloaded library");
         return nullptr;
     }
@@ -128,7 +128,7 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
 #endif
 
     if (addr == nullptr) {
-        std::string message = "Failed to load symbol '" + std::string(symbol) + "' from library '" +
+        String message = "Failed to load symbol '" + String(symbol) + "' from library '" +
                               path.string() + "': ";
 
 #ifdef _WIN32

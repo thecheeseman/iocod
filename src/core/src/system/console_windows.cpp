@@ -22,18 +22,18 @@ static std::size_t line_length_ = 0;
 
 namespace {
 
-std::string GetLastErrorAsString()
+String GetLastErrorAsString()
 {
     DWORD error = GetLastError();
     if (error == 0)
-        return std::string();
+        return String();
 
     LPSTR buffer = nullptr;
     size_t size = FormatMessageA(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
         nullptr, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &buffer, 0, nullptr);
 
-    std::string message(buffer, size);
+    String message(buffer, size);
     LocalFree(buffer);
 
     return message;
@@ -44,7 +44,7 @@ std::string GetLastErrorAsString()
 // --------------------------------
 // Console::Initialize
 // --------------------------------
-std::pair<bool, std::string> Console::Initialize() noexcept
+std::pair<bool, String> Console::Initialize() noexcept
 {
     auto console_ctrl_handler = [](DWORD sig) -> BOOL {
         switch (sig) {
@@ -109,7 +109,7 @@ bool Console::Shutdown() noexcept
 // --------------------------------
 // Console::GetInput
 // --------------------------------
-std::string Console::GetInput() noexcept
+String Console::GetInput() noexcept
 {
     DWORD events = 0;
     if (GetNumberOfConsoleInputEvents(handle_in, &events) == FALSE || events == 0)
@@ -226,7 +226,7 @@ std::string Console::GetInput() noexcept
     Show();
     // history add
 
-    std::string line = buffer_.data();
+    String line = buffer_.data();
     Print(line + "\n");
     return line;
 }

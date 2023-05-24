@@ -114,7 +114,7 @@ void GetCPUInfo(SystemInfo& info)
     } while (current.QuadPart - count.QuadPart < wait.QuadPart);
 
     SetThreadPriority(thread_info, priority);
-    info.cpu_mhz = ((__rdtsc() - start) << 5) / 1000000.0;
+    info.cpu_mhz = static_cast<f32>(((__rdtsc() - start) << 5) / 1000000.0);
 }
 
 void GetMemoryInfo(SystemInfo& info)
@@ -155,13 +155,13 @@ void GetCPUInfo(SystemInfo& info)
         return;
     }
 
-    std::stringstream buffer;
+    Stringstream buffer;
     buffer << cpuinfo.rdbuf();
-    const std::string data = buffer.str();
+    const String data = buffer.str();
 
-    auto get_data_on_line = [data]<typename Type>(const std::string& what, Type& out) {
-        auto set_out_value = [&](const std::string& value) {
-            if constexpr (std::is_same_v<Type, std::string>)
+    auto get_data_on_line = [data]<typename Type>(const String& what, Type& out) {
+        auto set_out_value = [&](const String& value) {
+            if constexpr (std::is_same_v<Type, String>)
                 out = value;
             else if constexpr (std::is_same_v<Type, float>)
                 out = std::stof(value);
@@ -170,7 +170,7 @@ void GetCPUInfo(SystemInfo& info)
         };
 
         const size_t location = data.find(what);
-        if (location == std::string::npos) {
+        if (location == String::npos) {
             if constexpr (std::is_same_v<Type, float> || std::is_same_v<Type, int>)
                 set_out_value("0");
             else
@@ -198,13 +198,13 @@ void GetMemoryInfo(SystemInfo& info)
         return;
     }
 
-    std::stringstream buffer;
+    Stringstream buffer;
     buffer << meminfo.rdbuf();
-    std::string data = buffer.str();
+    String data = buffer.str();
 
-    auto get_value = [](const std::string& data_, const std::string& what) {
+    auto get_value = [](const String& data_, const String& what) {
         const size_t location = data_.find(what);
-        if (location == std::string::npos)
+        if (location == String::npos)
             return 0;
 
         const size_t start = data_.find(':', location) + 1;

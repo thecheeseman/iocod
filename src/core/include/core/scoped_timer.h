@@ -10,7 +10,6 @@
 
 #include <chrono>
 #include <map>
-#include <string_view>
 
 namespace iocod {
 
@@ -69,7 +68,7 @@ private:
         Nanoseconds max_time = Nanoseconds::min();
     };
 
-    static inline std::map<std::string_view, TimerData> timers{};
+    static inline std::map<String, TimerData> timers{};
     static inline bool initialized = false;
 };
 

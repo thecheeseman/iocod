@@ -7,6 +7,7 @@
 
 #include <core/console_command.h>
 #include <core/platform.h>
+#include <core/types.h>
 
 #include <memory>
 
@@ -28,28 +29,28 @@ public:
     virtual bool IsSystemActive() const noexcept = 0;
 
     virtual std::size_t Argc() const noexcept = 0;
-    virtual std::string Argv(std::size_t index) const noexcept = 0;
-    virtual std::string Args() const = 0;
-    virtual std::string ArgsFrom(std::size_t index) const = 0;
+    virtual String Argv(std::size_t index) const noexcept = 0;
+    virtual String Args() const = 0;
+    virtual String ArgsFrom(std::size_t index) const = 0;
 
-    virtual bool AddCommand(const std::string& name, std::unique_ptr<IConsoleCommand> command) = 0;
-    virtual bool RemoveCommand(const std::string& name) = 0;
-    virtual bool HasCommand(const std::string& name) const = 0;
-    virtual std::vector<std::string> GetCommandList() const = 0;
+    virtual bool AddCommand(const String& name, std::unique_ptr<IConsoleCommand> command) = 0;
+    virtual bool RemoveCommand(const String& name) = 0;
+    virtual bool HasCommand(const String& name) const = 0;
+    virtual std::vector<String> GetCommandList() const = 0;
 
-    virtual void TokenizeString(const std::string& text) = 0;
+    virtual void TokenizeString(const String& text) = 0;
 
     virtual void CommandBufferInitialize() noexcept = 0;
-    virtual void AddCommandText(const std::string& text) = 0;
-    virtual void InsertCommandText(const std::string& text) = 0;
-    virtual void ExecuteCommandText(const std::string& text) = 0;
+    virtual void AddCommandText(const String& text) = 0;
+    virtual void InsertCommandText(const String& text) = 0;
+    virtual void ExecuteCommandText(const String& text) = 0;
     virtual void BufferCommandText(CommandExecutionType execution_type,
-                                   const std::string& text) = 0;
+                                   const String& text) = 0;
     virtual void ExecuteCommandBuffer() = 0;
 
     virtual void SetWaitCounter(std::size_t wait_counter) noexcept = 0;
 
-    using DelayedRegisterFunction = void(*)();
+    using DelayedRegisterFunction = void (*)();
 
     /// Delayed register functions are called after the command system is initialized.
     /// Here you can register commands before the command system is active.
