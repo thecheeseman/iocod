@@ -5,6 +5,12 @@
 #include <core/command_system.h>
 #include <core/console_command.h>
 #include <core/system.h>
+#include <core/types.h>
+#include <fmt/core.h>
+#include <spdlog/async.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
 #include <chrono>
 
@@ -12,6 +18,34 @@
 #include "system_info.h"
 
 namespace iocod {
+
+std::shared_ptr<spdlog::logger> logger;
+
+void ISystem::LogTrace(const std::string& message)
+{
+    logger->trace(message);
+}
+
+void ISystem::LogDebug(const std::string& message)
+{
+    logger->debug(message);
+}
+
+void ISystem::LogInfo(const std::string& message)
+{
+    logger->info(message);
+}
+
+void ISystem::LogWarn(const std::string& message)
+{
+    logger->warn(message);
+}
+
+void ISystem::LogError(const std::string& message)
+{
+    logger->error(message);
+    std::exit(1);
+}
 
 class SystemLocal final : public ISystem {
 public:
@@ -31,7 +65,7 @@ public:
     SystemInfo GetSystemInfo() override;
     void PrintSystemInfo() override;
 
-    void AddConsoleCommands() noexcept override;
+    static void AddConsoleCommands() noexcept;
 
 private:
     using Clock = std::chrono::system_clock;
@@ -49,13 +83,59 @@ ISystem* g_system = &local;
 // --------------------------------
 void SystemLocal::Initialize()
 {
-    // TODO: backtrace, etc
-
     auto [result, errmsg] = console.Initialize();
     if (!result)
         Error("Failed to initialize console: " + errmsg);
 
-    system_info = GetSystemInfo();
+    // TODO: backtrace, etc
+    //
+    // spdlog
+    //
+    spdlog::init_thread_pool(8192, 1);
+
+    // stdout_color_sink_mt is an alias for either
+    // - wincolor_stdout_sink_mt (on windows)
+    // - ansicolor_stdout_sink_mt (on unix)
+    // but it has different set_color behavior on windows vs unix
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+#ifdef _WIN32
+    console_sink->set_color(spdlog::level::trace, 5);
+    console_sink->set_color(spdlog::level::info, 7);
+#else
+    console_sink->set_color(spdlog::level::trace, console_sink->magenta);
+    console_sink->set_color(spdlog::level::info, console_sink->white);
+#endif
+
+    console_sink->set_level(spdlog::level::trace);
+    console_sink->set_pattern("%^%v%$");
+
+    spdlog::file_event_handlers handlers;
+    handlers.after_open = [](spdlog::filename_t, std::FILE* fstream) {
+        fputs("--------------------------------------------------------------------------------\n",
+              fstream);
+    };
+
+    auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("iocod.log", 8_MB, 3,
+                                                                            false, handlers);
+    file_sink->set_level(spdlog::level::trace);
+    file_sink->set_pattern("[%Y-%m-%d %T] [%L] %v");
+
+    std::vector<spdlog::sink_ptr> sinks{console_sink, file_sink};
+    logger = std::make_shared<spdlog::async_logger>("iocod", sinks.begin(), sinks.end(),
+                                                    spdlog::thread_pool(),
+                                                    spdlog::async_overflow_policy::block);
+
+    logger->set_level(spdlog::level::trace);
+    spdlog::register_logger(logger);
+    spdlog::set_default_logger(logger);
+    //
+    // end spdlog
+    //
+
+    system_info = PopulateSystemInfo();
+
+    // register system commands with command system
+    ICommandSystem::AddRegisterCallback(AddConsoleCommands);
 }
 
 // --------------------------------
@@ -63,6 +143,9 @@ void SystemLocal::Initialize()
 // --------------------------------
 void SystemLocal::Shutdown() noexcept
 {
+    logger->flush();
+    spdlog::drop_all();
+
     console.Shutdown();
 }
 
@@ -139,10 +222,29 @@ void SystemLocal::PrintSystemInfo()
 {
     std::string output = "System Info:\n";
 
+    auto human_readable = [](u64 bytes) {
+        double size = static_cast<double>(bytes);
+        constexpr u64 KB = 1024;
+        constexpr u64 MB = KB * 1024;
+        constexpr u64 GB = MB * 1024;
+        constexpr u64 TB = GB * 1024;
+
+        if (size < KB)
+            return fmt::format("{} B", size);
+        else if (size < MB)
+            return fmt::format("{:g} KB", static_cast<double>(size / KB));
+        else if (size < GB)
+            return fmt::format("{:g} MB", static_cast<double>(size / MB));
+        else if (size < TB)
+            return fmt::format("{:g} GB", static_cast<double>(size / GB));
+        else
+            return fmt::format("{:g} TB", static_cast<double>(size / TB));
+    };
+
     if (!system_info.cpu_vendor.empty())
-        output += "CPU Vendor: " + std::string(system_info.cpu_vendor) + "\n";
+        output += "CPU Vendor: " + system_info.cpu_vendor + "\n";
     if (!system_info.cpu_model.empty())
-        output += "CPU Model: " + std::string(system_info.cpu_model) + "\n";
+        output += "CPU Model: " + system_info.cpu_model + "\n";
     if (system_info.cpu_cores != 0)
         output += "CPU Cores: " + std::to_string(system_info.cpu_cores) + "\n";
     if (system_info.cpu_threads != 0)
@@ -151,24 +253,22 @@ void SystemLocal::PrintSystemInfo()
         output += "CPU MHz: " + std::to_string(system_info.cpu_mhz) + "\n";
 
     if (system_info.mem_total != 0)
-        output += "Memory Total: " + std::to_string(system_info.mem_total) + " kB\n";
+        output += "Memory Total: " + human_readable(system_info.mem_total) + "\n";
     if (system_info.mem_free != 0)
-        output += "Memory Free: " + std::to_string(system_info.mem_free) + " kB\n";
+        output += "Memory Free: " + human_readable(system_info.mem_free) + "\n";
     if (system_info.mem_available != 0)
-        output += "Memory Available: " + std::to_string(system_info.mem_available) + " kB\n";
+        output += "Memory Available: " + human_readable(system_info.mem_available) + "\n";
     if (system_info.mem_virtual_size != 0)
-        output += "Virtual Memory Size: " + std::to_string(system_info.mem_virtual_size) + " kB\n";
+        output += "Virtual Memory Size: " + human_readable(system_info.mem_virtual_size) + "\n";
     if (system_info.mem_virtual_available != 0)
-        output += "Virtual Memory Available: " + std::to_string(system_info.mem_virtual_available) +
-                  " kB\n";
+        output +=
+            "Virtual Memory Available: " + human_readable(system_info.mem_virtual_available) + "\n";
     if (system_info.mem_virtual_peak != 0)
-        output += "Virtual Memory Peak: " + std::to_string(system_info.mem_virtual_peak) + " kB\n";
+        output += "Virtual Memory Peak: " + human_readable(system_info.mem_virtual_peak) + "\n";
     if (system_info.mem_physical_size != 0)
-        output +=
-            "Physical Memory Size: " + std::to_string(system_info.mem_physical_size) + " kB\n";
+        output += "Physical Memory Size: " + human_readable(system_info.mem_physical_size) + "\n";
     if (system_info.mem_physical_peak != 0)
-        output +=
-            "Physical Memory Peak: " + std::to_string(system_info.mem_physical_peak) + " kB\n";
+        output += "Physical Memory Peak: " + human_readable(system_info.mem_physical_peak) + "\n";
 
     Print(output);
 }
@@ -219,10 +319,10 @@ private:
 // --------------------------------
 void SystemLocal::AddConsoleCommands() noexcept
 {
-    g_commandSystem->AddCommand("echo", std::make_unique<Command_echo>());
-    g_commandSystem->AddCommand("clear", std::make_unique<Command_clear>());
-    g_commandSystem->AddCommand("quit", std::make_unique<Command_quit>());
-    g_commandSystem->AddCommand("sysinfo", std::make_unique<Command_sysinfo>());
+    g_command_system->AddCommand("echo", std::make_unique<Command_echo>());
+    g_command_system->AddCommand("clear", std::make_unique<Command_clear>());
+    g_command_system->AddCommand("quit", std::make_unique<Command_quit>());
+    g_command_system->AddCommand("sysinfo", std::make_unique<Command_sysinfo>());
 }
 
 } // namespace iocod

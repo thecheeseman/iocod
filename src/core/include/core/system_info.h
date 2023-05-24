@@ -6,7 +6,7 @@
 #define CORE_SYSTEM_INFO_H
 
 #include <core/types.h>
-#include <string_view>
+#include <string>
 
 namespace iocod {
 
@@ -14,8 +14,8 @@ struct SystemInfo {
     f32 cpu_mhz;
     i32 cpu_cores;
     i32 cpu_threads;
-    std::string_view cpu_vendor;
-    std::string_view cpu_model;
+    std::string cpu_vendor;
+    std::string cpu_model;
 
     u64 mem_total;
     u64 mem_free;

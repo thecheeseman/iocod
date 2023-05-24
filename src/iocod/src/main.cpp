@@ -15,8 +15,7 @@ int main(int argc, char** argv, char** envp)
     using namespace iocod;
 
     g_system->Initialize();
-    g_commandSystem->Initialize();
-    g_system->AddConsoleCommands();
+    g_command_system->Initialize();
 
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -25,10 +24,10 @@ int main(int argc, char** argv, char** envp)
         if (input.empty())
             continue;
 
-        g_commandSystem->ExecuteCommandText(input);
+        g_command_system->ExecuteCommandText(input);
     }
 
-    g_commandSystem->Shutdown();
+    g_command_system->Shutdown();
     g_system->Shutdown();
     return 0;
 }

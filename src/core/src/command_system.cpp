@@ -4,16 +4,44 @@
 
 #include <core/case_insensitive_map.h>
 #include <core/command_system.h>
+#include <core/cvar_system.h>
 #include <core/string_utilities.h>
+#include <core/system.h>
+#include <fmt/format.h>
 
 #include <deque>
+#include <vector>
 
 namespace iocod {
+
+namespace {
+std::vector<ICommandSystem::DelayedRegisterFunction> register_callbacks{};
+} // namespace
+
+void ICommandSystem::AddRegisterCallback(DelayedRegisterFunction function) noexcept
+{
+    // already initialized command system
+    if (g_command_system->IsSystemActive()) {
+        function();
+        return;
+    }
+
+    // wait until command system is initialized
+    if (std::find(register_callbacks.begin(), register_callbacks.end(), function) ==
+        register_callbacks.end()) {
+        register_callbacks.push_back(function);
+    }
+}
 
 class CommandSystemLocal final : public ICommandSystem {
 public:
     void Initialize() override;
     void Shutdown() override;
+
+    inline bool IsSystemActive() const noexcept override
+    {
+        return system_active;
+    }
 
     std::size_t Argc() const noexcept override;
     std::string Argv(std::size_t index) const noexcept override;
@@ -40,6 +68,7 @@ public:
     }
 
 private:
+    bool system_active = false;
     static inline constexpr std::size_t MAX_ARGV_TOKENS = 1024;
 
     std::size_t wait_counter = 0;
@@ -47,13 +76,13 @@ private:
     std::deque<std::string> command_buffer;
     std::vector<std::string> command_args;
 
-    case_insensitive_map<std::unique_ptr<IConsoleCommand>> commands;
+    CaseInsensitiveMap<std::unique_ptr<IConsoleCommand>> commands;
 
     void AddConsoleCommands();
 };
 
 CommandSystemLocal local;
-ICommandSystem* g_commandSystem = &local;
+ICommandSystem* g_command_system = &local;
 
 // --------------------------------
 // CommandSystemLocal::Init
@@ -61,12 +90,22 @@ ICommandSystem* g_commandSystem = &local;
 void CommandSystemLocal::Initialize()
 {
     AddConsoleCommands();
+    system_active = true;
+
+    // Call any delayed register callbacks,
+    while (!register_callbacks.empty()) {
+        register_callbacks.back()();
+        register_callbacks.pop_back();
+    }
 }
 
 // --------------------------------
 // CommandSystemLocal::Shutdown
 // --------------------------------
-void CommandSystemLocal::Shutdown() {}
+void CommandSystemLocal::Shutdown()
+{
+    system_active = false;
+}
 
 // --------------------------------
 // CommandSystemLocal::Argc
@@ -116,11 +155,11 @@ bool CommandSystemLocal::AddCommand(const std::string& name,
                                     std::unique_ptr<IConsoleCommand> command)
 {
     if (HasCommand(name)) {
-        // ctx.log->Warn("[CommandSystem] Command '{}' already exists", name);
+        LogWarn("[CommandSystem] Command '{}' already exists", name);
         return false;
     }
 
-    // ctx.log->Trace("[CommandSystem] Added command '{}'", name);
+    LogTrace("[CommandSystem] Added command '{}'", name);
     commands[name] = std::move(command);
     return true;
 }
@@ -133,7 +172,7 @@ bool CommandSystemLocal::RemoveCommand(const std::string& name)
     if (!HasCommand(name))
         return false;
 
-    // ctx.log->Trace("[CommandSystem] Removed command '{}'", name);
+    LogTrace("[CommandSystem] Removed command '{}'", name);
     return commands.erase(name) > 0;
 }
 
@@ -210,7 +249,7 @@ void CommandSystemLocal::AddCommandText(const std::string& text)
 {
     const std::vector<std::string> lines = StringUtilities::Split(text, ";\n\r");
     for (const auto& line : lines) {
-        // ctx.log->Trace("[CommandSystem] AddCommandText(\"{}\")", StringUtilities::Escape(line));
+        LogTrace("[CommandSystem] AddCommandText(\"{}\")", StringUtilities::Escape(line));
         command_buffer.push_front(line);
     }
 }
@@ -222,8 +261,7 @@ void CommandSystemLocal::InsertCommandText(const std::string& text)
 {
     const std::vector<std::string> lines = StringUtilities::Split(text, ";\n\r");
     for (const auto& line : lines) {
-        // ctx.log->Trace("[CommandSystem] InsertCommandText(\"{}\")",
-        // StringUtilities::Escape(line));
+        LogTrace("[CommandSystem] InsertCommandText(\"{}\")", StringUtilities::Escape(line));
         command_buffer.push_back(line);
     }
 }
@@ -252,10 +290,10 @@ void CommandSystemLocal::ExecuteCommandText(const std::string& text)
         return;
     }
 
-    // if (ctx.cvar_system->Command())
-    //     return;
+    if (g_cvar_system->IsSystemActive() && g_cvar_system->CvarCommand())
+        return;
 
-    // ctx.os->Print(fmt::format("Unknown command '{}'\n", cmd));
+    g_system->Print(fmt::format("Unknown command '{}'\n", cmd));
 }
 
 // --------------------------------
@@ -325,7 +363,7 @@ public:
         if (args.size() != 1)
             return;
 
-        g_commandSystem->SetWaitCounter(std::stol(args[0]));
+        g_command_system->SetWaitCounter(std::stol(args[0]));
     }
 };
 

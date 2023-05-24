@@ -4,7 +4,10 @@
 
 #include "system_info.h"
 
-#include <core/utility.h>
+#include <core/system.h>
+#include <core/types.h>
+
+#include <array>
 
 #ifdef _WIN32
     #define WIN32_LEAN_AND_MEAN
@@ -25,31 +28,123 @@ namespace {
 #ifdef _WIN32
 void GetCPUInfo(SystemInfo& info)
 {
+    SharedLibrary kernel32("kernel32.dll");
+    if (!kernel32.Loaded()) {
+        LogWarn("Failed to load kernel32.dll: {}", kernel32.GetLastErrorMessage());
+        return;
+    }
 
+    using SystemInfoPtr = void(WINAPI*)(SYSTEM_INFO*);
+    auto SystemInfo = kernel32.LoadSymbol<SystemInfoPtr>("GetSystemInfo");
+    if (SystemInfo == nullptr) {
+        LogWarn("Failed to load GetSystemInfo: {}", kernel32.GetLastErrorMessage());
+        return;
+    }
+
+    SYSTEM_INFO system_info{};
+    SystemInfo(&system_info);
+
+    // TODO: add support for ARM
+
+    std::array<int, 4> cpui{};
+    __cpuid(cpui.data(), 0);
+    int nids = cpui[0];
+
+    std::vector<std::array<int, 4>> data;
+    for (int i = 0; i <= nids; ++i) {
+        __cpuidex(cpui.data(), i, 0);
+        data.push_back(cpui);
+    }
+
+    // cores/threads
+    __cpuid(cpui.data(), 1);
+    info.cpu_threads = (cpui[1] >> 16) & 0xff;
+    info.cpu_cores = info.cpu_threads;
+
+    // vendor
+    char vendor[0x20]{};
+    *reinterpret_cast<int*>(vendor) = data[0][1];
+    *reinterpret_cast<int*>(vendor + 4) = data[0][3];
+    *reinterpret_cast<int*>(vendor + 8) = data[0][2];
+    info.cpu_vendor = vendor;
+
+    // core/thread count is INCORRECT ??
+    if (info.cpu_vendor == "GenuineIntel") {
+        __cpuid(cpui.data(), 4);
+        info.cpu_cores = ((cpui[0] >> 26) & 0x3f) + 1;
+    } else if (info.cpu_vendor == "AuthenticAMD") {
+        __cpuid(cpui.data(), 0x80000008);
+        info.cpu_cores = (cpui[2] & 0xff) + 1;
+    }
+
+    // brand info
+    __cpuid(cpui.data(), 0x80000000);
+    int nexids = cpui[0];
+
+    char brand[0x40]{};
+
+    std::vector<std::array<int, 4>> exdata;
+    for (int i = 0x80000000; i <= nexids; ++i) {
+        __cpuidex(cpui.data(), i, 0);
+        exdata.push_back(cpui);
+    }
+
+    if (nexids >= 0x80000004) {
+        memcpy(brand, exdata[2].data(), sizeof(cpui));
+        memcpy(brand + 16, exdata[3].data(), sizeof(cpui));
+        memcpy(brand + 32, exdata[4].data(), sizeof(cpui));
+        info.cpu_model = brand;
+    }
+
+    // benchmark freq
+    HANDLE thread_info = GetCurrentThread();
+    int priority = GetThreadPriority(thread_info);
+    SetThreadPriority(thread_info, 15);
+
+    LARGE_INTEGER count{};
+    LARGE_INTEGER wait{};
+    LARGE_INTEGER current{};
+    QueryPerformanceCounter(&count);
+    QueryPerformanceFrequency(&wait);
+    wait.QuadPart >>= 5;
+
+    u64 start = __rdtsc();
+    do {
+        QueryPerformanceCounter(&current);
+    } while (current.QuadPart - count.QuadPart < wait.QuadPart);
+
+    SetThreadPriority(thread_info, priority);
+    info.cpu_mhz = ((__rdtsc() - start) << 5) / 1000000.0;
 }
 
 void GetMemoryInfo(SystemInfo& info)
 {
     SharedLibrary kernel32("kernel32.dll");
-    if (!kernel32.Loaded())
+    if (!kernel32.Loaded()) {
+        LogWarn("Failed to load kernel32.dll: {}", kernel32.GetLastErrorMessage());
         return;
+    }
 
     using MemoryStatusPtr = int(WINAPI*)(MEMORYSTATUSEX*);
     auto MemoryStatusEx = kernel32.LoadSymbol<MemoryStatusPtr>("GlobalMemoryStatusEx");
-    if (MemoryStatusEx == nullptr)
+    if (MemoryStatusEx == nullptr) {
+        LogWarn("Failed to load GlobalMemoryStatusEx: {}", kernel32.GetLastErrorMessage());
         return;
+    }
 
     MEMORYSTATUSEX memory_status{};
     memory_status.dwLength = sizeof(MEMORYSTATUSEX);
-    if (!MemoryStatusEx(&memory_status))
+    if (!MemoryStatusEx(&memory_status)) {
+        LogWarn("Failed to call GlobalMemoryStatusEx");
         return;
+    }
 
-    info.mem_total = Utility::KB(memory_status.ullTotalPhys);
-    info.mem_available = Utility::KB(memory_status.ullAvailPhys);
-    info.mem_free = Utility::KB(memory_status.ullTotalPhys - memory_status.ullAvailPhys);
+    info.mem_total = memory_status.ullTotalPhys;
+    info.mem_available = memory_status.ullAvailPhys;
+    info.mem_free = memory_status.ullTotalPhys - memory_status.ullAvailPhys;
 
-    info.mem_virtual_size = Utility::KB(memory_status.ullTotalVirtual);
-    info.mem_virtual_available = Utility::KB(memory_status.ullAvailVirtual);
+    info.mem_virtual_size = memory_status.ullTotalVirtual;
+    info.mem_virtual_available = memory_status.ullAvailVirtual;
 }
 #else
 void GetCPUInfo(SystemInfo& info)
@@ -141,7 +236,7 @@ void GetMemoryInfo(SystemInfo& info)
 
 } // namespace
 
-SystemInfo GetSystemInfo()
+SystemInfo PopulateSystemInfo()
 {
     SystemInfo info{};
 

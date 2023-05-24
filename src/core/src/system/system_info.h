@@ -9,7 +9,7 @@
 
 namespace iocod {
 
-SystemInfo GetSystemInfo();
+SystemInfo PopulateSystemInfo();
 
 } // namespace iocod
 

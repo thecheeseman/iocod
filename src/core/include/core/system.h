@@ -9,6 +9,8 @@
 #include <core/system_info.h>
 #include <core/types.h>
 
+#include <fmt/format.h>
+
 #include <string>
 
 namespace iocod {
@@ -33,10 +35,45 @@ public:
     virtual SystemInfo GetSystemInfo() = 0;
     virtual void PrintSystemInfo() = 0;
 
-    virtual void AddConsoleCommands() noexcept = 0;
+    //
+    static void LogTrace(const std::string& message);
+    static void LogDebug(const std::string& message);
+    static void LogInfo(const std::string& message);
+    static void LogWarn(const std::string& message);
+    static void LogError(const std::string& message);
 };
 
 extern ISystem* g_system;
+
+template <typename... Args>
+inline void LogTrace(const std::string& format, Args&&... args)
+{
+    ISystem::LogTrace(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
+}
+
+template <typename... Args>
+inline void LogDebug(const std::string& format, Args&&... args)
+{
+    ISystem::LogDebug(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
+}
+
+template <typename... Args>
+inline void LogInfo(const std::string& format, Args&&... args)
+{
+    ISystem::LogInfo(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
+}
+
+template <typename... Args>
+inline void LogWarn(const std::string& format, Args&&... args)
+{
+    ISystem::LogWarn(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
+}
+
+template <typename... Args>
+inline void LogError(const std::string& format, Args&&... args)
+{
+    ISystem::LogError(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
+}
 
 } // namespace iocod
 

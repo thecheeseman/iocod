@@ -25,6 +25,8 @@ public:
     virtual void Initialize() = 0;
     virtual void Shutdown() = 0;
 
+    virtual bool IsSystemActive() const noexcept = 0;
+
     virtual std::size_t Argc() const noexcept = 0;
     virtual std::string Argv(std::size_t index) const noexcept = 0;
     virtual std::string Args() const = 0;
@@ -46,9 +48,15 @@ public:
     virtual void ExecuteCommandBuffer() = 0;
 
     virtual void SetWaitCounter(std::size_t wait_counter) noexcept = 0;
+
+    using DelayedRegisterFunction = void(*)();
+
+    /// Delayed register functions are called after the command system is initialized.
+    /// Here you can register commands before the command system is active.
+    static void AddRegisterCallback(DelayedRegisterFunction function) noexcept;
 };
 
-extern ICommandSystem* g_commandSystem;
+extern ICommandSystem* g_command_system;
 
 } // namespace iocod
 
