@@ -119,13 +119,11 @@
                                      (_MSC_FULL_VER % 10000000) / 100000, \
                                      (_MSC_FULL_VER % 100000) / 100)
         #elif defined(_MSC_FULL_VER)
-            #define IOCOD_COMPILER_VERSION                              \
-                IOCOD_VERSION_ENCODE(_MSC_FULL_VER / 1000000,           \
-                                     (_MSC_FULL_VER % 1000000) / 10000, \
+            #define IOCOD_COMPILER_VERSION                                                       \
+                IOCOD_VERSION_ENCODE(_MSC_FULL_VER / 1000000, (_MSC_FULL_VER % 1000000) / 10000, \
                                      (_MSC_FULL_VER % 10000) / 10)
         #elif defined(_MSC_VER)
-            #define IOCOD_COMPILER_VERSION \
-                IOCOD_VERSION_ENCODE(_MSC_VER / 100, _MSC_VER % 100, 0)
+            #define IOCOD_COMPILER_VERSION IOCOD_VERSION_ENCODE(_MSC_VER / 100, _MSC_VER % 100, 0)
         #endif
 
         #define IOCOD_UNREACHABLE() __assume(0)
@@ -139,12 +137,10 @@
         #endif
 
         #ifdef __GNUC_PATCHLEVEL__
-            #define IOCOD_COMPILER_VERSION                     \
-                IOCOD_VERSION_ENCODE(__GNUC__, __GNUC_MINOR__, \
-                                     __GNUC_PATCHLEVEL__)
-        #elif defined(__GNUC_)
             #define IOCOD_COMPILER_VERSION \
-                IOCOD_VERSION_ENCODE(__GNUC__, __GNUC_MINOR__, 0)
+                IOCOD_VERSION_ENCODE(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
+        #elif defined(__GNUC_)
+            #define IOCOD_COMPILER_VERSION IOCOD_VERSION_ENCODE(__GNUC__, __GNUC_MINOR__, 0)
         #endif
 
         #define IOCOD_UNREACHABLE() __builtin_unreachable()
@@ -282,6 +278,16 @@
     #define IOCOD_NOINLINE __declspec(noinline)
 #else
     #define IOCOD_NOINLINE
+#endif
+
+#ifdef IOCOD_COMPILER_MSVC
+    #define IOCOD_DISABLE_ALL_VC_WARNINGS()          \
+        __pragma(warning(push, 0)) __pragma(warning( \
+            disable : 4244 4265 4267 4350 4472 4509 4548 4623 4710 4985 6320 4755 4625 4626 4702))
+    #define IOCOD_RESTORE_ALL_VC_WARNINGS() __pragma(warning(pop))
+#else
+    #define IOCOD_DISABLE_ALL_VC_WARNINGS()
+    #define IOCOD_RESTORE_ALL_VC_WARNINGS()
 #endif
 
 #endif // CORE_PLATFORM_H

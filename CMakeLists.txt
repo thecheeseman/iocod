@@ -39,6 +39,9 @@ if (ENABLE_UNITY_BUILD)
 endif()
 
 target_compile_definitions(iocod_options INTERFACE
+    $<$<CONFIG:Debug>:IOCOD_DEBUG>
+)
+
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(iocod_options INTERFACE
         $<$<CONFIG:Debug>:-g -O0>
