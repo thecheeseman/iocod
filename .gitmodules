@@ -17,3 +17,6 @@
 [submodule "external/spdlog"]
 	path = external/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "external/miniz"]
+	path = external/miniz
+	url = https://github.com/richgel999/miniz/
