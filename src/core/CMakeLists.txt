@@ -5,6 +5,8 @@
 set(CORE_SOURCES
     assert.cpp
     command_system.cpp
+    #cvar_system.cpp
+    file_system.cpp
     plugin.cpp
     scoped_timer.cpp
     string_utilities.cpp
@@ -33,7 +35,7 @@ list(TRANSFORM CORE_SOURCES PREPEND "src/")
 add_library(iocodcore STATIC ${CORE_SOURCES})
 target_compile_definitions(iocodcore PRIVATE IOCOD_BUILD_DLL)
 target_link_libraries(iocodcore PRIVATE iocod_options iocod_warnings iocod_includes)
-target_link_libraries(iocodcore PRIVATE fmt::fmt spdlog::spdlog)
+target_link_libraries(iocodcore PRIVATE fmt::fmt spdlog::spdlog miniz)
 
 target_precompile_headers(iocodcore PUBLIC
     <core/platform.h>

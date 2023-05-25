@@ -41,9 +41,10 @@ public:
     static void LogInfo(const String& message);
     static void LogWarn(const String& message);
     static void LogError(const String& message);
+    static void LogErrorNoExit(const String& message);
 };
 
-extern ISystem* g_system;
+extern ISystem* System;
 
 template <typename... Args>
 inline void LogTrace(const String& format, Args&&... args)
@@ -73,6 +74,12 @@ template <typename... Args>
 inline void LogError(const String& format, Args&&... args)
 {
     ISystem::LogError(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
+}
+
+template <typename... Args>
+inline void LogErrorNoExit(const String& format, Args&&... args)
+{
+    ISystem::LogErrorNoExit(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 } // namespace iocod

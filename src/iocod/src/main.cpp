@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <core/command_system.h>
+#include <core/file_system.h>
 #include <core/system.h>
 
 #include <chrono>
@@ -14,20 +15,22 @@ int main(int argc, char** argv, char** envp)
 {
     using namespace iocod;
 
-    g_system->Initialize();
-    g_command_system->Initialize();
+    System->Initialize();
+    FileSystem->Initialize();
+    CommandSystem->Initialize();
 
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-        std::string input = g_system->GetConsoleInput();
+        std::string input = System->GetConsoleInput();
         if (input.empty())
             continue;
 
-        g_command_system->ExecuteCommandText(input);
+        CommandSystem->ExecuteCommandText(input);
     }
 
-    g_command_system->Shutdown();
-    g_system->Shutdown();
+    CommandSystem->Shutdown();
+    FileSystem->Shutdown();
+    System->Shutdown();
     return 0;
 }

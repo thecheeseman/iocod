@@ -5,7 +5,7 @@
 #ifndef CORE_CONSOLE_COMMAND_H
 #define CORE_CONSOLE_COMMAND_H
 
-#include <string>
+#include <core/types.h>
 #include <vector>
 
 namespace iocod {
@@ -15,7 +15,7 @@ class IConsoleCommand {
 public:
     virtual ~IConsoleCommand() = default;
 
-    virtual void Execute(std::vector<std::string> args) = 0;
+    virtual void Execute(std::vector<String> args) = 0;
 };
 
 } // namespace iocod

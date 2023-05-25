@@ -117,6 +117,7 @@ target_include_directories(iocod_includes INTERFACE
     # external
     "${CMAKE_SOURCE_DIR}/external/expected-lite/include"
     "${CMAKE_SOURCE_DIR}/external/fmt/include"
+    "${CMAKE_SOURCE_DIR}/external/miniz"
     "${CMAKE_SOURCE_DIR}/external/spdlog/include"
 )
 

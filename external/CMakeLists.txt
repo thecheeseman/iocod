@@ -10,7 +10,6 @@ if (BUILD_TESTS)
     add_subdirectory("Catch2" EXCLUDE_FROM_ALL)
 endif()
 
-
 message(STATUS "Configuring fmt")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 add_subdirectory("fmt" EXCLUDE_FROM_ALL)
@@ -20,6 +19,11 @@ message(STATUS "Configuring spdlog")
 set(SPDLOG_FMT_EXTERNAL ON)
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 add_subdirectory("spdlog" EXCLUDE_FROM_ALL)
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+message(STATUS "Configuring miniz")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+add_subdirectory("miniz" EXCLUDE_FROM_ALL)
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)

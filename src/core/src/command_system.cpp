@@ -21,7 +21,7 @@ std::vector<ICommandSystem::DelayedRegisterFunction> register_callbacks{};
 void ICommandSystem::AddRegisterCallback(DelayedRegisterFunction function) noexcept
 {
     // already initialized command system
-    if (g_command_system->IsSystemActive()) {
+    if (CommandSystem->IsSystemActive()) {
         function();
         return;
     }
@@ -82,7 +82,7 @@ private:
 };
 
 CommandSystemLocal local;
-ICommandSystem* g_command_system = &local;
+ICommandSystem* CommandSystem = &local;
 
 // --------------------------------
 // CommandSystemLocal::Init
@@ -293,7 +293,7 @@ void CommandSystemLocal::ExecuteCommandText(const String& text)
     //if (CvarSystem->IsSystemActive() && CvarSystem->CvarCommand())
     //    return;
 
-    g_system->Print(fmt::format("Unknown command '{}'\n", cmd));
+    System->Print(fmt::format("Unknown command '{}'\n", cmd));
 }
 
 // --------------------------------
@@ -363,7 +363,7 @@ public:
         if (args.size() != 1)
             return;
 
-        g_command_system->SetWaitCounter(std::stol(args[0]));
+        CommandSystem->SetWaitCounter(std::stol(args[0]));
     }
 };
 

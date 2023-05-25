@@ -57,7 +57,7 @@ public:
     static void AddRegisterCallback(DelayedRegisterFunction function) noexcept;
 };
 
-extern ICommandSystem* g_command_system;
+extern ICommandSystem* CommandSystem;
 
 } // namespace iocod
 

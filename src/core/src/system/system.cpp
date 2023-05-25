@@ -47,6 +47,11 @@ void ISystem::LogError(const String& message)
     std::exit(1);
 }
 
+void ISystem::LogErrorNoExit(const String& message)
+{
+    logger->error(message);
+}
+
 class SystemLocal final : public ISystem {
 public:
     void Initialize() override;
@@ -76,7 +81,7 @@ private:
 };
 
 SystemLocal local;
-ISystem* g_system = &local;
+ISystem* System = &local;
 
 // --------------------------------
 // SystemLocal::Initialize
@@ -285,7 +290,7 @@ public:
         for (const auto& arg : args)
             output += arg + " ";
 
-        g_system->Print(output + "\n");
+        System->Print(output + "\n");
     }
 };
 
@@ -293,7 +298,7 @@ class Command_clear final : public IConsoleCommand {
 public:
     void Execute(std::vector<String> args)
     {
-        g_system->ClearConsole();
+        System->ClearConsole();
     }
 };
 
@@ -301,7 +306,7 @@ class Command_quit final : public IConsoleCommand {
 public:
     void Execute(std::vector<String> args)
     {
-        g_system->Print("See ya!\n");
+        System->Print("See ya!\n");
         exit(0);
     }
 };
@@ -310,7 +315,7 @@ class Command_sysinfo final : public IConsoleCommand {
 private:
     void Execute(std::vector<String> args)
     {
-        g_system->PrintSystemInfo();
+        System->PrintSystemInfo();
     }
 };
 
@@ -319,10 +324,10 @@ private:
 // --------------------------------
 void SystemLocal::AddConsoleCommands() noexcept
 {
-    g_command_system->AddCommand("echo", std::make_unique<Command_echo>());
-    g_command_system->AddCommand("clear", std::make_unique<Command_clear>());
-    g_command_system->AddCommand("quit", std::make_unique<Command_quit>());
-    g_command_system->AddCommand("sysinfo", std::make_unique<Command_sysinfo>());
+    CommandSystem->AddCommand("echo", std::make_unique<Command_echo>());
+    CommandSystem->AddCommand("clear", std::make_unique<Command_clear>());
+    CommandSystem->AddCommand("quit", std::make_unique<Command_quit>());
+    CommandSystem->AddCommand("sysinfo", std::make_unique<Command_sysinfo>());
 }
 
 } // namespace iocod
