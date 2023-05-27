@@ -28,6 +28,7 @@ function(AddCoreTest)
     )
 endfunction()
 
+AddCoreTest(NAME "test-fixed_string" SOURCES "test-fixed_string.cpp")
 AddCoreTest(NAME "test-narrow_cast" SOURCES "test-narrow_cast.cpp")
 AddCoreTest(NAME "test-shared_library" SOURCES "test-shared_library.cpp")
 AddCoreTest(NAME "test-string_utilities" SOURCES "test-string_utilities.cpp")
