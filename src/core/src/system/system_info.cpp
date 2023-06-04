@@ -114,7 +114,7 @@ void GetCPUInfo(SystemInfo& info)
     } while (current.QuadPart - count.QuadPart < wait.QuadPart);
 
     SetThreadPriority(thread_info, priority);
-    info.cpu_mhz = static_cast<f32>(((__rdtsc() - start) << 5) / 1000000.0);
+    info.cpu_mhz = static_cast<f32>(static_cast<f32>((__rdtsc() - start) << 5) / 1000000.0f);
 }
 
 void GetMemoryInfo(SystemInfo& info)

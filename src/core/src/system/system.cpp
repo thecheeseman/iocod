@@ -81,7 +81,7 @@ private:
 };
 
 SystemLocal local;
-ISystem* System = &local;
+ISystem* sys = &local;
 
 // --------------------------------
 // SystemLocal::Initialize
@@ -229,10 +229,6 @@ void SystemLocal::PrintSystemInfo()
 
     auto human_readable = [](u64 bytes) {
         double size = static_cast<double>(bytes);
-        constexpr u64 KB = 1024;
-        constexpr u64 MB = KB * 1024;
-        constexpr u64 GB = MB * 1024;
-        constexpr u64 TB = GB * 1024;
 
         if (size < KB)
             return fmt::format("{} B", size);
@@ -290,7 +286,7 @@ public:
         for (const auto& arg : args)
             output += arg + " ";
 
-        System->Print(output + "\n");
+        sys->Print(output + "\n");
     }
 };
 
@@ -298,7 +294,7 @@ class Command_clear final : public IConsoleCommand {
 public:
     void Execute(std::vector<String> args)
     {
-        System->ClearConsole();
+        sys->ClearConsole();
     }
 };
 
@@ -306,7 +302,7 @@ class Command_quit final : public IConsoleCommand {
 public:
     void Execute(std::vector<String> args)
     {
-        System->Print("See ya!\n");
+        sys->Print("See ya!\n");
         exit(0);
     }
 };
@@ -315,7 +311,7 @@ class Command_sysinfo final : public IConsoleCommand {
 private:
     void Execute(std::vector<String> args)
     {
-        System->PrintSystemInfo();
+        sys->PrintSystemInfo();
     }
 };
 
@@ -324,10 +320,10 @@ private:
 // --------------------------------
 void SystemLocal::AddConsoleCommands() noexcept
 {
-    CommandSystem->AddCommand("echo", std::make_unique<Command_echo>());
-    CommandSystem->AddCommand("clear", std::make_unique<Command_clear>());
-    CommandSystem->AddCommand("quit", std::make_unique<Command_quit>());
-    CommandSystem->AddCommand("sysinfo", std::make_unique<Command_sysinfo>());
+    command_system->AddCommand("echo", std::make_unique<Command_echo>());
+    command_system->AddCommand("clear", std::make_unique<Command_clear>());
+    command_system->AddCommand("quit", std::make_unique<Command_quit>());
+    command_system->AddCommand("sysinfo", std::make_unique<Command_sysinfo>());
 }
 
 } // namespace iocod

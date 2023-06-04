@@ -155,18 +155,36 @@
     #define IOCOD_IMPORT __declspec(dllimport)
     #define IOCOD_CONSTRUCTOR
     #define IOCOD_DESTRUCTOR
+    #define IOCOD_CODE_SECTION(name) __declspec(code_seg(name))
+    #define IOCOD_NO_INLINE          __declspec(noinline)
+    #define IOCOD_NO_RETURN          __declspec(noreturn)
+    #define IOCOD_BREAK()            __debugbreak()
+    #define IOCOD_RETURN_ADDRESS()   _ReturnAddress()
+    #define IOCOD_ASSUME(expr)       __analysis_assume(!!(expr))
 #elif defined(IOCOD_COMPILER_GCC) || defined(IOCOD_COMPILER_CLANG)
     #define IOCOD_LOCAL  __attribute__((visibility("hidden")))
     #define IOCOD_EXPORT __attribute__((visibility("default")))
     #define IOCOD_IMPORT
-    #define IOCOD_CONSTRUCTOR __attribute__((constructor))
-    #define IOCOD_DESTRUCTOR  __attribute__((destructor))
+    #define IOCOD_CONSTRUCTOR        __attribute__((constructor))
+    #define IOCOD_DESTRUCTOR         __attribute__((destructor))
+    #define IOCOD_CODE_SECTION(name) __attribute__((section(name)))
+    #define IOCOD_NO_INLINE          __attribute__((noinline))
+    #define IOCOD_NO_RETURN          __attribute__((noreturn))
+    #define IOCOD_BREAK()            __builtin_trap()
+    #define IOCOD_RETURN_ADDRESS()   __builtin_return_address(0)
+    #define IOCOD_ASSUME(expr)       (__builtin_expect(!(expr), 0) ? __builtin_unreachable() : (void) 0)
 #else
     #define IOCOD_LOCAL
     #define IOCOD_EXPORT
     #define IOCOD_IMPORT
     #define IOCOD_CONSTRUCTOR
     #define IOCOD_DESTRUCTOR
+    #define IOCOD_CODE_SECTION(name)
+    #define IOCOD_NO_INLINE
+    #define IOCOD_NO_RETURN
+    #define IOCOD_BREAK()
+    #define IOCOD_RETURN_ADDRESS() 0
+    #define IOCOD_ASSUME(expr)
 #endif
 
 #ifdef IOCOD_BUILD_DLL
@@ -218,46 +236,6 @@
     #define IOCOD_HAS_FEATURE(feature) __has_feature(feature)
 #else
     #define IOCOD_HAS_FEATURE(feature) (0)
-#endif
-
-/// @def IOCOD_NODISCARD
-/// Mark a function as not discarding its return value.
-#if IOCOD_HAS_CPP_ATTRIBUTE(nodiscard)
-    #define IOCOD_NODISCARD [[nodiscard]]
-#elif IOCOD_HAS_ATTRIBUTE(warn_unused_result)
-    #define IOCOD_NODISCARD __attribute__((warn_unused_result))
-#else
-    #define IOCOD_NODISCARD
-#endif
-
-/// @def IOCOD_DEPRECATED
-/// Mark a function as deprecated.
-#if IOCOD_HAS_CPP_ATTRIBUTE(deprecated)
-    #define IOCOD_DEPRECATED [[deprecated]]
-#elif IOCOD_HAS_ATTRIBUTE(deprecated)
-    #define IOCOD_DEPRECATED __attribute__((deprecated))
-#else
-    #define IOCOD_DEPRECATED
-#endif
-
-/// @def IOCOD_DEPRECATED_MSG
-/// Mark a function as deprecated with a message.
-#if IOCOD_HAS_CPP_ATTRIBUTE(deprecated)
-    #define IOCOD_DEPRECATED_MSG(msg) [[deprecated(msg)]]
-#elif IOCOD_HAS_ATTRIBUTE(deprecated)
-    #define IOCOD_DEPRECATED_MSG(msg) __attribute__((deprecated(msg)))
-#else
-    #define IOCOD_DEPRECATED_MSG(msg)
-#endif
-
-/// @def IOCOD_NORETURN
-/// Mark a function as not returning.
-#if IOCOD_HAS_CPP_ATTRIBUTE(noreturn)
-    #define IOCOD_NORETURN [[noreturn]]
-#elif IOCOD_HAS_ATTRIBUTE(noreturn)
-    #define IOCOD_NORETURN __attribute__((noreturn))
-#else
-    #define IOCOD_NORETURN
 #endif
 
 /// @def IOCOD_ALWAYS_INLINE

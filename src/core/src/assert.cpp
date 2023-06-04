@@ -10,7 +10,7 @@ namespace iocod::detail {
 void iocod_report_assertion_failure(const char* filename, int line, const char* function,
                                     const char* message)
 {
-    System->LogErrorNoExit(
+    sys->LogErrorNoExit(
         fmt::format("{}:{} internal check failed at {}: {}", filename, line, function, message));
 }
 

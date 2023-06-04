@@ -4,6 +4,11 @@
 
 set(IOCOD_SOURCES
     main.cpp
+
+    # null implementations
+    null_impl/null_client.cpp
+    null_impl/null_game.cpp
+    null_impl/null_server.cpp
 )
 list(TRANSFORM IOCOD_SOURCES PREPEND "src/")
 

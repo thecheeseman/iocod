@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef GAME_WEAPON_HPP
-#define GAME_WEAPON_HPP
+#ifndef GAME_WEAPON_H
+#define GAME_WEAPON_H
 
 #include <string_view>
 
@@ -354,4 +354,4 @@ struct Weapon {
 
 } // namespace iocod
 
-#endif // GAME_WEAPON_HPP
+#endif // GAME_WEAPON_H

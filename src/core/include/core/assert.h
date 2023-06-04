@@ -33,7 +33,6 @@
 #endif
 
 #ifdef _MSC_VER
-    #include <intrin.h>
     #define IOCOD_ASSERT_TRAP() __debugbreak()
 #elif defined(__GNUC__)
     #define IOCOD_ASSERT_TRAP() __builtin_trap()

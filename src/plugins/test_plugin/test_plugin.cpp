@@ -4,6 +4,8 @@
 
 #include "test_plugin.h"
 
+#if 0
+
 PluginInterface interface;
 static PluginInfo info = {.version = IOCOD_VERSION_ENCODE(1, 0, 0),
                           .name = "TestPlugin",
@@ -19,3 +21,5 @@ PLUGIN_EXPORT PluginInfo* PluginInitialize(GetInterfacePtr get_interface)
 }
 
 PLUGIN_EXPORT void PluginShutdown(void) {}
+
+#endif

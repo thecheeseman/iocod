@@ -6,6 +6,7 @@ set(CORE_SOURCES
     assert.cpp
     command_system.cpp
     #cvar_system.cpp
+    file_path.cpp
     file_system.cpp
     plugin.cpp
     scoped_timer.cpp

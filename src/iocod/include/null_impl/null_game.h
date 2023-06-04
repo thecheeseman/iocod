@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef GAME_GAME_H
-#define GAME_GAME_H
+#ifndef NULL_IMPL_NULL_GAME_H
+#define NULL_IMPL_NULL_GAME_H
 
 #include <core/igame.h>
 
 namespace iocod {
 
-class Game final : public IGame {
+class NullGame final : public IGame {
 public:
     void Initialize() override;
     void Shutdown() override;
@@ -39,11 +39,10 @@ public:
     // void GetClientArchiveTime() override;
     // void SetClientArchiveTime() override;
     // void GetClientScore() override;
-
-private:
-    // other impl details
 };
+
+extern IGame* null_game; // fallback if we don't have a game DLL
 
 } // namespace iocod
 
-#endif // GAME_GAME_H
+#endif // NULL_IMPL_NULL_GAME_H

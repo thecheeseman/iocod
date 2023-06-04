@@ -2,21 +2,21 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-set(GAME_SOURCES
-    game.cpp
+set(CLIENT_SOURCES
+    client.cpp
 )
-list(TRANSFORM GAME_SOURCES PREPEND "src/")
+list(TRANSFORM CLIENT_SOURCES PREPEND "src/")
 
 #
-# Game library
+# Client library
 #
-add_library(iocodgame SHARED ${GAME_SOURCES})
-target_link_libraries(iocodgame PRIVATE iocod_options iocod_warnings iocod_includes)
+add_library(iocodclient SHARED ${CLIENT_SOURCES})
+target_link_libraries(iocodclient PRIVATE iocod_options iocod_warnings iocod_includes)
 
-target_include_directories(iocodgame PRIVATE "src/" "include/")
+target_include_directories(iocodclient PRIVATE "src/" "include/")
 
 # remove the "lib" prefix from the library name
-set_target_properties(iocodgame PROPERTIES
+set_target_properties(iocodclient PROPERTIES
     PREFIX ""
     ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}"
     LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}"

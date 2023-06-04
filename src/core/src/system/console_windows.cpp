@@ -2,12 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <core/narrow_cast.h>
+#include "console.h"
 
+#include <core/narrow_cast.h>
 #include <iostream>
 #include <memory>
-
-#include "console.h"
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -57,8 +56,7 @@ std::pair<bool, String> Console::Initialize() noexcept
         case CTRL_SHUTDOWN_EVENT:
             // sys_signal_handler(SIGTERM);
             return TRUE;
-        default:
-            return FALSE;
+        default: return FALSE;
         }
     };
 
@@ -146,21 +144,15 @@ String Console::GetInput() noexcept
         case VK_DOWN:
             // TODO: history
             break;
-        case VK_LEFT:
-            cursor_--;
-            break;
+        case VK_LEFT: cursor_--; break;
         case VK_RIGHT:
             cursor_++;
 
             if (cursor_ > line_length_)
                 cursor_ = line_length_;
             break;
-        case VK_HOME:
-            cursor_ = 0;
-            break;
-        case VK_END:
-            cursor_ = line_length_;
-            break;
+        case VK_HOME: cursor_ = 0; break;
+        case VK_END: cursor_ = line_length_; break;
         case VK_BACK:
             if (cursor_ > 0) {
                 std::size_t newlen = line_length_ > 0 ? line_length_ - 1 : 0;
@@ -188,9 +180,7 @@ String Console::GetInput() noexcept
         case VK_TAB:
             // TODO: autocomplete
             break;
-        default:
-            breakout = false;
-            break;
+        default: breakout = false; break;
         }
 
         if (breakout)
@@ -269,7 +259,9 @@ void Console::Show()
     COORD write_size = {MAX_EDIT_LINE, 1};
     COORD write_pos = {0, 0};
 
-    if (line_length_ > info.srWindow.Right) {
+    size_t window_right = static_cast<size_t>(info.srWindow.Right);
+    
+    if (line_length_ > window_right) {
         WriteConsoleOutputA(handle_out, line + (line_length_ - info.srWindow.Right), write_size,
                             write_pos, &write_area);
     } else {
@@ -278,9 +270,9 @@ void Console::Show()
 
     COORD cursor = {0, 0};
 
-    const std::size_t x = cursor_ < line_length_               ? cursor_
-                          : line_length_ > info.srWindow.Right ? info.srWindow.Right
-                                                               : line_length_;
+    const std::size_t x = cursor_ < line_length_        ? cursor_
+                          : line_length_ > window_right ? window_right
+                                                        : line_length_;
 
     cursor.Y = info.dwCursorPosition.Y;
     cursor.X = x > std::numeric_limits<short>::max() ? std::numeric_limits<short>::max()

@@ -5,8 +5,8 @@
 #ifndef CORE_TYPES_H
 #define CORE_TYPES_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
 #include <string>
 
 namespace iocod {
@@ -32,78 +32,100 @@ using vec2_t = vec_t[2];
 using vec3_t = vec_t[3];
 using vec4_t = vec_t[4];
 
-// useful filesize literals
-inline consteval auto operator"" _KB(u64 value) -> u64
+inline constexpr u64 KB = 1000ull;
+inline constexpr u64 KiB = 1024ull;
+inline constexpr u64 MB = 1000ull * KB;
+inline constexpr u64 MiB = 1024ull * KiB;
+inline constexpr u64 GB = 1000ull * MB;
+inline constexpr u64 GiB = 1024ull * MiB;
+inline constexpr u64 TB = 1000ull * GB;
+inline constexpr u64 TiB = 1024ull * GiB;
+
+consteval u64 operator"" _KB(u64 value)
 {
-    return value * 1024;
+    return value * KB;
 }
 
-inline consteval auto operator"" _MB(u64 value) -> u64
+consteval u64 operator"" _KiB(u64 value)
 {
-    return value * 1024 * 1024;
+    return value * KiB;
 }
 
-inline consteval auto operator"" _GB(u64 value) -> u64
+consteval u64 operator"" _MB(u64 value)
 {
-    return value * 1024 * 1024 * 1024;
+    return value * MB;
 }
 
-// other useful utilities
+consteval u64 operator"" _MiB(u64 value)
+{
+    return value * MiB;
+}
+
+consteval u64 operator"" _GB(u64 value)
+{
+    return value * GB;
+}
+
+consteval u64 operator"" _GiB(u64 value)
+{
+    return value * GiB;
+}
+
 template <typename T>
-inline constexpr T Min(T a, T b)
+constexpr T Min(T a, T b)
 {
     return (a < b) ? a : b;
 }
 
 template <typename T>
-inline constexpr T Max(T a, T b)
+constexpr T Max(T a, T b)
 {
     return (a > b) ? a : b;
 }
 
 template <typename T>
-inline constexpr T Clamp(T a, T x, T b)
+constexpr T Clamp(T a, T x, T b)
 {
     return (x < a) ? a : (b < x) ? b : x;
 }
 
 template <typename T>
-inline constexpr T Pow2AlignUp(T x, T p)
+constexpr T Pow2AlignUp(T x, T p)
 {
     return ((x + (p - 1)) & ~(p - 1));
 }
 
 template <typename T>
-inline constexpr T Pow2AlignDown(T x, T p)
+constexpr T Pow2AlignDown(T x, T p)
 {
     return (x & ~(p - 1));
 }
 
 template <typename T>
-inline constexpr T BytesToKB(T x)
+constexpr T BytesToKB(T x)
 {
     return (x >> 10);
 }
 
 template <typename T>
-inline constexpr T BytesToMB(T x)
+constexpr T BytesToMB(T x)
 {
     return (x >> 20);
 }
 
 template <typename T>
-inline constexpr T BytesToGB(T x)
+constexpr T BytesToGB(T x)
 {
     return (x >> 30);
 }
 
 template <typename T>
-inline constexpr T BytesToTB(T x)
+constexpr T BytesToTB(T x)
 {
     return (x >> 40);
 }
 
-inline consteval u8 Bit(u8 n)
+consteval u8 Bit(u8 n)
 {
     return (1 << n);
 }

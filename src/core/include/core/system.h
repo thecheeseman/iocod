@@ -44,7 +44,7 @@ public:
     static void LogErrorNoExit(const String& message);
 };
 
-extern ISystem* System;
+extern ISystem* sys;
 
 template <typename... Args>
 inline void LogTrace(const String& format, Args&&... args)

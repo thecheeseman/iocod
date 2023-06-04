@@ -7,9 +7,13 @@
 
 #include <core/plugin.h>
 
+#if 0
+
 extern PluginInterface interface;
 
 PLUGIN_EXPORT PluginInfo* PluginInitialize(GetInterfacePtr get_interface);
 PLUGIN_EXPORT void PluginShutdown(void);
+
+#endif
 
 #endif // TEST_PLUGIN_H
