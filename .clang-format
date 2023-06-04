@@ -1,9 +1,6 @@
-# SPDX-FileCopyrightText: 2023 thecheeseman
-#
-# SPDX-License-Identifier: CC0-1.0
 ---
-Language:        Cpp
-# BasedOnStyle:  Google
+BasedOnStyle: ""
+Language: Cpp
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignArrayOfStructures: Left
@@ -12,13 +9,13 @@ AlignConsecutiveAssignments: None
 AlignConsecutiveBitFields: None
 AlignConsecutiveDeclarations: None
 AlignEscapedNewlines: Left
-AlignOperands:   Align
+AlignOperands: Align
 AlignTrailingComments: true
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortEnumsOnASingleLine: false
-AllowShortBlocksOnASingleLine: Never
-AllowShortCaseLabelsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: false
@@ -30,36 +27,34 @@ AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
-  AfterCaseLabel:  false
-  AfterClass:      false
+  AfterCaseLabel: false
+  AfterClass: false
   AfterControlStatement: Never
-  AfterEnum:       false
-  AfterFunction:   true
-  AfterNamespace:  false
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: false
   AfterObjCDeclaration: false
-  AfterStruct:     false
-  AfterUnion:      false
+  AfterStruct: false
+  AfterUnion: false
   AfterExternBlock: false
-  BeforeCatch:     false
-  BeforeElse:      false
+  BeforeCatch: false
+  BeforeElse: false
   BeforeLambdaBody: false
-  BeforeWhile:     false
-  IndentBraces:    false
+  BeforeWhile: false
+  IndentBraces: false
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: None
-BreakBeforeConceptDeclarations: true
+BreakBeforeConceptDeclarations: Always
 BreakBeforeBraces: Custom
-BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: false
 BreakConstructorInitializers: BeforeColon
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
-ColumnLimit:     100
-CommentPragmas:  '^ IWYU pragma:'
+ColumnLimit: 100
+CommentPragmas: "^ IWYU pragma:"
 QualifierAlignment: Leave
 CompactNamespaces: true
 ConstructorInitializerIndentWidth: 4
@@ -67,61 +62,30 @@ ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
 DeriveLineEnding: false
 DerivePointerAlignment: false
-DisableFormat:   false
+DisableFormat: false
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: LogicalBlock
 ExperimentalAutoDetectBinPacking: false
 PackConstructorInitializers: Never
-BasedOnStyle:    ''
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 AllowAllConstructorInitializersOnNextLine: true
 FixNamespaceComments: true
-ForEachMacros:
-  - foreach
-  - Q_FOREACH
-  - BOOST_FOREACH
-IfMacros:
-  - KJ_IF_MAYBE
-IncludeBlocks:   Regroup
-IncludeCategories:
-  - Regex:           '^<ext/.*\.h>'
-    Priority:        2
-    SortPriority:    0
-    CaseSensitive:   false
-  - Regex:           '^<.*\.h>'
-    Priority:        1
-    SortPriority:    0
-    CaseSensitive:   false
-  - Regex:           '^<.*\.hpp>'
-    Priority:        4
-    SortPriority:    0
-    CaseSensitive:   false
-  - Regex:           '^<.*'
-    Priority:        2
-    SortPriority:    0
-    CaseSensitive:   false
-  - Regex:           '.*'
-    Priority:        5
-    SortPriority:    0
-    CaseSensitive:   false
-IncludeIsMainRegex: '([-_](test|unittest))?$'
-IncludeIsMainSourceRegex: ''
+IncludeBlocks: Regroup
 IndentAccessModifiers: false
 IndentCaseLabels: false
 IndentCaseBlocks: false
 IndentGotoLabels: true
 IndentPPDirectives: BeforeHash
 IndentExternBlock: AfterExternBlock
-IndentRequires:  false
-IndentWidth:     4
+IndentWidth: 4
 IndentWrappedFunctionNames: false
 InsertTrailingCommas: None
 JavaScriptQuotes: Leave
 JavaScriptWrapImports: true
 KeepEmptyLinesAtTheStartOfBlocks: false
 LambdaBodyIndentation: Signature
-MacroBlockBegin: ''
-MacroBlockEnd:   ''
+MacroBlockBegin: ""
+MacroBlockEnd: ""
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 ObjCBinPackProtocolList: Never
@@ -140,13 +104,13 @@ PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 200
 PenaltyIndentedWhitespace: 0
 PointerAlignment: Left
-PPIndentWidth:   -1
+PPIndentWidth: -1
 ReferenceAlignment: Pointer
-ReflowComments:  true
+ReflowComments: true
 RemoveBracesLLVM: false
 SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 1
-SortIncludes:    CaseSensitive
+SortIncludes: CaseInsensitive
 SortJavaStaticImport: Before
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: true
@@ -163,7 +127,7 @@ SpaceBeforeParensOptions:
   AfterForeachMacros: true
   AfterFunctionDefinitionName: false
   AfterFunctionDeclarationName: false
-  AfterIfMacros:   true
+  AfterIfMacros: true
   AfterOverloadedOperator: false
   BeforeNonEmptyParentheses: false
 SpaceAroundPointerQualifiers: Default
@@ -171,27 +135,21 @@ SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyBlock: false
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
-SpacesInAngles:  Never
+SpacesInAngles: Never
 SpacesInConditionalStatement: false
 SpacesInContainerLiterals: false
 SpacesInCStyleCastParentheses: false
 SpacesInLineCommentPrefix:
-  Minimum:         1
-  Maximum:         -1
+  Minimum: 1
+  Maximum: -1
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 SpaceBeforeSquareBrackets: false
 BitFieldColonSpacing: Both
-Standard:        c++20
-StatementAttributeLikeMacros:
-  - XT2_CONSTRUCTOR
-  - XT2_DESTRUCTOR
-  - XT2_EXPORT
-StatementMacros:
-  - XT2_DIAGNOSTIC_PUSH
-  - XT2_SILENCE_WARNING
-  - XT2_DIAGNOSTIC_POP
-TabWidth:        8
-UseCRLF:         false
-UseTab:          Never
-
+Standard: c++20
+TabWidth: 8
+UseCRLF: false
+UseTab: Never
+IndentRequiresClause: false
+RequiresClausePosition: OwnLine
+InsertBraces: false

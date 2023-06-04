@@ -54,6 +54,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         -ffast-math
         -fvisibility=hidden
         -fvisibility-inlines-hidden
+        -fno-rtti
     )
 
     target_link_options(iocod_options INTERFACE
@@ -75,6 +76,8 @@ elseif (MSVC)
         $<$<CONFIG:MinSizeRel>:/Os>
 
         /utf-8                                  # use UTF-8 for source and execution
+
+        /EHsc                                   # enable C++ exceptions (ISO C++ EH)
 
         /sdl                                    # enable additional security checks
         /guard:cf                               # enable control flow guard

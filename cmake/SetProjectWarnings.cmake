@@ -70,6 +70,14 @@ function(SetProjectWarnings _project_name)
         /w14906 # string literal cast to 'LPWSTR'
         /w14928 # illegal copy-initialization; more than one user-defined conversion has been implicitly applied
         /permissive- # standards conformance mode for MSVC compiler.
+
+        #/w44365 # 'action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
+        /w44388 # signed/unsigned mismatch
+        /w14548 # expression before comma has no effect; expected expression with side-effect
+        /w15219 # implicit conversion from 'type-1' to 'type-2', possible loss of data
+        /w15233 # explicit lambda capture 'identifier' is not used
+        /w15262 # implicit fall-through occurs here; are you missing a break statement?
+        /w15263 # calling 'std::move' on a temporary object prevents copy elision
     )
 
     if (WARNINGS_AS_ERRORS)
