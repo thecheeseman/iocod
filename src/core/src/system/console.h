@@ -12,6 +12,7 @@
 
 namespace iocod {
 
+#if 0
 enum class VTColor {
     Black,
     Red,
@@ -92,29 +93,59 @@ inline constexpr VTColor Q3ColorToVTColor(Q3Color color) noexcept
     };
     return color_codes[static_cast<int>(color)];
 }
+#endif
 
+enum class ConsoleVisLevel {
+    Hidden,
+    Normal,
+    Minimized
+};
+
+namespace Console {
+
+constexpr const char* DED_CLASS = "iocod_console";
+constexpr const char* GAME_NAME = "iocod";
+
+std::pair<bool, String> Initialize(void* handle = nullptr);
+bool Initialized();
+void Shutdown();
+
+void Print(const String& message);
+void DebugPrint(const String& message);
+void Clear();
+void Show(ConsoleVisLevel level, bool quitOnClose);
+void DisplayError(const String& message);
+
+String GetInput();
+
+void PumpEvents();
+
+} // namespace Console
+
+#if 0
 class Console {
 public:
     Console() = default;
-
-    ~Console() {}
+    ~Console() = default;
 
     Console(const Console&) = delete;
     Console(Console&&) = delete;
     Console& operator=(const Console&) = delete;
     Console& operator=(Console&&) = delete;
 
-    std::pair<bool, String> Initialize() noexcept;
+    std::pair<bool, String> Initialize(void* handle = nullptr) noexcept;
+    bool Initialized() const noexcept { return initialized_; }
     bool Shutdown() noexcept;
 
-    void Print(const String& text, bool manual_color = false);
-    void DebugPrint(const String& text);
-    void WarningPrint(const String& text);
-    void ErrorPrint(const String& text);
-
+    void Print(const String& text);
     void Clear();
 
     String GetInput() noexcept;
+
+    void PumpEvents();
+
+    void Show(const ConsoleVisLevel level, const bool quitOnClose);
+    void DisplayError(const String& message);
 
     void SetTextColor(VTColor foreground, VTColor background = VTColor::Black);
     void SetTitle(const String& title);
@@ -125,6 +156,7 @@ private:
     static inline constexpr std::size_t MAX_EDIT_LINE = 1024;
     std::array<char, MAX_EDIT_LINE> buffer_{};
 
+    bool initialized_ = false;
     bool console_on_ = false;
     std::size_t cursor_ = 0;
 
@@ -132,11 +164,13 @@ private:
     VTColor background_ = VTColor::Black;
 
     void ColorPrint(const String& text);
-
+    #if 0
     void Back();
     void Show();
     void Hide();
+    #endif
 };
+#endif
 
 } // namespace iocod
 

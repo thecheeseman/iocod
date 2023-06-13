@@ -11,7 +11,7 @@
 /// Always assert.
 #define IOCOD_ALWAYS_ASSERT(...)                         \
     do {                                                 \
-        if (__VA_ARGS__) {                              \
+        if (__VA_ARGS__) {                               \
         } else {                                         \
             IOCOD_REPORT_ASSERTION_FAILURE(__VA_ARGS__); \
             IOCOD_ASSERT_TRAP();                         \

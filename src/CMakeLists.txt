@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 thecheeseman
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: CC0-1.0
 
 configure_file("iocod_config.h.in" "${STAGED_INSTALL_PREFIX}/include/iocod_config.h" @ONLY)
 

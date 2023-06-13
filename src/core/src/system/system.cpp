@@ -44,7 +44,7 @@ void ISystem::LogWarn(const String& message)
 void ISystem::LogError(const String& message)
 {
     logger->error(message);
-    std::exit(1);
+    sys->Exit(1);
 }
 
 void ISystem::LogErrorNoExit(const String& message)
@@ -54,7 +54,7 @@ void ISystem::LogErrorNoExit(const String& message)
 
 class SystemLocal final : public ISystem {
 public:
-    void Initialize() override;
+    void Initialize(void* handle) override;
     void Shutdown() noexcept override;
 
     u64 Milliseconds() noexcept override;
@@ -64,11 +64,13 @@ public:
 
     void Print(const String& message) noexcept override;
     void DebugPrint(const String& message) noexcept override;
-    void Warning(const String& message) noexcept override;
     void Error(const String& message) noexcept override;
+    void Exit(int errorCode) noexcept override;
 
     SystemInfo GetSystemInfo() override;
     void PrintSystemInfo() override;
+
+    void PumpEvents() noexcept override;
 
     static void AddConsoleCommands() noexcept;
 
@@ -76,8 +78,7 @@ private:
     using Clock = std::chrono::system_clock;
     std::chrono::time_point<Clock> start_time = Clock::now();
 
-    SystemInfo system_info;
-    Console console;
+    SystemInfo systemInfo_{};
 };
 
 SystemLocal local;
@@ -86,9 +87,9 @@ ISystem* sys = &local;
 // --------------------------------
 // SystemLocal::Initialize
 // --------------------------------
-void SystemLocal::Initialize()
+void SystemLocal::Initialize(void* handle)
 {
-    auto [result, errmsg] = console.Initialize();
+    auto [result, errmsg] = Console::Initialize(handle);
     if (!result)
         Error("Failed to initialize console: " + errmsg);
 
@@ -137,7 +138,7 @@ void SystemLocal::Initialize()
     // end spdlog
     //
 
-    system_info = PopulateSystemInfo();
+    systemInfo_ = PopulateSystemInfo();
 
     // register system commands with command system
     ICommandSystem::AddRegisterCallback(AddConsoleCommands);
@@ -151,7 +152,7 @@ void SystemLocal::Shutdown() noexcept
     logger->flush();
     spdlog::drop_all();
 
-    console.Shutdown();
+    Console::Shutdown();
 }
 
 // --------------------------------
@@ -168,7 +169,7 @@ u64 SystemLocal::Milliseconds() noexcept
 // --------------------------------
 String SystemLocal::GetConsoleInput() noexcept
 {
-    return console.GetInput();
+    return Console::GetInput();
 }
 
 // --------------------------------
@@ -176,7 +177,7 @@ String SystemLocal::GetConsoleInput() noexcept
 // --------------------------------
 void SystemLocal::ClearConsole() noexcept
 {
-    console.Clear();
+    Console::Clear();
 }
 
 // --------------------------------
@@ -184,7 +185,10 @@ void SystemLocal::ClearConsole() noexcept
 // --------------------------------
 void SystemLocal::Print(const String& message) noexcept
 {
-    console.Print(message);
+    if (Console::Initialized())
+        Console::Print(message);
+    else
+        fprintf(stderr, "%s", message.c_str());
 }
 
 // --------------------------------
@@ -192,15 +196,10 @@ void SystemLocal::Print(const String& message) noexcept
 // --------------------------------
 void SystemLocal::DebugPrint(const String& message) noexcept
 {
-    console.DebugPrint(message);
-}
-
-// --------------------------------
-// SystemLocal::Warning
-// --------------------------------
-void SystemLocal::Warning(const String& message) noexcept
-{
-    console.WarningPrint(message);
+    if (Console::Initialized())
+        Console::DebugPrint(message);
+    else
+        fprintf(stderr, "%s", message.c_str());
 }
 
 // --------------------------------
@@ -208,8 +207,21 @@ void SystemLocal::Warning(const String& message) noexcept
 // --------------------------------
 void SystemLocal::Error(const String& message) noexcept
 {
-    console.ErrorPrint(message);
-    // TODO: exit
+    if (Console::Initialized())
+        Console::Print(message);
+    else
+        (void) fprintf(stderr, "%s", message.c_str());
+
+    Exit(1);
+}
+
+// --------------------------------
+// SystemLocal::Exit
+// --------------------------------
+void SystemLocal::Exit(const int errorCode) noexcept
+{
+    Console::Shutdown();
+    std::exit(errorCode);
 }
 
 // --------------------------------
@@ -217,7 +229,7 @@ void SystemLocal::Error(const String& message) noexcept
 // --------------------------------
 SystemInfo SystemLocal::GetSystemInfo()
 {
-    return system_info;
+    return systemInfo_;
 }
 
 // --------------------------------
@@ -242,36 +254,44 @@ void SystemLocal::PrintSystemInfo()
             return fmt::format("{:g} TB", static_cast<double>(size / TB));
     };
 
-    if (!system_info.cpu_vendor.empty())
-        output += "CPU Vendor: " + system_info.cpu_vendor + "\n";
-    if (!system_info.cpu_model.empty())
-        output += "CPU Model: " + system_info.cpu_model + "\n";
-    if (system_info.cpu_cores != 0)
-        output += "CPU Cores: " + std::to_string(system_info.cpu_cores) + "\n";
-    if (system_info.cpu_threads != 0)
-        output += "CPU Threads: " + std::to_string(system_info.cpu_threads) + "\n";
-    if (system_info.cpu_mhz != 0.0f)
-        output += "CPU MHz: " + std::to_string(system_info.cpu_mhz) + "\n";
+    if (!systemInfo_.cpuVendor.empty())
+        output += "CPU Vendor: " + systemInfo_.cpuVendor + "\n";
+    if (!systemInfo_.cpuModel.empty())
+        output += "CPU Model: " + systemInfo_.cpuModel + "\n";
+    if (systemInfo_.cpuCores != 0)
+        output += "CPU Cores: " + std::to_string(systemInfo_.cpuCores) + "\n";
+    if (systemInfo_.cpuThreads != 0)
+        output += "CPU Threads: " + std::to_string(systemInfo_.cpuThreads) + "\n";
+    if (systemInfo_.cpuMhz != 0.0f)
+        output += "CPU MHz: " + std::to_string(systemInfo_.cpuMhz) + "\n";
 
-    if (system_info.mem_total != 0)
-        output += "Memory Total: " + human_readable(system_info.mem_total) + "\n";
-    if (system_info.mem_free != 0)
-        output += "Memory Free: " + human_readable(system_info.mem_free) + "\n";
-    if (system_info.mem_available != 0)
-        output += "Memory Available: " + human_readable(system_info.mem_available) + "\n";
-    if (system_info.mem_virtual_size != 0)
-        output += "Virtual Memory Size: " + human_readable(system_info.mem_virtual_size) + "\n";
-    if (system_info.mem_virtual_available != 0)
+    if (systemInfo_.memTotal != 0)
+        output += "Memory Total: " + human_readable(systemInfo_.memTotal) + "\n";
+    if (systemInfo_.memFree != 0)
+        output += "Memory Free: " + human_readable(systemInfo_.memFree) + "\n";
+    if (systemInfo_.memAvailable != 0)
+        output += "Memory Available: " + human_readable(systemInfo_.memAvailable) + "\n";
+    if (systemInfo_.memVirtualSize != 0)
+        output += "Virtual Memory Size: " + human_readable(systemInfo_.memVirtualSize) + "\n";
+    if (systemInfo_.memVirtualAvailable != 0)
         output +=
-            "Virtual Memory Available: " + human_readable(system_info.mem_virtual_available) + "\n";
-    if (system_info.mem_virtual_peak != 0)
-        output += "Virtual Memory Peak: " + human_readable(system_info.mem_virtual_peak) + "\n";
-    if (system_info.mem_physical_size != 0)
-        output += "Physical Memory Size: " + human_readable(system_info.mem_physical_size) + "\n";
-    if (system_info.mem_physical_peak != 0)
-        output += "Physical Memory Peak: " + human_readable(system_info.mem_physical_peak) + "\n";
+            "Virtual Memory Available: " + human_readable(systemInfo_.memVirtualAvailable) + "\n";
+    if (systemInfo_.memVirtualPeak != 0)
+        output += "Virtual Memory Peak: " + human_readable(systemInfo_.memVirtualPeak) + "\n";
+    if (systemInfo_.memPhysicalSize != 0)
+        output += "Physical Memory Size: " + human_readable(systemInfo_.memPhysicalSize) + "\n";
+    if (systemInfo_.memPhysicalPeak != 0)
+        output += "Physical Memory Peak: " + human_readable(systemInfo_.memPhysicalPeak) + "\n";
 
     Print(output);
+}
+
+// --------------------------------
+// SystemLocal::PumpEvents
+// --------------------------------
+void SystemLocal::PumpEvents() noexcept
+{
+    Console::PumpEvents();
 }
 
 // ================================

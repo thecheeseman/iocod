@@ -7,196 +7,163 @@
 
 #include <core/version.h>
 
-/// @def IOCOD_ARCH
-/// @brief Architecture string.
+namespace iocod {
 
-/// @def IOCOD_ARCH_I386
-/// @brief Defined if the architecture is i386.
+// clang-format off
 
-/// @def IOCOD_ARCH_AMD64
-/// @brief Defined if the architecture is amd64.
-
-#ifndef IOCOD_ARCH
-    #if defined(__i386__) || defined(_M_IX86)
-        #define IOCOD_ARCH "i386"
-        #define IOCOD_ARCH_I386
-    #elif defined(__x86_64__) || defined(_M_AMD64)
-        #define IOCOD_ARCH "amd64"
-        #define IOCOD_ARCH_AMD64
-    #elif defined(__arm__)
-        #if defined(__arm64__) || defined(__aarch64__)
-            #define IOCOD_ARCH "arm64"
-            #define IOCOD_ARCH_ARM64
-        #else
-            #define IOCOD_ARCH "arm32"
-            #define IOCOD_ARCH_ARM32
-        #endif
+// should always be set correctly from CMake but just as a sanity check
+#ifdef __cplusplus
+    // MSVC doesn't set this value properly
+    // __cplusplus is always 199711L unless you specify /Zc:__cplusplus
+    #if defined(_MSC_VER) && _MSVC_LANG < 202002L
+        #error "C++20 or later is required"
+    #elif !defined(_MSC_VER) && __cplusplus < 202002L
+        #error "C++20 or later is required"
     #endif
 #endif
 
-/// @def IOCOD_OS
-/// @brief Operating system string.
+enum class PlatformArchitecture {
+    x86,
+    x86_64,
+    arm32,
+    arm64
+};
 
-/// @def IOCOD_DLL_EXTENSION
-/// @brief File extension for dynamic libraries.
+#if defined(__i386__) || defined(_M_IX86)
+    #define IOCOD_ARCH_I386
+    inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::x86;
+    inline constexpr const char* platform_arch_string = "x86";
+#elif defined(__x86_64__) || defined(_M_AMD64)
+    #define IOCOD_ARCH_AMD64
+    inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::x86_64;
+    inline constexpr const char* platform_arch_string = "x86_64";
+#elif defined(__arm__)
+    #if defined(__arm64__) || defined(__aarch64__)
+        #define IOCOD_ARCH_ARM64
+        inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::arm64;
+        inline constexpr const char* platform_arch_string = "arm64";
+    #else
+        #define IOCOD_ARCH_ARM
+        inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::arm32;
+        inline constexpr const char* platform_arch_string = "arm32";
+    #endif
+#else
+    #error "Unknown or unsupported architecture"
+#endif
 
-/// @def IOCOD_EXE_EXTENSION
-/// @brief File extension for executables.
-
-/// @def IOCOD_PATH_SEPARATOR
-/// @brief Path separator.
-
-/// @def IOCOD_NEWLINE
-/// @brief Newline string.
+enum class PlatformOS {
+    Windows,
+    Linux,
+    MacOS
+};
 
 #ifdef _WIN32
-    /// @def IOCOD_OS_WINDOWS
-    /// @brief Defined if the operating system is Windows.
     #define IOCOD_OS_WINDOWS
+    inline constexpr PlatformOS platform_os = PlatformOS::Windows;
 
     #ifdef IOCOD_ARCH_AMD64
-        #define IOCOD_OS "win64"
+        inline constexpr const char* platform_os_string = "windows64";
     #else
-        #define IOCOD_OS "win32"
+        inline constexpr const char* platform_os_string = "windows32";
     #endif
 
-    #define IOCOD_DLL_EXTENSION  ".dll"
-    #define IOCOD_EXE_EXTENSION  ".exe"
-    #define IOCOD_PATH_SEPARATOR "\\"
-    #define IOCOD_NEWLINE        "\r\n"
+    inline constexpr const char* platform_dll_extension = ".dll";
+    inline constexpr const char* platform_exe_extension = ".exe";
+    inline constexpr const char* platform_path_separator = "\\";
+    inline constexpr const char* platform_newline = "\r\n";
 #elif defined(__linux__)
-    /// @def IOCOD_OS_LINUX
-    /// @brief Defined if the operating system is Linux.
     #define IOCOD_OS_LINUX
+    inline constexpr PlatformOS platform_os = PlatformOS::Linux;
 
     #ifdef IOCOD_ARCH_AMD64
-        #define IOCOD_OS "linux64"
+        inline constexpr const char* platform_os_string = "linux64";
     #else
-        #define IOCOD_OS "linux32"
+        inline constexpr const char* platform_os_string = "linux32";
     #endif
 
-    #define IOCOD_DLL_EXTENSION  ".so"
-    #define IOCOD_EXE_EXTENSION  ""
-    #define IOCOD_PATH_SEPARATOR "/"
-    #define IOCOD_NEWLINE        "\n"
+    inline constexpr const char* platform_dll_extension = ".so";
+    inline constexpr const char* platform_exe_extension = "";
+    inline constexpr const char* platform_path_separator = "/";
+    inline constexpr const char* platform_newline = "\n";
 #elif defined(__APPLE__)
-    /// @def IOCOD_OS_DARWIN
-    /// @brief Defined if the operating system is MacOS.
-    #define IOCOD_OS_DARWIN
-    #define IOCOD_OS             "darwin64"
+    #define IOCOD_OS_MACOS
+    inline constexpr PlatformOS platform_os = PlatformOS::MacOS;
+    inline constexpr const char* platform_os_string = "macos64";
 
-    #define IOCOD_DLL_EXTENSION  ".dylib"
-    #define IOCOD_EXE_EXTENSION  ""
-    #define IOCOD_PATH_SEPARATOR "/"
-    #define IOCOD_NEWLINE        "\n"
+    inline constexpr const char* platform_dll_extension = ".dylib";
+    inline constexpr const char* platform_exe_extension = "";
+    inline constexpr const char* platform_path_separator = "/";
+    inline constexpr const char* platform_newline = "\n";
 #else
     #error "Unknown or unsupported operating system"
 #endif
 
-/// @def IOCOD_COMPILER
-/// String name of the compiler.
+enum class PlatformCompiler {
+    MSVC,
+    Clang,
+    GCC
+};
 
-/// @def IOCOD_MSVC
-/// Defined if compiling under MSVC.
+#ifdef _MSC_VER
+    #define IOCOD_COMPILER_MSVC
+    inline constexpr PlatformCompiler platform_compiler = PlatformCompiler::MSVC;
+    inline constexpr const char* platform_compiler_string = "msvc";
 
-/// @def IOCOD_CLANG
-/// Defined if compiling under Clang.
+    inline constexpr int platform_compiler_version =
+        VersionEncode((_MSC_FULL_VER / 10000000), (_MSC_FULL_VER % 10000000) / 100000,
+                      (_MSC_FULL_VER % 100000) / 100);
 
-/// @def IOCOD_GCC
-/// Defined if compiling under GCC.
-
-/// @def IOCOD_COMPILER_VERSION
-/// Current version number of the compiler.
-
-#ifndef IOCOD_COMPILER
-    #ifdef _MSC_VER
-        #define IOCOD_COMPILER_MSVC
-        #define IOCOD_COMPILER "msvc"
-
-        #if defined(_MSC_FULL_VER) && (_MSC_FULL_VER >= 140000000)
-            #define IOCOD_COMPILER_VERSION                                \
-                IOCOD_VERSION_ENCODE(_MSC_FULL_VER / 10000000,            \
-                                     (_MSC_FULL_VER % 10000000) / 100000, \
-                                     (_MSC_FULL_VER % 100000) / 100)
-        #elif defined(_MSC_FULL_VER)
-            #define IOCOD_COMPILER_VERSION                                                       \
-                IOCOD_VERSION_ENCODE(_MSC_FULL_VER / 1000000, (_MSC_FULL_VER % 1000000) / 10000, \
-                                     (_MSC_FULL_VER % 10000) / 10)
-        #elif defined(_MSC_VER)
-            #define IOCOD_COMPILER_VERSION IOCOD_VERSION_ENCODE(_MSC_VER / 100, _MSC_VER % 100, 0)
-        #endif
-
-        #define IOCOD_UNREACHABLE() __assume(0)
-    #elif defined(__GNUC__)
-        #ifdef __clang__
-            #define IOCOD_COMPILER_CLANG
-            #define IOCOD_COMPILER "clang"
-        #else
-            #define IOCOD_COMPILER_GCC
-            #define IOCOD_COMPILER "gcc"
-        #endif
-
-        #ifdef __GNUC_PATCHLEVEL__
-            #define IOCOD_COMPILER_VERSION \
-                IOCOD_VERSION_ENCODE(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
-        #elif defined(__GNUC_)
-            #define IOCOD_COMPILER_VERSION IOCOD_VERSION_ENCODE(__GNUC__, __GNUC_MINOR__, 0)
-        #endif
-
-        #define IOCOD_UNREACHABLE() __builtin_unreachable()
-    #else
-        #error "Unknown or unsupported compiler."
-    #endif
-#endif // IOCOD_COMPILER
-
-#ifdef IOCOD_COMPILER_MSVC
     #define IOCOD_LOCAL
-    #define IOCOD_EXPORT __declspec(dllexport)
-    #define IOCOD_IMPORT __declspec(dllimport)
+    #define IOCOD_EXPORT             __declspec(dllexport)
+    #define IOCOD_IMPORT             __declspec(dllimport)
     #define IOCOD_CONSTRUCTOR
     #define IOCOD_DESTRUCTOR
     #define IOCOD_CODE_SECTION(name) __declspec(code_seg(name))
+    #define IOCOD_ALWAYS_INLINE      __forceinline
     #define IOCOD_NO_INLINE          __declspec(noinline)
     #define IOCOD_NO_RETURN          __declspec(noreturn)
     #define IOCOD_BREAK()            __debugbreak()
     #define IOCOD_RETURN_ADDRESS()   _ReturnAddress()
     #define IOCOD_ASSUME(expr)       __analysis_assume(!!(expr))
-#elif defined(IOCOD_COMPILER_GCC) || defined(IOCOD_COMPILER_CLANG)
-    #define IOCOD_LOCAL  __attribute__((visibility("hidden")))
-    #define IOCOD_EXPORT __attribute__((visibility("default")))
+    #define IOCOD_UNREACHABLE()      __assume(0)
+#elif defined(__GNUC__)
+    #ifdef __clang__
+        #define IOCOD_COMPILER_CLANG
+        inline constexpr PlatformCompiler platform_compiler = PlatformCompiler::Clang;
+        inline constexpr const char* platform_compiler_string = "clang";
+    #else
+        #define IOCOD_COMPILER_GCC
+        inline constexpr PlatformCompiler platform_compiler = PlatformCompiler::GCC;
+        inline constexpr const char* platform_compiler_string = "gcc";
+    #endif
+
+    inline constexpr int platform_compiler_version =
+        VersionEncode(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+
+    #define IOCOD_LOCAL              __attribute__((visibility("hidden")))
+    #define IOCOD_EXPORT             __attribute__((visibility("default")))
     #define IOCOD_IMPORT
     #define IOCOD_CONSTRUCTOR        __attribute__((constructor))
     #define IOCOD_DESTRUCTOR         __attribute__((destructor))
     #define IOCOD_CODE_SECTION(name) __attribute__((section(name)))
+    #define IOCOD_ALWAYS_INLINE      __attribute__((always_inline)) inline
     #define IOCOD_NO_INLINE          __attribute__((noinline))
     #define IOCOD_NO_RETURN          __attribute__((noreturn))
     #define IOCOD_BREAK()            __builtin_trap()
     #define IOCOD_RETURN_ADDRESS()   __builtin_return_address(0)
     #define IOCOD_ASSUME(expr)       (__builtin_expect(!(expr), 0) ? __builtin_unreachable() : (void) 0)
+    #define IOCOD_UNREACHABLE()      __builtin_unreachable()
 #else
-    #define IOCOD_LOCAL
-    #define IOCOD_EXPORT
-    #define IOCOD_IMPORT
-    #define IOCOD_CONSTRUCTOR
-    #define IOCOD_DESTRUCTOR
-    #define IOCOD_CODE_SECTION(name)
-    #define IOCOD_NO_INLINE
-    #define IOCOD_NO_RETURN
-    #define IOCOD_BREAK()
-    #define IOCOD_RETURN_ADDRESS() 0
-    #define IOCOD_ASSUME(expr)
+    #error "Unknown or unsupported compiler"
 #endif
 
-#ifdef IOCOD_BUILD_DLL
-    #define IOCOD_API IOCOD_EXPORT
+#ifdef IOCOD_DEBUG
+    inline constexpr bool debug_build = true;
 #else
-    #define IOCOD_API IOCOD_IMPORT
+    inline constexpr bool debug_build = false;
 #endif
 
-/// @def IOCOD_VERSION_CHECK
-/// Check if the given compiler version matches or is newer.
-#define IOCOD_VERSION_CHECK(major, minor, patch) \
-    (IOCOD_COMPILER_VERSION >= IOCOD_VERSION_ENCODE(major, minor, patch))
+// clang-format on
 
 /// @def IOCOD_HAS_ATTRIBUTE
 /// Check if a given attribute exists.
@@ -238,26 +205,6 @@
     #define IOCOD_HAS_FEATURE(feature) (0)
 #endif
 
-/// @def IOCOD_ALWAYS_INLINE
-/// Mark a function as always inline.
-#if IOCOD_HAS_ATTRIBUTE(always_inline)
-    #define IOCOD_ALWAYS_INLINE __attribute__((always_inline)) inline
-#elif defined(IOCOD_COMPILER_MSVC)
-    #define IOCOD_ALWAYS_INLINE __forceinline
-#else
-    #define IOCOD_ALWAYS_INLINE inline
-#endif
-
-/// @def IOCOD_NOINLINE
-/// Mark a function as not inlinable.
-#if IOCOD_HAS_ATTRIBUTE(noinline)
-    #define IOCOD_NOINLINE __attribute__((noinline))
-#elif defined(IOCOD_COMPILER_MSVC)
-    #define IOCOD_NOINLINE __declspec(noinline)
-#else
-    #define IOCOD_NOINLINE
-#endif
-
 #ifdef IOCOD_COMPILER_MSVC
     #define IOCOD_DISABLE_ALL_VC_WARNINGS()          \
         __pragma(warning(push, 0)) __pragma(warning( \
@@ -267,5 +214,7 @@
     #define IOCOD_DISABLE_ALL_VC_WARNINGS()
     #define IOCOD_RESTORE_ALL_VC_WARNINGS()
 #endif
+
+} // namespace iocod
 
 #endif // CORE_PLATFORM_H

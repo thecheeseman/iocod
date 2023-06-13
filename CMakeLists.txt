@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 thecheeseman
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: CC0-1.0
 
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
@@ -24,11 +24,6 @@ include(SetStandards)
 # options
 #
 include(iocodOptions)
-
-if (BUILD_32BIT)
-    add_compile_options(-m32 -fPIC) # TODO: optionally enable this for just hook builds
-    add_link_options(-m32 -fPIC)    # TODO: optionally enable this for just hook builds
-endif()
 
 add_library(iocod_options INTERFACE)
 EnableInterproceduralOptimization(iocod_options)
@@ -102,12 +97,6 @@ add_library(iocod_warnings INTERFACE)
 SetProjectWarnings(iocod_warnings)
 
 #
-# staged install
-#
-set(STAGED_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/staged")
-message(STATUS "Staged install prefix: ${STAGED_INSTALL_PREFIX}")
-
-#
 # includes
 #
 add_library(iocod_includes INTERFACE)
@@ -123,11 +112,39 @@ target_include_directories(iocod_includes INTERFACE
     "${CMAKE_SOURCE_DIR}/external/miniz"
     "${CMAKE_SOURCE_DIR}/external/spdlog/include"
 )
+target_precompile_headers(iocod_includes INTERFACE
+    <core/platform.h>
+    <core/types.h>
+
+    # STL
+    <algorithm>
+    <array>
+    <deque>
+    <map>
+    <optional>
+    <queue>
+    <stack>
+    <string>
+    <string_view>
+    <tuple>
+    <unordered_map>
+    <variant>
+    <vector>
+)
+
+#
+# staged install
+#
+set(STAGED_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/staged")
+message(STATUS "Staged install prefix: ${STAGED_INSTALL_PREFIX}")
 
 #
 # projects
 #
 include(iocodGetGitCommitInfo)
 
+# probably shouldn't have this here but it's convenient for everything to have fmt
 add_subdirectory(external)
+target_link_libraries(iocod_includes INTERFACE fmt::fmt)
+
 add_subdirectory(src)

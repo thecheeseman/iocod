@@ -5,7 +5,7 @@
 #ifndef CORE_SYSTEM_SYSTEM_INFO_H
 #define CORE_SYSTEM_SYSTEM_INFO_H
 
-#include <core/system_info.h>
+#include <core/system.h>
 
 namespace iocod {
 

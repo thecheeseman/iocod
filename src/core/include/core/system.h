@@ -6,20 +6,42 @@
 #define CORE_SYSTEM_H
 
 #include <core/platform.h>
-#include <core/system_info.h>
 #include <core/types.h>
 
 #include <fmt/format.h>
 
 #include <string>
+#include <string_view>
 
 namespace iocod {
+
+struct SystemInfo {
+    f32 cpuMhz;
+    i32 cpuCores;
+    i32 cpuThreads;
+    String cpuVendor{};
+    String cpuModel{};
+
+    u64 memTotal;
+    u64 memFree;
+    u64 memAvailable;
+
+    u64 memVirtualSize;
+    u64 memVirtualAvailable;
+    u64 memVirtualPeak;
+    u64 memPhysicalSize;
+    u64 memPhysicalPeak;
+};
 
 class ISystem {
 public:
     virtual ~ISystem() = default;
 
-    virtual void Initialize() = 0;
+    /**
+     * \brief Initialize the system.
+     * \param handle used on win32 to pass the main window handle
+     */
+    virtual void Initialize(void* handle = nullptr) = 0;
     virtual void Shutdown() noexcept = 0;
 
     virtual u64 Milliseconds() noexcept = 0;
@@ -29,8 +51,10 @@ public:
 
     virtual void Print(const String& message) noexcept = 0;
     virtual void DebugPrint(const String& message) noexcept = 0;
-    virtual void Warning(const String& message) noexcept = 0;
     virtual void Error(const String& message) noexcept = 0;
+    virtual void Exit(int errorCode) noexcept = 0;
+
+    virtual void PumpEvents() noexcept = 0;
 
     virtual SystemInfo GetSystemInfo() = 0;
     virtual void PrintSystemInfo() = 0;
@@ -47,37 +71,37 @@ public:
 extern ISystem* sys;
 
 template <typename... Args>
-inline void LogTrace(const String& format, Args&&... args)
+inline void LogTrace(const std::string_view& format, Args&&... args)
 {
     ISystem::LogTrace(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogDebug(const String& format, Args&&... args)
+inline void LogDebug(const std::string_view& format, Args&&... args)
 {
     ISystem::LogDebug(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogInfo(const String& format, Args&&... args)
+inline void LogInfo(const std::string_view& format, Args&&... args)
 {
     ISystem::LogInfo(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogWarn(const String& format, Args&&... args)
+inline void LogWarn(const std::string_view& format, Args&&... args)
 {
     ISystem::LogWarn(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogError(const String& format, Args&&... args)
+inline void LogError(const std::string_view& format, Args&&... args)
 {
     ISystem::LogError(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogErrorNoExit(const String& format, Args&&... args)
+inline void LogErrorNoExit(const std::string_view& format, Args&&... args)
 {
     ISystem::LogErrorNoExit(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }

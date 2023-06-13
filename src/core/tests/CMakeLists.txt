@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 thecheeseman
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: CC0-1.0
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/Catch2/extras")
 
@@ -28,9 +28,9 @@ function(AddCoreTest)
     )
 endfunction()
 
-AddCoreTest(NAME "test-array", SOURCES "test-array.cpp")
 AddCoreTest(NAME "test-fixed_string" SOURCES "test-fixed_string.cpp")
 AddCoreTest(NAME "test-narrow_cast" SOURCES "test-narrow_cast.cpp")
 AddCoreTest(NAME "test-shared_library" SOURCES "test-shared_library.cpp")
+AddCoreTest(NAME "test-stringed" SOURCES "test-stringed.cpp")
 AddCoreTest(NAME "test-string_utilities" SOURCES "test-string_utilities.cpp")
 AddCoreTest(NAME "test-vector" SOURCES "test-vector.cpp")

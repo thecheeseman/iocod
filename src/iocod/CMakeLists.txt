@@ -1,15 +1,20 @@
 # SPDX-FileCopyrightText: 2023 thecheeseman
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: CC0-1.0
 
 set(IOCOD_SOURCES
-    main.cpp
-
     # null implementations
     null_impl/null_client.cpp
     null_impl/null_game.cpp
     null_impl/null_server.cpp
 )
+
+if (WIN32)
+    list(APPEND IOCOD_SOURCES
+        main_win32.cpp
+    )
+endif()
+
 list(TRANSFORM IOCOD_SOURCES PREPEND "src/")
 
 #
@@ -18,11 +23,11 @@ list(TRANSFORM IOCOD_SOURCES PREPEND "src/")
 add_executable(iocod ${IOCOD_SOURCES})
 add_dependencies(iocod iocodcore)
 
-#if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-#    set_target_properties(iocod PROPERTIES WIN32_EXECUTABLE TRUE)
-#elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-#    set_target_properties(iocod PROPERTIES MACOSX_BUNDLE TRUE)
-#endif()
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set_target_properties(iocod PROPERTIES WIN32_EXECUTABLE TRUE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set_target_properties(iocod PROPERTIES MACOSX_BUNDLE TRUE)
+endif()
 
 target_link_libraries(iocod PRIVATE iocod_options iocod_warnings iocod_includes)
 target_link_libraries(iocod PRIVATE iocodcore)

@@ -1,1 +1,16 @@
+# SPDX-FileCopyrightText: 2023 thecheeseman
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# version numbering uses semantic versioning standard 2.0 (https://semver.org/)
+#   0.1.0
+#
+# with optional pre-release tag info:
+#   0.1.0-alpha
+#   0.1.0-alpha.prerelease
+#
+# and optional build info:
+#   0.1.0+build.info
+#   0.1.0-alpha.prelease+build.info
+
 0.1.0

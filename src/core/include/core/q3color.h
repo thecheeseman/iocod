@@ -21,8 +21,20 @@ enum class Q3Color {
     Rose,
 };
 
+// defines for string concatenation
+#define S_COLOR_BLACK "^0"
+#define S_COLOR_RED "^1"
+#define S_COLOR_GREEN "^2"
+#define S_COLOR_YELLOW "^3"
+#define S_COLOR_BLUE "^4"
+#define S_COLOR_CYAN "^5"
+#define S_COLOR_MAGENTA "^6"
+#define S_COLOR_WHITE "^7"
+#define S_COLOR_PURPLE "^8"
+#define S_COLOR_ROSE "^9"
+
 /// @brief Checks if a string is a Quake3 color string (e.g. "^1").
-inline bool IsQ3ColorString(const char* str) noexcept
+inline constexpr bool IsQ3ColorString(const char* str) noexcept
 {
     if (str == nullptr || str[0] != '^' || str[1] == '\0')
         return false;

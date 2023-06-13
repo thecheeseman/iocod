@@ -17,7 +17,7 @@ namespace iocod {
 // --------------------------------
 // Console::Print
 // --------------------------------
-void Console::Print(const String& text, bool manual_color)
+void Console::Print(const String& text)
 {
     static std::size_t overdue = 0;
 
@@ -26,10 +26,7 @@ void Console::Print(const String& text, bool manual_color)
 
     Hide();
 
-    if (manual_color)
-        fputs(text.c_str(), stderr);
-    else
-        ColorPrint(text);
+    ColorPrint(text);
 
     if (!console_on_)
         return;
@@ -44,33 +41,6 @@ void Console::Print(const String& text, bool manual_color)
     } else {
         overdue++;
     }
-}
-
-// --------------------------------
-// Console::DebugPrint
-// --------------------------------
-void Console::DebugPrint(const String& text)
-{
-    SetTextColor(VTColor::Cyan);
-    Print("DEBUG: " + text);
-}
-
-// --------------------------------
-// Console::WarningPrint
-// --------------------------------
-void Console::WarningPrint(const String& text)
-{
-    SetTextColor(VTColor::BrightYellow);
-    Print("WARNING: " + text);
-}
-
-// --------------------------------
-// Console::Error
-// --------------------------------
-void Console::ErrorPrint(const String& text)
-{
-    SetTextColor(VTColor::BrightWhite, VTColor::BrightRed);
-    Print("ERROR: " + text);
 }
 
 // --------------------------------
@@ -117,7 +87,7 @@ void Console::ColorPrint(const String& text)
 
     for (std::size_t i = 0; i < text.size(); i++) {
         bool new_line = text[i] == '\n';
-        bool color = iocod::IsQ3ColorString(&text[i]);
+        bool color = IsQ3ColorString(&text[i]);
 
         console_on_ = new_line;
 
