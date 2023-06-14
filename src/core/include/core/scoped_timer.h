@@ -5,10 +5,9 @@
 #ifndef CORE_SCOPED_TIMER_H
 #define CORE_SCOPED_TIMER_H
 
+#include <chrono>
 #include <core/class_non_copyable.h>
 #include <core/types.h>
-
-#include <chrono>
 #include <map>
 
 namespace iocod {
@@ -17,31 +16,31 @@ class ScopedTimer final {
 public:
     CLASS_NON_COPYABLE(ScopedTimer)
 
-    explicit ScopedTimer(const char* function_, const char* filename_, u32 line)
-        : function(function_),
-          filename(filename_),
-          line(line),
-          start(Clock::now())
+    explicit ScopedTimer(const char* function, const char* filename, const u32 line)
+        : m_start(Clock::now()),
+          m_filename(filename),
+          m_function(function),
+          m_line(line)
     {
-        if (!initialized) {
-            std::atexit(DumpToCSV);
-            initialized = true;
+        if (!s_initialized) {
+            (void) std::atexit(DumpToCSV);
+            s_initialized = true;
         }
     }
 
     ~ScopedTimer()
     {
-        auto end = Clock::now();
-        auto time = std::chrono::duration_cast<Nanoseconds>(end - start);
+        const auto end = Clock::now();
+        const auto time = std::chrono::duration_cast<Nanoseconds>(end - m_start);
 
-        auto& data = timers[function];
-        data.function = function;
-        data.filename = filename;
-        data.line = line;
-        data.total_time += time;
-        data.function_calls++;
-        data.min_time = std::min(data.min_time, time);
-        data.max_time = std::max(data.max_time, time);
+        auto& data = s_timers[m_function];
+        data.function = m_function;
+        data.filename = m_filename;
+        data.line = m_line;
+        data.totalTime += time;
+        data.functionCalls++;
+        data.minTime = std::min(data.minTime, time);
+        data.maxTime = std::max(data.maxTime, time);
     }
 
     static void DumpToCSV();
@@ -52,24 +51,24 @@ private:
     using Time = std::chrono::time_point<Clock>;
     using Nanoseconds = std::chrono::nanoseconds;
 
-    Time start;
-    const char* filename;
-    const char* function;
-    u32 line;
+    Time m_start;
+    const char* m_filename;
+    const char* m_function;
+    u32 m_line;
 
     struct TimerData {
-        const char* filename;
-        const char* function;
-        u32 line = 0;
-        u32 function_calls = 0;
+        const char* filename{nullptr};
+        const char* function{nullptr};
+        u32 line{0};
+        u32 functionCalls{0};
 
-        Nanoseconds total_time = Nanoseconds(0);
-        Nanoseconds min_time = Nanoseconds::max();
-        Nanoseconds max_time = Nanoseconds::min();
+        Nanoseconds totalTime = Nanoseconds(0);
+        Nanoseconds minTime = Nanoseconds::max();
+        Nanoseconds maxTime = Nanoseconds::min();
     };
 
-    static inline std::map<String, TimerData> timers{};
-    static inline bool initialized = false;
+    static inline std::map<const char*, TimerData> s_timers{};
+    static inline bool s_initialized = false;
 };
 
 #define CreateScopedTimer() ScopedTimer timer(__FUNCTION__, __FILE__, __LINE__)

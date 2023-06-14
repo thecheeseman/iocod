@@ -7,29 +7,29 @@
 #include <core/cvar_system.h>
 #include <core/string_utilities.h>
 #include <core/system.h>
-#include <fmt/format.h>
-
 #include <deque>
+#include <fmt/format.h>
+#include <ranges>
 #include <vector>
 
 namespace iocod {
 
 namespace {
-std::vector<ICommandSystem::DelayedRegisterFunction> register_callbacks{};
+std::vector<ICommandSystem::DelayedRegisterFunction> registerCallbacks{};
 } // namespace
 
-void ICommandSystem::AddRegisterCallback(DelayedRegisterFunction function) noexcept
+void ICommandSystem::AddRegisterCallback(const DelayedRegisterFunction function) noexcept
 {
     // already initialized command system
-    if (command_system->IsSystemActive()) {
+    if (commandSystem->IsSystemActive()) {
         function();
         return;
     }
 
     // wait until command system is initialized
-    if (std::find(register_callbacks.begin(), register_callbacks.end(), function) ==
-        register_callbacks.end()) {
-        register_callbacks.push_back(function);
+    if (std::ranges::find(registerCallbacks.begin(), registerCallbacks.end(), function) ==
+        registerCallbacks.end()) {
+        registerCallbacks.push_back(function);
     }
 }
 
@@ -38,20 +38,17 @@ public:
     void Initialize() override;
     void Shutdown() override;
 
-    inline bool IsSystemActive() const noexcept override
-    {
-        return system_active;
-    }
+    [[nodiscard]] bool IsSystemActive() const noexcept override { return m_systemActive; }
 
-    std::size_t Argc() const noexcept override;
-    String Argv(std::size_t index) const noexcept override;
-    String Args() const override;
-    String ArgsFrom(std::size_t index) const override;
+    [[nodiscard]] std::size_t Argc() const noexcept override;
+    [[nodiscard]] String Argv(std::size_t index) const noexcept override;
+    [[nodiscard]] String Args() const override;
+    [[nodiscard]] String ArgsFrom(std::size_t index) const override;
 
     bool AddCommand(const String& name, std::unique_ptr<IConsoleCommand> command) override;
     bool RemoveCommand(const String& name) override;
-    bool HasCommand(const String& name) const override;
-    std::vector<String> GetCommandList() const override;
+    [[nodiscard]] bool HasCommand(const String& name) const override;
+    [[nodiscard]] std::vector<String> GetCommandList() const override;
 
     void TokenizeString(const String& text) override;
 
@@ -59,30 +56,27 @@ public:
     void AddCommandText(const String& text) override;
     void InsertCommandText(const String& text) override;
     void ExecuteCommandText(const String& text) override;
-    void BufferCommandText(CommandExecutionType execution_type, const String& text) override;
+    void BufferCommandText(CommandExecutionType type, const String& text) override;
     void ExecuteCommandBuffer() override;
 
-    void SetWaitCounter(std::size_t count) noexcept override
-    {
-        wait_counter = count;
-    }
+    void SetWaitCounter(const std::size_t count) noexcept override { m_waitCounter = count; }
 
 private:
-    bool system_active = false;
-    static inline constexpr std::size_t MAX_ARGV_TOKENS = 1024;
+    bool m_systemActive = false;
+    static inline constexpr std::size_t kMaxArgvTokens = 1024;
 
-    std::size_t wait_counter = 0;
+    std::size_t m_waitCounter = 0;
 
-    std::deque<String> command_buffer;
-    std::vector<String> command_args;
+    std::deque<String> m_commandBuffer;
+    std::vector<String> m_commandArgs;
 
-    CaseInsensitiveMap<std::unique_ptr<IConsoleCommand>> commands;
+    CaseInsensitiveMap<std::unique_ptr<IConsoleCommand>> m_commands;
 
     void AddConsoleCommands();
 };
 
 CommandSystemLocal local;
-ICommandSystem* command_system = &local;
+ICommandSystem* commandSystem = &local;
 
 // --------------------------------
 // CommandSystemLocal::Init
@@ -90,12 +84,12 @@ ICommandSystem* command_system = &local;
 void CommandSystemLocal::Initialize()
 {
     AddConsoleCommands();
-    system_active = true;
+    m_systemActive = true;
 
     // Call any delayed register callbacks,
-    while (!register_callbacks.empty()) {
-        register_callbacks.back()();
-        register_callbacks.pop_back();
+    while (!registerCallbacks.empty()) {
+        registerCallbacks.back()();
+        registerCallbacks.pop_back();
     }
 }
 
@@ -104,7 +98,7 @@ void CommandSystemLocal::Initialize()
 // --------------------------------
 void CommandSystemLocal::Shutdown()
 {
-    system_active = false;
+    m_systemActive = false;
 }
 
 // --------------------------------
@@ -112,18 +106,18 @@ void CommandSystemLocal::Shutdown()
 // --------------------------------
 std::size_t CommandSystemLocal::Argc() const noexcept
 {
-    return command_args.size();
+    return m_commandArgs.size();
 }
 
 // --------------------------------
 // CommandSystemLocal::Argv
 // --------------------------------
-String CommandSystemLocal::Argv(std::size_t index) const noexcept
+String CommandSystemLocal::Argv(const std::size_t index) const noexcept
 {
-    if (index >= command_args.size())
-        return String("");
+    if (index >= m_commandArgs.size())
+        return {""};
 
-    return command_args[index];
+    return m_commandArgs[index];
 }
 
 // --------------------------------
@@ -137,12 +131,12 @@ String CommandSystemLocal::Args() const
 // --------------------------------
 // CommandSystemLocal::ArgsFrom
 // --------------------------------
-String CommandSystemLocal::ArgsFrom(std::size_t index) const
+String CommandSystemLocal::ArgsFrom(const std::size_t index) const
 {
     String args;
-    for (size_t i = index; i < command_args.size(); i++) {
-        args += command_args[i];
-        if (i != command_args.size() - 1)
+    for (size_t i = index; i < m_commandArgs.size(); i++) {
+        args += m_commandArgs[i];
+        if (i != m_commandArgs.size() - 1)
             args += " ";
     }
     return args;
@@ -151,8 +145,7 @@ String CommandSystemLocal::ArgsFrom(std::size_t index) const
 // --------------------------------
 // CommandSystemLocal::AddCommand
 // --------------------------------
-bool CommandSystemLocal::AddCommand(const String& name,
-                                    std::unique_ptr<IConsoleCommand> command)
+bool CommandSystemLocal::AddCommand(const String& name, std::unique_ptr<IConsoleCommand> command)
 {
     if (HasCommand(name)) {
         LogWarn("[CommandSystem] Command '{}' already exists", name);
@@ -160,7 +153,7 @@ bool CommandSystemLocal::AddCommand(const String& name,
     }
 
     LogTrace("[CommandSystem] Added command '{}'", name);
-    commands[name] = std::move(command);
+    m_commands[name] = std::move(command);
     return true;
 }
 
@@ -173,7 +166,7 @@ bool CommandSystemLocal::RemoveCommand(const String& name)
         return false;
 
     LogTrace("[CommandSystem] Removed command '{}'", name);
-    return commands.erase(name) > 0;
+    return m_commands.erase(name) > 0;
 }
 
 // --------------------------------
@@ -181,7 +174,7 @@ bool CommandSystemLocal::RemoveCommand(const String& name)
 // --------------------------------
 bool CommandSystemLocal::HasCommand(const String& name) const
 {
-    return commands.find(name) != commands.end();
+    return m_commands.contains(name);
 }
 
 // --------------------------------
@@ -191,8 +184,8 @@ std::vector<String> CommandSystemLocal::GetCommandList() const
 {
     std::vector<String> list{};
 
-    list.reserve(commands.size());
-    for (const auto& [name, command] : commands)
+    list.reserve(m_commands.size());
+    for (const auto& name : std::views::keys(m_commands))
         list.push_back(name);
 
     return list;
@@ -203,7 +196,7 @@ std::vector<String> CommandSystemLocal::GetCommandList() const
 // --------------------------------
 void CommandSystemLocal::TokenizeString(const String& text)
 {
-    command_args.clear();
+    m_commandArgs.clear();
 
     String trimmed = StringUtilities::TrimCopy(text);
     if (trimmed.empty() || (trimmed.size() > 1 && trimmed[0] == '/' && trimmed[1] == '/'))
@@ -211,20 +204,20 @@ void CommandSystemLocal::TokenizeString(const String& text)
 
     while (true) {
         if (trimmed[0] == '"') {
-            std::size_t end = trimmed.find('"', 1);
-            command_args.push_back(trimmed.substr(1, end - 1));
+            const std::size_t end = trimmed.find('"', 1);
+            m_commandArgs.push_back(trimmed.substr(1, end - 1));
             trimmed = trimmed.substr(end + 1);
         } else {
             if (trimmed[0] == '/' && trimmed[1] == '/')
                 break;
 
-            std::size_t end = trimmed.find(' ');
+            const std::size_t end = trimmed.find(' ');
             if (end == String::npos) {
-                command_args.push_back(trimmed);
+                m_commandArgs.push_back(trimmed);
                 break;
             }
 
-            command_args.push_back(trimmed.substr(0, end));
+            m_commandArgs.push_back(trimmed.substr(0, end));
             trimmed = trimmed.substr(end + 1);
         }
 
@@ -239,7 +232,7 @@ void CommandSystemLocal::TokenizeString(const String& text)
 // --------------------------------
 void CommandSystemLocal::CommandBufferInitialize() noexcept
 {
-    command_buffer.clear();
+    m_commandBuffer.clear();
 }
 
 // --------------------------------
@@ -247,10 +240,9 @@ void CommandSystemLocal::CommandBufferInitialize() noexcept
 // --------------------------------
 void CommandSystemLocal::AddCommandText(const String& text)
 {
-    const std::vector<String> lines = StringUtilities::Split(text, ";\n\r");
-    for (const auto& line : lines) {
+    for (const auto lines = StringUtilities::Split(text, ";\n\r"); const auto& line : lines) {
         LogTrace("[CommandSystem] AddCommandText(\"{}\")", StringUtilities::Escape(line));
-        command_buffer.push_front(line);
+        m_commandBuffer.push_front(line);
     }
 }
 
@@ -259,10 +251,9 @@ void CommandSystemLocal::AddCommandText(const String& text)
 // --------------------------------
 void CommandSystemLocal::InsertCommandText(const String& text)
 {
-    const std::vector<String> lines = StringUtilities::Split(text, ";\n\r");
-    for (const auto& line : lines) {
+    for (const auto lines = StringUtilities::Split(text, ";\n\r"); const auto& line : lines) {
         LogTrace("[CommandSystem] InsertCommandText(\"{}\")", StringUtilities::Escape(line));
-        command_buffer.push_back(line);
+        m_commandBuffer.push_back(line);
     }
 }
 
@@ -286,12 +277,12 @@ void CommandSystemLocal::ExecuteCommandText(const String& text)
         for (size_t i = 1; i < Argc(); i++)
             args.push_back(Argv(i));
 
-        commands[cmd]->Execute(args);
+        m_commands[cmd]->Execute(args);
         return;
     }
 
-    //if (CvarSystem->IsSystemActive() && CvarSystem->CvarCommand())
-    //    return;
+    // if (CvarSystem->IsSystemActive() && CvarSystem->CvarCommand())
+    //     return;
 
     sys->Print(fmt::format("Unknown command '{}'\n", cmd));
 }
@@ -299,7 +290,7 @@ void CommandSystemLocal::ExecuteCommandText(const String& text)
 // --------------------------------
 // CommandSystemLocal::BufferCommandText
 // --------------------------------
-void CommandSystemLocal::BufferCommandText(CommandExecutionType type, const String& text)
+void CommandSystemLocal::BufferCommandText(const CommandExecutionType type, const String& text)
 {
     switch (type) {
     case CommandExecutionType::Immediate:
@@ -308,15 +299,8 @@ void CommandSystemLocal::BufferCommandText(CommandExecutionType type, const Stri
         else
             ExecuteCommandBuffer();
         break;
-    case CommandExecutionType::Insert:
-        InsertCommandText(text);
-        break;
-    case CommandExecutionType::Append:
-        AddCommandText(text);
-        break;
-    default:
-        // ERORR
-        break;
+    case CommandExecutionType::Insert: InsertCommandText(text); break;
+    case CommandExecutionType::Append: AddCommandText(text); break;
     }
 }
 
@@ -325,45 +309,45 @@ void CommandSystemLocal::BufferCommandText(CommandExecutionType type, const Stri
 // --------------------------------
 void CommandSystemLocal::ExecuteCommandBuffer()
 {
-    if (command_buffer.empty())
+    if (m_commandBuffer.empty())
         return;
 
-    if (wait_counter > 0) {
-        wait_counter--;
+    if (m_waitCounter > 0) {
+        m_waitCounter--;
         return;
     }
 
-    ExecuteCommandText(command_buffer.front());
-    command_buffer.pop_front();
+    ExecuteCommandText(m_commandBuffer.front());
+    m_commandBuffer.pop_front();
 }
 
 // ================================
-// commands
+// m_commands
 // ================================
 
 class Command_cmdlist final : public IConsoleCommand {
 public:
-    void Execute(std::vector<String> args) {}
+    void Execute(std::vector<String> args) override {}
 };
 
 class Command_exec final : public IConsoleCommand {
 public:
-    void Execute(std::vector<String> args) {}
+    void Execute(std::vector<String> args) override {}
 };
 
 class Command_vstr final : public IConsoleCommand {
 public:
-    void Execute(std::vector<String> args) {}
+    void Execute(std::vector<String> args) override {}
 };
 
 class Command_wait final : public IConsoleCommand {
 public:
-    void Execute(std::vector<String> args)
+    void Execute(const std::vector<String> args) override
     {
         if (args.size() != 1)
             return;
 
-        command_system->SetWaitCounter(std::stol(args[0]));
+        commandSystem->SetWaitCounter(std::stol(args[0]));
     }
 };
 

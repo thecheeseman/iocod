@@ -23,77 +23,77 @@ namespace iocod {
 #endif
 
 enum class PlatformArchitecture {
-    x86,
-    x86_64,
-    arm32,
-    arm64
+    X86,
+    X86_64,
+    Arm32,
+    Arm64
 };
 
 #if defined(__i386__) || defined(_M_IX86)
-    #define IOCOD_ARCH_I386
-    inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::x86;
-    inline constexpr const char* platform_arch_string = "x86";
+    #define IOCOD_ARCH_X86
+    inline constexpr PlatformArchitecture kPlatformArch = PlatformArchitecture::X86;
+    inline constexpr const char* kPlatformArchString = "x86";
 #elif defined(__x86_64__) || defined(_M_AMD64)
-    #define IOCOD_ARCH_AMD64
-    inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::x86_64;
-    inline constexpr const char* platform_arch_string = "x86_64";
+    #define IOCOD_ARCH_X86_64
+    inline constexpr PlatformArchitecture kPlatformArch = PlatformArchitecture::X86_64;
+    inline constexpr const char* kPlatformArchString = "x86_64";
 #elif defined(__arm__)
     #if defined(__arm64__) || defined(__aarch64__)
         #define IOCOD_ARCH_ARM64
-        inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::arm64;
-        inline constexpr const char* platform_arch_string = "arm64";
+        inline constexpr PlatformArchitecture kPlatformArch = PlatformArchitecture::Arm64;
+        inline constexpr const char* kPlatformArchString = "arm64";
     #else
         #define IOCOD_ARCH_ARM
-        inline constexpr PlatformArchitecture platform_arch = PlatformArchitecture::arm32;
-        inline constexpr const char* platform_arch_string = "arm32";
+        inline constexpr PlatformArchitecture kPlatformArch = PlatformArchitecture::Arm32;
+        inline constexpr const char* kPlatformArchString = "arm32";
     #endif
 #else
     #error "Unknown or unsupported architecture"
 #endif
 
-enum class PlatformOS {
+enum class Platform {
     Windows,
     Linux,
-    MacOS
+    Darwin
 };
 
 #ifdef _WIN32
     #define IOCOD_OS_WINDOWS
-    inline constexpr PlatformOS platform_os = PlatformOS::Windows;
+    inline constexpr Platform kPlatform = Platform::Windows;
 
     #ifdef IOCOD_ARCH_AMD64
-        inline constexpr const char* platform_os_string = "windows64";
+        inline constexpr const char* kPlatformString = "windows64";
     #else
-        inline constexpr const char* platform_os_string = "windows32";
+        inline constexpr const char* kPlatformString = "windows32";
     #endif
 
-    inline constexpr const char* platform_dll_extension = ".dll";
-    inline constexpr const char* platform_exe_extension = ".exe";
-    inline constexpr const char* platform_path_separator = "\\";
-    inline constexpr const char* platform_newline = "\r\n";
+    inline constexpr const char* kPlatformDllExtension = ".dll";
+    inline constexpr const char* kPlatformExeExtension = ".exe";
+    inline constexpr const char* kPlatformPathSeparator = "\\";
+    inline constexpr const char* kPlatformNewline = "\r\n";
 #elif defined(__linux__)
     #define IOCOD_OS_LINUX
-    inline constexpr PlatformOS platform_os = PlatformOS::Linux;
+    inline constexpr Platform kPlatform = Platform::Linux;
 
     #ifdef IOCOD_ARCH_AMD64
-        inline constexpr const char* platform_os_string = "linux64";
+        inline constexpr const char* kPlatformString = "linux64";
     #else
-        inline constexpr const char* platform_os_string = "linux32";
+        inline constexpr const char* kPlatformString = "linux32";
     #endif
 
-    inline constexpr const char* platform_dll_extension = ".so";
-    inline constexpr const char* platform_exe_extension = "";
-    inline constexpr const char* platform_path_separator = "/";
-    inline constexpr const char* platform_newline = "\n";
+    inline constexpr const char* kPlatformDllExtension = ".so";
+    inline constexpr const char* kPlatformExeExtension = "";
+    inline constexpr const char* kPlatformPathSeparator = "/";
+    inline constexpr const char* kPlatformNewline = "\n";
 #elif defined(__APPLE__)
-    #define IOCOD_OS_MACOS
-    inline constexpr PlatformOS platform_os = PlatformOS::MacOS;
-    inline constexpr const char* platform_os_string = "macos64";
+    #define IOCOD_OS_DARWIN
+    inline constexpr Platform kPlatform = Platform::Darwin;
+    inline constexpr const char* kPlatformString = "macos64";
 
-    inline constexpr const char* platform_dll_extension = ".dylib";
-    inline constexpr const char* platform_exe_extension = "";
-    inline constexpr const char* platform_path_separator = "/";
-    inline constexpr const char* platform_newline = "\n";
+    inline constexpr const char* kPlatformDllExtension = ".dylib";
+    inline constexpr const char* kPlatformExeExtension = "";
+    inline constexpr const char* kPlatformPathSeparator = "/";
+    inline constexpr const char* kPlatformNewline = "\n";
 #else
     #error "Unknown or unsupported operating system"
 #endif
@@ -106,10 +106,10 @@ enum class PlatformCompiler {
 
 #ifdef _MSC_VER
     #define IOCOD_COMPILER_MSVC
-    inline constexpr PlatformCompiler platform_compiler = PlatformCompiler::MSVC;
-    inline constexpr const char* platform_compiler_string = "msvc";
+    inline constexpr PlatformCompiler kPlatformCompiler = PlatformCompiler::MSVC;
+    inline constexpr const char* kPlatformCompilerString = "msvc";
 
-    inline constexpr int platform_compiler_version =
+    inline constexpr int kPlatformCompilerVersion =
         VersionEncode((_MSC_FULL_VER / 10000000), (_MSC_FULL_VER % 10000000) / 100000,
                       (_MSC_FULL_VER % 100000) / 100);
 
@@ -129,15 +129,15 @@ enum class PlatformCompiler {
 #elif defined(__GNUC__)
     #ifdef __clang__
         #define IOCOD_COMPILER_CLANG
-        inline constexpr PlatformCompiler platform_compiler = PlatformCompiler::Clang;
-        inline constexpr const char* platform_compiler_string = "clang";
+        inline constexpr PlatformCompiler kPlatformCompiler = PlatformCompiler::Clang;
+        inline constexpr const char* kPlatformCompilerString = "clang";
     #else
         #define IOCOD_COMPILER_GCC
-        inline constexpr PlatformCompiler platform_compiler = PlatformCompiler::GCC;
-        inline constexpr const char* platform_compiler_string = "gcc";
+        inline constexpr PlatformCompiler kPlatformCompiler = PlatformCompiler::GCC;
+        inline constexpr const char* kPlatformCompilerString = "gcc";
     #endif
 
-    inline constexpr int platform_compiler_version =
+    inline constexpr int kPlatformCompilerVersion =
         VersionEncode(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 
     #define IOCOD_LOCAL              __attribute__((visibility("hidden")))
@@ -158,9 +158,9 @@ enum class PlatformCompiler {
 #endif
 
 #ifdef IOCOD_DEBUG
-    inline constexpr bool debug_build = true;
+    inline constexpr bool kDebugBuild = true;
 #else
-    inline constexpr bool debug_build = false;
+    inline constexpr bool kDebugBuild = false;
 #endif
 
 // clang-format on

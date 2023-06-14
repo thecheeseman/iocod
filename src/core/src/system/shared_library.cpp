@@ -16,9 +16,9 @@ namespace iocod {
 // --------------------------------
 // SharedLibrary::SharedLibrary
 // --------------------------------
-SharedLibrary::SharedLibrary(const std::filesystem::path& library_path) noexcept
+SharedLibrary::SharedLibrary(const std::filesystem::path& libraryPath) noexcept
 {
-    Load(library_path);
+    Load(libraryPath);
 }
 
 SharedLibrary::~SharedLibrary()
@@ -34,12 +34,12 @@ SharedLibrary::SharedLibrary(SharedLibrary&& other) noexcept
 
 SharedLibrary& SharedLibrary::operator=(SharedLibrary&& other) noexcept
 {
-    handle = other.handle;
-    loaded = other.loaded;
-    path = std::move(other.path);
+    m_handle = other.m_handle;
+    m_loaded = other.m_loaded;
+    m_path = std::move(other.m_path);
 
-    other.handle = nullptr;
-    other.loaded = false;
+    other.m_handle = nullptr;
+    other.m_loaded = false;
 
     return *this;
 }
@@ -49,29 +49,29 @@ SharedLibrary& SharedLibrary::operator=(SharedLibrary&& other) noexcept
 // --------------------------------
 bool SharedLibrary::Loaded() const noexcept
 {
-    return loaded;
+    return m_loaded;
 }
 
 // --------------------------------
 // SharedLibrary::Load
 // --------------------------------
-bool SharedLibrary::Load(const std::filesystem::path& library_path) noexcept
+bool SharedLibrary::Load(const std::filesystem::path& libraryPath) noexcept
 {
     if (Loaded())
         Unload();
 
-    path = library_path;
-    loaded = false;
+    m_path = libraryPath;
+    m_loaded = false;
 
 #ifdef _WIN32
     // TODO: support wide strings
-    handle = LoadLibraryA(library_path.string().c_str());
+    m_handle = LoadLibraryA(libraryPath.string().c_str());
 #else
-    handle = dlopen(library_path.c_str(), RTLD_LAZY);
+    m_handle = dlopen(libraryPath.c_str(), RTLD_LAZY);
 #endif
 
-    if (handle == nullptr) {
-        String message = "Failed to load library '" + library_path.string() + "': ";
+    if (m_handle == nullptr) {
+        String message = "Failed to load library '" + libraryPath.string() + "': ";
 
 #ifdef _WIN32
         LPSTR buffer = nullptr;
@@ -86,10 +86,10 @@ bool SharedLibrary::Load(const std::filesystem::path& library_path) noexcept
 
         SetLastErrorMessage(message);
     } else {
-        loaded = true;
+        m_loaded = true;
     }
 
-    return loaded;
+    return m_loaded;
 }
 
 // --------------------------------
@@ -101,13 +101,13 @@ void SharedLibrary::Unload() noexcept
         return;
 
 #ifdef _WIN32
-    FreeLibrary(static_cast<HMODULE>(handle));
+    FreeLibrary(static_cast<HMODULE>(m_handle));
 #else
-    dlclose(handle);
+    dlclose(m_handle);
 #endif
 
-    handle = nullptr;
-    loaded = false;
+    m_handle = nullptr;
+    m_loaded = false;
 }
 
 // --------------------------------
@@ -122,14 +122,14 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
     }
 
 #ifdef _WIN32
-    void* addr = GetProcAddress(static_cast<HMODULE>(handle), symbol);
+    auto address = static_cast<void*>(GetProcAddress(static_cast<HMODULE>(m_handle), symbol));
 #else
-    void* addr = dlsym(handle, symbol.c_str());
+    auto address = dlsym(m_handle, symbol.c_str());
 #endif
 
-    if (addr == nullptr) {
+    if (address == nullptr) {
         String message = "Failed to load symbol '" + String(symbol) + "' from library '" +
-                              path.string() + "': ";
+                              m_path.string() + "': ";
 
 #ifdef _WIN32
         LPSTR buffer = nullptr;
@@ -146,8 +146,8 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
         return nullptr;
     }
 
-    SetLastErrorMessage("");
-    return addr;
+    m_lastError.clear();
+    return address;
 }
 
 } // namespace iocod

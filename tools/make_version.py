@@ -85,76 +85,76 @@ namespace iocod {
 
 """)
 
-    f.write('inline constexpr int version_major = %d;\n' % int(major))
-    f.write('inline constexpr int version_minor = %d;\n' % int(minor))
-    f.write('inline constexpr int version_patch = %d;\n\n' % int(patch))
+    f.write('inline constexpr int kVersionMajor = %d;\n' % int(major))
+    f.write('inline constexpr int kVersionMinor = %d;\n' % int(minor))
+    f.write('inline constexpr int kVersionPatch = %d;\n\n' % int(patch))
 
     f.write('// optional pre-release and build metadata, if any\n')
     if prerelease is not None:
-        f.write('inline constexpr const char* version_prerelease = "%s";\n' % prerelease)
+        f.write('inline constexpr const char* kVersionPrerelease = "%s";\n' % prerelease)
     else:
-        f.write('//inline constexpr const char* version_prerelease = "";\n')
+        f.write('//inline constexpr const char* kVersionPrerelease = "";\n')
     if buildmetadata is not None:
-        f.write('inline constexpr const char* version_build_metadata = "%s";\n\n' % buildmetadata)
+        f.write('inline constexpr const char* kVersionBuildMetadata = "%s";\n\n' % buildmetadata)
     else:
-        f.write('//inline constexpr const char* version_build_metadata = "";\n\n')
+        f.write('//inline constexpr const char* kVersionBuildMetadata = "";\n\n')
 
     f.write('// last git commit information, if built from git repo\n')
     if commithash is not None:
-        f.write('inline constexpr const char* version_git_commit_hash = "%s";\n' % commithash)
+        f.write('inline constexpr const char* kVersionGitCommitHash = "%s";\n' % commithash)
     else:
-        f.write('//inline constexpr const char* version_git_commit_hash = "";\n')
+        f.write('//inline constexpr const char* kVersionGitCommitHash = "";\n')
     if branch is not None:
-        f.write('inline constexpr const char* version_git_branch = "%s";\n' % branch)
+        f.write('inline constexpr const char* kVersionGitBranch = "%s";\n' % branch)
     else:
-        f.write('//inline constexpr const char* version_git_branch = "";\n')
+        f.write('//inline constexpr const char* kVersionGitBranch = "";\n')
 
     if commits is not None:
-        f.write('inline constexpr int version_git_commits = %s;\n\n' % int(commits))
+        f.write('inline constexpr int kVersionGitCommits = %s;\n\n' % int(commits))
     else:
-        f.write('//inline constexpr int version_git_commits = 0;\n\n')
+        f.write('//inline constexpr int kVersionGitCommits = 0;\n\n')
 
     f.write('// major.minor.patch\n')
-    f.write('inline constexpr const char* version_string = "%s.%s.%s";\n\n' % (major, minor, patch))
+    f.write('inline constexpr const char* kVersionString = "%s.%s.%s";\n\n' % (major, minor, patch))
 
     f.write('// major.minor.patch(-prerelease)(+buildmetadata)\n')
     if prerelease is not None:
         if buildmetadata is not None:
-            f.write('inline constexpr const char* version_string_full = "%s.%s.%s-%s+%s";\n\n' % (major, minor, patch, prerelease, buildmetadata))
+            f.write('inline constexpr const char* kVersionStringFull = "%s.%s.%s-%s+%s";\n\n' % (major, minor, patch, prerelease, buildmetadata))
         else:
-            f.write('inline constexpr const char* version_string_full = "%s.%s.%s-%s";\n\n' % (major, minor, patch, prerelease))
+            f.write('inline constexpr const char* kVersionStringFull = "%s.%s.%s-%s";\n\n' % (major, minor, patch, prerelease))
     else:
-        f.write('inline constexpr const char* version_string_full = "%s.%s.%s";\n\n' % (major, minor, patch))
+        f.write('inline constexpr const char* kVersionStringFull = "%s.%s.%s";\n\n' % (major, minor, patch))
 
     f.write('// build commits (branch-commithash)\n')
     if commits is not None and commithash is not None and branch is not None:
-        f.write('inline constexpr const char* version_build = "build %s (%s-%s)";\n\n' % (commits, branch, commithash))
+        f.write('inline constexpr const char* kVersionBuild = "build %s (%s-%s)";\n\n' % (commits, branch, commithash))
     else:
-        f.write('inline constexpr const char* version_build = "";\n\n')
+        f.write('inline constexpr const char* kVersionBuild = "";\n\n')
 
     f.write(
 """// version encoding utilities
-inline constexpr int version_major_multiplier = 1000000;
-inline constexpr int version_minor_multiplier = 1000;
+inline constexpr int kVersionMajorMultiplier = 1000000;
+inline constexpr int kVersionMinorMultiplier = 1000;
 
-inline constexpr int VersionEncode(int major, int minor, int patch)
+constexpr int VersionEncode(const int major, const int minor, const int patch)
 {
-    return (major * version_major_multiplier) + (minor * version_minor_multiplier) + patch;
+    return (major * kVersionMajorMultiplier) + (minor * kVersionMinorMultiplier) + patch;
 }
 
-inline constexpr int VersionDecodeMajor(int version)
+constexpr int VersionDecodeMajor(const int version)
 {
-    return version / version_major_multiplier;
+    return version / kVersionMajorMultiplier;
 }
 
-inline constexpr int VersionDecodeMinor(int version)
+constexpr int VersionDecodeMinor(const int version)
 {
-    return (version % version_major_multiplier) / version_minor_multiplier;
+    return (version % kVersionMajorMultiplier) / kVersionMinorMultiplier;
 }
 
-inline constexpr int VersionDecodePatch(int version)
+constexpr int VersionDecodePatch(const int version)
 {
-    return version % version_minor_multiplier;
+    return version % kVersionMinorMultiplier;
 }
 
 } // namespace iocod

@@ -11,7 +11,7 @@ if (BUILD_TESTS)
 endif()
 
 # don't build shared lib for Catch2 
-set(BUILD_SHARED_LIBS TRUE)
+#set(BUILD_SHARED_LIBS TRUE)
 
 message(STATUS "Configuring fmt")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
@@ -29,6 +29,6 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 add_subdirectory("miniz")
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 
-set(BUILD_SHARED_LIBS OFF)
+#set(BUILD_SHARED_LIBS OFF)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)

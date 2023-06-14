@@ -10,50 +10,50 @@
 
 namespace iocod {
 
-inline constexpr int version_major = 0;
-inline constexpr int version_minor = 1;
-inline constexpr int version_patch = 0;
+inline constexpr int kVersionMajor = 0;
+inline constexpr int kVersionMinor = 1;
+inline constexpr int kVersionPatch = 0;
 
 // optional pre-release and build metadata, if any
-//inline constexpr const char* version_prerelease = "";
-//inline constexpr const char* version_build_metadata = "";
+//inline constexpr const char* kVersionPrerelease = "";
+//inline constexpr const char* kVersionBuildMetadata = "";
 
 // last git commit information, if built from git repo
-inline constexpr const char* version_git_commit_hash = "1c9413d";
-inline constexpr const char* version_git_branch = "new-dev";
-inline constexpr int version_git_commits = 51;
+inline constexpr const char* kVersionGitCommitHash = "4e57e39";
+inline constexpr const char* kVersionGitBranch = "new-dev";
+inline constexpr int kVersionGitCommits = 52;
 
 // major.minor.patch
-inline constexpr const char* version_string = "0.1.0";
+inline constexpr const char* kVersionString = "0.1.0";
 
 // major.minor.patch(-prerelease)(+buildmetadata)
-inline constexpr const char* version_string_full = "0.1.0";
+inline constexpr const char* kVersionStringFull = "0.1.0";
 
 // build commits (branch-commithash)
-inline constexpr const char* version_build = "build 51 (new-dev-1c9413d)";
+inline constexpr const char* kVersionBuild = "build 52 (new-dev-4e57e39)";
 
 // version encoding utilities
-inline constexpr int version_major_multiplier = 1000000;
-inline constexpr int version_minor_multiplier = 1000;
+inline constexpr int kVersionMajorMultiplier = 1000000;
+inline constexpr int kVersionMinorMultiplier = 1000;
 
-inline constexpr int VersionEncode(int major, int minor, int patch)
+constexpr int VersionEncode(const int major, const int minor, const int patch)
 {
-    return (major * version_major_multiplier) + (minor * version_minor_multiplier) + patch;
+    return (major * kVersionMajorMultiplier) + (minor * kVersionMinorMultiplier) + patch;
 }
 
-inline constexpr int VersionDecodeMajor(int version)
+constexpr int VersionDecodeMajor(const int version)
 {
-    return version / version_major_multiplier;
+    return version / kVersionMajorMultiplier;
 }
 
-inline constexpr int VersionDecodeMinor(int version)
+constexpr int VersionDecodeMinor(const int version)
 {
-    return (version % version_major_multiplier) / version_minor_multiplier;
+    return (version % kVersionMajorMultiplier) / kVersionMinorMultiplier;
 }
 
-inline constexpr int VersionDecodePatch(int version)
+constexpr int VersionDecodePatch(const int version)
 {
-    return version % version_minor_multiplier;
+    return version % kVersionMinorMultiplier;
 }
 
 } // namespace iocod

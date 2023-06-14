@@ -20,7 +20,7 @@
 
 /// Report an assertion failure.
 #define IOCOD_REPORT_ASSERTION_FAILURE(...) \
-    iocod::detail::iocod_report_assertion_failure(__FILE__, __LINE__, __func__, #__VA_ARGS__)
+    iocod::detail::ReportAssertionFailure(__FILE__, __LINE__, __func__, #__VA_ARGS__)
 
 /// @def IOCOD_ASSERT
 /// @brief Asserts that the given expression is true.
@@ -48,8 +48,8 @@ namespace iocod::detail {
 /// @param[in] line Line where the assertion failed.
 /// @param[in] function Function where the assertion failed.
 /// @param[in] message Message to report.
-void iocod_report_assertion_failure(const char* filename, int line, const char* function,
-                                    const char* message);
+void ReportAssertionFailure(const char* filename, int line, const char* function,
+                            const char* message);
 
 } // namespace iocod::detail
 

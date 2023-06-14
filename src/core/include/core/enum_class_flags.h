@@ -17,60 +17,60 @@ struct EnumFlag {
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, E> operator|(E lhs, E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    return static_cast<E>(static_cast<ut>(lhs) | static_cast<ut>(rhs));
+    using Type = std::underlying_type_t<E>;
+    return static_cast<E>(static_cast<Type>(lhs) | static_cast<Type>(rhs));
 }
 
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, E> operator&(E lhs, E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    return static_cast<E>(static_cast<ut>(lhs) & static_cast<ut>(rhs));
+    using Type = std::underlying_type_t<E>;
+    return static_cast<E>(static_cast<Type>(lhs) & static_cast<Type>(rhs));
 }
 
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, E> operator^(E lhs, E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    return static_cast<E>(static_cast<ut>(lhs) ^ static_cast<ut>(rhs));
+    using Type = std::underlying_type_t<E>;
+    return static_cast<E>(static_cast<Type>(lhs) ^ static_cast<Type>(rhs));
 }
 
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, E> operator~(E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    return static_cast<E>(~static_cast<ut>(rhs));
+    using Type = std::underlying_type_t<E>;
+    return static_cast<E>(~static_cast<Type>(rhs));
 }
 
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, E&> operator|=(E& lhs, E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    lhs = static_cast<E>(static_cast<ut>(lhs) | static_cast<ut>(rhs));
+    using Type = std::underlying_type_t<E>;
+    lhs = static_cast<E>(static_cast<Type>(lhs) | static_cast<Type>(rhs));
     return lhs;
 }
 
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, E&> operator&=(E& lhs, E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    lhs = static_cast<E>(static_cast<ut>(lhs) & static_cast<ut>(rhs));
+    using Type = std::underlying_type_t<E>;
+    lhs = static_cast<E>(static_cast<Type>(lhs) & static_cast<Type>(rhs));
     return lhs;
 }
 
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, E&> operator^=(E& lhs, E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    lhs = static_cast<E>(static_cast<ut>(lhs) ^ static_cast<ut>(rhs));
+    using Type = std::underlying_type_t<E>;
+    lhs = static_cast<E>(static_cast<Type>(lhs) ^ static_cast<Type>(rhs));
     return lhs;
 }
 
 template <typename E>
 typename std::enable_if_t<EnumFlag<E>::enabled, bool> HasEnumFlag(E lhs, E rhs)
 {
-    using ut = std::underlying_type_t<E>;
-    return (static_cast<ut>(lhs) & static_cast<ut>(rhs)) != 0;
+    using Type = std::underlying_type_t<E>;
+    return (static_cast<Type>(lhs) & static_cast<Type>(rhs)) != 0;
 }
 
 #define ENUM_CLASS_FLAGS(Type)                \

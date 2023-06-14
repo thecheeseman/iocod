@@ -22,26 +22,26 @@ public:
     SharedLibrary& operator=(const SharedLibrary&) = delete;
 
     /// @brief Construct a new Shared Library object. Automatically loads the library.
-    /// @param[in] library_path path to the shared library
-    explicit SharedLibrary(const std::filesystem::path& library_path) noexcept;
+    /// @param[in] libraryPath m_path to the shared library
+    explicit SharedLibrary(const std::filesystem::path& libraryPath) noexcept;
 
     /// @brief Load the library.
-    /// @param[in] library_path path to the shared library
-    /// @return true if the library was loaded successfully
-    bool Load(const std::filesystem::path& library_path) noexcept;
+    /// @param[in] libraryPath m_path to the shared library
+    /// @return true if the library was m_loaded successfully
+    bool Load(const std::filesystem::path& libraryPath) noexcept;
 
     /// @brief Unload the library.
     void Unload() noexcept;
 
-    /// @brief Check if the library is loaded.
-    /// @return true if the library is loaded
-    bool Loaded() const noexcept;
+    /// @brief Check if the library is m_loaded.
+    /// @return true if the library is m_loaded
+    [[nodiscard]] bool Loaded() const noexcept;
 
     /// @brief Get the last error, if any.
     /// @return const std::string last error
-    inline const String GetLastErrorMessage() const noexcept
+    [[nodiscard]] const String& GetLastErrorMessage() const noexcept
     {
-        return last_error;
+        return m_lastError;
     }
 
     // @brief Load a symbol from the library.
@@ -49,7 +49,7 @@ public:
     /// @param[in] name name of the symbol
     /// @return T symbol or nullptr if failed
     template <typename T>
-    inline T LoadSymbol(const String& name) noexcept
+    T LoadSymbol(const String& name) noexcept
     {
         return reinterpret_cast<T>(LoadVoidSymbol(name.c_str()));
     }
@@ -57,14 +57,14 @@ public:
     void* LoadVoidSymbol(const char* symbol) noexcept;
 
 private:
-    void* handle = nullptr;
-    bool loaded = false;
-    std::filesystem::path path{};
-    String last_error{};
+    void* m_handle = nullptr;
+    bool m_loaded = false;
+    std::filesystem::path m_path{};
+    String m_lastError{};
 
-    inline void SetLastErrorMessage(const String& error) noexcept
+    void SetLastErrorMessage(const String& error) noexcept
     {
-        last_error = error;
+        m_lastError = error;
     }
 };
 

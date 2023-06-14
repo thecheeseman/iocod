@@ -5,30 +5,95 @@
 #ifndef CORE_STRING_H
 #define CORE_STRING_H
 
+#include <core/assert.h>
 #include <core/platform.h>
 
 namespace iocod {
 
+class FString {
+public:
+    static inline constexpr std::size_t kBaseSize = 20;
+    static inline constexpr std::size_t kGranularity = 32;
+
+    FString() { Construct(); }
+    ~FString() { Free(); }
+
+    explicit FString(const char* text);
+
+    [[nodiscard]] std::size_t Size() const { return sizeof(*this) + Allocated(); }
+    [[nodiscard]] std::size_t Length() const { return m_length; }
+
+    [[nodiscard]] std::size_t Allocated() const
+    {
+        if (m_data != m_base)
+            return GetAllocated();
+
+        return 0;
+    }
+
+    void Clear();
+    [[nodiscard]] bool IsEmpty() const;
+
+    [[nodiscard]] const char* CStr() const { return m_data; }
+
+    [[nodiscard]] explicit operator const char*() { return CStr(); }
+    [[nodiscard]] explicit operator const char*() const { return CStr(); }
+
+    [[nodiscard]] char operator[](const std::size_t index)
+    {
+        Assert(index <= m_length);
+        return m_data[index];
+    }
+
+    [[nodiscard]] char operator[](const std::size_t index) const
+    {
+        Assert(index <= m_length);
+        return m_data[index];
+    }
+
+    void Reallocate(std::size_t amount, bool keepOld);
+    void Free();
+
+protected:
+    std::size_t m_length{0};
+    char* m_data{nullptr};
+    char m_base[kBaseSize]{};
+
+    void EnsureAllocated(std::size_t amount, bool keepOld = true);
+
+private:
+    void Construct();
+
+    std::size_t m_allocated{0};
+
+    [[nodiscard]] std::size_t GetAllocated() const { return m_allocated; }
+    void SetAllocated(const std::size_t amount) { m_allocated = amount; }
+};
+
+//
+// string.h library replacements for all char types
+//
+
 template <typename T>
-struct is_char_type : std::false_type {};
+struct IsCharType : std::false_type {};
 
 template <>
-struct is_char_type<char> : std::true_type {};
+struct IsCharType<char> : std::true_type {};
 
 template <>
-struct is_char_type<wchar_t> : std::true_type {};
+struct IsCharType<wchar_t> : std::true_type {};
 
 template <>
-struct is_char_type<char8_t> : std::true_type {};
+struct IsCharType<char8_t> : std::true_type {};
 
 template <>
-struct is_char_type<char16_t> : std::true_type {};
+struct IsCharType<char16_t> : std::true_type {};
 
 template <>
-struct is_char_type<char32_t> : std::true_type {};
+struct IsCharType<char32_t> : std::true_type {};
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strcpy(CharT* dest, const CharT* src)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strcpy(CharT* dest, const CharT* src)
 {
     const CharT* s = src;
     CharT* d = dest;
@@ -38,8 +103,8 @@ IOCOD_EXPORT constexpr CharT* Strcpy(CharT* dest, const CharT* src)
     return dest;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strncpy(CharT* dest, const CharT* src, size_t n)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strncpy(CharT* dest, const CharT* src, size_t n)
 {
     const CharT* s = src;
     CharT* d = dest;
@@ -57,8 +122,8 @@ IOCOD_EXPORT constexpr CharT* Strncpy(CharT* dest, const CharT* src, size_t n)
     return dest;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strcat(CharT* dest, const CharT* src)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strcat(CharT* dest, const CharT* src)
 {
     const CharT* s = src;
     CharT* d = dest;
@@ -70,8 +135,8 @@ IOCOD_EXPORT constexpr CharT* Strcat(CharT* dest, const CharT* src)
     return dest;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strncat(CharT* dest, const CharT* src, size_t n)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strncat(CharT* dest, const CharT* src, size_t n)
 {
     const CharT* s = src;
     CharT* d = dest;
@@ -90,8 +155,8 @@ IOCOD_EXPORT constexpr CharT* Strncat(CharT* dest, const CharT* src, size_t n)
     return dest;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr size_t Strlen(const CharT* str)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr size_t Strlen(const CharT* str)
 {
 #if IOCOD_HAS_BUILTIN(__builtin_strlen)
     // don't think any __builtin_strlen implementations support other char types
@@ -108,8 +173,8 @@ IOCOD_EXPORT constexpr size_t Strlen(const CharT* str)
     return len - 1;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strend(const CharT* str)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strend(const CharT* str)
 {
     while (*str)
         ++str;
@@ -117,29 +182,29 @@ IOCOD_EXPORT constexpr CharT* Strend(const CharT* str)
     return const_cast<CharT*>(str);
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strdup(const CharT* str)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strdup(const CharT* str)
 {
     // TODO: custom memory allocators
     if (!str)
         return nullptr;
 
     const size_t len = Strlen(str);
-    char *const dup = new char[len + 1];
+    char* const dup = new char[len + 1];
 
     Strcpy(dup, str);
     return dup;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strdel(const CharT* str)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strdel(const CharT* str)
 {
     // TODO: custom memory allocators
     delete[] str;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strchr(const CharT* str, CharT c)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strchr(const CharT* str, CharT c)
 {
     do {
         if (*str == c)
@@ -149,8 +214,8 @@ IOCOD_EXPORT constexpr CharT* Strchr(const CharT* str, CharT c)
     return nullptr;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strnchr(const CharT* str, CharT c, size_t n)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strnchr(const CharT* str, CharT c, size_t n)
 {
     while (n-- > 0) {
         if (*str == c)
@@ -164,8 +229,8 @@ IOCOD_EXPORT constexpr CharT* Strnchr(const CharT* str, CharT c, size_t n)
     return nullptr;
 }
 
-template <typename CharT, typename = std::enable_if_t<is_char_type<CharT>::value>>
-IOCOD_EXPORT constexpr CharT* Strrchr(const CharT* str, CharT c)
+template <typename CharT, typename = std::enable_if_t<IsCharType<CharT>::value>>
+constexpr CharT* Strrchr(const CharT* str, CharT c)
 {
     const CharT* found = nullptr;
     CharT current;

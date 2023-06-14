@@ -53,32 +53,32 @@ inline constexpr u64 GiB = 1024ull * MiB;
 inline constexpr u64 TB = 1000ull * GB;
 inline constexpr u64 TiB = 1024ull * GiB;
 
-consteval u64 operator"" _KB(u64 value)
+consteval u64 operator"" _KB(const u64 value)
 {
     return value * KB;
 }
 
-consteval u64 operator"" _KiB(u64 value)
+consteval u64 operator"" _KiB(const u64 value)
 {
     return value * KiB;
 }
 
-consteval u64 operator"" _MB(u64 value)
+consteval u64 operator"" _MB(const u64 value)
 {
     return value * MB;
 }
 
-consteval u64 operator"" _MiB(u64 value)
+consteval u64 operator"" _MiB(const u64 value)
 {
     return value * MiB;
 }
 
-consteval u64 operator"" _GB(u64 value)
+consteval u64 operator"" _GB(const u64 value)
 {
     return value * GB;
 }
 
-consteval u64 operator"" _GiB(u64 value)
+consteval u64 operator"" _GiB(const u64 value)
 {
     return value * GiB;
 }
@@ -137,7 +137,7 @@ constexpr T BytesToTB(T x)
     return (x >> 40);
 }
 
-consteval u8 Bit(u8 n)
+consteval u8 Bit(const u8 n)
 {
     return (1 << n);
 }

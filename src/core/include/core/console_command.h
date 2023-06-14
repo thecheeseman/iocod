@@ -6,6 +6,7 @@
 #define CORE_CONSOLE_COMMAND_H
 
 #include <core/types.h>
+#include <core/class_non_copyable.h>
 #include <vector>
 
 namespace iocod {
@@ -13,7 +14,9 @@ namespace iocod {
 /// @brief Interface for console commands.
 class IConsoleCommand {
 public:
+    IConsoleCommand() = default;
     virtual ~IConsoleCommand() = default;
+    CLASS_NON_COPYABLE(IConsoleCommand)
 
     virtual void Execute(std::vector<String> args) = 0;
 };

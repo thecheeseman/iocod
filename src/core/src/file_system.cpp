@@ -357,11 +357,11 @@ public:
 
 void FileSystemLocal::AddDelayedCommands() noexcept
 {
-    command_system->AddCommand("path", std::make_unique<Command_path>());
-    command_system->AddCommand("fullpath", std::make_unique<Command_fullpath>());
-    command_system->AddCommand("dir", std::make_unique<Command_dir>());
-    command_system->AddCommand("fdir", std::make_unique<Command_fdir>());
-    command_system->AddCommand("touchfile", std::make_unique<Command_touchfile>());
+    commandSystem->AddCommand("path", std::make_unique<Command_path>());
+    commandSystem->AddCommand("fullpath", std::make_unique<Command_fullpath>());
+    commandSystem->AddCommand("dir", std::make_unique<Command_dir>());
+    commandSystem->AddCommand("fdir", std::make_unique<Command_fdir>());
+    commandSystem->AddCommand("touchfile", std::make_unique<Command_touchfile>());
 }
 
 // --------------------------------
@@ -369,7 +369,7 @@ void FileSystemLocal::AddDelayedCommands() noexcept
 // --------------------------------
 void FileSystemLocal::AddCommands() noexcept
 {
-    command_system->AddRegisterCallback(AddDelayedCommands);
+    commandSystem->AddRegisterCallback(AddDelayedCommands);
 }
 
 // --------------------------------
@@ -377,11 +377,11 @@ void FileSystemLocal::AddCommands() noexcept
 // --------------------------------
 void FileSystemLocal::RemoveCommands() noexcept
 {
-    command_system->RemoveCommand("path");
-    command_system->RemoveCommand("fullpath");
-    command_system->RemoveCommand("dir");
-    command_system->RemoveCommand("fdir");
-    command_system->RemoveCommand("touchfile");
+    commandSystem->RemoveCommand("path");
+    commandSystem->RemoveCommand("fullpath");
+    commandSystem->RemoveCommand("dir");
+    commandSystem->RemoveCommand("fdir");
+    commandSystem->RemoveCommand("touchfile");
 }
 
 // ============================================================================

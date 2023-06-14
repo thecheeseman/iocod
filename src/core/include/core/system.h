@@ -56,7 +56,7 @@ public:
 
     virtual void PumpEvents() noexcept = 0;
 
-    virtual SystemInfo GetSystemInfo() = 0;
+    [[nodiscard]] virtual const SystemInfo& GetSystemInfo() const = 0;
     virtual void PrintSystemInfo() = 0;
 
     //
