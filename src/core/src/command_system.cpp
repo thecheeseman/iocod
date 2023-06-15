@@ -2,21 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <deque>
+#include <ranges>
+#include <vector>
 #include <core/case_insensitive_map.h>
 #include <core/command_system.h>
 #include <core/cvar_system.h>
 #include <core/string_utilities.h>
 #include <core/system.h>
-#include <deque>
 #include <fmt/format.h>
-#include <ranges>
-#include <vector>
+#include <regex>
 
 namespace iocod {
 
-namespace {
 std::vector<ICommandSystem::DelayedRegisterFunction> registerCallbacks{};
-} // namespace
 
 void ICommandSystem::AddRegisterCallback(const DelayedRegisterFunction function) noexcept
 {
@@ -38,7 +37,10 @@ public:
     void Initialize() override;
     void Shutdown() override;
 
-    [[nodiscard]] bool IsSystemActive() const noexcept override { return m_systemActive; }
+    [[nodiscard]] bool IsSystemActive() const noexcept override
+    {
+        return m_systemActive;
+    }
 
     [[nodiscard]] std::size_t Argc() const noexcept override;
     [[nodiscard]] String Argv(std::size_t index) const noexcept override;
@@ -48,7 +50,10 @@ public:
     bool AddCommand(const String& name, std::unique_ptr<IConsoleCommand> command) override;
     bool RemoveCommand(const String& name) override;
     [[nodiscard]] bool HasCommand(const String& name) const override;
-    [[nodiscard]] std::vector<String> GetCommandList() const override;
+    [[nodiscard]] std::map<String, String> GetCommandList() const override;
+
+    bool AddAlias(const String& command, const String& alias) override;
+    bool RemoveAlias(const String& alias) override;
 
     void TokenizeString(const String& text) override;
 
@@ -59,7 +64,10 @@ public:
     void BufferCommandText(CommandExecutionType type, const String& text) override;
     void ExecuteCommandBuffer() override;
 
-    void SetWaitCounter(const std::size_t count) noexcept override { m_waitCounter = count; }
+    void SetWaitCounter(const std::size_t count) noexcept override
+    {
+        m_waitCounter = count;
+    }
 
 private:
     bool m_systemActive = false;
@@ -71,6 +79,7 @@ private:
     std::vector<String> m_commandArgs;
 
     CaseInsensitiveMap<std::unique_ptr<IConsoleCommand>> m_commands;
+    CaseInsensitiveMap<String> m_aliases;
 
     void AddConsoleCommands();
 };
@@ -180,15 +189,64 @@ bool CommandSystemLocal::HasCommand(const String& name) const
 // --------------------------------
 // CommandSystemLocal::GetCommandList
 // --------------------------------
-std::vector<String> CommandSystemLocal::GetCommandList() const
+std::map<String, String> CommandSystemLocal::GetCommandList() const
 {
-    std::vector<String> list{};
+    std::map<String, String> list{};
 
-    list.reserve(m_commands.size());
-    for (const auto& name : std::views::keys(m_commands))
-        list.push_back(name);
+    for (const auto& name : std::views::keys(m_commands)) {
+        String aliases;
+        bool hasAliases = false;
+
+        for (const auto& [alias, command] : m_aliases) {
+            if (command == name) {
+                if (!hasAliases) {
+                    hasAliases = true;
+                    aliases += alias;
+                } else {
+                    aliases += ", " + alias;
+                }
+            }
+        }
+
+        list[name] = aliases;
+    }
 
     return list;
+}
+
+// --------------------------------
+// CommandSystemLocal::AddAlias
+// --------------------------------
+bool CommandSystemLocal::AddAlias(const String& command, const String& alias)
+{
+    if (m_aliases.contains(alias)) {
+        LogWarn("[CommandSystem] Alias '{}' already exists", alias);
+        return false;
+    }
+
+    if (m_aliases.contains(command)) {
+        LogWarn("[CommandSystem] Cannot alias '{}' to '{}', already exists", alias, command);
+        return false;
+    }
+
+    if (!m_commands.contains(command)) {
+        LogWarn("[CommandSystem] Cannot alias non-existent command '{}'", command);
+        return false;
+    }
+
+    m_aliases[alias] = command;
+    return true;
+}
+
+// --------------------------------
+// CommandSystemLocal::RemoveAlias
+// --------------------------------
+bool CommandSystemLocal::RemoveAlias(const String& alias)
+{
+    if (m_aliases.contains(alias))
+        m_aliases.erase(alias);
+
+    return true;
 }
 
 // --------------------------------
@@ -242,7 +300,7 @@ void CommandSystemLocal::AddCommandText(const String& text)
 {
     for (const auto lines = StringUtilities::Split(text, ";\n\r"); const auto& line : lines) {
         LogTrace("[CommandSystem] AddCommandText(\"{}\")", StringUtilities::Escape(line));
-        m_commandBuffer.push_front(line);
+        m_commandBuffer.push_back(line);
     }
 }
 
@@ -253,7 +311,7 @@ void CommandSystemLocal::InsertCommandText(const String& text)
 {
     for (const auto lines = StringUtilities::Split(text, ";\n\r"); const auto& line : lines) {
         LogTrace("[CommandSystem] InsertCommandText(\"{}\")", StringUtilities::Escape(line));
-        m_commandBuffer.push_back(line);
+        m_commandBuffer.push_front(line);
     }
 }
 
@@ -270,6 +328,10 @@ void CommandSystemLocal::ExecuteCommandText(const String& text)
         return;
 
     String cmd = Argv(0);
+
+    if (m_aliases.contains(cmd))
+        cmd = m_aliases[cmd];
+
     if (HasCommand(cmd)) {
         // TEMP: do better
         std::vector<String> args;
@@ -299,8 +361,12 @@ void CommandSystemLocal::BufferCommandText(const CommandExecutionType type, cons
         else
             ExecuteCommandBuffer();
         break;
-    case CommandExecutionType::Insert: InsertCommandText(text); break;
-    case CommandExecutionType::Append: AddCommandText(text); break;
+    case CommandExecutionType::Insert:
+        InsertCommandText(text);
+        break;
+    case CommandExecutionType::Append:
+        AddCommandText(text);
+        break;
     }
 }
 
@@ -325,22 +391,51 @@ void CommandSystemLocal::ExecuteCommandBuffer()
 // m_commands
 // ================================
 
-class Command_cmdlist final : public IConsoleCommand {
+class CommandCommandList final : public IConsoleCommand {
 public:
-    void Execute(std::vector<String> args) override {}
+    void Execute(const std::vector<String> args) override
+    {
+        std::regex match(".*");
+        if (!args.empty())
+            match = std::regex(args[0], std::regex_constants::icase);
+
+        size_t count = 0;
+        size_t matched = 0;
+        sys->Print("command                          aliases (if any)\n");
+        sys->Print("-------------------------------- --------------------------------\n");
+        for (const auto& [cmd, aliases] : commandSystem->GetCommandList()) {
+            count++;
+
+            if (!std::regex_match(cmd, match))
+                continue;
+
+            matched++;
+
+            sys->Print(fmt::format("{:<32} {}\n", cmd, aliases.empty() ? "" : aliases));
+        }
+        sys->Print("-----------------------------------------------------------------\n");
+        sys->Print(fmt::format("{} total commands", count));
+
+        if (!args.empty())
+            sys->Print(fmt::format(", {} matched '{}'\n", matched, args[0]));
+
+        sys->Print("\n");
+    }
 };
 
-class Command_exec final : public IConsoleCommand {
+class CommandExec final : public IConsoleCommand {
 public:
-    void Execute(std::vector<String> args) override {}
+    void Execute(std::vector<String> args) override
+    {}
 };
 
-class Command_vstr final : public IConsoleCommand {
+class CommandVstr final : public IConsoleCommand {
 public:
-    void Execute(std::vector<String> args) override {}
+    void Execute(std::vector<String> args) override
+    {}
 };
 
-class Command_wait final : public IConsoleCommand {
+class CommandWait final : public IConsoleCommand {
 public:
     void Execute(const std::vector<String> args) override
     {
@@ -356,10 +451,11 @@ public:
 // --------------------------------
 void CommandSystemLocal::AddConsoleCommands()
 {
-    AddCommand("cmdlist", std::make_unique<Command_cmdlist>());
-    AddCommand("exec", std::make_unique<Command_exec>());
-    AddCommand("vstr", std::make_unique<Command_vstr>());
-    AddCommand("wait", std::make_unique<Command_wait>());
+    AddCommand("commandlist", std::make_unique<CommandCommandList>());
+    AddAlias("commandlist", "cmdlist");
+    AddCommand("exec", std::make_unique<CommandExec>());
+    AddCommand("vstr", std::make_unique<CommandVstr>());
+    AddCommand("wait", std::make_unique<CommandWait>());
 }
 
 } // namespace iocod

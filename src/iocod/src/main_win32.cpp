@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <chrono>
+#include <core/command_system.h>
 #include <core/system.h>
 #include <windows.h>
 
@@ -14,18 +15,30 @@ int WINAPI WinMain(const HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevIn
 {
     using namespace iocod;
 
-    sys->Initialize();
+    sys->Initialize(hInstance);
+    commandSystem->Initialize();
 
     sys->DebugPrint("debug print example\n");
     sys->Print("hello there\n");
+
+    size_t times = 0;
+    auto test = [&times] {
+        times++;
+        for (int i = 0; i < 10000; ++i) {
+            sys->Print(fmt::format("{}: {}\n", times, i));
+        }
+    };
 
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
         sys->PumpEvents();
 
-        if (sys->GetConsoleInput() == "quit") {
-            break;
+        if (auto message = sys->GetConsoleInput(); !message.empty()) {
+            commandSystem->AddCommandText(message);
         }
+
+        commandSystem->ExecuteCommandBuffer();
+        sys->FlushConsole();
     }
 
     sys->Shutdown();

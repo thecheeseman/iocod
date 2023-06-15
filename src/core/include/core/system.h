@@ -48,6 +48,7 @@ public:
 
     virtual String GetConsoleInput() noexcept = 0;
     virtual void ClearConsole() noexcept = 0;
+    virtual void FlushConsole() = 0;
 
     virtual void Print(const String& message) noexcept = 0;
     virtual void DebugPrint(const String& message) noexcept = 0;

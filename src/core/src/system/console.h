@@ -112,6 +112,7 @@ void Shutdown();
 
 void Print(const String& message);
 void DebugPrint(const String& message);
+void Flush();
 void Clear();
 void Show(ConsoleVisLevel level, bool quitOnClose);
 void DisplayError(const String& message);
@@ -119,6 +120,8 @@ void DisplayError(const String& message);
 String GetInput();
 
 void PumpEvents();
+
+void WaitForQuit();
 
 } // namespace Console
 

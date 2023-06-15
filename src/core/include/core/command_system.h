@@ -8,6 +8,7 @@
 #include <core/class_non_copyable.h>
 #include <core/console_command.h>
 #include <core/platform.h>
+#include <map>
 #include <core/types.h>
 #include <memory>
 
@@ -38,7 +39,10 @@ public:
     virtual bool AddCommand(const String& name, std::unique_ptr<IConsoleCommand> command) = 0;
     virtual bool RemoveCommand(const String& name) = 0;
     [[nodiscard]] virtual bool HasCommand(const String& name) const = 0;
-    [[nodiscard]] virtual std::vector<String> GetCommandList() const = 0;
+    [[nodiscard]] virtual std::map<String, String> GetCommandList() const = 0;
+
+    virtual bool AddAlias(const String& command, const String& alias) = 0;
+    virtual bool RemoveAlias(const String& alias) = 0;
 
     virtual void TokenizeString(const String& text) = 0;
 

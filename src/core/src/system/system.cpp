@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "console.h"
-#include "system_info.h"
-
 #include <chrono>
 #include <core/command_system.h>
 #include <core/console_command.h>
@@ -12,9 +9,12 @@
 #include <core/types.h>
 #include <fmt/core.h>
 #include <spdlog/async.h>
+#include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
+
+#include "console.h"
+#include "system_info.h"
 
 namespace iocod {
 
@@ -60,6 +60,7 @@ public:
 
     String GetConsoleInput() noexcept override;
     void ClearConsole() noexcept override;
+    void FlushConsole() override;
 
     void Print(const String& message) noexcept override;
     void DebugPrint(const String& message) noexcept override;
@@ -102,13 +103,13 @@ void SystemLocal::Initialize(void* handle)
     // - ansicolor_stdout_sink_mt (on unix)
     // but it has different set_color behavior on windows vs unix
     const auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-#ifdef _WIN32
+    #ifdef _WIN32
     consoleSink->set_color(spdlog::level::trace, 5);
     consoleSink->set_color(spdlog::level::info, 7);
-#else
+    #else
     console_sink->set_color(spdlog::level::trace, console_sink->magenta);
     console_sink->set_color(spdlog::level::info, console_sink->white);
-#endif
+    #endif
 
     consoleSink->set_level(spdlog::level::trace);
     consoleSink->set_pattern("%^%v%$");
@@ -121,12 +122,18 @@ void SystemLocal::Initialize(void* handle)
     };
 
     const auto fileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-        "iocod.log", 8_MB, 3, false, handlers);
+        "iocod.log",
+        8_MB,
+        3,
+        false,
+        handlers);
     fileSink->set_level(spdlog::level::trace);
     fileSink->set_pattern("[%Y-%m-%d %T] [%L] %v");
 
     std::vector<spdlog::sink_ptr> sinks{consoleSink, fileSink};
-    logger = std::make_shared<spdlog::async_logger>("iocod", sinks.begin(), sinks.end(),
+    logger = std::make_shared<spdlog::async_logger>("iocod",
+                                                    sinks.begin(),
+                                                    sinks.end(),
                                                     spdlog::thread_pool(),
                                                     spdlog::async_overflow_policy::block);
 
@@ -180,6 +187,14 @@ void SystemLocal::ClearConsole() noexcept
 }
 
 // --------------------------------
+// SystemLocal::FlushConsole
+// --------------------------------
+void SystemLocal::FlushConsole()
+{
+    Console::Flush();
+}
+
+// --------------------------------
 // SystemLocal::Print
 // --------------------------------
 void SystemLocal::Print(const String& message) noexcept
@@ -206,10 +221,13 @@ void SystemLocal::DebugPrint(const String& message) noexcept
 // --------------------------------
 void SystemLocal::Error(const String& message) noexcept
 {
-    if (Console::Initialized())
+    if (Console::Initialized()) {
         Console::Print(message);
-    else
+        Console::DisplayError(message);
+        Console::WaitForQuit();
+    } else {
         (void) fprintf(stderr, "%s", message.c_str());
+    }
 
     Exit(1);
 }
@@ -295,7 +313,7 @@ void SystemLocal::PumpEvents() noexcept
 // commands
 // ================================
 
-class Command_echo final : public IConsoleCommand {
+class CommandEcho final : public IConsoleCommand {
 public:
     void Execute(const std::vector<String> args) override
     {
@@ -307,12 +325,15 @@ public:
     }
 };
 
-class Command_clear final : public IConsoleCommand {
+class CommandClear final : public IConsoleCommand {
 public:
-    void Execute(const std::vector<String> args) override { sys->ClearConsole(); }
+    void Execute(const std::vector<String> args) override
+    {
+        sys->ClearConsole();
+    }
 };
 
-class Command_quit final : public IConsoleCommand {
+class CommandQuit final : public IConsoleCommand {
 public:
     void Execute(const std::vector<String> args) override
     {
@@ -321,9 +342,12 @@ public:
     }
 };
 
-class Command_sysinfo final : public IConsoleCommand {
+class CommandSystemInfo final : public IConsoleCommand {
 private:
-    void Execute(const std::vector<String> args) override { sys->PrintSystemInfo(); }
+    void Execute(const std::vector<String> args) override
+    {
+        sys->PrintSystemInfo();
+    }
 };
 
 // --------------------------------
@@ -331,10 +355,16 @@ private:
 // --------------------------------
 void SystemLocal::AddConsoleCommands() noexcept
 {
-    commandSystem->AddCommand("echo", std::make_unique<Command_echo>());
-    commandSystem->AddCommand("clear", std::make_unique<Command_clear>());
-    commandSystem->AddCommand("quit", std::make_unique<Command_quit>());
-    commandSystem->AddCommand("sysinfo", std::make_unique<Command_sysinfo>());
+    commandSystem->AddCommand("echo", std::make_unique<CommandEcho>());
+    commandSystem->AddAlias("echo", "print");
+
+    commandSystem->AddCommand("clear", std::make_unique<CommandClear>());
+
+    commandSystem->AddCommand("quit", std::make_unique<CommandQuit>());
+    commandSystem->AddAlias("quit", "exit");
+
+    commandSystem->AddCommand("systeminfo", std::make_unique<CommandSystemInfo>());
+    commandSystem->AddAlias("systeminfo", "sysinfo");
 }
 
 } // namespace iocod
