@@ -8,6 +8,7 @@ set(CORE_SOURCES
     #cvar_system.cpp
     file_path.cpp
     file_system.cpp
+    memory.cpp
     plugin.cpp
     scoped_timer.cpp
     string.cpp

@@ -115,6 +115,7 @@ target_include_directories(iocod_includes INTERFACE
 target_precompile_headers(iocod_includes INTERFACE
     <core/platform.h>
     <core/types.h>
+    <core/memory.h>
 
     # STL
     <algorithm>

@@ -9,6 +9,8 @@ AlignOperands: false
 AlignTrailingComments: false
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
 AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: Yes
