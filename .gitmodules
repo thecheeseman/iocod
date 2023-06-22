@@ -2,18 +2,18 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-[submodule "external/expected-lite"]
-	path = external/expected-lite
+[submodule "External/expected-lite"]
+	path = External/expected-lite
 	url = https://github.com/martinmoene/expected-lite
-[submodule "external/fmt"]
-	path = external/fmt
+[submodule "External/fmt"]
+	path = External/fmt
 	url = https://github.com/fmtlib/fmt
-[submodule "external/json"]
-	path = external/json
+[submodule "External/json"]
+	path = External/json
 	url = https://github.com/nlohmann/json
-[submodule "external/Catch2"]
-	path = external/Catch2
+[submodule "External/Catch2"]
+	path = External/Catch2
 	url = https://github.com/catchorg/Catch2
-[submodule "external/spdlog"]
-	path = external/spdlog
+[submodule "External/spdlog"]
+	path = External/spdlog
 	url = https://github.com/gabime/spdlog
