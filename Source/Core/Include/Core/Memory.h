@@ -20,13 +20,13 @@ namespace Memory {
  * \param[in] location the location of the allocation
  * \return a pointer to the allocated memory or nullptr if the allocation failed
  */
-void* Alloc(std::size_t size, SourceLocation location = SourceLocation::Current());
+IOCOD_EXPORT constexpr void* Alloc(std::size_t size, SourceLocation location = SourceLocation::Current());
 
 /**
  * \brief Free memory allocated with Alloc.
  * \param[in] ptr a pointer to the memory to free
  */
-void Free(void* ptr);
+IOCOD_EXPORT constexpr void Free(void* ptr);
 
 } // namespace iocod::Memory
 

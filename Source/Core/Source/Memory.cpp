@@ -9,7 +9,7 @@ namespace iocod::Memory {
 
 constexpr std::size_t kAlignment = 16;
 
-void* Alloc(const std::size_t size, const SourceLocation location)
+constexpr void* Alloc(const std::size_t size, const SourceLocation location)
 {
     if (!size)
         return nullptr;
@@ -23,7 +23,7 @@ void* Alloc(const std::size_t size, const SourceLocation location)
     #endif
 }
 
-void Free(void* ptr)
+constexpr void Free(void* ptr)
 {
     if (!ptr)
         return;

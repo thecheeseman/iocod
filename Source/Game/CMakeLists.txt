@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: CC0-1.0
 
 set(GAME_SOURCES
-    game.cpp
+    Game.cpp
 )
-list(TRANSFORM GAME_SOURCES PREPEND "src/")
+list(TRANSFORM GAME_SOURCES PREPEND "Source/")
 
 #
 # Game library
@@ -15,7 +15,7 @@ add_dependencies(iocodGame iocodCore)
 target_link_libraries(iocodGame PRIVATE iocodOptions iocodWarnings iocodIncludes)
 target_link_libraries(iocodGame PRIVATE iocodCore)
 
-target_include_directories(iocodGame PRIVATE "src/" "include/")
+target_include_directories(iocodGame PRIVATE "Source/" "Include/")
 
 # remove the "lib" prefix from the library name
 set_target_properties(iocodGame PROPERTIES
