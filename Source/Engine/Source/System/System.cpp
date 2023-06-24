@@ -20,33 +20,33 @@ namespace iocod {
 
 std::shared_ptr<spdlog::logger> logger;
 
-void ISystem::LogTrace(const String& message)
+void ISystem::LogTrace(const String message)
 {
     logger->trace(message);
 }
 
-void ISystem::LogDebug(const String& message)
+void ISystem::LogDebug(const String message)
 {
     logger->debug(message);
 }
 
-void ISystem::LogInfo(const String& message)
+void ISystem::LogInfo(const String message)
 {
     logger->info(message);
 }
 
-void ISystem::LogWarn(const String& message)
+void ISystem::LogWarn(const String message)
 {
     logger->warn(message);
 }
 
-void ISystem::LogError(const String& message)
+void ISystem::LogError(const String message)
 {
     logger->error(message);
     sys->Exit(1);
 }
 
-void ISystem::LogErrorNoExit(const String& message)
+void ISystem::LogErrorNoExit(const String message)
 {
     logger->error(message);
 }
@@ -269,16 +269,16 @@ void SystemLocal::PrintSystemInfo()
             return fmt::format("{:g} TB", static_cast<double>(size / TB));
     };
 
-    if (!m_systemInfo.cpuVendor.empty())
+    if (!m_systemInfo.cpuVendor.Empty())
         output += "CPU Vendor: " + m_systemInfo.cpuVendor + "\n";
-    if (!m_systemInfo.cpuModel.empty())
+    if (!m_systemInfo.cpuModel.Empty())
         output += "CPU Model: " + m_systemInfo.cpuModel + "\n";
     if (m_systemInfo.cpuCores != 0)
-        output += "CPU Cores: " + std::to_string(m_systemInfo.cpuCores) + "\n";
+        output += "CPU Cores: " + String{m_systemInfo.cpuCores} + "\n";
     if (m_systemInfo.cpuThreads != 0)
-        output += "CPU Threads: " + std::to_string(m_systemInfo.cpuThreads) + "\n";
+        output += "CPU Threads: " + String{m_systemInfo.cpuThreads} + "\n";
     if (m_systemInfo.cpuMhz != 0.0f)
-        output += "CPU MHz: " + std::to_string(m_systemInfo.cpuMhz) + "\n";
+        output += "CPU MHz: " + String{m_systemInfo.cpuMhz} + "\n";
 
     if (m_systemInfo.memTotal != 0)
         output += "Memory Total: " + humanReadable(m_systemInfo.memTotal) + "\n";

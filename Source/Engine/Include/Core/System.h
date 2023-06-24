@@ -5,9 +5,8 @@
 #ifndef CORE_SYSTEM_H
 #define CORE_SYSTEM_H
 
-#include <string>
-#include <string_view>
 #include <Core/Platform.h>
+#include <Core/String.h>
 #include <Core/Types.h>
 #include <core/ClassNonCopyable.h>
 #include <fmt/format.h>
@@ -32,7 +31,7 @@ struct SystemInfo {
     u64 memPhysicalPeak{};
 };
 
-class ISystem {
+class IOCOD_API ISystem {
 public:
     ISystem() = default;
     virtual ~ISystem() = default;
@@ -62,48 +61,48 @@ public:
     virtual void PrintSystemInfo() = 0;
 
     //
-    static void LogTrace(const String& message);
-    static void LogDebug(const String& message);
-    static void LogInfo(const String& message);
-    static void LogWarn(const String& message);
-    static void LogError(const String& message);
-    static void LogErrorNoExit(const String& message);
+    static void LogTrace(String message);
+    static void LogDebug(String message);
+    static void LogInfo(String message);
+    static void LogWarn(String message);
+    static void LogError(String message);
+    static void LogErrorNoExit(String message);
 };
 
 extern ISystem* sys;
 
 template <typename... Args>
-inline void LogTrace(const std::string_view& format, Args&&... args)
+void LogTrace(const std::string_view& format, Args&&... args)
 {
     ISystem::LogTrace(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogDebug(const std::string_view& format, Args&&... args)
+void LogDebug(const std::string_view& format, Args&&... args)
 {
     ISystem::LogDebug(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogInfo(const std::string_view& format, Args&&... args)
+void LogInfo(const std::string_view& format, Args&&... args)
 {
     ISystem::LogInfo(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogWarn(const std::string_view& format, Args&&... args)
+void LogWarn(const std::string_view& format, Args&&... args)
 {
     ISystem::LogWarn(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogError(const std::string_view& format, Args&&... args)
+void LogError(const std::string_view& format, Args&&... args)
 {
     ISystem::LogError(fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));
 }
 
 template <typename... Args>
-inline void LogErrorNoExit(const std::string_view& format, Args&&... args)
+void LogErrorNoExit(const std::string_view& format, Args&&... args)
 {
     ISystem::LogErrorNoExit(
         fmt::vformat(format, fmt::make_format_args(std::forward<Args>(args)...)));

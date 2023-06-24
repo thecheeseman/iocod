@@ -506,11 +506,11 @@ void Flush()
 
     size_t length = 0;
     for (const auto& m : messageBuffer) {
-        length += m.length();
+        length += m.Length();
     }
 
     String message;
-    message.reserve(length);
+    message.Reserve(length);
     for (const auto& m : messageBuffer) {
         message += m;
     }
@@ -518,8 +518,8 @@ void Flush()
     OutputDebugStringA(message.c_str());
 
     const char* msg;
-    if (message.length() > kConsoleBufferSize - 1)
-        msg = message.c_str() + message.length() - kConsoleBufferSize + 1;
+    if (message.Length() > kConsoleBufferSize - 1)
+        msg = message.c_str() + message.Length() - kConsoleBufferSize + 1;
     else
         msg = message.c_str();
 

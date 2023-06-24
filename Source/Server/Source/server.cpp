@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <..\..\Core\Include\Core\Platform.h>
+#include <Core/Platform.h>
 #include <server/server.h>
 
 namespace iocod {

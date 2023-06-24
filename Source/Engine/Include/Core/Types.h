@@ -7,11 +7,10 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <string>
 
 namespace iocod {
 
-using String = std::string;
+class String;
 
 using u8 = uint8_t;
 using u16 = uint16_t;

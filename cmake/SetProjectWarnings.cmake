@@ -78,6 +78,9 @@ function(SetProjectWarnings _project_name)
         /w15233 # explicit lambda capture 'identifier' is not used
         /w15262 # implicit fall-through occurs here; are you missing a break statement?
         /w15263 # calling 'std::move' on a temporary object prevents copy elision
+
+        /w44710
+        /w44711
     )
 
     if (WARNINGS_AS_ERRORS)

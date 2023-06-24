@@ -20,7 +20,7 @@ enum class CommandExecutionType {
     Append
 };
 
-class ICommandSystem {
+class IOCOD_API ICommandSystem {
 public:
     ICommandSystem() = default;
     virtual ~ICommandSystem() = default;

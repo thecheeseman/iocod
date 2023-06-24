@@ -5,6 +5,10 @@
 #include <cstdlib>
 #include <core/memory.h>
 
+#ifdef IOCOD_OS_WINDOWS
+#include <crtdbg.h>
+#endif
+
 namespace iocod::Memory {
 
 constexpr std::size_t kAlignment = 16;

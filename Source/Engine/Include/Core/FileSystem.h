@@ -7,6 +7,7 @@
 
 #include <Core/Expected.h>
 #include <Core/Types.h>
+#include <Core/String.h>
 
 #include <filesystem>
 #include <vector>

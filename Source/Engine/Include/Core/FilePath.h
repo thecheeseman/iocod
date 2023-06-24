@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <Core/Assert.h>
 #include <Core/FixedString.h>
+#include <Core/String.h>
 #include <Core/Types.h>
 
 namespace iocod {
@@ -28,8 +29,8 @@ public:
 
     explicit FilePath(const String& path_)
     {
-        Assert(path_.length() <= MAX_PATH, "Path is too long");
-        std::copy(path_.begin(), path_.end(), path.data());
+        Assert(path_.Length() <= MAX_PATH, "Path is too long");
+        //std::copy(path_.begin(), path_.end(), path.data());
     }
 
 private:

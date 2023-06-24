@@ -46,7 +46,7 @@ enum class StringLanguage {
 
 inline constexpr int max_languages = 14;
 
-class StringReference {
+class IOCOD_API StringReference {
 public:
     constexpr StringReference() = default;
 

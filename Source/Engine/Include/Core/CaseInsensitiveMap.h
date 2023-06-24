@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cctype>
 #include <Core/Types.h>
+#include <Core/String.h>
 #include <unordered_map>
 
 namespace iocod {

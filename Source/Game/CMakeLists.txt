@@ -11,9 +11,9 @@ list(TRANSFORM GAME_SOURCES PREPEND "Source/")
 # Game library
 #
 add_library(iocodGame SHARED ${GAME_SOURCES})
-add_dependencies(iocodGame iocodCore)
+add_dependencies(iocodGame iocodEngine)
 target_link_libraries(iocodGame PRIVATE iocodOptions iocodWarnings iocodIncludes)
-target_link_libraries(iocodGame PRIVATE iocodCore)
+target_link_libraries(iocodGame PRIVATE iocodEngine)
 
 target_include_directories(iocodGame PRIVATE "Source/" "Include/")
 

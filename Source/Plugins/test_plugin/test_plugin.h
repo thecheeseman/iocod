@@ -5,7 +5,7 @@
 #ifndef TEST_PLUGIN_H
 #define TEST_PLUGIN_H
 
-#include <..\..\Core\Include\Core\Plugin.h>
+#include <Core/Plugin.h>
 
 #if 0
 

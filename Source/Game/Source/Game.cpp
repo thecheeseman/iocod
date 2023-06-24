@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <..\..\Core\Include\Core\Platform.h>
-#include <..\..\Core\Include\Core\System.h>
+#include <Core/Platform.h>
+#include <Core/System.h>
 #include <game/game.h>
 
 namespace iocod {

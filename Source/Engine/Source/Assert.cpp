@@ -7,8 +7,9 @@
     #include <windows.h>
 #endif
 
-#include <core/assert.h>
-#include <core/platform.h>
+#include <cstdio>
+#include <Core/Assert.h>
+#include <Core/Platform.h>
 
 namespace iocod::detail {
 

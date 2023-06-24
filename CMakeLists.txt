@@ -81,12 +81,17 @@ elseif (MSVC)
         /Zc:__STDC__                            # report the correct C standard
         /Zc:char8_t                             # enable char8_t, the new C++20 char type
     )
+
     target_link_options(iocodOptions INTERFACE
         $<$<CONFIG:Debug>:/DEBUG:FASTLINK>
 
         /DYNAMICBASE                            # enable ASLR
         /CETCOMPAT                              # enable CET
         /NXCOMPAT                               # enable DEP
+    )
+
+    target_compile_options(iocodOptions INTERFACE
+        -D_CRT_SECURE_NO_WARNINGS
     )
 endif()
 
@@ -101,10 +106,10 @@ SetProjectWarnings(iocodWarnings)
 #
 add_library(iocodIncludes INTERFACE)
 target_include_directories(iocodIncludes INTERFACE
-    "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/Source/core/include"
-    "${CMAKE_SOURCE_DIR}/Source/game/include"
-    "${STAGED_INSTALL_PREFIX}/include"
+    "${CMAKE_SOURCE_DIR}/Include"
+    "${CMAKE_SOURCE_DIR}/Source/Engine/Include"
+    "${CMAKE_SOURCE_DIR}/Source/Game/Include"
+    "${STAGED_INSTALL_PREFIX}/Include"
 
     # external
     "${CMAKE_SOURCE_DIR}/External/expected-lite/include"
@@ -121,7 +126,7 @@ target_precompile_headers(iocodIncludes INTERFACE
 #
 # staged install
 #
-set(STAGED_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/staged")
+set(STAGED_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/Staged")
 message(STATUS "Staged install prefix: ${STAGED_INSTALL_PREFIX}")
 
 #

@@ -157,6 +157,12 @@ enum class PlatformCompiler {
     #error "Unknown or unsupported compiler"
 #endif
 
+#ifdef IOCOD_BUILD_ENGINE
+#define IOCOD_API IOCOD_EXPORT
+#else
+#define IOCOD_API IOCOD_IMPORT
+#endif
+
 #ifdef IOCOD_DEBUG
     inline constexpr bool kDebugBuild = true;
 #else

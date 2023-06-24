@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-set(CORE_SOURCES
+set(ENGINE_SOURCES
     Assert.cpp
     CommandSystem.cpp
     #cvar_system.cpp
@@ -12,8 +12,8 @@ set(CORE_SOURCES
     Plugin.cpp
     ScopedTimer.cpp
     String.cpp
-    StringEd.cpp
-    StringUtilities.cpp
+    #StringEd.cpp
+    #StringUtilities.cpp
     System/SharedLibrary.cpp
     System/System.cpp
     System/SystemInfo.cpp
@@ -21,27 +21,27 @@ set(CORE_SOURCES
 )
 
 if (MSVC)
-    list(APPEND CORE_SOURCES
+    list(APPEND ENGINE_SOURCES
         System/ConsoleWin32.cpp
     )
 else()
-    list(APPEND CORE_SOURCES
+    list(APPEND ENGINE_SOURCES
         System/ConsoleUnix.cpp
     )
 endif()
 
-list(TRANSFORM CORE_SOURCES PREPEND "Source/")
+list(TRANSFORM ENGINE_SOURCES PREPEND "Source/")
 
 #
-# Core library
+# Engine library
 #
-add_library(iocodCore STATIC ${CORE_SOURCES})
-target_compile_definitions(iocodCore PRIVATE IOCOD_BUILD_DLL)
-target_link_libraries(iocodCore PRIVATE iocodOptions iocodWarnings iocodIncludes)
-target_link_libraries(iocodCore PRIVATE fmt::fmt spdlog::spdlog miniz)
+add_library(iocodEngine SHARED ${ENGINE_SOURCES})
+target_compile_definitions(iocodEngine PUBLIC -DIOCOD_BUILD_ENGINE)
+target_link_libraries(iocodEngine PRIVATE iocodOptions iocodWarnings iocodIncludes)
+target_link_libraries(iocodEngine PRIVATE fmt::fmt spdlog::spdlog miniz)
 
 # remove the "lib" prefix from the library name
-set_target_properties(iocodCore PROPERTIES
+set_target_properties(iocodEngine PROPERTIES
     PREFIX ""
     ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}"
     LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}"

@@ -5,12 +5,12 @@
 #ifndef CORE_SHARED_LIBRARY_H
 #define CORE_SHARED_LIBRARY_H
 
-#include <filesystem>
-#include <Core/Types.h>
+#include <Core/Platform.h>
+#include <Core/String.h>
 
 namespace iocod {
 
-class SharedLibrary final {
+class IOCOD_API SharedLibrary final {
 public:
     SharedLibrary() noexcept = default;
     ~SharedLibrary();
@@ -22,12 +22,12 @@ public:
 
     /// @brief Construct a new Shared Library object. Automatically loads the library.
     /// @param[in] libraryPath m_path to the shared library
-    explicit SharedLibrary(const std::filesystem::path& libraryPath) noexcept;
+    explicit SharedLibrary(const String& libraryPath) noexcept;
 
     /// @brief Load the library.
     /// @param[in] libraryPath m_path to the shared library
     /// @return true if the library was m_loaded successfully
-    bool Load(const std::filesystem::path& libraryPath) noexcept;
+    bool Load(const String& libraryPath) noexcept;
 
     /// @brief Unload the library.
     void Unload() noexcept;
@@ -58,7 +58,7 @@ public:
 private:
     void* m_handle = nullptr;
     bool m_loaded = false;
-    std::filesystem::path m_path{};
+    String m_path{};
     String m_lastError{};
 
     void SetLastErrorMessage(const String& error) noexcept

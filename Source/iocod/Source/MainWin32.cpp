@@ -15,6 +15,8 @@ int WINAPI WinMain(const HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevIn
 {
     using namespace iocod;
 
+    #if 0
+
     sys->Initialize(hInstance);
     commandSystem->Initialize();
 
@@ -42,6 +44,8 @@ int WINAPI WinMain(const HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevIn
     }
 
     sys->Shutdown();
+
+    #endif
 
     return 0;
 }

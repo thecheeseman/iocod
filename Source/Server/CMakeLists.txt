@@ -11,9 +11,9 @@ list(TRANSFORM SERVER_SOURCES PREPEND "Source/")
 # Server library
 #
 add_library(iocodServer SHARED ${SERVER_SOURCES})
-add_dependencies(iocodServer iocodCore)
+add_dependencies(iocodServer iocodEngine)
 target_link_libraries(iocodServer PRIVATE iocodOptions iocodWarnings iocodIncludes)
-target_link_libraries(iocodServer PRIVATE iocodCore)
+target_link_libraries(iocodServer PRIVATE iocodEngine)
 
 target_include_directories(iocodServer PRIVATE "Source/" "Include/")
 

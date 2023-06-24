@@ -14,9 +14,9 @@ function(AddCoreTest)
     cmake_parse_arguments(PARSE_ARGV 0 CORETEST "" "${one_value_args}" "${multi_value_args}")
 
     add_executable(${CORETEST_NAME} ${CORETEST_NAME}.cpp ${CORETEST_SOURCES})
-    add_dependencies(${CORETEST_NAME} iocodCore)
+    add_dependencies(${CORETEST_NAME} iocodEngine)
     target_link_libraries(${CORETEST_NAME} PRIVATE iocodOptions iocodWarnings iocodIncludes)
-    target_link_libraries(${CORETEST_NAME} PRIVATE Catch2::Catch2WithMain iocodCore)
+    target_link_libraries(${CORETEST_NAME} PRIVATE Catch2::Catch2WithMain iocodEngine)
 
     set_target_properties(${CORETEST_NAME} PROPERTIES
         PREFIX ""
@@ -31,8 +31,8 @@ AddCoreTest(NAME "test-fixed_string")
 AddCoreTest(NAME "test-narrow_cast")
 AddCoreTest(NAME "test-shared_library")
 AddCoreTest(NAME "Test-String")
-AddCoreTest(NAME "test-stringed")
-AddCoreTest(NAME "test-string_utilities")
+#AddCoreTest(NAME "test-stringed")
+#AddCoreTest(NAME "test-string_utilities")
 AddCoreTest(NAME "test-timer")
 AddCoreTest(NAME "test-vector")
 AddCoreTest(NAME "test-version")

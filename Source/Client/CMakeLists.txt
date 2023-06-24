@@ -11,9 +11,9 @@ list(TRANSFORM CLIENT_SOURCES PREPEND "Source/")
 # Client library
 #
 add_library(iocodClient SHARED ${CLIENT_SOURCES})
-add_dependencies(iocodClient iocodCore)
+add_dependencies(iocodClient iocodEngine)
 target_link_libraries(iocodClient PRIVATE iocodOptions iocodWarnings iocodIncludes)
-target_link_libraries(iocodClient PRIVATE iocodCore)
+target_link_libraries(iocodClient PRIVATE iocodEngine)
 
 target_include_directories(iocodClient PRIVATE "Source/" "Include/")
 

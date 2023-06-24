@@ -21,7 +21,7 @@ list(TRANSFORM IOCOD_SOURCES PREPEND "Source/")
 # iocod executable
 #
 add_executable(iocod ${IOCOD_SOURCES})
-add_dependencies(iocod iocodCore)
+add_dependencies(iocod iocodEngine)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set_target_properties(iocod PROPERTIES WIN32_EXECUTABLE TRUE)
@@ -30,7 +30,7 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 target_link_libraries(iocod PRIVATE iocodOptions iocodWarnings iocodIncludes)
-target_link_libraries(iocod PRIVATE iocodCore)
+target_link_libraries(iocod PRIVATE iocodEngine)
 target_include_directories(iocod PRIVATE "Source/" "Include/")
 
 # remove the "lib" prefix from the library name

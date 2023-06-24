@@ -7,11 +7,9 @@
 
 namespace iocod {
 
-using namespace std::string_literals;
-
 void test(__in int a)
 {
-    FilePath v{"asdf"s};
+    FilePath v{"asdf"};
 }
 
 } // namespace iocod

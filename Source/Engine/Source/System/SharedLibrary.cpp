@@ -17,7 +17,7 @@ namespace iocod {
 // --------------------------------
 // SharedLibrary::SharedLibrary
 // --------------------------------
-SharedLibrary::SharedLibrary(const std::filesystem::path& libraryPath) noexcept
+SharedLibrary::SharedLibrary(const String& libraryPath) noexcept
 {
     Load(libraryPath);
 }
@@ -56,7 +56,7 @@ bool SharedLibrary::Loaded() const noexcept
 // --------------------------------
 // SharedLibrary::Load
 // --------------------------------
-bool SharedLibrary::Load(const std::filesystem::path& libraryPath) noexcept
+bool SharedLibrary::Load(const String& libraryPath) noexcept
 {
     if (Loaded())
         Unload();
@@ -65,21 +65,20 @@ bool SharedLibrary::Load(const std::filesystem::path& libraryPath) noexcept
     m_loaded = false;
 
 #ifdef IOCOD_OS_WINDOWS
-    // TODO: support wide strings
-    m_handle = LoadLibraryA(libraryPath.string().c_str());
+    m_handle = LoadLibraryW(libraryPath.ToWideString());
 #else
     m_handle = dlopen(libraryPath.c_str(), RTLD_LAZY);
 #endif
 
     if (m_handle == nullptr) {
-        String message = "Failed to load library '" + libraryPath.string() + "': ";
+        String message = "Failed to load library '" + libraryPath + "': ";
 
 #ifdef IOCOD_OS_WINDOWS
-        LPSTR buffer = nullptr;
-        FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr,
+        LPWSTR buffer = nullptr;
+        FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr,
                        GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                       reinterpret_cast<LPSTR>(&buffer), 0, nullptr);
-        message += buffer;
+                       reinterpret_cast<LPWSTR>(&buffer), 0, nullptr);
+        message += String::FromWideString(buffer);
         LocalFree(buffer);
 #else
         message += dlerror();
@@ -117,7 +116,7 @@ void SharedLibrary::Unload() noexcept
 void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
 {
     if (!Loaded()) {
-        SetLastErrorMessage("Tried to load symbol '" + String(symbol) +
+        SetLastErrorMessage("Tried to load symbol '" + String{symbol} +
                             "' from an unloaded library");
         return nullptr;
     }
@@ -129,15 +128,15 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
 #endif
 
     if (address == nullptr) {
-        String message = "Failed to load symbol '" + String(symbol) + "' from library '" +
-                              m_path.string() + "': ";
+        String message = "Failed to load symbol '" + String{symbol} + "' from library '" +
+                              m_path + "': ";
 
 #ifdef IOCOD_OS_WINDOWS
-        LPSTR buffer = nullptr;
-        FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr,
+        LPWSTR buffer = nullptr;
+        FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr,
                        GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                       reinterpret_cast<LPSTR>(&buffer), 0, nullptr);
-        message += buffer;
+                       reinterpret_cast<LPWSTR>(&buffer), 0, nullptr);
+        message += String::FromWideString(buffer);
         LocalFree(buffer);
 #else
         message += dlerror();
@@ -147,7 +146,7 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
         return nullptr;
     }
 
-    m_lastError.clear();
+    m_lastError.Clear();
     return address;
 }
 

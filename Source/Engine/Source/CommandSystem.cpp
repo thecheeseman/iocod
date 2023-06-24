@@ -257,30 +257,30 @@ void CommandSystemLocal::TokenizeString(const String& text)
     m_commandArgs.clear();
 
     String trimmed = StringUtilities::TrimCopy(text);
-    if (trimmed.empty() || (trimmed.size() > 1 && trimmed[0] == '/' && trimmed[1] == '/'))
+    if (trimmed.Empty() || (trimmed.Length() > 1 && trimmed[0] == '/' && trimmed[1] == '/'))
         return;
 
     while (true) {
         if (trimmed[0] == '"') {
-            const std::size_t end = trimmed.find('"', 1);
-            m_commandArgs.push_back(trimmed.substr(1, end - 1));
-            trimmed = trimmed.substr(end + 1);
+            const std::size_t end = trimmed.Find('"', 1);
+            m_commandArgs.push_back(trimmed.Substring(1, end - 1));
+            trimmed = trimmed.Substring(end + 1);
         } else {
             if (trimmed[0] == '/' && trimmed[1] == '/')
                 break;
 
-            const std::size_t end = trimmed.find(' ');
+            const std::size_t end = trimmed.Find(' ');
             if (end == String::npos) {
                 m_commandArgs.push_back(trimmed);
                 break;
             }
 
-            m_commandArgs.push_back(trimmed.substr(0, end));
-            trimmed = trimmed.substr(end + 1);
+            m_commandArgs.push_back(trimmed.Substring(0, end));
+            trimmed = trimmed.Substring(end + 1);
         }
 
         StringUtilities::Trim(trimmed);
-        if (trimmed.empty())
+        if (trimmed.Empty())
             break;
     }
 }
@@ -320,7 +320,7 @@ void CommandSystemLocal::InsertCommandText(const String& text)
 // --------------------------------
 void CommandSystemLocal::ExecuteCommandText(const String& text)
 {
-    if (text.empty())
+    if (text.Empty())
         return;
 
     TokenizeString(text);
@@ -356,7 +356,7 @@ void CommandSystemLocal::BufferCommandText(const CommandExecutionType type, cons
 {
     switch (type) {
     case CommandExecutionType::Immediate:
-        if (!text.empty())
+        if (!text.Empty())
             ExecuteCommandText(text);
         else
             ExecuteCommandBuffer();
@@ -411,7 +411,7 @@ public:
 
             matched++;
 
-            sys->Print(fmt::format("{:<32} {}\n", cmd, aliases.empty() ? "" : aliases));
+            sys->Print(fmt::format("{:<32} {}\n", cmd, aliases.Empty() ? "" : aliases));
         }
         sys->Print("-----------------------------------------------------------------\n");
         sys->Print(fmt::format("{} total commands", count));

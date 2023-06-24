@@ -8,6 +8,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <Core/String.h>
+
 namespace iocod {
 
 using Nanoseconds = std::chrono::nanoseconds;
@@ -36,8 +38,8 @@ String ConvertTime(const Nanoseconds time)
 void ScopedTimer::DumpToCSV()
 {
     static std::size_t counter = 0;
-    const String csvname = "scopedtimer" + std::to_string(counter++) + ".csv";
-    std::ofstream file(csvname);
+    const String csvname = "scopedtimer" + String{counter++} + ".csv";
+    std::ofstream file(csvname.c_str());
 
     file << "m_function,calls,total time,min time,max time,avg time,cps,file\n";
 
