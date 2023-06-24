@@ -37,6 +37,7 @@ String ConvertTime(const Nanoseconds time)
 
 void ScopedTimer::DumpToCSV()
 {
+    #if 0
     static std::size_t counter = 0;
     const String csvname = "scopedtimer" + String{counter++} + ".csv";
     std::ofstream file(csvname.c_str());
@@ -52,6 +53,7 @@ void ScopedTimer::DumpToCSV()
     }
 
     file.close();
+    #endif
 }
 
 void ScopedTimer::DumpToStdout()

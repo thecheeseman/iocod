@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <Core/String.h>
+#include <nanobench.h>
 #include <catch2/catch_test_macros.hpp>
 
 using namespace iocod;
@@ -253,4 +254,13 @@ TEST_CASE("operator/ and /=", "[String]")
 
     String path2 = path / "subdir2";
     REQUIRE(path2 == "test/path/subdir/subdir2");
+}
+
+TEST_CASE("iterator", "[String]")
+{
+    const String test("this is a test string");
+
+    for (const auto c : test) {
+        
+    }
 }

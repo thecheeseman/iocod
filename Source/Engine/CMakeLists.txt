@@ -4,29 +4,30 @@
 
 set(ENGINE_SOURCES
     Assert.cpp
-    CommandSystem.cpp
+    #CommandSystem.cpp
     #cvar_system.cpp
-    FilePath.cpp
-    FileSystem.cpp
+    #FilePath.cpp
+    #FileSystem.cpp
+    Log.cpp
     Memory.cpp
-    Plugin.cpp
+    #Plugin.cpp
     ScopedTimer.cpp
     String.cpp
     #StringEd.cpp
     #StringUtilities.cpp
     System/SharedLibrary.cpp
-    System/System.cpp
-    System/SystemInfo.cpp
-    Vector.cpp
+    #System/System.cpp
+    #System/SystemInfo.cpp
+    #Vector.cpp
 )
 
 if (MSVC)
     list(APPEND ENGINE_SOURCES
-        System/ConsoleWin32.cpp
+        #System/ConsoleWin32.cpp
     )
 else()
     list(APPEND ENGINE_SOURCES
-        System/ConsoleUnix.cpp
+        #System/ConsoleUnix.cpp
     )
 endif()
 

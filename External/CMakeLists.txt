@@ -29,6 +29,11 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 add_subdirectory("miniz")
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 
+message(STATUS "Configuring nanobench")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+add_library(nanobench STATIC "nanobench.cpp")
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
 #set(BUILD_SHARED_LIBS OFF)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)

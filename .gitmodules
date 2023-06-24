@@ -17,3 +17,6 @@
 [submodule "External/spdlog"]
 	path = External/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "External/nanobench"]
+	path = External/nanobench
+	url = https://github.com/martinus/nanobench/

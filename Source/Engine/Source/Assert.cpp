@@ -2,13 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifdef IOCOD_OS_WINDOWS
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-#endif
-
 #include <cstdio>
 #include <Core/Assert.h>
+#include <Core/Log.h>
 #include <Core/Platform.h>
 
 namespace iocod::detail {
@@ -16,16 +12,7 @@ namespace iocod::detail {
 void ReportAssertionFailure(const char* filename, const int line, const char* function,
                             const char* message)
 {
-    static char buffer[4096]{};
-
-    (void) snprintf(buffer, sizeof(buffer), "[%s:%d] Assertion failed in %s(): %s\n", filename,
-                    line, function, message);
-    (void) fputs(buffer, stderr);
-
-#ifdef IOCOD_OS_WINDOWS
-    if (::IsDebuggerPresent())
-        OutputDebugStringA(buffer);
-#endif
+    LogFatal("[%s:%d] Assertion failed in %s(): %s\n", filename, line, function, message);
 }
 
 } // namespace iocod::detail

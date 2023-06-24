@@ -11,6 +11,55 @@
 
 namespace iocod {
 
+template <typename T>
+struct StringIterator {
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = T;
+    using difference_type = ptrdiff_t;
+    using pointer = T*;
+    using reference = T&;
+
+    StringIterator() noexcept = default;
+
+    constexpr explicit StringIterator(const pointer ptr) noexcept :
+        ptr(ptr) {}
+
+    constexpr pointer operator->() const noexcept { return ptr; }
+    constexpr reference operator*() const noexcept { return *ptr; }
+    constexpr explicit operator pointer() const noexcept { return ptr; }
+
+    constexpr StringIterator& operator++() noexcept
+    {
+        ++ptr;
+        return *this;
+    }
+
+    constexpr StringIterator operator++(int) noexcept
+    {
+        const StringIterator tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    constexpr StringIterator& operator--() noexcept
+    {
+        --ptr;
+        return *this;
+    }
+
+    constexpr StringIterator operator--(int) noexcept
+    {
+        const StringIterator tmp = *this;
+        --(*this);
+        return tmp;
+    }
+
+    constexpr bool operator==(const StringIterator& rhs) const noexcept { return ptr == rhs.ptr; }
+    constexpr bool operator!=(const StringIterator& rhs) const noexcept { return ptr != rhs.ptr; }
+
+    pointer ptr;
+};
+
 /**
  * \brief String class which internally uses UTF-8 strings, convertible to
  * wide char strings. Has similar STL capabilities as std::string.
@@ -32,13 +81,6 @@ public:
     static inline constexpr std::size_t kBaseSize = 40ull; // minimum size of the base buffer
     static inline constexpr std::size_t kGranularity = 64ull; // size to allocate in multiples of
 
-    // TODO: missing: STL container requirements
-    // allocator_type
-    // iterator         <- definitely want this for range-for loops
-    // const_iterator   <- definitely want this for range-for loops
-    // reverse_iterator
-    // const_reverse_iterator
-
     using value_type = char;
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
@@ -46,6 +88,8 @@ public:
     using const_reference = const value_type&;
     using pointer = value_type*;
     using const_pointer = const value_type*;
+    using iterator = StringIterator<value_type>;
+    using const_iterator = StringIterator<const value_type>;
 
     //
     // constructors
@@ -96,10 +140,10 @@ public:
     constexpr reference operator[](size_type pos);
     constexpr const_reference operator[](size_type pos) const;
 
-    [[nodiscard]] constexpr reference Front();
-    [[nodiscard]] constexpr const_reference Front() const;
-    [[nodiscard]] constexpr reference Back();
-    [[nodiscard]] constexpr const_reference Back() const;
+    [[nodiscard]] constexpr reference Front() { return *m_data; }
+    [[nodiscard]] constexpr const_reference Front() const { return *m_data; }
+    [[nodiscard]] constexpr reference Back() { return *(m_data + m_length - 1); }
+    [[nodiscard]] constexpr const_reference Back() const { return *(m_data + m_length - 1); }
 
     /**
      * \brief Clears the string, setting the length to 0 and freeing any allocated data.
@@ -199,6 +243,14 @@ public:
 
     friend String operator/(const String& lhs, const String& rhs);
     friend String operator/(const String& lhs, const char* rhs);
+
+    // STL compatibility
+    iterator begin() noexcept { return iterator(&m_data[0]); }
+    iterator end() noexcept { return iterator(&m_data[m_length]); }
+    [[nodiscard]] iterator begin() const noexcept { return iterator(&m_data[0]); }
+    [[nodiscard]] iterator end() const noexcept { return iterator(&m_data[m_length]); }
+    [[nodiscard]] const_iterator cbegin() const noexcept { return const_iterator(&m_data[0]); }
+    [[nodiscard]] const_iterator cend() const noexcept { return const_iterator(&m_data[m_length]); }
 
     //
     // static methods
@@ -1210,8 +1262,7 @@ constexpr int Strncmp(const CharT* lhs, const CharT* rhs, std::size_t n)
 #include <string_view>
 
 template <>
-struct std::hash<iocod::String>
-{
+struct std::hash<iocod::String> {
     std::size_t operator()(const iocod::String& s) const noexcept
     {
         return std::hash<std::string_view>{}(std::string_view{s.c_str(), s.Length()});

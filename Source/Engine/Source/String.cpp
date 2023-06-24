@@ -235,8 +235,12 @@ constexpr void String::Clear() noexcept
         m_data = m_baseBuffer;
     }
 
+    for (auto c : m_baseBuffer)
+        c = 0;
+
     m_data[0] = 0;
     m_length = 0;
+    m_allocated = kBaseSize;
 }
 
 // --------------------------------

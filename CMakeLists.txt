@@ -116,6 +116,7 @@ target_include_directories(iocodIncludes INTERFACE
     "${CMAKE_SOURCE_DIR}/External/fmt/include"
     "${CMAKE_SOURCE_DIR}/External/miniz"
     "${CMAKE_SOURCE_DIR}/External/spdlog/include"
+    "${CMAKE_SOURCE_DIR}/External/nanobench/src/include"
 )
 target_precompile_headers(iocodIncludes INTERFACE
     <core/platform.h>
