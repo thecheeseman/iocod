@@ -51,7 +51,7 @@ enum class PlatformArchitecture {
     #error "Unknown or unsupported architecture"
 #endif
 
-enum class Platform {
+enum class PlatformOS {
     Windows,
     Linux,
     Darwin
@@ -59,7 +59,7 @@ enum class Platform {
 
 #ifdef _WIN32
     #define IOCOD_OS_WINDOWS
-    inline constexpr Platform kPlatform = Platform::Windows;
+    inline constexpr PlatformOS kPlatform = PlatformOS::Windows;
 
     #ifdef IOCOD_ARCH_AMD64
         inline constexpr const char* kPlatformString = "windows64";

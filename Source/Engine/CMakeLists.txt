@@ -24,6 +24,7 @@ set(ENGINE_SOURCES
 if (MSVC)
     list(APPEND ENGINE_SOURCES
         #System/ConsoleWin32.cpp
+        HAL/Platform_Win32.cpp
     )
 else()
     list(APPEND ENGINE_SOURCES

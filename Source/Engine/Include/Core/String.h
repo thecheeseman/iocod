@@ -145,9 +145,6 @@ public:
     [[nodiscard]] constexpr reference Back() { return *(m_data + m_length - 1); }
     [[nodiscard]] constexpr const_reference Back() const { return *(m_data + m_length - 1); }
 
-    /**
-     * \brief Clears the string, setting the length to 0 and freeing any allocated data.
-     */
     constexpr void Clear() noexcept;
 
     // missing STL string methods
@@ -163,8 +160,6 @@ public:
     // constexpr Iterator Erase(ConstIterator first, ConstIterator last);
 
     constexpr void Fill(char c, size_type count = npos) const noexcept;
-    constexpr void ToLower() const noexcept;
-    constexpr void ToUpper() const noexcept;
     constexpr void Append(char c);
     constexpr void Append(const String& str);
     constexpr void Append(const char* str);
@@ -176,27 +171,108 @@ public:
     constexpr bool CompareIgnoreCase(const char* str) const noexcept;
     constexpr bool CompareIgnoreCase(const char* str, size_type count) const noexcept;
 
-    constexpr void Escape();
-    constexpr void Unescape();
+    //
+    // string utilities (chainable)
+    //
 
-    /**
-     * \brief Converts the string to a wide char string, returning up to
-     * 1024 bytes of the string. String is only valid until the next call to
-     * this function.
-     * \return pointer to the string
-     */
+    constexpr String& Capitalize();
+    constexpr String& Clean();
+    constexpr String& Replace(const String& from, const String& to);
+
+    constexpr String& ToLower() noexcept;
+    constexpr String& ToUpper() noexcept;
+
+    constexpr String& Trim()
+    {
+        return TrimLeft().TrimRight();
+    }
+
+    constexpr String& TrimLeft();
+    constexpr String& TrimRight();
+
+    constexpr String& Escape();
+    constexpr String& Unescape();
+
+    constexpr String& StripColors();
+    constexpr String& StripExtension();
+    constexpr String& StripFileName();
+    constexpr String& StripPath();
+
+    constexpr String& ConvertSlashes();
+    constexpr String& SetExtension(const String& ext);
+    constexpr String& DefaultExtension(const String& ext);
+    constexpr String& DefaultPath(const String& ext);
+
+    //
+    // misc utilities
+    //
+
+    [[nodiscard]] String Left(const size_type count) const noexcept
+    {
+        return Middle(0, count);
+    }
+
+    [[nodiscard]] String Right(const size_type count) const noexcept
+    {
+        if (count >= m_length)
+            return *this;
+
+        return Middle(Length() - count, count);
+    }
+
+    [[nodiscard]] String Middle(const size_type pos, size_type count) const noexcept
+    {
+        const std::size_t length = Length();
+        if (length == 0 || count == 0 || pos >= length)
+            return {};
+
+        if (pos + count >= length)
+            count = length - pos;
+
+        return String{m_data + pos, count};
+    }
+
+    [[nodiscard]] String Extension()
+    {
+        std::size_t pos = Length() - 1;
+        while ((pos > 0) && ((*this)[pos - 1] != '.'))
+            --pos;
+
+        if (!pos)
+            return {};
+
+        return Right(Length() - pos);
+    }
+
+    [[nodiscard]] String FileName()
+    {
+        std::size_t pos = Length() - 1;
+
+        while ((pos > 0) && ((*this)[pos - 1] != '/') && ((*this)[pos - 1] != '\\'))
+            --pos;
+
+        return Right(Length() - pos);
+    }
+
+    [[nodiscard]] String Path()
+    {
+        std::size_t pos = Length() - 1;
+
+        while ((pos > 0) && ((*this)[pos - 1] != '/') && ((*this)[pos - 1] != '\\'))
+            --pos;
+
+        return Left(pos);
+    }
+
+    constexpr bool HasExtension(const String& ext) const noexcept;
+
+    constexpr bool Contains(const String& str) const noexcept;
+    constexpr bool Contains(const char* str) const noexcept;
+    constexpr bool EndsWith(const String& str) const noexcept;
+    constexpr bool EndsWith(const char* str) const noexcept;
+
     [[nodiscard]] wchar_t* ToWideString() const noexcept;
-
-    /**
-     * \brief Converts the string to a wide char string, storing it in the destination buffer.
-     * \param[out] dest buffer to store the string in
-     * \param[in] size size of the buffer
-     */
     void ToWideString(wchar_t* dest, size_type size) const noexcept;
-
-    /**
-     * \brief Returns the number of bytes needed to store the string as a wchar_t.
-     */
     [[nodiscard]] size_type WideStringSize() const noexcept;
 
     //
@@ -244,118 +320,57 @@ public:
     friend String operator/(const String& lhs, const String& rhs);
     friend String operator/(const String& lhs, const char* rhs);
 
-    // STL compatibility
-    iterator begin() noexcept { return iterator(&m_data[0]); }
-    iterator end() noexcept { return iterator(&m_data[m_length]); }
-    [[nodiscard]] iterator begin() const noexcept { return iterator(&m_data[0]); }
-    [[nodiscard]] iterator end() const noexcept { return iterator(&m_data[m_length]); }
-    [[nodiscard]] const_iterator cbegin() const noexcept { return const_iterator(&m_data[0]); }
-    [[nodiscard]] const_iterator cend() const noexcept { return const_iterator(&m_data[m_length]); }
+    //
+    // STL compatibility (range-for)
+    //
+
+    iterator begin() noexcept
+    {
+        return iterator(&m_data[0]);
+    }
+
+    iterator end() noexcept
+    {
+        return iterator(&m_data[m_length]);
+    }
+
+    [[nodiscard]] iterator begin() const noexcept
+    {
+        return iterator(&m_data[0]);
+    }
+
+    [[nodiscard]] iterator end() const noexcept
+    {
+        return iterator(&m_data[m_length]);
+    }
+
+    [[nodiscard]] const_iterator cbegin() const noexcept
+    {
+        return const_iterator(&m_data[0]);
+    }
+
+    [[nodiscard]] const_iterator cend() const noexcept
+    {
+        return const_iterator(&m_data[m_length]);
+    }
 
     //
     // static methods
     //
 
-    /**
-     * \brief Returns the length of the string, not including the null terminator.
-     * \param[in] s string to get the length of
-     * \return length of the string
-     */
     static constexpr size_type Length(const char* s) noexcept;
-
-    /**
-     * \brief Converts a character to lowercase.
-     * \param[in] c character to convert
-     * \return lowercase character 
-     */
     static constexpr char ToLower(char c) noexcept;
-
-    /**
-     * \brief Converts a string to lowercase.
-     * \param[in] s string to convert
-     * \return lowercase string 
-     */
     static constexpr char* ToLower(char* s) noexcept;
-
-    /**
-     * \brief Converts a character to uppercase.
-     * \param[in] c character to convert
-     * \return uppercase character 
-     */
     static constexpr char ToUpper(char c) noexcept;
-
-    /**
-     * \brief Converts a string to uppercase.
-     * \param[in] s string to convert
-     * \return uppercase string
-     */
     static constexpr char* ToUpper(char* s) noexcept;
-
-    /**
-     * \brief Copy a given string to a destination.
-     * \param[out] dest destination string
-     * \param[in] src   source string
-     * \return pointer to the destination string
-     */
     static constexpr char* Copy(char* dest, const char* src) noexcept;
-
-    /**
-     * \brief Copy up to count characters from a given string to a destination.
-     * \param[out] dest destination string
-     * \param[in] src   source string
-     * \param[in] count number of characters to copy
-     * \return pointer to the destination string
-     */
     static constexpr char* Copy(char* dest, const char* src, size_type count) noexcept;
-
-    /**
-     * \brief Case-sensitive string comparison.
-     * \param[in] lhs first string to compare
-     * \param[in] rhs second string to compare
-     * \return 0 if the strings are equal, -1 if lhs is less than rhs, 1 if lhs is greater than rhs
-     */
     static constexpr int Compare(const char* lhs, const char* rhs) noexcept;
-
-    /**
-     * \brief Case-sensitive string comparison. Compares up to count characters.
-     * \param[in] lhs   first string to compare
-     * \param[in] rhs   second string to compare
-     * \param[in] count number of characters to compare
-     * \return 0 if the strings are equal, -1 if lhs is less than rhs, 1 if lhs is greater than rhs
-     */
     static constexpr int Compare(const char* lhs, const char* rhs, size_type count) noexcept;
-
-    /**
-     * \brief Case-insensitive string comparison.
-     * \param[in] lhs first string to compare
-     * \param[in] rhs second string to compare
-     * \return 0 if the strings are equal, -1 if lhs is less than rhs, 1 if lhs is greater than rhs
-     */
     static constexpr int CompareIgnoreCase(const char* lhs, const char* rhs) noexcept;
-
-    /**
-     * \brief Case-insensitive string comparison. Compares up to count characters.
-     * \param[in] lhs   first string to compare
-     * \param[in] rhs   second string to compare
-     * \param[in] count number of characters to compare
-     * \return 0 if the strings are equal, -1 if lhs is less than rhs, 1 if lhs is greater than rhs
-     */
     static constexpr int CompareIgnoreCase(const char* lhs, const char* rhs,
                                            size_type count) noexcept;
-
-    /**
-     * \brief Constructs a string from a wide string.
-     * \param[in] s wide string to construct from
-     * \return constructed string
-     */
     static String FromWideString(const wchar_t* s);
-
-    /**
-     * \brief Converts a string to a wide string.
-     * \param[in] str       string to convert
-     * \param[out] dest     destination wide string
-     * \param[in] destSize  size of the destination wide string
-     */
     static void ToWideString(const char* str, wchar_t* dest, size_type destSize);
 
     //
@@ -564,19 +579,23 @@ constexpr void String::Fill(const char c, const size_type count) const noexcept
 // --------------------------------
 // String::ToLower
 // --------------------------------
-constexpr void String::ToLower() const noexcept
+constexpr String& String::ToLower() noexcept
 {
     for (std::size_t i = 0; i < m_length; i++)
         m_data[i] = ToLower(m_data[i]);
+
+    return *this;
 }
 
 // --------------------------------
 // String::ToUpper
 // --------------------------------
-constexpr void String::ToUpper() const noexcept
+constexpr String& String::ToUpper() noexcept
 {
     for (std::size_t i = 0; i < m_length; i++)
         m_data[i] = ToUpper(m_data[i]);
+
+    return *this;
 }
 
 // --------------------------------

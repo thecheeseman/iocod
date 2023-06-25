@@ -5,6 +5,7 @@
 #include <chrono>
 #include <Core/CommandSystem.h>
 #include <Core/System.h>
+#include <HAL/Platform.h>
 #include <windows.h>
 
 // --------------------------------
@@ -14,6 +15,10 @@ int WINAPI WinMain(const HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevIn
                    [[maybe_unused]] LPSTR lpCmdLine, [[maybe_unused]] int nShowCmd)
 {
     using namespace iocod;
+
+    Platform::Initialize();
+
+    while (true) {}
 
     #if 0
 
