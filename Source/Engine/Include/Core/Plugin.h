@@ -5,7 +5,6 @@
 #ifndef CORE_PLUGIN_H
 #define CORE_PLUGIN_H
 
-#include <Core/Platform.h>
 #include <stddef.h>
 #include <stdint.h>
 

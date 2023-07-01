@@ -7,7 +7,6 @@
 
 #include <chrono>
 #include <Core/Assert.h>
-#include <Core/Types.h>
 
 namespace iocod {
 

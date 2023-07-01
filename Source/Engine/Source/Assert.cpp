@@ -5,7 +5,6 @@
 #include <cstdio>
 #include <Core/Assert.h>
 #include <Core/Log.h>
-#include <Core/Platform.h>
 
 namespace iocod::detail {
 

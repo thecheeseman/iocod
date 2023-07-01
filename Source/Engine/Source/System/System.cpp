@@ -6,7 +6,6 @@
 #include <Core/CommandSystem.h>
 #include <Core/ConsoleCommand.h>
 #include <Core/System.h>
-#include <Core/Types.h>
 #include <fmt/core.h>
 #include <spdlog/async.h>
 #include <spdlog/spdlog.h>

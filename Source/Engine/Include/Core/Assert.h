@@ -5,8 +5,6 @@
 #ifndef CORE_ASSERT_H
 #define CORE_ASSERT_H
 
-#include <Core/Platform.h>
-
 #define IOCOD_ASSERTION(...)                             \
     do {                                                 \
         if (__VA_ARGS__) {                               \

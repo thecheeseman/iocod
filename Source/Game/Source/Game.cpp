@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <Core/Platform.h>
 #include <Core/System.h>
 #include <game/game.h>
 

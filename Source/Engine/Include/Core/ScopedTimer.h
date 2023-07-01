@@ -6,8 +6,6 @@
 #define CORE_SCOPED_TIMER_H
 
 #include <chrono>
-#include <Core/ClassNonCopyable.h>
-#include <Core/Types.h>
 #include <map>
 
 namespace iocod {

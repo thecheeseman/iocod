@@ -5,10 +5,7 @@
 #ifndef CORE_MEMORY_H
 #define CORE_MEMORY_H
 
-#include <Core/ClassNonCopyable.h>
-#include <Core/Platform.h>
 #include <Core/SourceLocation.h>
-#include <Core/Types.h>
 
 namespace iocod {
 

@@ -5,9 +5,6 @@
 #ifndef CORE_CVAR_H
 #define CORE_CVAR_H
 
-#include <Core/EnumClassFlags.h>
-#include <Core/Types.h>
-
 namespace iocod {
 
 inline constexpr std::size_t MAX_CVARS = 2048;

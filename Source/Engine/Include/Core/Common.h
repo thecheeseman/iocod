@@ -5,8 +5,6 @@
 #ifndef CORE_COMMON_H
 #define CORE_COMMON_H
 
-#include <Core/Types.h>
-
 namespace iocod {
 
 enum class ErrorCode {

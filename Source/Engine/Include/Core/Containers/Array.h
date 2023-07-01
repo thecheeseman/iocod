@@ -5,6 +5,8 @@
 #ifndef CORE_CONTAINERS_ARRAY_H
 #define CORE_CONTAINERS_ARRAY_H
 
+#include <Core/Assert.h>
+
 // TODO: reverse iterators
 template <typename T, size_t N = 1>
 class Array {
@@ -28,9 +30,17 @@ public:
 
     constexpr inline bool Empty() const noexcept { return N == 0; }
 
-    constexpr inline reference operator[](size_t index) { return m_value[index]; }
+    constexpr inline reference operator[](size_t index)
+    {
+        Assert(index < N);
+        return m_value[index];
+    }
 
-    constexpr inline const_reference operator[](size_t index) const { return m_value[index]; }
+    constexpr inline const_reference operator[](size_t index) const
+    {
+        Assert(index < N);
+        return m_value[index];
+    }
 
     constexpr inline reference Front() { return m_value[0]; }
 

@@ -7,7 +7,6 @@
 
 #include <stdexcept>
 #include <Core/Assert.h>
-#include <Core/Platform.h>
 
 namespace iocod {
 
@@ -182,13 +181,13 @@ public:
     constexpr String& ToLower() noexcept;
     constexpr String& ToUpper() noexcept;
 
-    constexpr String& Trim()
-    {
-        return TrimLeft().TrimRight();
-    }
-
-    constexpr String& TrimLeft();
-    constexpr String& TrimRight();
+    // constexpr String& Trim()
+    // {
+    //     return TrimLeft().TrimRight();
+    // }
+    // 
+    // constexpr String& TrimLeft();
+    // constexpr String& TrimRight();
 
     constexpr String& Escape();
     constexpr String& Unescape();
@@ -1272,6 +1271,45 @@ constexpr int Strncmp(const CharT* lhs, const CharT* rhs, std::size_t n)
 }
 
 // TODO: stricmp / strnicmp for utf16/32
+
+/**
+ * \brief Light-weight wrapper around a C-style strings.
+ */
+class IOCOD_API CString {
+public:
+    constexpr /* implicit */ CString(const char* str) : m_str(str) {}
+
+    bool operator=(const char* other) = delete;
+
+    const char* c_str() const { return m_str; }
+    explicit operator const char*() const { return m_str; }
+
+    friend bool operator==(const CString& lhs, const CString& rhs) { return Strcmp(lhs.m_str, rhs.m_str) == 0; }
+    friend bool operator!=(const CString& lhs, const CString& rhs) { return !(lhs == rhs); }
+    friend std::strong_ordering operator<=>(const CString& lhs, const CString& rhs) { return Strcmp(lhs.m_str, rhs.m_str) <=> 0; }
+
+private:
+    const char* m_str;
+};
+
+class IOCOD_API StringLiteral {
+public:
+    template <std::size_t N>
+    explicit(false) consteval StringLiteral(const char (&str)[N]) : m_size(N - 1), m_str(str)
+    {
+        Assert(*std::next(m_str, N - 1) == '\0');
+    }
+
+    constexpr StringLiteral() noexcept : m_size(0), m_str("") {}
+
+    [[nodiscard]] constexpr std::size_t Size() const { return m_size; }
+    [[nodiscard]] constexpr const char* c_str() const { return m_str; }
+    explicit(false) constexpr operator const char*() const { return m_str; }
+
+private:
+    std::size_t m_size;
+    const char* m_str;
+};
 
 } // namespace iocod
 

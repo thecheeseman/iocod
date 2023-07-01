@@ -20,3 +20,6 @@
 [submodule "External/nanobench"]
 	path = External/nanobench
 	url = https://github.com/martinus/nanobench/
+[submodule "External/doctest"]
+	path = External/doctest
+	url = https://github.com/doctest/doctest

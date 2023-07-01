@@ -5,8 +5,6 @@
 #ifndef RENDERER_RENDERER_H
 #define RENDERER_RENDERER_H
 
-#include <core/types.h>
-
 namespace iocod {
 
 class IRenderer {

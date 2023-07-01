@@ -9,7 +9,6 @@
 #include <Core/Assert.h>
 #include <Core/FixedString.h>
 #include <Core/String.h>
-#include <Core/Types.h>
 
 namespace iocod {
 

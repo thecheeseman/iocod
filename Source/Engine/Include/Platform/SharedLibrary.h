@@ -5,7 +5,6 @@
 #ifndef CORE_SHARED_LIBRARY_H
 #define CORE_SHARED_LIBRARY_H
 
-#include <Core/Platform.h>
 #include <Core/String.h>
 
 namespace iocod {

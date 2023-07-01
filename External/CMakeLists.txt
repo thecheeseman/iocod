@@ -34,6 +34,11 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 add_library(nanobench STATIC "nanobench.cpp")
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 
+message(STATUS "Configuring doctest")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+add_library(doctest STATIC "doctest.cpp")
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
 #set(BUILD_SHARED_LIBS OFF)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)

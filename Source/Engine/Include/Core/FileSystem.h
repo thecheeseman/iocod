@@ -6,7 +6,6 @@
 #define CORE_FILE_SYSTEM_H
 
 #include <Core/Expected.h>
-#include <Core/Types.h>
 #include <Core/String.h>
 
 #include <filesystem>

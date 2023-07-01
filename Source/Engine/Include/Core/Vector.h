@@ -6,7 +6,6 @@
 #define CORE_VECTOR_H
 
 #include <Core/Assert.h>
-#include <Core/Types.h>
 
 #include <cmath>
 

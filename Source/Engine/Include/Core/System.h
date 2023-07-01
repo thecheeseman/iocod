@@ -5,10 +5,7 @@
 #ifndef CORE_SYSTEM_H
 #define CORE_SYSTEM_H
 
-#include <Core/Platform.h>
 #include <Core/String.h>
-#include <Core/Types.h>
-#include <core/ClassNonCopyable.h>
 #include <fmt/format.h>
 
 namespace iocod {

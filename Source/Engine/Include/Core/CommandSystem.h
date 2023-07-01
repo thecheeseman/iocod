@@ -7,10 +7,7 @@
 
 #include <map>
 #include <memory>
-#include <Core/ClassNonCopyable.h>
 #include <Core/ConsoleCommand.h>
-#include <Core/Platform.h>
-#include <Core/Types.h>
 
 namespace iocod {
 

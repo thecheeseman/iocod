@@ -7,7 +7,6 @@
 #include <array>
 #include <vector>
 #include <Core/System.h>
-#include <Core/Types.h>
 
 #ifdef IOCOD_OS_WINDOWS
     #define WIN32_LEAN_AND_MEAN

@@ -6,7 +6,6 @@
 #define CORE_CVAR_SYSTEM_H
 
 #include <Core/Cvar.h>
-#include <Core/Types.h>
 
 namespace iocod {
 

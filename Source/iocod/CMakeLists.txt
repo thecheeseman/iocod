@@ -11,7 +11,15 @@ set(IOCOD_SOURCES
 
 if (WIN32)
     list(APPEND IOCOD_SOURCES
-        MainWin32.cpp
+        MainWindows.cpp
+    )
+elseif(APPLE)
+    list(APPEND IOCOD_SOURCES
+        MainMacOS.mm
+    )
+else()
+    list(APPEND IOCOD_SOURCES
+        MainLinux.cpp
     )
 endif()
 

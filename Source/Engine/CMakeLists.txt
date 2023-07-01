@@ -3,32 +3,28 @@
 # SPDX-License-Identifier: CC0-1.0
 
 set(ENGINE_SOURCES
+    Application.cpp
     Assert.cpp
-    #CommandSystem.cpp
-    #cvar_system.cpp
-    #FilePath.cpp
-    #FileSystem.cpp
+    Engine.cpp
     Log.cpp
     Memory.cpp
-    #Plugin.cpp
+    Platform/Platform.cpp
+    Platform/SharedLibrary.cpp
     ScopedTimer.cpp
     String.cpp
-    #StringEd.cpp
-    #StringUtilities.cpp
-    System/SharedLibrary.cpp
-    #System/System.cpp
-    #System/SystemInfo.cpp
-    #Vector.cpp
 )
 
-if (MSVC)
+if (WIN32)
     list(APPEND ENGINE_SOURCES
-        #System/ConsoleWin32.cpp
-        HAL/Platform_Win32.cpp
+        Platform/Windows/PlatformWindows.cpp
+    )
+elseif(APPLE)
+    list(APPEND ENGINE_SOURCES
+        Platform/MacOS/PlatformMacOS.mm
     )
 else()
     list(APPEND ENGINE_SOURCES
-        #System/ConsoleUnix.cpp
+        Platform/Linux/PlatformLinux.cpp
     )
 endif()
 

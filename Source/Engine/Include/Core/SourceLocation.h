@@ -6,55 +6,53 @@
 #define CORE_SOURCE_LOCATION_H
 
 #ifdef __has_builtin
-#if !__has_builtin(__builtin_FILE)
+#if !__has_builtin(__builtin_LINE)
+        #error "Compiler does not support __builtin_LINE"
+#elif !__has_builtin(__builtin_FILE)
         #error "Compiler does not support __builtin_FILE"
 #elif !__has_builtin(__builtin_FUNCTION)
         #error "Compiler does not support __builtin_FUNCTION"
-#elif !__has_builtin(__builtin_LINE)
-        #error "Compiler does not support __builtin_LINE"
+#elif !__has_builtin(__builtin_COLUMN)
+        #error "Compiler does not support __builtin_COLUMN"
 #endif
 #endif
 
 // STL replacement
 class SourceLocation {
 public:
-    constexpr SourceLocation(const SourceLocation&) = default;
-    constexpr SourceLocation(SourceLocation&&) = default;
-    constexpr SourceLocation& operator=(const SourceLocation&) = delete;
-    constexpr SourceLocation& operator=(SourceLocation&&) = delete;
-    constexpr ~SourceLocation() = default;
-
-    constexpr const char* FileName() const noexcept
+    static constexpr SourceLocation Current(const std::uint_least32_t line = __builtin_LINE(),
+                                            const std::uint_least32_t column = __builtin_COLUMN(),
+                                            const char* filename = __builtin_FILE(),
+                                            const char* function = __builtin_FUNCTION()) noexcept
     {
-        return m_filename;
+        return SourceLocation(line, column, filename, function);
     }
 
-    constexpr const char* FunctionName() const noexcept
-    {
-        return m_function;
-    }
-
-    constexpr int Line() const noexcept
-    {
-        return m_line;
-    }
-
-    static constexpr SourceLocation Current(const char* filename = __builtin_FILE(),
-                                            const char* function = __builtin_FUNCTION(),
-                                            const int line = __builtin_LINE()) noexcept
-    {
-        return SourceLocation{filename, function, line};
-    }
+    [[nodiscard]] constexpr std::uint_least32_t Line() const noexcept { return m_line; }
+    [[nodiscard]] constexpr std::uint_least32_t Column() const noexcept { return m_column; }
+    [[nodiscard]] constexpr const char* FileName() const noexcept { return m_filename; }
+    [[nodiscard]] constexpr const char* FunctionName() const noexcept { return m_functionName; }
 
 private:
-    constexpr SourceLocation(const char* filename, const char* function, const int line) noexcept :
-        m_filename(filename),
-        m_function(function),
-        m_line(line) {}
+    constexpr SourceLocation() :
+        m_line(0),
+        m_column(0),
+        m_filename(nullptr),
+        m_functionName(nullptr) {}
 
-    const char* m_filename{nullptr};
-    const char* m_function{nullptr};
-    const int m_line{0};
+    constexpr SourceLocation(const std::uint_least32_t line,
+                             const std::uint_least32_t column,
+                             const char* filename,
+                             const char* function) :
+        m_line(line),
+        m_column(column),
+        m_filename(filename),
+        m_functionName(function) {}
+
+    std::uint_least32_t m_line;
+    std::uint_least32_t m_column;
+    const char* m_filename;
+    const char* m_functionName;
 };
 
 #endif // CORE_SOURCE_LOCATION_H

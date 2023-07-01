@@ -5,9 +5,6 @@
 #ifndef CORE_STRING_UTILITIES_H
 #define CORE_STRING_UTILITIES_H
 
-#include <Core/Platform.h>
-#include <Core/Types.h>
-
 #include <vector>
 
 namespace iocod::StringUtilities {

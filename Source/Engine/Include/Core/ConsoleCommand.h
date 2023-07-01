@@ -5,8 +5,6 @@
 #ifndef CORE_CONSOLE_COMMAND_H
 #define CORE_CONSOLE_COMMAND_H
 
-#include <Core/Types.h>
-#include <Core/ClassNonCopyable.h>
 #include <vector>
 
 namespace iocod {

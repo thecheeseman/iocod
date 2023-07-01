@@ -6,7 +6,6 @@
 #define CORE_CONSOLE_CONSOLE_H
 
 #include <core/q3color.h>
-#include <core/types.h>
 
 #include <array>
 

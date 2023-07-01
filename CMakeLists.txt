@@ -117,11 +117,18 @@ target_include_directories(iocodIncludes INTERFACE
     "${CMAKE_SOURCE_DIR}/External/miniz"
     "${CMAKE_SOURCE_DIR}/External/spdlog/include"
     "${CMAKE_SOURCE_DIR}/External/nanobench/src/include"
+    "${CMAKE_SOURCE_DIR}/External/doctest"
 )
 target_precompile_headers(iocodIncludes INTERFACE
-    <core/platform.h>
-    <core/types.h>
-    <core/memory.h>
+    <cstddef>
+    <cstdint>
+    <type_traits>
+
+    <EngineDefines.h>
+    <EngineTypes.h>
+    <Version.h>
+
+    <Core/Memory.h>
 )
 
 #

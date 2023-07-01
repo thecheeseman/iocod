@@ -2,15 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <Core/Platform.h>
-#include <Core/SharedLibrary.h>
-
-#ifdef IOCOD_OS_WINDOWS
-    #define WIN32_LEAN_AND_MEAN
-    #include <Windows.h>
-#else
-    #include <dlfcn.h>
-#endif
+#include <Platform/Platform.h>
+#include <Platform/SharedLibrary.h>
 
 namespace iocod {
 
@@ -64,26 +57,11 @@ bool SharedLibrary::Load(const String& libraryPath) noexcept
     m_path = libraryPath;
     m_loaded = false;
 
-#ifdef IOCOD_OS_WINDOWS
-    m_handle = LoadLibraryW(libraryPath.ToWideString());
-#else
-    m_handle = dlopen(libraryPath.c_str(), RTLD_LAZY);
-#endif
+    m_handle = Platform::GetInstance().LibraryOpen(libraryPath);
 
     if (m_handle == nullptr) {
-        String message = "Failed to load library '" + libraryPath + "': ";
-
-#ifdef IOCOD_OS_WINDOWS
-        LPWSTR buffer = nullptr;
-        FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr,
-                       GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                       reinterpret_cast<LPWSTR>(&buffer), 0, nullptr);
-        message += String::FromWideString(buffer);
-        LocalFree(buffer);
-#else
-        message += dlerror();
-#endif
-
+        const String message = "Failed to load library '" + libraryPath + "': " +
+            Platform::GetInstance().GetLastErrorAsString();
         SetLastErrorMessage(message);
     } else {
         m_loaded = true;
@@ -100,11 +78,7 @@ void SharedLibrary::Unload() noexcept
     if (!Loaded())
         return;
 
-#ifdef IOCOD_OS_WINDOWS
-    FreeLibrary(static_cast<HMODULE>(m_handle));
-#else
-    dlclose(m_handle);
-#endif
+    Platform::GetInstance().LibraryClose(m_handle);
 
     m_handle = nullptr;
     m_loaded = false;
@@ -117,30 +91,15 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
 {
     if (!Loaded()) {
         SetLastErrorMessage("Tried to load symbol '" + String{symbol} +
-                            "' from an unloaded library");
+            "' from an unloaded library");
         return nullptr;
     }
 
-#ifdef IOCOD_OS_WINDOWS
-    auto address = static_cast<void*>(GetProcAddress(static_cast<HMODULE>(m_handle), symbol));
-#else
-    auto address = dlsym(m_handle, symbol.c_str());
-#endif
+    const auto address = Platform::GetInstance().LibraryLoadSymbol(m_handle, symbol);
 
     if (address == nullptr) {
-        String message = "Failed to load symbol '" + String{symbol} + "' from library '" +
-                              m_path + "': ";
-
-#ifdef IOCOD_OS_WINDOWS
-        LPWSTR buffer = nullptr;
-        FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr,
-                       GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                       reinterpret_cast<LPWSTR>(&buffer), 0, nullptr);
-        message += String::FromWideString(buffer);
-        LocalFree(buffer);
-#else
-        message += dlerror();
-#endif
+        const String message = "Failed to load symbol '" + String{symbol} + "' from library '" +
+            m_path + "': " + Platform::GetInstance().GetLastErrorAsString();
         SetLastErrorMessage(message);
 
         return nullptr;

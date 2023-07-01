@@ -5,8 +5,6 @@
 #ifndef CORE_LOG_H
 #define CORE_LOG_H
 
-#include <Core/Platform.h>
-
 namespace iocod {
 
 #define LOG_WARN_ENABLED 1
