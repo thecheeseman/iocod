@@ -10,31 +10,31 @@
 //
 
 #if defined(__i386__) || defined(_M_IX86)
-    #define IOCOD_ARCH_X86
+    #error "32-bit builds are not supported"
 #elif defined(__x86_64__) || defined(_M_AMD64)
-    #define IOCOD_ARCH_X86_64
+    #define IOCOD_X86_64
 #elif defined(__arm__)
     #if defined(__arm64__) || defined(__aarch64__)
-        #define IOCOD_ARCH_ARM64
+        #define IOCOD_ARM64
     #else
-        #define IOCOD_ARCH_ARM
+        #error "32-bit ARM builds are not supported"
     #endif
 #else
     #error "Unknown or unsupported architecture"
 #endif
 
 #ifdef _WIN32
-    #define IOCOD_OS_WINDOWS
+    #define IOCOD_WINDOWS
 #elif defined(__linux__)
-    #define IOCOD_OS_LINUX
+    #define IOCOD_LINUX
 #elif defined(__APPLE__)
-    #define IOCOD_OS_DARWIN
+    #define IOCOD_MACOS
 #else
     #error "Unknown or unsupported operating system"
 #endif
 
 #ifdef _MSC_VER
-    #define IOCOD_COMPILER_MSVC
+    #define IOCOD_MSVC
     #define IOCOD_LOCAL
     #define IOCOD_EXPORT             __declspec(dllexport)
     #define IOCOD_IMPORT             __declspec(dllimport)
@@ -50,9 +50,9 @@
     #define IOCOD_UNREACHABLE()      __assume(0)
 #elif defined(__GNUC__)
     #ifdef __clang__
-        #define IOCOD_COMPILER_CLANG
+        #define IOCOD_CLANG
     #else
-        #define IOCOD_COMPILER_GCC
+        #define IOCOD_GCC
     #endif
 
     #define IOCOD_LOCAL              __attribute__((visibility("hidden")))
@@ -70,6 +70,10 @@
     #define IOCOD_UNREACHABLE()      __builtin_unreachable()
 #else
     #error "Unknown or unsupported compiler"
+#endif
+
+#ifndef UNUSED
+    #define UNUSED(x, ...) (void) (x, ##__VA_ARGS__)
 #endif
 
 #ifdef IOCOD_BUILD_ENGINE
@@ -142,7 +146,7 @@
     #define IOCOD_HAS_FEATURE(feature) (0)
 #endif
 
-#ifdef IOCOD_COMPILER_MSVC
+#ifdef IOCOD_MSVC
     #define IOCOD_DISABLE_ALL_VC_WARNINGS()          \
         __pragma(warning(push, 0)) __pragma(warning( \
             disable : 4244 4265 4267 4350 4472 4509 4548 4623 4710 4985 6320 4755 4625 4626 4702))

@@ -94,7 +94,7 @@ constexpr String& String::operator=(std::string&& other) noexcept
     if (length >= m_allocated)
         Reserve(length + 1);
 
-    std::move(other.begin(), other.end(), m_data);
+    std::ranges::move(other.begin(), other.end(), m_data);
     m_data[length] = 0;
     m_length = length;
     return *this;
@@ -104,17 +104,17 @@ String::String(const wchar_t* s, size_type count)
 {
     Assert(s);
 
-    wctomb(nullptr, 0);
-    const std::size_t len = wcstombs(nullptr, s, 0);
+    auto state = std::mbstate_t();
+    const std::size_t len = std::wcsrtombs(nullptr, &s, 0, &state);
 
     if (count > len)
         count = len;
 
     if (len > m_allocated)
-        Reserve(len);
+        Reserve(len + 1);
 
     // TODO: check conversion errors
-    const std::size_t written = wcstombs(m_data, s, count);
+    const std::size_t written = std::wcsrtombs(&m_data[0], &s, len, &state);
     Assert(written == count);
     m_data[count] = 0;
     m_length = count;
@@ -320,8 +320,9 @@ void String::ToWideString(const char* str, wchar_t* dest, const size_type destSi
 {
     Assert(dest);
 
-    mbtowc(nullptr, nullptr, 0);
-    (void) mbstowcs(dest, str, destSize);
+    auto state = std::mbstate_t();
+    const std::size_t len = std::mbsrtowcs(nullptr, &str, destSize, &state);
+    const std::size_t written = std::mbsrtowcs(&dest[0], &str, len, &state);
 }
 
 } // namespace iocod

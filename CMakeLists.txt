@@ -91,6 +91,7 @@ elseif (MSVC)
     )
 
     target_compile_options(iocodOptions INTERFACE
+        -DUNICODE
         -D_CRT_SECURE_NO_WARNINGS
     )
 endif()
@@ -122,6 +123,12 @@ target_include_directories(iocodIncludes INTERFACE
 target_precompile_headers(iocodIncludes INTERFACE
     <cstddef>
     <cstdint>
+
+    <algorithm>
+    <array>
+    <bit>
+    <concepts>
+    <ranges>
     <type_traits>
 
     <EngineDefines.h>

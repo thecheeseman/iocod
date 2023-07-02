@@ -432,9 +432,10 @@ constexpr String::String(const String& other)
 {
     const std::size_t length = other.m_length;
     if (length > m_allocated)
-        Reserve(length);
+        Reserve(length + 1);
 
     Copy(m_data, other.m_data);
+    m_data[length] = 0;
     m_length = length;
 }
 

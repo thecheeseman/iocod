@@ -60,6 +60,9 @@ void* PlatformLinux::LibraryOpen(const String& path)
 // --------------------------------
 void* PlatformLinux::LibraryLoadSymbol(void* library, const String& symbolName)
 {
+    if (!library)
+        return nullptr;
+
     return dlsym(library, symbolName.c_str());
 }
 
@@ -68,6 +71,9 @@ void* PlatformLinux::LibraryLoadSymbol(void* library, const String& symbolName)
 // --------------------------------
 void PlatformLinux::LibraryClose(void* library)
 {
+    if (!library)
+        return;
+
     dlclose(library);
 }
 

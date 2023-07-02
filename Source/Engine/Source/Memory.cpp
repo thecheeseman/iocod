@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <core/memory.h>
 
-#ifdef IOCOD_OS_WINDOWS
+#ifdef IOCOD_WINDOWS
 #include <crtdbg.h>
 #endif
 
@@ -20,7 +20,7 @@ constexpr void* Alloc(const std::size_t size, const SourceLocation location)
 
     const std::size_t paddedSize = Pow2AlignUp(size, kAlignment);
 
-    #ifdef IOCOD_OS_WINDOWS
+    #ifdef IOCOD_WINDOWS
     return _aligned_malloc_dbg(paddedSize, kAlignment, location.FileName(), location.Line());
     #else
     return aligned_alloc(kAlignment, paddedSize);
@@ -32,7 +32,7 @@ constexpr void Free(void* ptr)
     if (!ptr)
         return;
 
-    #ifdef IOCOD_OS_WINDOWS
+    #ifdef IOCOD_WINDOWS
     _aligned_free_dbg(ptr);
     #else
     free(ptr);

@@ -20,9 +20,26 @@ public:
     String GetLastErrorAsString() override;
     void DisplayFatalErrorAndExit(const String& errorMessage) override;
 
-    void* LibraryOpen(const String& path) override;
-    void* LibraryLoadSymbol(void* library, const String& symbolName) override;
-    void LibraryClose(void* library) override;
+    void* DllOpen(const String& path) override;
+    void* DllLoadSymbol(void* library, const String& symbolName) override;
+    void DllClose(void* library) override;
+
+    String GetCurrentUser() override;
+    void StartProcess(const String& path, bool doExit) override;
+    void OpenUrl(const String& url, bool doExit) override;
+    void MakeDirectory(const String& path) override;
+    String CurrentDirectory() override;
+    String DefaultBasePath() override;
+    String GetClipboardText() override;
+
+    CpuInfo GetCpuInfo() override;
+    String GetCpuInfoString() override;
+    MemoryInfo GetMemoryInfo() override;
+    String GetMemoryInfoString() override;
+
+    void Print(const String& message) override;
+
+    void PumpEvents() override;
 
 private:
     HINSTANCE m_instance{};

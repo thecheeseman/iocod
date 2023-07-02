@@ -8,7 +8,6 @@ set(ENGINE_SOURCES
     Engine.cpp
     Log.cpp
     Memory.cpp
-    Platform/Platform.cpp
     Platform/SharedLibrary.cpp
     ScopedTimer.cpp
     String.cpp
@@ -16,6 +15,7 @@ set(ENGINE_SOURCES
 
 if (WIN32)
     list(APPEND ENGINE_SOURCES
+        Platform/Windows/ConsoleWindows.cpp
         Platform/Windows/PlatformWindows.cpp
     )
 elseif(APPLE)

@@ -360,4 +360,3 @@ TEST_CASE("operator/ and /=")
     String path2 = path / "subdir2";
     REQUIRE(path2 == "test/path/subdir/subdir2");
 }
-

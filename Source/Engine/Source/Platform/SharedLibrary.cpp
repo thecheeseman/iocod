@@ -57,7 +57,7 @@ bool SharedLibrary::Load(const String& libraryPath) noexcept
     m_path = libraryPath;
     m_loaded = false;
 
-    m_handle = Platform::GetInstance().LibraryOpen(libraryPath);
+    m_handle = Platform::GetInstance().DllOpen(libraryPath);
 
     if (m_handle == nullptr) {
         const String message = "Failed to load library '" + libraryPath + "': " +
@@ -78,7 +78,7 @@ void SharedLibrary::Unload() noexcept
     if (!Loaded())
         return;
 
-    Platform::GetInstance().LibraryClose(m_handle);
+    Platform::GetInstance().DllClose(m_handle);
 
     m_handle = nullptr;
     m_loaded = false;
@@ -95,7 +95,7 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
         return nullptr;
     }
 
-    const auto address = Platform::GetInstance().LibraryLoadSymbol(m_handle, symbol);
+    const auto address = Platform::GetInstance().DllLoadSymbol(m_handle, symbol);
 
     if (address == nullptr) {
         const String message = "Failed to load symbol '" + String{symbol} + "' from library '" +

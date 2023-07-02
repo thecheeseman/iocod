@@ -3,16 +3,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <Application.h>
-#include <Core/String.h>
 #include <windows.h>
+#include <Core/String.h>
 
 // --------------------------------
 // WinMain
 // --------------------------------
-int WINAPI WinMain(const HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance,
-                   [[maybe_unused]] LPSTR lpCmdLine, [[maybe_unused]] int nShowCmd)
+int WINAPI WinMain(const HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
+                   int nShowCmd)
 {
+    UNUSED(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
     using namespace iocod;
+
+    SetErrorMode(SEM_FAILCRITICALERRORS);
 
     int argc;
     LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);

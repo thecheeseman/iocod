@@ -136,56 +136,73 @@ struct EnumClassFlag {
     static constexpr bool enabled = false;
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <typename T>
+concept EnumClassFlagType = EnumClassFlag<T>::enabled;
+
+template <EnumClassFlagType T>
 constexpr T operator|(T lhs, T rhs) {
     using U = std::underlying_type_t<T>;
     return static_cast<T>(static_cast<U>(lhs) | static_cast<U>(rhs));
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <EnumClassFlagType T>
 constexpr T operator&(T lhs, T rhs) {
     using U = std::underlying_type_t<T>;
     return static_cast<T>(static_cast<U>(lhs) & static_cast<U>(rhs));
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <EnumClassFlagType T>
 constexpr T operator^(T lhs, T rhs) {
     using U = std::underlying_type_t<T>;
     return static_cast<T>(static_cast<U>(lhs) ^ static_cast<U>(rhs));
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <EnumClassFlagType T>
 constexpr T operator~(T rhs) {
     using U = std::underlying_type_t<T>;
     return static_cast<T>(~static_cast<U>(rhs));
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <EnumClassFlagType T>
 constexpr T& operator|=(T& lhs, T rhs) {
     using U = std::underlying_type_t<T>;
     lhs = static_cast<T>(static_cast<U>(lhs) | static_cast<U>(rhs));
     return lhs;
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <EnumClassFlagType T>
 constexpr T& operator&=(T& lhs, T rhs) {
     using U = std::underlying_type_t<T>;
     lhs = static_cast<T>(static_cast<U>(lhs) & static_cast<U>(rhs));
     return lhs;
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <EnumClassFlagType T>
 constexpr T& operator^=(T& lhs, T rhs) {
     using U = std::underlying_type_t<T>;
     lhs = static_cast<T>(static_cast<U>(lhs) ^ static_cast<U>(rhs));
     return lhs;
 };
 
-template <typename T, std::enable_if<EnumClassFlag<T>::enabled, bool> = true>
+template <EnumClassFlagType T>
 constexpr bool HasFlag(T lhs, T rhs) {
     using U = std::underlying_type_t<T>;
     return (static_cast<U>(lhs) & static_cast<U>(rhs)) != 0;
 };
+
+//
+// byte swap
+//
+
+template <std::integral T>
+constexpr T ByteSwap(T value) noexcept
+{
+    static_assert(std::has_unique_object_representations_v<T>, "T must not have padding");
+
+    auto bytes = std::bit_cast<std::array<std::byte, sizeof(T)>>(value);
+    std::ranges::reverse(bytes);
+    return std::bit_cast<T>(bytes);
+}
 
 } // namespace iocod
 
