@@ -5,14 +5,6 @@
 message(STATUS "Configuring External Projects")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-if (BUILD_TESTS)
-    message(STATUS "Configuring Catch2")
-    add_subdirectory("Catch2" EXCLUDE_FROM_ALL)
-endif()
-
-# don't build shared lib for Catch2 
-#set(BUILD_SHARED_LIBS TRUE)
-
 message(STATUS "Configuring fmt")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 add_subdirectory("fmt")
@@ -39,6 +31,20 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 add_library(doctest STATIC "doctest.cpp")
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 
-#set(BUILD_SHARED_LIBS OFF)
+message(STATUS "Configuring EA modules")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
+add_subdirectory(EABase)
+add_subdirectory(EAAssert)
+add_subdirectory(EAThread)
+add_subdirectory(EAStdC)
+target_sources(EAStdC PRIVATE "eastdc.cpp")
+add_subdirectory(EASTL)
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+message(STATUS "Configuring rpmalloc")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+add_library(rpmalloc STATIC "rpmalloc/rpmalloc/rpmalloc.c")
+list(POP_BACK CMAKE_MESSAGE_INDENT)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)

@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <cstdlib>
-#include <core/memory.h>
+#include <rpmalloc/rpmalloc.h>
+#include <Memory.h>
 
 #ifdef IOCOD_WINDOWS
 #include <crtdbg.h>
@@ -11,32 +11,105 @@
 
 namespace iocod::Memory {
 
-constexpr std::size_t kAlignment = 16;
+static bool g_memoryInitialized = false;
+static rpmalloc_config_t g_rpmallocConfig;
 
-constexpr void* Alloc(const std::size_t size, const SourceLocation location)
+// --------------------------------
+// Memory::Initialize
+// --------------------------------
+void Initialize()
 {
-    if (!size)
-        return nullptr;
+    Assert(!g_memoryInitialized);
 
-    const std::size_t paddedSize = Pow2AlignUp(size, kAlignment);
+    memset(&g_rpmallocConfig, 0, sizeof(g_rpmallocConfig));
+    g_rpmallocConfig.error_callback = [](const char* message) {
+        Assert(false, "rpmalloc error: %s", message);
+    };
 
-    #ifdef IOCOD_WINDOWS
-    return _aligned_malloc_dbg(paddedSize, kAlignment, location.FileName(), location.Line());
-    #else
-    return aligned_alloc(kAlignment, paddedSize);
-    #endif
+    rpmalloc_initialize_config(&g_rpmallocConfig);
+
+    g_memoryInitialized = true;
 }
 
-constexpr void Free(void* ptr)
+// --------------------------------
+// Memory::Shutdown
+// --------------------------------
+void Shutdown()
 {
-    if (!ptr)
-        return;
+    Assert(g_memoryInitialized);
+    g_memoryInitialized = false;
 
-    #ifdef IOCOD_WINDOWS
-    _aligned_free_dbg(ptr);
-    #else
-    free(ptr);
-    #endif
+    rpmalloc_finalize();
+}
+
+// --------------------------------
+// Memory::GetTotalRequestedMemory
+// --------------------------------
+std::size_t GetTotalRequestedMemory()
+{
+    rpmalloc_global_statistics_t stats;
+    rpmalloc_global_statistics(&stats);
+    return stats.mapped;
+}
+
+// --------------------------------
+// Memory::GetTotalAllocatedMemory
+// --------------------------------
+std::size_t GetTotalAllocatedMemory()
+{
+    rpmalloc_global_statistics_t stats;
+    rpmalloc_global_statistics(&stats);
+    return stats.mapped_total;
+}
+
+// --------------------------------
+// Memory::Alloc
+// --------------------------------
+void* Alloc(const std::size_t size, const std::size_t alignment)
+{
+    Assert(g_memoryInitialized);
+
+    if (size == 0)
+        return nullptr;
+
+    void* ptr = rpaligned_alloc(alignment, size);
+    Assert(IsAligned(ptr, alignment));
+
+    return ptr;
+}
+
+// --------------------------------
+// Memory::Realloc
+// --------------------------------
+void* Realloc(void* ptr, const std::size_t size, const std::size_t alignment)
+{
+    Assert(g_memoryInitialized);
+
+    void* newPtr = rprealloc(ptr, size);
+    Assert(newPtr);
+
+    return newPtr;
+}
+
+// --------------------------------
+// Memory::Free
+// --------------------------------
+void Free(void* ptr)
+{
+    Assert(g_memoryInitialized);
+
+    rpfree(ptr);
+    ptr = nullptr;
 }
 
 } // namespace iocod::Memory
+
+//
+//
+//
+
+void* __cdecl operator new[](const size_t size, const char* name, int flags, unsigned debugFlags, const char* file, int line)
+{
+	return iocod::Memory::Alloc(size);
+}
+

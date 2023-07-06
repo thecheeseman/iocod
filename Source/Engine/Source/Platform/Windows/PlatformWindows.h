@@ -18,7 +18,7 @@ public:
     void Shutdown() override;
 
     String GetLastErrorAsString() override;
-    void DisplayFatalErrorAndExit(const String& errorMessage) override;
+    void DisplayFatalErrorAndExit(const String& errorMessage, const SourceLocation& loc = SourceLocation::Current()) override;
 
     void* DllOpen(const String& path) override;
     void* DllLoadSymbol(void* library, const String& symbolName) override;
@@ -39,13 +39,15 @@ public:
 
     void Print(const String& message) override;
 
+    void ShowMessageBox(const String& title, const String& message, MessageBoxType type = MessageBoxType::Ok) override;
+
     void PumpEvents() override;
 
 private:
     HINSTANCE m_instance{};
     HWND m_hwnd{};
 
-    wchar_t m_appName[256]{};
+    char m_appName[256]{};
 };
 
 } // namespace iocod

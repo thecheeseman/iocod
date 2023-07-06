@@ -105,7 +105,7 @@ void* SharedLibrary::LoadVoidSymbol(const char* symbol) noexcept
         return nullptr;
     }
 
-    m_lastError.Clear();
+    m_lastError.clear();
     return address;
 }
 

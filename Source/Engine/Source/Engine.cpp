@@ -5,27 +5,27 @@
 #include <Engine.h>
 #include <Platform/Console.h>
 
+#include "Platform/Windows/PlatformWindows.h"
+
 namespace iocod {
 
 // --------------------------------
-// Engine::Engine
+// Engine::Initialize
 // --------------------------------
-Engine::Engine(StartupArgs args) :
-    m_platform(Platform::GetInstance()),
-    m_args(std::move(args))
+void Engine::Initialize(const int argc, char* argv[])
 {
-    m_platform.Initialize(m_args.appName);
+    m_platform.Initialize("");
     Console::Initialize();
 
-    m_platform.Print("Hello, world!\n");
+    //m_platform.Print("Hello, world!\n");
 
     //m_platform.ShowConsole(ConsoleVisLevel::Hidden, false);
 }
 
 // --------------------------------
-// Engine::~Engine
+// Engine::Shutdown
 // --------------------------------
-Engine::~Engine()
+void Engine::Shutdown()
 {
     Console::Shutdown();
     m_platform.Shutdown();

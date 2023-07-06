@@ -10,14 +10,27 @@
 
 namespace iocod {
 
+class IOCOD_API ApplicationGlobalState {
+public:
+    CLASS_NON_COPYABLE(ApplicationGlobalState)
+
+    ApplicationGlobalState();
+    ~ApplicationGlobalState();
+
+private:
+    bool m_initialized = false;
+};
+
 class IOCOD_API Application {
 public:
     CLASS_NON_COPYABLE(Application)
 
-    Application(const String& appName, std::size_t argc, const String& args);
-    ~Application();
+    Application() = default;
+    ~Application() = default;
 
+    void Initialize(int argc, char* argv[]);
     void Run();
+    void Shutdown();
 
 private:
     Engine m_engine;

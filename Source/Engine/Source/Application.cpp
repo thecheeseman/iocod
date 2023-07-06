@@ -7,22 +7,56 @@
 
 namespace iocod {
 
-Application::Application(const String& appName, const std::size_t argc, const String& args)
-    : m_engine(StartupArgs{appName, argc, args})
+static bool g_initializedGlobalState = false;
+
+// --------------------------------
+// ApplicationGlobalState::ApplicationGlobalState
+// --------------------------------
+ApplicationGlobalState::ApplicationGlobalState()
 {
-    
+    Assert(!g_initializedGlobalState);
+
+    Memory::Initialize();
+
+    m_initialized = true;
+    g_initializedGlobalState = true;
 }
 
-Application::~Application()
+ApplicationGlobalState::~ApplicationGlobalState()
 {
-    // TODO:
+    Assert(m_initialized);
+    Assert(g_initializedGlobalState);
+
+    m_initialized = false;
+    g_initializedGlobalState = false;
+
+    Memory::Shutdown();
 }
 
+// --------------------------------
+// Application::Initialize
+// --------------------------------
+void Application::Initialize(int argc, char* argv[])
+{
+    m_engine.Initialize(argc, argv);
+}
+
+// --------------------------------
+// Application::Run
+// --------------------------------
 void Application::Run()
 {
     while (!m_engine.QuitRequested()) {
         m_engine.RunFrame();
     }
+}
+
+// --------------------------------
+// Application::Shutdown
+// --------------------------------
+void Application::Shutdown()
+{
+    m_engine.Shutdown();
 }
 
 } // namespace iocod

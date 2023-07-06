@@ -91,7 +91,6 @@ elseif (MSVC)
     )
 
     target_compile_options(iocodOptions INTERFACE
-        -DUNICODE
         -D_CRT_SECURE_NO_WARNINGS
     )
 endif()
@@ -113,12 +112,18 @@ target_include_directories(iocodIncludes INTERFACE
     "${STAGED_INSTALL_PREFIX}/Include"
 
     # external
-    "${CMAKE_SOURCE_DIR}/External/expected-lite/include"
-    "${CMAKE_SOURCE_DIR}/External/fmt/include"
-    "${CMAKE_SOURCE_DIR}/External/miniz"
-    "${CMAKE_SOURCE_DIR}/External/spdlog/include"
-    "${CMAKE_SOURCE_DIR}/External/nanobench/src/include"
-    "${CMAKE_SOURCE_DIR}/External/doctest"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/expected-lite/include"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/fmt/include"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/miniz"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/spdlog/include"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/nanobench/src/include"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/doctest"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/rpmalloc"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/EABase/include/Common"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/EASTL/include"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/EAStdC/include"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/EAThread/include"
+    "${CMAKE_SOURCE_DIR}/ThirdParty/EAAssert/include"
 )
 target_precompile_headers(iocodIncludes INTERFACE
     <cstddef>
@@ -134,8 +139,9 @@ target_precompile_headers(iocodIncludes INTERFACE
     <EngineDefines.h>
     <EngineTypes.h>
     <Version.h>
-
-    <Core/Memory.h>
+    <Assert.h>
+    <Memory.h>
+    <eastl_iocod.h>
 )
 
 #
@@ -150,7 +156,7 @@ message(STATUS "Staged install prefix: ${STAGED_INSTALL_PREFIX}")
 include(iocodGetGitCommitInfo)
 
 # probably shouldn't have this here but it's convenient for everything to have fmt
-add_subdirectory(External)
+add_subdirectory(ThirdParty)
 target_link_libraries(iocodIncludes INTERFACE fmt::fmt)
 
 add_subdirectory(Source)

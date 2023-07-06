@@ -6,6 +6,7 @@
 #define ENGINE_PLATFORM_H
 
 #include <Core/String.h>
+#include <Core/SourceLocation.h>
 
 namespace iocod {
 
@@ -46,6 +47,14 @@ struct MemoryInfo {
     u64 availableVirtual{};
 };
 
+enum class MessageBoxType {
+    Ok,
+    Info,
+    Warning,
+    Question,
+    Error
+};
+
 class IOCOD_API Platform {
 public:
     CLASS_ABSTRACT(Platform)
@@ -54,7 +63,7 @@ public:
     virtual void Shutdown() = 0;
 
     virtual String GetLastErrorAsString() = 0;
-    virtual void DisplayFatalErrorAndExit(const String& errorMessage) = 0;
+    virtual void DisplayFatalErrorAndExit(const String& errorMessage, const SourceLocation& loc = SourceLocation::Current()) = 0;
 
     virtual void* DllOpen(const String& path) = 0;
     virtual void* DllLoadSymbol(void* library, const String& symbolName) = 0;
@@ -76,6 +85,8 @@ public:
     virtual String GetMemoryInfoString() = 0;
 
     virtual void Print(const String& message) = 0;
+
+    virtual void ShowMessageBox(const String& title, const String& message, MessageBoxType type = MessageBoxType::Ok) = 0;
 
     virtual void PumpEvents() = 0;
 
@@ -139,7 +150,7 @@ public:
     static String GetPlatformInfoString()
     {
         return String{kPlatformString} + ' ' + kPlatformArchString + " [" + kPlatformCompilerString + ' '
-        + kPlatformCompilerVersion + ']';
+        + eastl::to_string(kPlatformCompilerVersion) + ']';
     }
 
     static Platform& GetInstance();

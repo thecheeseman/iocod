@@ -3,23 +3,41 @@
 # SPDX-License-Identifier: CC0-1.0
 
 [submodule "External/expected-lite"]
-	path = External/expected-lite
+	path = ThirdParty/expected-lite
 	url = https://github.com/martinmoene/expected-lite
 [submodule "External/fmt"]
-	path = External/fmt
+	path = ThirdParty/fmt
 	url = https://github.com/fmtlib/fmt
 [submodule "External/json"]
-	path = External/json
+	path = ThirdParty/json
 	url = https://github.com/nlohmann/json
 [submodule "External/Catch2"]
-	path = External/Catch2
+	path = ThirdParty/Catch2
 	url = https://github.com/catchorg/Catch2
 [submodule "External/spdlog"]
-	path = External/spdlog
+	path = ThirdParty/spdlog
 	url = https://github.com/gabime/spdlog
 [submodule "External/nanobench"]
-	path = External/nanobench
+	path = ThirdParty/nanobench
 	url = https://github.com/martinus/nanobench/
 [submodule "External/doctest"]
-	path = External/doctest
+	path = ThirdParty/doctest
 	url = https://github.com/doctest/doctest
+[submodule "ThirdParty/rpmalloc"]
+	path = ThirdParty/rpmalloc
+	url = https://github.com/mjansson/rpmalloc/
+[submodule "ThirdParty/EABase"]
+	path = ThirdParty/EABase
+	url = https://github.com/electronicarts/EABase
+[submodule "ThirdParty/EASTL"]
+	path = ThirdParty/EASTL
+	url = https://github.com/electronicarts/EASTL
+[submodule "ThirdParty/EAStdC"]
+	path = ThirdParty/EAStdC
+	url = https://github.com/electronicarts/EAStdC
+[submodule "ThirdParty/EAThread"]
+	path = ThirdParty/EAThread
+	url = https://github.com/electronicarts/EAThread
+[submodule "ThirdParty/EAAssert"]
+	path = ThirdParty/EAAssert
+	url = https://github.com/electronicarts/EAAssert

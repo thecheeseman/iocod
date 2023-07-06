@@ -10,8 +10,8 @@
 
 namespace iocod::Console {
 
-constexpr const wchar_t* kDedClass = L"iocod_console";
-constexpr const wchar_t* kGameName = L"iocod";
+constexpr const char* kDedClass = "iocod_console";
+constexpr const char* kGameName = "iocod";
 constexpr i64 kCopyId = 1;
 constexpr i64 kQuitId = 2;
 constexpr i64 kClearId = 3;
@@ -44,8 +44,8 @@ int windowHeight{};
 bool quitOnClose{false};
 bool initialized{false};
 
-wchar_t errorMsg[512]{};
-wchar_t inputBuffer[512]{};
+char errorMsg[512]{};
+char inputBuffer[512]{};
 
 std::vector<String> messageBuffer;
 
@@ -150,11 +150,10 @@ LRESULT CALLBACK InputLineWndProc(HWND hwnd, const UINT msg, WPARAM wparam, LPAR
     case WM_CHAR:
         if (wparam == 13) {
             GetWindowText(inputBox, inputBuffer, sizeof(inputBuffer));
-            SetWindowText(inputBox, L"");
+            SetWindowText(inputBox, "");
 
             if (Strlen(inputBuffer) > 0) {
-                const String fromWide{inputBuffer};
-                const String message = "]" + fromWide + "\n";
+                const String message = "]" + String{inputBuffer} + "\n";
                 Print(message);
             }
         }
@@ -171,12 +170,15 @@ LRESULT CALLBACK InputLineWndProc(HWND hwnd, const UINT msg, WPARAM wparam, LPAR
 // --------------------------------
 void Initialize()
 {
-    if (!GetModuleHandleEx(0, nullptr, &instance))
-        Platform::GetInstance().DisplayFatalErrorAndExit(Platform::GetInstance().GetLastErrorAsString());
+    if (!GetModuleHandleEx(0, nullptr, &instance)) {
+        Platform::GetInstance().DisplayFatalErrorAndExit("GetModuleHandleEx: " + Platform::GetInstance().GetLastErrorAsString());
+        return;
+    }
 
     const HICON icon = LoadIcon(instance, IDI_APPLICATION);
 
-    WNDCLASS wc{};
+    WNDCLASSEX wc{};
+    wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = 0;
     wc.lpfnWndProc = reinterpret_cast<WNDPROC>(ConWndProc);
     wc.cbClsExtra = 0;
@@ -188,9 +190,11 @@ void Initialize()
     wc.lpszMenuName = nullptr;
     wc.lpszClassName = kDedClass;
 
-    if (!RegisterClass(&wc))
+    if (!RegisterClassEx(&wc)) {
         Platform::GetInstance().DisplayFatalErrorAndExit(
-            "RegisterClassA failed: " + Platform::GetInstance().GetLastErrorAsString());
+            "RegisterClassEx: " + Platform::GetInstance().GetLastErrorAsString());
+        return;
+    }
 
     constexpr DWORD rectStyle = WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX;
     RECT rect{};
@@ -210,7 +214,7 @@ void Initialize()
 
     wnd = CreateWindowEx(0,
                          kDedClass,
-                         L"iocod console",
+                         "iocod console",
                          rectStyle,
                          (width - 720) / 2,
                          (height - 480) / 2,
@@ -221,9 +225,11 @@ void Initialize()
                          instance,
                          nullptr);
 
-    if (wnd == nullptr)
+    if (wnd == nullptr) {
         Platform::GetInstance().DisplayFatalErrorAndExit(
-            "CreateWindowExA failed" + Platform::GetInstance().GetLastErrorAsString());
+            "CreateWindowEx: " + Platform::GetInstance().GetLastErrorAsString());
+        return;
+    }
 
     //
     // fonts
@@ -246,7 +252,7 @@ void Initialize()
                           CLIP_DEFAULT_PRECIS,
                           CLEARTYPE_QUALITY,
                           FF_MODERN | FIXED_PITCH,
-                          L"Consolas");
+                          "Consolas");
 
     errorFont = CreateFont(calculateFontSize(12),
                            0,
@@ -261,7 +267,7 @@ void Initialize()
                            CLIP_DEFAULT_PRECIS,
                            CLEARTYPE_QUALITY,
                            FF_MODERN | FIXED_PITCH,
-                           L"Consolas Bold");
+                           "Consolas Bold");
 
     buttonFont = CreateFont(calculateFontSize(10),
                             0,
@@ -276,7 +282,7 @@ void Initialize()
                             CLIP_DEFAULT_PRECIS,
                             CLEARTYPE_QUALITY,
                             FF_MODERN | FIXED_PITCH,
-                            L"Consolas Bold");
+                            "Consolas Bold");
 
     ReleaseDC(wnd, hdc);
 
@@ -285,7 +291,7 @@ void Initialize()
     //
     // buffer
     editBox = CreateWindowEx(0,
-                             L"edit",
+                             "edit",
                              nullptr,
                              WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | ES_LEFT |
                              ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
@@ -301,7 +307,7 @@ void Initialize()
 
     // inputBox
     inputBox = CreateWindowEx(0,
-                              L"edit",
+                              "edit",
                               nullptr,
                               WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT | ES_AUTOHSCROLL,
                               6,
@@ -318,7 +324,7 @@ void Initialize()
 
     // copy
     buttonCopy = CreateWindowEx(0,
-                                L"button",
+                                "button",
                                 nullptr,
                                 BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
                                 5,
@@ -329,12 +335,12 @@ void Initialize()
                                 reinterpret_cast<HMENU>(kCopyId),
                                 instance,
                                 nullptr);
-    SendMessage(buttonCopy, WM_SETTEXT, 0, reinterpret_cast<LPARAM>(L"copy"));
+    SendMessage(buttonCopy, WM_SETTEXT, 0, reinterpret_cast<LPARAM>("copy"));
     SendMessage(buttonCopy, WM_SETFONT, reinterpret_cast<WPARAM>(buttonFont), 0);
 
     // clear
     buttonClear = CreateWindowEx(0,
-                                 L"button",
+                                 "button",
                                  nullptr,
                                  BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
                                  82,
@@ -345,12 +351,12 @@ void Initialize()
                                  reinterpret_cast<HMENU>(kClearId),
                                  instance,
                                  nullptr);
-    SendMessage(buttonClear, WM_SETTEXT, 0, reinterpret_cast<LPARAM>(L"clear"));
+    SendMessage(buttonClear, WM_SETTEXT, 0, reinterpret_cast<LPARAM>("clear"));
     SendMessage(buttonClear, WM_SETFONT, reinterpret_cast<WPARAM>(buttonFont), 0);
 
     // quit
     buttonQuit = CreateWindowEx(0,
-                                L"button",
+                                "button",
                                 nullptr,
                                 BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
                                 642,
@@ -361,7 +367,7 @@ void Initialize()
                                 reinterpret_cast<HMENU>(kQuitId),
                                 instance,
                                 nullptr);
-    SendMessage(buttonQuit, WM_SETTEXT, 0, reinterpret_cast<LPARAM>(L"quit"));
+    SendMessage(buttonQuit, WM_SETTEXT, 0, reinterpret_cast<LPARAM>("quit"));
     SendMessage(buttonQuit, WM_SETFONT, reinterpret_cast<WPARAM>(buttonFont), 0);
 
     //
@@ -469,18 +475,18 @@ void Flush()
 
     size_t length = 0;
     for (const auto& m : messageBuffer)
-        length += m.Length();
+        length += m.length();
 
     String message;
-    message.Reserve(length);
+    message.reserve(length);
     for (const auto& m : messageBuffer)
         message += m;
 
     messageBuffer.clear();
 
     const char* msg;
-    if (message.Length() > kConsoleBufferSize - 1)
-        msg = message.c_str() + message.Length() - kConsoleBufferSize + 1;
+    if (message.length() > kConsoleBufferSize - 1)
+        msg = message.c_str() + message.length() - kConsoleBufferSize + 1;
     else
         msg = message.c_str();
 
@@ -516,13 +522,9 @@ void Flush()
         SendMessage(editBox, EM_SETSEL, 0xffff, 0xffff);
     }
 
-    wchar_t wideBuffer[kConsoleBufferSize * 2]{};
-    mbtowc(nullptr, nullptr, 0);
-    (void) mbstowcs(wideBuffer, buffer, sizeof(wideBuffer));
-
     SendMessage(editBox, EM_LINESCROLL, 0, 0xffff);
     SendMessage(editBox, EM_SCROLLCARET, 0, 0);
-    SendMessage(editBox, EM_REPLACESEL, 0, reinterpret_cast<LPARAM>(wideBuffer));
+    SendMessage(editBox, EM_REPLACESEL, 0, reinterpret_cast<LPARAM>(buffer));
 
     messagesWaiting = 0;
 }
@@ -532,8 +534,8 @@ void Flush()
 // --------------------------------
 void DebugPrint(const String& message)
 {
-    wchar_t outputBuffer[4096]{};
-    message.ToWideString(outputBuffer, sizeof(outputBuffer));
+    char outputBuffer[4096]{};
+    Strncpy(outputBuffer, message.c_str(), sizeof(outputBuffer) - 1);
     OutputDebugString(outputBuffer);
 }
 
@@ -542,11 +544,11 @@ void DebugPrint(const String& message)
 // --------------------------------
 void DisplayError(const String& message)
 {
-    message.ToWideString(errorMsg, sizeof(errorMsg));
+    Strncpy(errorMsg, message.c_str(), sizeof(errorMsg) - 1);
 
     if (!errorBox) {
         errorBox = CreateWindowEx(0,
-                                  L"static",
+                                  "static",
                                   nullptr,
                                   WS_CHILD | WS_VISIBLE | SS_SUNKEN,
                                   6,

@@ -49,3 +49,23 @@ set_target_properties(iocod PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}"
 )
 
+if (WIN32)
+    add_custom_command(
+        TARGET iocod
+        POST_BUILD
+        COMMENT "Embedding manifest file in iocod exe"
+        WORKING_DIRECTORY $<TARGET_FILE_DIR:iocod>
+        COMMAND "mt.exe"
+            -manifest "${CMAKE_CURRENT_SOURCE_DIR}/iocod.manifest"
+            -outputresource:$<TARGET_FILE:iocod>\;\#1
+    )
+endif()
+
+add_custom_command(
+    TARGET iocod
+    POST_BUILD
+    COMMENT "Generate sha512 checksum for iocod"
+    WORKING_DIRECTORY $<TARGET_FILE_DIR:iocod>
+    COMMAND ${CMAKE_COMMAND} -E sha512sum $<TARGET_FILE_NAME:iocod> > $<TARGET_FILE_NAME:iocod>.sha512
+    VERBATIM
+)

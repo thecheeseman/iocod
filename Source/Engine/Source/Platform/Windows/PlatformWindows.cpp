@@ -26,28 +26,30 @@ String PlatformWindows::GetLastErrorAsString()
     if (error == ERROR_SUCCESS)
         return String{};
 
-    LPWSTR buffer = nullptr;
+    LPSTR buffer = nullptr;
     const size_t size = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
                                       FORMAT_MESSAGE_IGNORE_INSERTS,
                                       nullptr,
                                       error,
                                       LANG_USER_DEFAULT,
-                                      reinterpret_cast<LPWSTR>(&buffer),
+                                      reinterpret_cast<LPSTR>(&buffer),
                                       0,
                                       nullptr);
 
     String message{buffer, size};
     LocalFree(buffer);
 
+    message += String{"(error code: "} + static_cast<int>(error) + ")";
     return message;
 }
 
 // --------------------------------
 // PlatformWindows::DisplayFatalErrorAndExit
 // --------------------------------
-[[noreturn]] void PlatformWindows::DisplayFatalErrorAndExit(const String& errorMessage)
+[[noreturn]] void PlatformWindows::DisplayFatalErrorAndExit(const String& errorMessage, const SourceLocation& loc)
 {
-    MessageBox(nullptr, errorMessage.ToWideString(), L"Fatal Error", MB_OK | MB_ICONERROR);
+    const String message = errorMessage + " in " + loc.FunctionName() + "() at " + loc.FileName() + ":" + loc.Line();
+    MessageBox(nullptr, message.c_str(), "Fatal Error", MB_OK | MB_ICONERROR);
     ExitProcess(1);
 }
 
@@ -70,14 +72,16 @@ LRESULT CALLBACK ProcessWindowMessage(HWND hwnd, const UINT msg, const WPARAM wP
 // --------------------------------
 void PlatformWindows::Initialize(const String& appName)
 {
-    appName.ToWideString(m_appName, sizeof(m_appName));
+    Strcpy(m_appName, appName.c_str());
+    ShowMessageBox("GetACP", eastl::to_string(GetACP()));
 
     if (!GetModuleHandleEx(0, nullptr, &m_instance))
-        DisplayFatalErrorAndExit(GetLastErrorAsString());
+        DisplayFatalErrorAndExit("GetModuleHandleEx: " + GetLastErrorAsString());
 
     const HICON icon = LoadIcon(m_instance, IDI_APPLICATION);
 
-    WNDCLASSW wc{};
+    WNDCLASSEX wc{};
+    wc.cbSize = sizeof(wc);
     wc.style = CS_DBLCLKS;
     wc.lpfnWndProc = ProcessWindowMessage;
     wc.cbClsExtra = 0;
@@ -86,10 +90,11 @@ void PlatformWindows::Initialize(const String& appName)
     wc.hIcon = icon;
     wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wc.hbrBackground = nullptr;
-    wc.lpszClassName = m_appName;
+    wc.lpszMenuName = nullptr;
+    wc.lpszClassName = "iocod_platform";
 
-    if (!RegisterClass(&wc))
-        DisplayFatalErrorAndExit(GetLastErrorAsString());
+    if (!RegisterClassEx(&wc))
+        DisplayFatalErrorAndExit("RegisterClassEx: " + GetLastErrorAsString());
 
     constexpr DWORD style = WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZE | WS_THICKFRAME;
     constexpr DWORD exStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
@@ -108,8 +113,8 @@ void PlatformWindows::Shutdown() { }
 // --------------------------------
 void* PlatformWindows::DllOpen(const String& path)
 {
-    wchar_t pathBuffer[MAX_PATH]{};
-    path.ToWideString(pathBuffer, sizeof(pathBuffer));
+    char pathBuffer[MAX_PATH]{};
+    Strncpy(pathBuffer, path.c_str(), sizeof(pathBuffer) - 1);
 
     return LoadLibrary(pathBuffer);
 }
@@ -141,7 +146,7 @@ void PlatformWindows::DllClose(void* library)
 // --------------------------------
 String PlatformWindows::GetCurrentUser()
 {
-    wchar_t buffer[256]{};
+    char buffer[256]{};
     DWORD size = sizeof(buffer);
     if (!GetUserName(buffer, &size))
         return String{"player"};
@@ -156,10 +161,10 @@ void PlatformWindows::StartProcess(const String& path, const bool doExit)
 {
     const String newPath = CurrentDirectory() + "/" + path;
 
-    wchar_t pathBuffer[MAX_PATH]{};
-    newPath.ToWideString(pathBuffer, sizeof(pathBuffer));
+    char pathBuffer[MAX_PATH]{};
+    Strncpy(pathBuffer, newPath.c_str(), sizeof(pathBuffer) - 1);
 
-    STARTUPINFOW startupInfo{};
+    STARTUPINFO startupInfo{};
     startupInfo.cb = sizeof(startupInfo);
 
     PROCESS_INFORMATION processInfo{};
@@ -186,14 +191,14 @@ void PlatformWindows::StartProcess(const String& path, const bool doExit)
 // --------------------------------
 void PlatformWindows::OpenUrl(const String& url, const bool doExit)
 {
-    wchar_t urlBuffer[MAX_PATH]{};
-    url.ToWideString(urlBuffer, sizeof(urlBuffer));
+    char urlBuffer[MAX_PATH]{};
+    Strncpy(urlBuffer, url.c_str(), sizeof(urlBuffer) - 1);
 
-    SHELLEXECUTEINFOW info{};
+    SHELLEXECUTEINFO info{};
     info.cbSize = sizeof(info);
     info.fMask = SEE_MASK_NOCLOSEPROCESS;
     info.hwnd = nullptr;
-    info.lpVerb = L"open";
+    info.lpVerb = "open";
     info.lpFile = urlBuffer;
     info.lpParameters = nullptr;
     info.lpDirectory = nullptr;
@@ -216,8 +221,8 @@ void PlatformWindows::OpenUrl(const String& url, const bool doExit)
 // --------------------------------
 void PlatformWindows::MakeDirectory(const String& path)
 {
-    wchar_t pathBuffer[MAX_PATH]{};
-    path.ToWideString(pathBuffer, sizeof(pathBuffer));
+    char pathBuffer[MAX_PATH]{};
+    Strncpy(pathBuffer, path.c_str(), sizeof(pathBuffer) - 1);
     CreateDirectory(pathBuffer, nullptr);
 }
 
@@ -226,7 +231,7 @@ void PlatformWindows::MakeDirectory(const String& path)
 // --------------------------------
 String PlatformWindows::CurrentDirectory()
 {
-    wchar_t buffer[MAX_PATH]{};
+    char buffer[MAX_PATH]{};
     GetCurrentDirectory(sizeof(buffer), buffer);
     return String{buffer};
 }
@@ -259,11 +264,11 @@ String PlatformWindows::GetClipboardText()
         return String{};
     }
 
-    String result{text};
+    //String result = eastl::to_string(text);
     GlobalUnlock(handle);
     CloseClipboard();
 
-    return result;
+    return String{};
 }
 
 // --------------------------------
@@ -271,7 +276,7 @@ String PlatformWindows::GetClipboardText()
 // --------------------------------
 CpuInfo PlatformWindows::GetCpuInfo()
 {
-    static constinit CpuInfo s_cpuInfo;
+    static CpuInfo s_cpuInfo;
     static bool s_initialized = false;
 
     if (s_initialized)
@@ -324,28 +329,30 @@ CpuInfo PlatformWindows::GetCpuInfo()
             return bitSetCount;
         };
 
-        PSYSTEM_LOGICAL_PROCESSOR_INFORMATION ptr = buffer;
-        DWORD byteOffset = 0;
-        while (byteOffset + sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION) <= returnLength) {
-            switch (ptr->Relationship) {
-            case RelationProcessorCore:
-                cpuCores++;
-                cpuThreads += countSetBits(ptr->ProcessorMask);
-                break;
-            case RelationCache:
-                if (ptr->Cache.Level == 1)
-                    cpuCacheL1 += ptr->Cache.Size;
-                else if (ptr->Cache.Level == 2)
-                    cpuCacheL2 += ptr->Cache.Size;
-                else if (ptr->Cache.Level == 3)
-                    cpuCacheL3 += ptr->Cache.Size;
-                break;
-            default:
-                break;
-            }
+        if (buffer) {
+            PSYSTEM_LOGICAL_PROCESSOR_INFORMATION ptr = buffer;
+            DWORD byteOffset = 0;
+            while (byteOffset + sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION) <= returnLength) {
+                switch (ptr->Relationship) {
+                case RelationProcessorCore:
+                    cpuCores++;
+                    cpuThreads += countSetBits(ptr->ProcessorMask);
+                    break;
+                case RelationCache:
+                    if (ptr->Cache.Level == 1)
+                        cpuCacheL1 += ptr->Cache.Size;
+                    else if (ptr->Cache.Level == 2)
+                        cpuCacheL2 += ptr->Cache.Size;
+                    else if (ptr->Cache.Level == 3)
+                        cpuCacheL3 += ptr->Cache.Size;
+                    break;
+                default:
+                    break;
+                }
 
-            byteOffset += sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
-            ++ptr;
+                byteOffset += sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
+                ++ptr;
+            }
         }
 
         free(buffer);
@@ -378,14 +385,14 @@ CpuInfo PlatformWindows::GetCpuInfo()
     // processor name / vendor
     //
 
-    wchar_t modelBuffer[64]{};
-    wchar_t vendorBuffer[48]{};
+    char modelBuffer[64]{};
+    char vendorBuffer[48]{};
 
     HKEY key;
-    if (!RegOpenKey(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", &key)) {
+    if (!RegOpenKey(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", &key)) {
         DWORD size;
-        RegGetValue(key, nullptr, L"ProcessorNameString", RRF_RT_REG_SZ, nullptr, modelBuffer, &size);
-        RegGetValue(key, nullptr, L"VendorIdentifier", RRF_RT_REG_SZ, nullptr, vendorBuffer, &size);
+        RegGetValue(key, nullptr, "ProcessorNameString", RRF_RT_REG_SZ, nullptr, modelBuffer, &size);
+        RegGetValue(key, nullptr, "VendorIdentifier", RRF_RT_REG_SZ, nullptr, vendorBuffer, &size);
         RegCloseKey(key);
     }
 
@@ -411,12 +418,12 @@ String PlatformWindows::GetCpuInfoString()
         String{"CpuInfo:\n"} +
         "Vendor: " + vendor + "\n" +
         "Model: " + model + "\n" +
-        "Cores: " + cores + "\n" +
-        "Threads: " + threads + "\n" +
-        "Speed: " + mhz + " MHz\n" +
-        "L1 Cache: " + BytesToKB(cacheL1) + " KB\n" +
-        "L2 Cache: " + BytesToKB(cacheL2) + " KB\n" +
-        "L3 Cache:" + BytesToKB(cacheL3) + " KB\n"};
+        "Cores: " + eastl::to_string(cores) + "\n" +
+        "Threads: " + eastl::to_string(threads) + "\n" +
+        "Speed: " + eastl::to_string(mhz) + " MHz\n" +
+        "L1 Cache: " + eastl::to_string(BytesToKB(cacheL1)) + " KB\n" +
+        "L2 Cache: " + eastl::to_string(BytesToKB(cacheL2)) + " KB\n" +
+        "L3 Cache:" + eastl::to_string(BytesToKB(cacheL3)) + " KB\n"};
 }
 
 // --------------------------------
@@ -448,9 +455,9 @@ String PlatformWindows::GetMemoryInfoString()
     const auto [totalPhys, availPhys, totalVirt, availVirt, totalPage, availPage] = GetMemoryInfo();
     return {
         String{"MemoryInfo:\n"} +
-        "Physical: " + BytesToMB(availPhys) + " MB / " + BytesToMB(totalPhys) + " MB\n" +
-        "Virtual: " + BytesToMB(availVirt) + " MB / " + BytesToMB(totalVirt) + " MB\n" +
-        "PageFile: " + BytesToMB(availPage) + " MB / " + BytesToMB(totalPage) + " MB\n"
+        "Physical: " + eastl::to_string(BytesToMB(availPhys)) + " MB / " + eastl::to_string(BytesToMB(totalPhys)) + " MB\n" +
+        "Virtual: " + eastl::to_string(BytesToMB(availVirt)) + " MB / " + eastl::to_string(BytesToMB(totalVirt)) + " MB\n" +
+        "PageFile: " + eastl::to_string(BytesToMB(availPage)) + " MB / " + eastl::to_string(BytesToMB(totalPage)) + " MB\n"
     };
 }
 
@@ -460,6 +467,31 @@ String PlatformWindows::GetMemoryInfoString()
 void PlatformWindows::Print(const String& message)
 {
     Console::Print(message);
+}
+
+void PlatformWindows::ShowMessageBox(const String& title, const String& message, const MessageBoxType type)
+{
+    DWORD flags = 0;
+     
+    switch (type) {
+    case MessageBoxType::Ok:
+        flags = MB_OK;
+        break;
+    case MessageBoxType::Info:
+        flags = MB_OK | MB_ICONINFORMATION;
+        break;
+    case MessageBoxType::Warning:
+        flags = MB_OK | MB_ICONWARNING;
+        break;
+    case MessageBoxType::Question:
+        flags = MB_OK | MB_ICONQUESTION;
+        break;
+    case MessageBoxType::Error:
+        flags = MB_OK | MB_ICONERROR;
+        break;
+    }
+
+    MessageBox(nullptr, message.c_str(), title.c_str(), flags);
 }
 
 // --------------------------------

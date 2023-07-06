@@ -10,7 +10,9 @@ set(ENGINE_SOURCES
     Memory.cpp
     Platform/SharedLibrary.cpp
     ScopedTimer.cpp
-    String.cpp
+    #String.cpp
+
+    eastl_iocod.cpp
 )
 
 if (WIN32)
@@ -35,8 +37,8 @@ list(TRANSFORM ENGINE_SOURCES PREPEND "Source/")
 #
 add_library(iocodEngine SHARED ${ENGINE_SOURCES})
 target_compile_definitions(iocodEngine PUBLIC -DIOCOD_BUILD_ENGINE)
-target_link_libraries(iocodEngine PRIVATE iocodOptions iocodWarnings iocodIncludes)
-target_link_libraries(iocodEngine PRIVATE fmt::fmt spdlog::spdlog miniz)
+target_link_libraries(iocodEngine PRIVATE iocodOptions iocodWarnings iocodIncludes miniz rpmalloc)
+target_link_libraries(iocodEngine PUBLIC fmt::fmt spdlog::spdlog EASTL EAStdC) #  EAAssert EAThread
 
 # remove the "lib" prefix from the library name
 set_target_properties(iocodEngine PROPERTIES
@@ -51,4 +53,22 @@ set_target_properties(iocodEngine PROPERTIES
 #
 if (BUILD_TESTS)
     add_subdirectory(Tests)
+
+    add_custom_command(
+        TARGET iocodEngine
+        POST_BUILD
+        COMMENT "Copy iocodEngine to test folder"
+        COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_FILE:iocodEngine>
+            "${STAGED_INSTALL_PREFIX}/EngineTests"
+    )
 endif()
+
+add_custom_command(
+    TARGET iocodEngine
+    POST_BUILD
+    COMMENT "Generate sha512 checksum for iocodEngine"
+    WORKING_DIRECTORY $<TARGET_FILE_DIR:iocodEngine>
+    COMMAND ${CMAKE_COMMAND} -E sha512sum $<TARGET_FILE_NAME:iocodEngine> > $<TARGET_FILE_NAME:iocodEngine>.sha512
+    VERBATIM
+)

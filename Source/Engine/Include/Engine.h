@@ -10,18 +10,17 @@
 
 namespace iocod {
 
-struct StartupArgs {
-    String appName{};
-    std::size_t argc{};
-    String args{};
-};
-
 class IOCOD_API Engine final {
 public:
     CLASS_NON_COPYABLE(Engine)
 
-    explicit Engine(StartupArgs args);
-    ~Engine();
+    Engine() :
+        m_platform(Platform::GetInstance()) {}
+
+    ~Engine() = default;
+
+    void Initialize(int argc, char* argv[]);
+    void Shutdown();
 
     void RunFrame();
     [[nodiscard]] bool QuitRequested() const { return m_quitRequested; }
@@ -29,7 +28,6 @@ public:
 private:
     bool m_quitRequested = false;
     Platform& m_platform;
-    StartupArgs m_args;
 };
 
 } // namespace iocod

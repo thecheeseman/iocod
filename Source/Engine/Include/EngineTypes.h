@@ -11,8 +11,6 @@
 
 namespace iocod {
 
-class String;
-
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
 using u32 = std::uint32_t;
@@ -140,52 +138,60 @@ template <typename T>
 concept EnumClassFlagType = EnumClassFlag<T>::enabled;
 
 template <EnumClassFlagType T>
-constexpr T operator|(T lhs, T rhs) {
+constexpr T operator|(T lhs, T rhs)
+{
     using U = std::underlying_type_t<T>;
     return static_cast<T>(static_cast<U>(lhs) | static_cast<U>(rhs));
 };
 
 template <EnumClassFlagType T>
-constexpr T operator&(T lhs, T rhs) {
+constexpr T operator&(T lhs, T rhs)
+{
     using U = std::underlying_type_t<T>;
     return static_cast<T>(static_cast<U>(lhs) & static_cast<U>(rhs));
 };
 
 template <EnumClassFlagType T>
-constexpr T operator^(T lhs, T rhs) {
+constexpr T operator^(T lhs, T rhs)
+{
     using U = std::underlying_type_t<T>;
     return static_cast<T>(static_cast<U>(lhs) ^ static_cast<U>(rhs));
 };
 
 template <EnumClassFlagType T>
-constexpr T operator~(T rhs) {
+constexpr T operator~(T rhs)
+{
     using U = std::underlying_type_t<T>;
     return static_cast<T>(~static_cast<U>(rhs));
 };
 
 template <EnumClassFlagType T>
-constexpr T& operator|=(T& lhs, T rhs) {
+constexpr T& operator|=(T& lhs, T rhs)
+{
     using U = std::underlying_type_t<T>;
     lhs = static_cast<T>(static_cast<U>(lhs) | static_cast<U>(rhs));
     return lhs;
 };
 
 template <EnumClassFlagType T>
-constexpr T& operator&=(T& lhs, T rhs) {
+constexpr T& operator&=(T& lhs, T rhs)
+{
     using U = std::underlying_type_t<T>;
     lhs = static_cast<T>(static_cast<U>(lhs) & static_cast<U>(rhs));
     return lhs;
 };
 
 template <EnumClassFlagType T>
-constexpr T& operator^=(T& lhs, T rhs) {
+constexpr T& operator^=(T& lhs, T rhs)
+{
     using U = std::underlying_type_t<T>;
     lhs = static_cast<T>(static_cast<U>(lhs) ^ static_cast<U>(rhs));
     return lhs;
 };
 
 template <EnumClassFlagType T>
-constexpr bool HasFlag(T lhs, T rhs) {
+constexpr bool HasFlag(T lhs, T rhs)
+{
     using U = std::underlying_type_t<T>;
     return (static_cast<U>(lhs) & static_cast<U>(rhs)) != 0;
 };
@@ -202,6 +208,46 @@ constexpr T ByteSwap(T value) noexcept
     auto bytes = std::bit_cast<std::array<std::byte, sizeof(T)>>(value);
     std::ranges::reverse(bytes);
     return std::bit_cast<T>(bytes);
+}
+
+//
+// useful math bits
+//
+
+template <std::signed_integral IntType>
+constexpr IntType Abs(IntType i)
+{
+    return i < 0 ? -i : i;
+}
+
+template <std::unsigned_integral UIntType>
+constexpr UIntType Abs(UIntType u)
+{
+    return u;
+}
+
+template <std::floating_point FloatingType>
+constexpr FloatingType Abs(FloatingType f)
+{
+    return f < 0 ? -f : f;
+}
+
+template <typename T>
+constexpr T Min(T a, T b)
+{
+    return (a < b) ? a : b;
+}
+
+template <typename T>
+constexpr T Max(T a, T b)
+{
+    return (a > b) ? a : b;
+}
+
+template <typename T>
+constexpr T Clamp(T a, T x, T b)
+{
+    return (x < a) ? a : (b < x) ? b : x;
 }
 
 } // namespace iocod

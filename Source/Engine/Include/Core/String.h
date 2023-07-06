@@ -6,9 +6,13 @@
 #define CORE_STRING_H
 
 #include <stdexcept>
-#include <Core/Assert.h>
+#include <EASTL/string.h>
 
 namespace iocod {
+
+using String = eastl::basic_string<char>;
+
+#if 0
 
 template <typename T>
 struct StringIterator {
@@ -406,7 +410,7 @@ public:
         return m_length;
     }
 
-    constexpr void Reserve(size_type newCapacity);
+    void Reserve(size_type newCapacity);
 
     [[nodiscard]] constexpr size_type Capacity() const noexcept
     {
@@ -1061,6 +1065,7 @@ inline String String::FromWideString(const wchar_t* s)
 
     return String{s};
 }
+#endif
 
 //
 // C <string.h> replacements for all char types
@@ -1314,6 +1319,8 @@ private:
 
 } // namespace iocod
 
+#if 0
+
 //
 // hash specialization
 //
@@ -1340,5 +1347,7 @@ struct fmt::formatter<iocod::String> : formatter<std::string_view> {
         return formatter<std::string_view>::format(std::string_view{s.c_str(), s.Length()}, ctx);
     }
 };
+
+#endif
 
 #endif // CORE_STRING_H

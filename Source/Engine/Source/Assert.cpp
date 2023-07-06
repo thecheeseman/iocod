@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <cstdio>
-#include <Core/Assert.h>
+#include <Assert.h>
 #include <Core/Log.h>
 
 namespace iocod::detail {

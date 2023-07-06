@@ -2,39 +2,28 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/Catch2/extras")
-
 enable_testing()
 include(CTest)
-#include(Catch)
 
-function(AddCoreTest)
+function(AddEngineTest)
     set(one_value_args NAME)
     set(multi_value_args SOURCES)
-    cmake_parse_arguments(PARSE_ARGV 0 CORETEST "" "${one_value_args}" "${multi_value_args}")
+    cmake_parse_arguments(PARSE_ARGV 0 ENGINETEST "" "${one_value_args}" "${multi_value_args}")
 
-    add_executable(${CORETEST_NAME} ${CORETEST_NAME}.cpp ${CORETEST_SOURCES})
-    add_dependencies(${CORETEST_NAME} iocodEngine)
-    target_link_libraries(${CORETEST_NAME} PRIVATE iocodOptions iocodWarnings iocodIncludes)
-    target_link_libraries(${CORETEST_NAME} PRIVATE doctest iocodEngine)
+    add_executable(${ENGINETEST_NAME} ${ENGINETEST_NAME}.cpp ${ENGINETEST_SOURCES})
+    add_dependencies(${ENGINETEST_NAME} iocodEngine)
+    target_link_libraries(${ENGINETEST_NAME} PRIVATE iocodOptions iocodWarnings iocodIncludes)
+    target_link_libraries(${ENGINETEST_NAME} PRIVATE doctest iocodEngine)
 
-    set_target_properties(${CORETEST_NAME} PROPERTIES
+    set_target_properties(${ENGINETEST_NAME} PROPERTIES
         PREFIX ""
-        ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/core-test"
-        LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/core-test"
-        RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/core-test"
+        ARCHIVE_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/EngineTests"
+        LIBRARY_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/EngineTests"
+        RUNTIME_OUTPUT_DIRECTORY "${STAGED_INSTALL_PREFIX}/EngineTests"
     )
 endfunction()
 
-#AddCoreTest(NAME "test-array")
-#AddCoreTest(NAME "test-fixed_string")
-#AddCoreTest(NAME "test-narrow_cast")
-#AddCoreTest(NAME "test-shared_library")
-AddCoreTest(NAME "Test-ByteSwap")
-AddCoreTest(NAME "Test-String")
-#AddCoreTest(NAME "Test-String-Bench")
-#AddCoreTest(NAME "test-stringed")
-#AddCoreTest(NAME "test-string_utilities")
-#AddCoreTest(NAME "test-timer")
-#AddCoreTest(NAME "test-vector")
-#AddCoreTest(NAME "test-version")
+AddEngineTest(NAME "Test-ByteSwap")
+AddEngineTest(NAME "Test-Color")
+AddEngineTest(NAME "Test-Span")
+#AddEngineTest(NAME "Test-String")

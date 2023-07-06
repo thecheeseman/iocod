@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <stdexcept>
-#include <Core/Memory.h>
 #include <Core/String.h>
 
 namespace iocod {
@@ -11,7 +10,7 @@ namespace iocod {
 // --------------------------------
 // String::Reserve
 // --------------------------------
-constexpr void String::Reserve(const size_type newCapacity)
+void String::Reserve(const size_type newCapacity)
 {
     std::size_t newSize = newCapacity;
     if (const std::size_t mod = newCapacity % kGranularity; mod)
