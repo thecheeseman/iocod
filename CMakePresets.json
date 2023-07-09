@@ -3,19 +3,19 @@
     "configurePresets": [
         // base
         {
-            "name": "base",
+            "name": "Base",
             "hidden": true,
-            "binaryDir": "${sourceDir}/build/${presetName}",
+            "binaryDir": "${sourceDir}/Build/${presetName}",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/Install/${presetName}"
             }
         },
         
         // base OS presets
         {
-            "name": "win64-base",
+            "name": "Win64-Base",
             "hidden": true,
-            "inherits": "base",
+            "inherits": "Base",
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "cl.exe"
@@ -31,9 +31,19 @@
             }
         },
         {
-            "name": "linux64-base",
+            "name": "MacOS-Base",
             "hidden": true,
-            "inherits": "base",
+            "inherits": "Base",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "Linux64-Base",
+            "hidden": true,
+            "inherits": "Base",
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
@@ -43,77 +53,91 @@
 
         // base build type presets
         {
-            "name": "build-base",
+            "name": "Build-Base",
             "hidden": true,
             "cacheVariables": {
                 "ENABLE_INTERPROCEDURAL_OPTIMIZATION": true
             }
         },
         {
-            "name": "debug-base",
+            "name": "Debug-Base",
             "hidden": true,
-            "inherits": "build-base",
+            "inherits": "Build-Base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD_TESTS": true
             }
         },
         {
-            "name": "debug-sanitizer-base",
+            "name": "Debug-Sanitizer-Base",
             "hidden": true,
-            "inherits": "debug-base",
+            "inherits": "Debug-Base",
             "cacheVariables": {
                 "ENABLE_SANITIZE_ADDRESS": true,
                 "ENABLE_SANITIZE_UNDEFINED": true
             }
         },
         {
-            "name": "release-base",
+            "name": "Release-Base",
             "hidden": true,
-            "inherits": "build-base",
+            "inherits": "Build-Base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "RelWithDbgInfo"
             }
         },
 
-        // win64 presets
+        // Win64 presets
         {
-            "name": "win64-debug",
-            "displayName": "win64 (debug)",
-            "inherits": [ "debug-base", "win64-base" ]
+            "name": "Win64-Debug",
+            "displayName": "Win64 Debug",
+            "inherits": [ "Debug-Base", "Win64-Base" ]
         },
         {
-            "name": "win64-debug-sanitizer",
-            "displayName": "win64 (debug-sanitizer)",
-            "inherits": [ "debug-sanitizer-base", "win64-base" ],
+            "name": "Win64-DebugSanitizer",
+            "displayName": "Win64 Debug Sanitizer",
+            "inherits": [ "Debug-Sanitizer-Base", "Win64-Base" ],
             "cacheVariables": {
                 "ENABLE_SANITIZE_UNDEFINED": false // Windows doesn't support this sanitizer
             }
         },
         {
-            "name": "win64-release",
-            "displayName": "win64 (release)",
-            "inherits": [ "release-base", "win64-base" ]
+            "name": "Win64-Release",
+            "displayName": "Win64 Release",
+            "inherits": [ "Release-Base", "Win64-Base" ]
         },
 
-        // linux64 presets
+        // MacOS presets
         {
-            "name": "linux64-debug",
-            "displayName": "linux64 (debug)",
-            "inherits": [ "debug-base", "linux64-base" ]
+            "name": "MacOS-Debug",
+            "displayName": "MacOS Debug",
+            "inherits": [ "Debug-Base", "MacOS-Base" ]
         },
         {
-            "name": "linux64-debug-sanitizer",
-            "displayName": "linux64 (debug-sanitizer)",
-            "inherits": [ "debug-sanitizer-base", "linux64-base" ],
-            "cacheVariables": {
-                "ENABLE_SANITIZE_UNDEFINED": false
-            }
+            "name": "MacOS-DebugSanitizer",
+            "displayName": "MacOS Debug Sanitizer",
+            "inherits": [ "Debug-Sanitizer-Base", "MacOS-Base" ]
         },
         {
-            "name": "linux64-release",
-            "displayName": "linux64 (release)",
-            "inherits": [ "release-base", "linux64-base" ]
+            "name": "MacOS-Release",
+            "displayName": "MacOS Release",
+            "inherits": [ "Release-Base", "MacOS-Base" ]
+        },
+
+        // Linux64 presets
+        {
+            "name": "Linux64-Debug",
+            "displayName": "Linux64 Debug",
+            "inherits": [ "Debug-Base", "Linux64-Base" ]
+        },
+        {
+            "name": "Linux64-DebugSanitizer",
+            "displayName": "Linux64 Debug Sanitizer",
+            "inherits": [ "Debug-Sanitizer-Base", "Linux64-Base" ],
+        },
+        {
+            "name": "Linux64-Release",
+            "displayName": "Linux64 Release",
+            "inherits": [ "Release-Base", "Linux64-Base" ]
         }
     ]
 }
