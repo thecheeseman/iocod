@@ -1,6 +1,7 @@
 name: Discord Commits
 on:
   - push
+  - workflow_dispatch
   
 jobs:
   discord-commits:
