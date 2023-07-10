@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 set(ENGINE_SOURCES
+    Allocator.cpp
     Application.cpp
     Assert.cpp
     Engine.cpp
